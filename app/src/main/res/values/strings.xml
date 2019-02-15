@@ -1,3 +1,49 @@
 <resources>
-    <string name="app_name">SPI_Pipe</string>
+    <string name="app_name">SPI</string>
+
+    <!--BaseActivity-->
+    <string name="app_exit_toast">뒤로가기 버튼을 한번 더 누르면 종료됩니다.</string>
+    <string name="app_title_alt">SPI %1$s %2$s</string>
+    <string name="main_title_common">매설관로</string>
+    <string name="button_find">주변관로\n정보조회</string>
+    <string name="nav_close">닫기</string>
+    <string name="nav_flush_cache">캐시 초기화</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="error_location">위치 정보를 불러오지 못했습니다.\n잠시후에 다시 시도해주세요.</string>
+    <string name="map_mode_basic">일반</string>
+    <string name="map_mode_hybrid">위성</string>
+
+    <!--NavigationView-->
+    <string name="nav_title">SPI(Smart Pipe Indicator)</string>
+    <string name="nav_version_name">버전 %1$s (%2$s)</string>
+    <string name="nav_phone"><![CDATA[<font color="#0077C8"><a href="tel:%1$s">%1$s</a></font>]]></string>
+    <string name="nav_email"><![CDATA[대진기술정보(주) <font color="#0077C8">%1$s</font>]]></string>
+    <string name="nav_guide"></string>
+
+    <!--MainActivity-->
+    <string name="lay_main1_title"></string>
+    <string name="lay_main1_sub">SPI에 등록된 정보를 읽으려면\n해당 SPI를 태깅하세요.</string>
+    <string name="lay_main2_title">지도 보기</string>
+    <string name="lay_main2_sub">내 주변의 관로정보를 확인할 수 있습니다.</string>
+    <string name="lay_main3_title">등록하기</string>
+    <string name="lay_main3_sub">SPI에 정보를 등록합니다.</string>
+
+    <!--NfcUtil-->
+    <string name="toast_error">입력값을 확인해주세요</string>
+
+    <!--MessagePopup & fragment_popup.xml-->
+    <string name="popup_warning">주 의</string>
+    <string name="popup_ok">확 인</string>
+    <string name="popup_cancel">취 소</string>
+    <string name="popup_next">다 음</string>
+    <string name="popup_pre">이 전</string>
+    <string name="popup_nfc_on">폰의 NFC 기능이 꺼져 있어\nNFC 설정창으로 이동합니다.</string>
+    <string name="popup_nfc_on_sub"><![CDATA[NFC 안테나는 폰의 뒷면에 위치하고 있으나 폰마다 위치가 조금씩 틀립니다.
+    안테나의 위치를 미리 파악하십시오. 폰 뒷면의 각종 카드등과 보조커버를 제거하시고 설정은
+    <font color="#F24E4E"> 카드모드가 아닌 기본모드(읽기/쓰기)로 설정</font>하십시오.]]></string>
+    <string name="popup_location_on">스마트폰의 GPS 기능이 꺼져 있어\nGPS 설정창으로 이동합니다.</string>
+    <string name="popup_location_on_sub"><![CDATA[<font color="#000000">GPS 기능은 측량기준점의 위치를 찾아가기 위해 필요한 기능입니다.
+    </font><font color="#F24E4E"> GPS 기능을 활성화 하십시오.</font>]]>
+    </string>
 </resources>

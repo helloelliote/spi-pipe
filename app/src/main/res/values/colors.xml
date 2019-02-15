@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#0D2C54</color>
+    <color name="colorPrimaryDark">#0D2C54</color>
+    <color name="colorAccent">#F24E4E</color>
+
+    <!--BaseActivity-->
+    <color name="green">#7FB800</color>
+
+    <!--MessagePopup-->
+    <color name="line_d">#DDDDDD</color>
+    <color name="line_a">#AAAAAA</color>
+
 </resources>
