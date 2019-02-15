@@ -18,7 +18,12 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+        flatDir {
+            dirs 'libs'
+        }
+        maven {
+            url 'https://navercorp.bintray.com/maps'
+        }
     }
 }
 
