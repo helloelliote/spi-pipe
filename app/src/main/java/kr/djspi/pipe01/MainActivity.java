@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import kr.djspi.pipe01.util.NfcUtil;
 
@@ -45,16 +46,16 @@ public class MainActivity extends LocationUpdateActivity {
 //                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         });
 
-//        LinearLayout mainLayout2 = findViewById(R.id.lay_main2);
-//        mainLayout2.setOnClickListener(view -> {
-//            if (currentLocation != null) {
-//                startActivity(new Intent(context, NaverMapActivity.class)
-//                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
-//            } else {
-//                Toast.makeText(this, "위치 정보를 불러오지 못했습니다.\n" +
-//                        "잠시후에 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        LinearLayout mainLayout2 = findViewById(R.id.lay_main2);
+        mainLayout2.setOnClickListener(view -> {
+            if (currentLocation != null) {
+                startActivity(new Intent(context, NaverMapActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+            } else {
+                Toast.makeText(this, "위치 정보를 불러오지 못했습니다.\n" +
+                        "잠시후에 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 //        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
 //        mainLayout3.setOnClickListener(view ->

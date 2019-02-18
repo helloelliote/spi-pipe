@@ -46,4 +46,30 @@
     <string name="popup_location_on_sub"><![CDATA[<font color="#000000">GPS 기능은 측량기준점의 위치를 찾아가기 위해 필요한 기능입니다.
     </font><font color="#F24E4E"> GPS 기능을 활성화 하십시오.</font>]]>
     </string>
+
+    <!--NaverMapActivity-->
+    <string name="pipe_name_00">도시가스</string>
+    <string name="pipe_name_01">상수관로</string>
+    <string name="pipe_name_02">하수관로</string>
+    <string name="pipe_name_03">오수관로</string>
+    <string name="pipe_name_04">전기관로</string>
+    <string name="pipe_name_05">통신관로</string>
+    <string name="pipe_name_06">난방관로</string>
+    <string name="pipe_name_07">유류관로</string>
+    <string name="pipe_name_08">가로등</string>
+    <string name="pipe_name_09">CCTV</string>
+    <string name="pipe_name_10">교통관로</string>
+    <string name="pipe_name_11">기타관로</string>
+
+    <string name="map_btn_search">찾기</string>
+    <string name="map_btn_cancel">취소</string>
+    <string name="map_search_point">주변관로 정보조회</string>
+    <string name="map_search_input">포인트를 선택하시면 상세정보가 제공됩니다.</string>
+    <string name="map_info_format">%1$s</string>
+    <string name="map_search_hint">찾으시는 위치(지명)을 검색하세요.</string>
+
+    <string name="common_spi_error">SPI정보를 가져오는데 실패하였습니다. 다시 시도해주세요.</string>
+    <string name="popup_map_noplace">위치(주소) 검색결과가 없습니다.</string>
+    <string name="popup_comm_error">서버와의 통신에 실패하였습니다.</string>
+
 </resources>

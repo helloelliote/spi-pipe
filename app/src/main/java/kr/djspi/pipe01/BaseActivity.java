@@ -107,9 +107,9 @@ public class BaseActivity extends AppCompatActivity {
                 }
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isIntentSearch", true);
-//                startActivity(new Intent(BaseActivity.this.getApplicationContext(), NaverMapActivity.class)
-//                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//                        .putExtras(bundle));
+                startActivity(new Intent(BaseActivity.this.getApplicationContext(), NaverMapActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtras(bundle));
             });
         } else {
             AppBarLayout appBarLayout = findViewById(R.id.appbar);

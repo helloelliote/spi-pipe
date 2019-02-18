@@ -27,5 +27,9 @@
         <item name="android:background">@color/colorPrimary</item>
     </style>
 
-
+    <style name="AppTheme.SPI.TableRow" parent="AppTheme.SPI.Pipe">
+        <item name="android:keyTextSize">10sp</item>
+        <item name="android:labelTextSize">10sp</item>
+        <item name="android:textSize">10sp</item>
+    </style>
 </resources>
