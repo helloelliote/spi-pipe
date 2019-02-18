@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +57,7 @@ import java.util.Locale;
 import kr.djspi.pipe01.retrofit2x.RetrofitUtil;
 import kr.djspi.pipe01.retrofit2x.RetrofitUtil.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SearchPlacesService;
-import kr.djspi.pipe01.retrofit2x.SpiService;
+import kr.djspi.pipe01.retrofit2x.SpiGetService;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
@@ -268,7 +267,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
         }
 
         RetrofitUtil.get()
-                .setService(new SpiService())
+                .setService(new SpiGetService())
                 .setQuery(jsonQuery.toString())
                 .run(new OnRetrofitListener() {
 

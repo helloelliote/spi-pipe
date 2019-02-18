@@ -101,6 +101,6 @@ public final class RetrofitUtil {
     }
 
     private static Call<JsonObject> getRequest(@NonNull ServiceStrategy service) {
-        return service.setRequest();
+        return service.getRequest();
     }
 }

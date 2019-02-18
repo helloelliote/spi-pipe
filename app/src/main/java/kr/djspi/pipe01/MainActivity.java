@@ -102,7 +102,7 @@ public class MainActivity extends LocationUpdateActivity {
 //            jsonObject.put(API_KEY_DATA, data);
 //
 //            RetrofitUtil.get()
-//                    .setService(new SpiService())
+//                    .setService(new SpiGetService())
 //                    .setQuery(jsonObject.toString())
 //                    .run(new OnRetrofitListen(callback));
 //

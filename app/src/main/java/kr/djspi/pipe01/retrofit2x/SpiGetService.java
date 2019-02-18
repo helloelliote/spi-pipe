@@ -14,12 +14,12 @@ import static kr.djspi.pipe01.retrofit2x.RetrofitUtil.queryList;
  * @see RetrofitUtil#queryList
  * @see RetrofitUtil#setService(ServiceStrategy)
  */
-public final class SpiService implements ServiceStrategy {
+public final class SpiGetService implements ServiceStrategy {
 
     private static final String URL_SPI = "https://ispi.kr/";
 
     @Override
-    public Call<JsonObject> setRequest() {
+    public Call<JsonObject> getRequest() {
         return BUILDER.baseUrl(URL_SPI).build()
                 .create(RetrofitService.class).getSpiRequest(queryList.get(0));
     }

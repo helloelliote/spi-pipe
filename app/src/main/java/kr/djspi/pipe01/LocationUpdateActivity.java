@@ -36,7 +36,7 @@ public abstract class LocationUpdateActivity extends BaseActivity {
 //    private final static String KEY_LAST_UPDATED_TIME_STRING = "last-updated-time-string";
 
     /**
-     * Provides access to the Location Settings API.
+     * Provides access to the SpiLocation Settings API.
      */
 //    private SettingsClient mSettingsClient;
 
@@ -45,7 +45,7 @@ public abstract class LocationUpdateActivity extends BaseActivity {
     FusedLocationSource locationSource;
 
     /**
-     * Provides access to the Fused Location Provider API.
+     * Provides access to the Fused SpiLocation Provider API.
      */
     private FusedLocationProviderClient mFusedLocationClient;
 
@@ -154,7 +154,7 @@ public abstract class LocationUpdateActivity extends BaseActivity {
      * the AndroidManifest.xml.
      * <p/>
      * When the ACCESS_FINE_LOCATION setting is specified, combined with a fast update
-     * interval (5 seconds), the Fused Location Provider API returns location updates that are
+     * interval (5 seconds), the Fused SpiLocation Provider API returns location updates that are
      * accurate to within a few feet.
      * <p/>
      * These settings are appropriate for mapping applications that show real-time location

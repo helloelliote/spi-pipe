@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
@@ -27,5 +28,10 @@ public interface RetrofitService {
     @GET("api")
     Call<JsonObject> getSpiRequest(
             @Query("json") String jsonString
+    );
+
+    @POST("spi-set")
+    Call<JsonObject> setSpiRequest(
+
     );
 }
