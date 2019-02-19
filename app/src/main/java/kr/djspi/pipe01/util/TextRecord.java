@@ -39,7 +39,7 @@ public class TextRecord implements ParsedRecord {
              * if (Bit_7 == 0): The text is encoded in UTF-8 if (Bit_7 == 1):
              * The text is encoded in UTF16
              *
-             * Bit_6 is reserved for future use and must be set to zero.
+             * Bit_6 is reserved for future use and must be setData to zero.
              *
              * Bits 5 to 0 are the length of the IANA language code.
              */

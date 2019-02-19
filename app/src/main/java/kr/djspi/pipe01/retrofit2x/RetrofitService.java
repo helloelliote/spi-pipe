@@ -30,8 +30,8 @@ public interface RetrofitService {
             @Query("json") String jsonString
     );
 
-    @POST("spi-set")
-    Call<JsonObject> setSpiRequest(
-
+    @POST("api")
+    Call<JsonObject> postSpiRequest(
+            @Query("json") String jsonString
     );
 }

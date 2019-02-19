@@ -13,6 +13,9 @@ android {
         aaptOptions.cruncherEnabled = false
     }
 
+    task printVersions() {
+    }
+
     applicationVariants.all { variant ->
         variant.outputs.all {
             variant.buildConfigField "String", "NAVER_CLIENT_ID", "\"2ckb549ihl\""
@@ -45,6 +48,9 @@ android {
         targetCompatibility = '1.8'
     }
 
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {

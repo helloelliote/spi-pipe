@@ -1,7 +1,6 @@
 package kr.djspi.pipe01.dto;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.junit.Before;
@@ -13,7 +12,7 @@ public class Client {
 
     private Gson gson;
     private Spi spi;
-    private ArrayList<Spi> spiArrayList, resultArrayList;
+    private ArrayList<Spi> spiArrayList;
 
     @Before
 
@@ -21,7 +20,6 @@ public class Client {
         gson = new Gson();
         spi = new Spi(354);
         spiArrayList = new ArrayList<>();
-        resultArrayList = new ArrayList<>();
     }
 
     @Test
@@ -33,7 +31,7 @@ public class Client {
         System.out.println(json);
         // {"supervise":"대진기술정보","contact":"053-424-9547"}
 
-        spi.add(spiSupervise);
+        spi.setData(spiSupervise);
         System.err.println(spi.toString());
         // [SpiSupervise(supervise=대진기술정보, contact=053-424-9547)]
         System.out.println(spiSupervise.getSupervise());
@@ -54,27 +52,25 @@ public class Client {
         // {"supervise":"대진기술정보","contact":"053-424-9547"}
     }
 
-    private String spiString;
-
     @Test
-    public void doTest3() {
-        Spi spi_1 = new Spi(234);
+    public void getSpi() {
+        spi = new Spi(234);
 
         SpiMaterial spiMaterial = new SpiMaterial();
         spiMaterial.setMaterial("알루미늄");
-        spi_1.add(spiMaterial);
+        spi.setData(spiMaterial);
 
         SpiSupervise spiSupervise = new SpiSupervise();
         spiSupervise.setSupervise("대진기술정보");
         spiSupervise.setContact("053-424-9547");
-        spi_1.add(spiSupervise);
+        spi.setData(spiSupervise);
 
         SpiGeoLocation spiGeoLocation = new SpiGeoLocation();
         spiGeoLocation.setLatitude(36.3333);
         spiGeoLocation.setLongitude(128.4434);
-        spi_1.add(spiGeoLocation);
+        spi.setData(spiGeoLocation);
 
-        spiArrayList.add(spi_1);
+        spiArrayList.add(spi);
 
         Spi spi_2 = new Spi(5567);
         spiMaterial = new SpiMaterial();
@@ -85,25 +81,14 @@ public class Client {
         spiGeoLocation = new SpiGeoLocation();
         spiGeoLocation.setLatitude(36.1233);
         spiGeoLocation.setLongitude(129.174);
-        spi_2.add(spiMaterial).add(spiSupervise).add(spiGeoLocation);
+        spi_2.setData(spiMaterial);
+        spi_2.setData(spiSupervise);
+        spi_2.setData(spiGeoLocation);
 
         spiArrayList.add(spi_2);
 
-        JsonArray jsonArray = new JsonArray();
-
-        spiString = gson.toJson(spiArrayList);
-//        System.out.println(spiString);
+        String spiString = gson.toJson(spiArrayList);
+        System.out.println(spiString);
         // [{"material":"알루미늄"},{"supervise":"대진기술정보","contact":"053-424-9547"}]
-    }
-
-    @Test
-    public void doTest4() {
-        doTest3();
-        String testString = spiString;
-        System.err.println(testString);
-
-        JsonObject jsonObject = new JsonObject();
-        JsonArray jsonArray = new JsonArray();
-
     }
 }

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +46,6 @@ import com.transitionseverywhere.TransitionManager;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -63,7 +62,8 @@ import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.naver.maps.map.LocationTrackingMode.*;
+import static com.naver.maps.map.LocationTrackingMode.Face;
+import static com.naver.maps.map.LocationTrackingMode.Follow;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
 import static com.naver.maps.map.NaverMap.MAXIMUM_ZOOM;
 import static com.naver.maps.map.NaverMap.MapType;
@@ -115,11 +115,6 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
         setContentView(R.layout.activity_nmap);
         findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
         setNaverMap();
-        testBuilds();
-    }
-
-    private void testBuilds() {
-
     }
 
     /**
@@ -167,7 +162,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
         setOverlayListener(naverMap);
         new SetTopSheet(naverMap);
         new SetBottomSheet(naverMap);
-//        getSPIData(naverMap);
+        getSpiData(naverMap);
     }
 
     /**
@@ -250,36 +245,34 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
         });
     }
 
-    private void getSPIData(@NotNull NaverMap naverMap) {
-        // FIXME: 2019-02-11 JSONObject 대신 JsonObject 계열을 사용할 수 있도록 수정.
-        JSONObject jsonQuery = new JSONObject();
-        try {
-            jsonQuery.put("request", "spi-get");
-            JSONObject jsonData = new JSONObject();
-            final LatLngBounds bounds = naverMap.getContentBounds();
-            jsonData.put("sy", Math.round(bounds.getSouthLatitude() * 1000000d) / 1000000d);
-            jsonData.put("sx", Math.round(bounds.getWestLongitude() * 1000000d) / 1000000d);
-            jsonData.put("ny", Math.round(bounds.getNorthLatitude() * 1000000d) / 1000000d);
-            jsonData.put("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
-            jsonQuery.put("data", jsonData);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private void getSpiData(@NotNull NaverMap naverMap) {
+        JsonObject jsonQuery = new JsonObject();
+        final LatLngBounds bounds = naverMap.getContentBounds();
+        jsonQuery.addProperty("sy", Math.round(bounds.getSouthLatitude() * 1000000d) / 1000000d);
+        jsonQuery.addProperty("sx", Math.round(bounds.getWestLongitude() * 1000000d) / 1000000d);
+        jsonQuery.addProperty("ny", Math.round(bounds.getNorthLatitude() * 1000000d) / 1000000d);
+        jsonQuery.addProperty("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
 
         RetrofitUtil.get()
                 .setService(new SpiGetService())
-                .setQuery(jsonQuery.toString())
+                .setQuery(jsonQuery)
                 .run(new OnRetrofitListener() {
 
                     @Override
                     public void onResponse(JsonObject response) {
-                        final int statusCode = 200;
-                        runOnUiThread(() -> {
-                            if (statusCode == 400) {
-                                behavior.setState(STATE_COLLAPSED);
-                                showMessagePopup(0, "");
-                            }
-                            if (statusCode == 200) {
+                        Log.w(TAG, response.toString());
+                        int statusCode = response.get("response").getAsInt();
+                        if (statusCode == 400) {
+                            behavior.setState(STATE_COLLAPSED);
+                            showMessagePopup(0, response.get("error").getAsString());
+                        }
+//                        final int statusCode = 200;
+//                        runOnUiThread(() -> {
+//                            if (statusCode == 400) {
+//                                behavior.setState(STATE_COLLAPSED);
+//                                showMessagePopup(0, "");
+//                            }
+//                            if (statusCode == 200) {
 //                                final ArrayList<SpiData> spiDataArrayList = spiDataSet.getArrayList();
 //                                final Pipe[] pipes = Pipe.values();
 //                                Pipe pipe = Pipe.Pipe_Etc;
@@ -293,8 +286,8 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
 //                                    }
 //                                    setMarker(spiData, pipe);
 //                                }
-                            }
-                        });
+//                            }
+//                        });
                     }
 
                     @Override
@@ -384,7 +377,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
                             TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
                             bottomSheetText.setText(textExpanded);
                             naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, bottomSheetHeight);
-//                            getSPIData(naverMap);
+                            getSpiData(naverMap);
                             break;
                         case STATE_COLLAPSED:
                             if (isSearch) {
@@ -447,10 +440,13 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
                     "%s,%s",
                     Double.toString(latLng.longitude),
                     Double.toString(latLng.latitude));
+            JsonObject jsonQuery = new JsonObject();
+            jsonQuery.addProperty("place", query);
+            jsonQuery.addProperty("coordinate", coordinate);
 
             RetrofitUtil.get()
                     .setService(new SearchPlacesService())
-                    .setQuery(query, coordinate)
+                    .setQuery(jsonQuery)
                     .run(new OnRetrofitListener() {
 
                         @Override

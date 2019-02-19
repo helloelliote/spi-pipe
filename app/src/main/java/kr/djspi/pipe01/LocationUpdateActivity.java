@@ -75,14 +75,13 @@ public abstract class LocationUpdateActivity extends BaseActivity {
      * Time when the location was updated represented as a String.
      */
 //    private String mLastUpdateTime;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 //        mLastUpdateTime = "";
 
-        // Update values using data stored in the Bundle.
+        // Update values using attr stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -99,7 +98,7 @@ public abstract class LocationUpdateActivity extends BaseActivity {
     }
 
     /**
-     * Updates fields based on data stored in the bundle.
+     * Updates fields based on attr stored in the bundle.
      *
      * @param savedInstanceState The activity state saved in the Bundle.
      */
@@ -221,7 +220,7 @@ public abstract class LocationUpdateActivity extends BaseActivity {
     }
 
     /**
-     * Stores activity data in the Bundle.
+     * Stores activity attr in the Bundle.
      */
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(KEY_REQUESTING_LOCATION_UPDATES, mRequestingLocationUpdates);

@@ -7,9 +7,6 @@ import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Contract;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,7 +18,7 @@ public final class RetrofitUtil {
     private static final String TAG = RetrofitUtil.class.getSimpleName();
     private static ServiceStrategy service;
     static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create());
-    static ArrayList<String> queryList = new ArrayList<>();
+    static JsonObject jsonQuery = new JsonObject();
 
     private RetrofitUtil() {
     }
@@ -62,12 +59,12 @@ public final class RetrofitUtil {
     /**
      * 사용자 입력값: 웹서비스 종류에 따라 2개 이상의 String 을 참조
      *
-     * @param strings 사용자 입력값 배열
+     * @param jsonQuery 사용자 입력값
      * @return RetrofitUtil 자기 자신을 리턴하는 Builder 패턴
      */
-    public final RetrofitUtil setQuery(final String... strings) {
-        queryList.clear();
-        queryList.addAll(Arrays.asList(strings));
+    public final RetrofitUtil setQuery(final JsonObject jsonQuery) {
+        RetrofitUtil.jsonQuery = null;
+        RetrofitUtil.jsonQuery = jsonQuery;
         return this;
     }
 
@@ -79,7 +76,7 @@ public final class RetrofitUtil {
      * @see RetrofitUtil#getRequest 사용자가 지정한 웹서비스에 맞추어 Request 를 생성
      */
     public final void run(OnRetrofitListener listener) {
-        if (service == null || queryList.isEmpty()) {
+        if (service == null || jsonQuery == null) {
             Log.e(TAG, "Either Service or Query is Null");
             return;
         }

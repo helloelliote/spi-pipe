@@ -5,13 +5,13 @@ import com.google.gson.JsonObject;
 import retrofit2.Call;
 
 import static kr.djspi.pipe01.retrofit2x.RetrofitUtil.BUILDER;
-import static kr.djspi.pipe01.retrofit2x.RetrofitUtil.queryList;
+import static kr.djspi.pipe01.retrofit2x.RetrofitUtil.jsonQuery;
 
 /**
  * 웹서비스를 클래스 형태로 추가하고, ServiceStrategy 인터페이스를 통해 참조시킨다
  *
  * @see RetrofitUtil#BUILDER
- * @see RetrofitUtil#queryList
+ * @see RetrofitUtil#jsonQuery
  * @see RetrofitUtil#setService(ServiceStrategy)
  */
 public final class SearchPlacesService implements ServiceStrategy {
@@ -20,7 +20,9 @@ public final class SearchPlacesService implements ServiceStrategy {
 
     @Override
     public Call<JsonObject> getRequest() {
+        final String place = jsonQuery.get("place").getAsString();
+        final String coordinate = jsonQuery.get("coordinate").getAsString();
         return BUILDER.baseUrl(URL_SEARCH_PLACES).build()
-                .create(RetrofitService.class).getSearchPlacesRequest(queryList.get(0), queryList.get(1));
+                .create(RetrofitService.class).getSearchPlacesRequest(place, coordinate);
     }
 }
