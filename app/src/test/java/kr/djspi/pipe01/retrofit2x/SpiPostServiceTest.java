@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import kr.djspi.pipe01.dto.Spi;
-import kr.djspi.pipe01.dto.SpiGeoLocation;
+import kr.djspi.pipe01.dto.SpiLocation;
 import kr.djspi.pipe01.dto.SpiMaterial;
 import kr.djspi.pipe01.dto.SpiSupervise;
 import retrofit2.Call;
@@ -33,10 +33,10 @@ public class SpiPostServiceTest implements ServiceStrategy {
         spiSupervise.setContact("053-424-9547");
         spi.setData(spiSupervise);
 
-        SpiGeoLocation spiGeoLocation = new SpiGeoLocation();
-        spiGeoLocation.setLatitude(36.3333);
-        spiGeoLocation.setLongitude(128.4434);
-        spi.setData(spiGeoLocation);
+        SpiLocation spiLocation = new SpiLocation();
+        spiLocation.setLatitude(36.3333);
+        spiLocation.setLongitude(128.4434);
+        spi.setData(spiLocation);
     }
 
     private Spi spi;
@@ -54,10 +54,10 @@ public class SpiPostServiceTest implements ServiceStrategy {
         spiSupervise.setContact("053-424-9547");
         spi.setData(spiSupervise);
 
-        SpiGeoLocation spiGeoLocation = new SpiGeoLocation();
-        spiGeoLocation.setLatitude(36.3333);
-        spiGeoLocation.setLongitude(128.4434);
-        spi.setData(spiGeoLocation);
+        SpiLocation spiLocation = new SpiLocation();
+        spiLocation.setLatitude(36.3333);
+        spiLocation.setLongitude(128.4434);
+        spi.setData(spiLocation);
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("request", "spi-set");

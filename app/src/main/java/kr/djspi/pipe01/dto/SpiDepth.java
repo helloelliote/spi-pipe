@@ -6,5 +6,8 @@ import lombok.Data;
 public class SpiDepth extends SpiData {
 
     private int id;
-    private int depth;
+    /**
+     * 관로 심도(단위 m)
+     */
+    private double depth;
 }

@@ -34,7 +34,7 @@ public class Spi extends SpiData {
     @NotNull
     public String toString() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("request", "spi-set");
+//        hashMap.put("request", "spi-set");
         hashMap.put("data", this);
         return new Gson().toJson(hashMap);
     }

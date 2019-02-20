@@ -6,6 +6,9 @@ import lombok.Data;
 public class SpiConstruction extends SpiData {
 
     private int id;
+    /**
+     * (선택입력) 시공업체, 시공업체 연락처 정보: 글자수 제한 필요
+     */
     private String construction;
     private String contact;
 }

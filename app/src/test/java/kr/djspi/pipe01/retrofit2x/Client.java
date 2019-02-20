@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import kr.djspi.pipe01.dto.Spi;
-import kr.djspi.pipe01.dto.SpiGeoLocation;
+import kr.djspi.pipe01.dto.SpiLocation;
 import kr.djspi.pipe01.dto.SpiMaterial;
 import kr.djspi.pipe01.dto.SpiSupervise;
 import kr.djspi.pipe01.retrofit2x.RetrofitUtilTest.OnRetrofitListenerTest;
@@ -28,10 +28,10 @@ public class Client {
         spiSupervise.setContact("053-424-9547");
         spi.setData(spiSupervise);
 
-        SpiGeoLocation spiGeoLocation = new SpiGeoLocation();
-        spiGeoLocation.setLatitude(36.3333);
-        spiGeoLocation.setLongitude(128.4434);
-        spi.setData(spiGeoLocation);
+        SpiLocation spiLocation = new SpiLocation();
+        spiLocation.setLatitude(36.3333);
+        spiLocation.setLongitude(128.4434);
+        spi.setData(spiLocation);
     }
 
     @Test

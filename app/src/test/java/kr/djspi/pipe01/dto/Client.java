@@ -65,10 +65,10 @@ public class Client {
         spiSupervise.setContact("053-424-9547");
         spi.setData(spiSupervise);
 
-        SpiGeoLocation spiGeoLocation = new SpiGeoLocation();
-        spiGeoLocation.setLatitude(36.3333);
-        spiGeoLocation.setLongitude(128.4434);
-        spi.setData(spiGeoLocation);
+        SpiLocation spiLocation = new SpiLocation();
+        spiLocation.setLatitude(36.3333);
+        spiLocation.setLongitude(128.4434);
+        spi.setData(spiLocation);
 
         spiArrayList.add(spi);
 
@@ -78,12 +78,12 @@ public class Client {
         spiSupervise = new SpiSupervise();
         spiSupervise.setSupervise("경동");
         spiSupervise.setContact("053-424-9547");
-        spiGeoLocation = new SpiGeoLocation();
-        spiGeoLocation.setLatitude(36.1233);
-        spiGeoLocation.setLongitude(129.174);
+        spiLocation = new SpiLocation();
+        spiLocation.setLatitude(36.1233);
+        spiLocation.setLongitude(129.174);
         spi_2.setData(spiMaterial);
         spi_2.setData(spiSupervise);
-        spi_2.setData(spiGeoLocation);
+        spi_2.setData(spiLocation);
 
         spiArrayList.add(spi_2);
 
