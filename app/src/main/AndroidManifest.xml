@@ -31,7 +31,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.SPI.Pipe"
+        android:theme="@style/AppTheme.SPI"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <activity
@@ -73,5 +73,6 @@
             android:name=".NaverMapActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+        <activity android:name=".SpiInputActivity" />
     </application>
 </manifest>

@@ -3,7 +3,7 @@ package kr.djspi.pipe01.dto;
 import lombok.Data;
 
 @Data
-public class SpiType extends SpiData {
+public class SpiType implements SpiData {
 
     private int id;
     /**

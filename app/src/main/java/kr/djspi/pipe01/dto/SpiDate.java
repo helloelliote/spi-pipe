@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class SpiDate extends SpiData {
+public class SpiDate implements SpiData {
 
     private int id;
     /**

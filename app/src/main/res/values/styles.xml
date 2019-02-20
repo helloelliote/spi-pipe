@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme.SPI.Pipe" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme.SPI" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -22,14 +22,42 @@
         <item name="android:colorForeground">@android:color/white</item>
     </style>
 
-    <style name="AppTheme.SPI.Toolbar" parent="Widget.AppCompat.Toolbar">
-        <item name="android:theme">@style/AppTheme.SPI.Pipe</item>
+    <style name="AppTheme.SPI.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:theme">@style/AppTheme.SPI</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>
 
-    <style name="AppTheme.SPI.TableRow" parent="AppTheme.SPI.Pipe">
+    <style name="AppTheme.SPI.TableRow" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:keyTextSize">10sp</item>
         <item name="android:labelTextSize">10sp</item>
         <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="AppTheme.SPI.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/AppTheme.SPI.TextInputLayout.HintText</item>
+        <item name="android:maxLines">1</item>
+        <item name="counterTextAppearance">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppTheme.SPI.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColorHint">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="AppTheme.SPI.ErrorText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.SPI.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="AppTheme.SPI.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@color/colorAccent</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

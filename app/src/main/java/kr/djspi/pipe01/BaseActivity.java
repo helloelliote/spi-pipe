@@ -120,9 +120,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * Toolbar 를 사용하지 않을 액티비티에서는 메서드를 확장해 false 를 리턴해준다.
-     *
-     * @return
+     * @return Toolbar 를 사용하지 않을 액티비티에서는 오버라이딩해 false 를 리턴
      */
     boolean useToolbar() {
         return true;
@@ -132,9 +130,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 앱 사용 도움말이 표시되는 NavigationView 설정
-     *
-     * @param view
+     * 연락처, 버전 정보, 앱 사용 도움말 등이 표시되는 NavigationView 설정
      */
     private void setNavigationView(@NotNull View view) {
         drawer = view.findViewById(R.id.drawer_layout);

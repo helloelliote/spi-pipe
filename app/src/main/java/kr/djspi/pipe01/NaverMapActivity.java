@@ -274,11 +274,11 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
 //                            }
 //                            if (statusCode == 200) {
 //                                final ArrayList<SpiData> spiDataArrayList = spiDataSet.getArrayList();
-//                                final Pipe[] pipes = Pipe.values();
-//                                Pipe pipe = Pipe.Pipe_Etc;
+//                                final PipeType[] pipes = PipeType.values();
+//                                PipeType pipe = PipeType.Pipe_Etc;
 //                                for (SpiData spiData : spiDataArrayList) {
 //                                    String key = spiData.findDataBy(Key_Pipe);
-//                                    for (Pipe p : pipes) {
+//                                    for (PipeType p : pipes) {
 //                                        if (key.equals(getString(p.getNameRes()))) {
 //                                            pipe = p;
 //                                            break;
@@ -296,7 +296,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
                         throwable.printStackTrace();
                     }
 
-//                    private void setMarker(@NotNull SpiData spiData, @NotNull Pipe pipe) {
+//                    private void setMarker(@NotNull SpiData spiData, @NotNull PipeType pipe) {
 //                        Marker marker = new Marker(new LatLng(
 //                                parseDouble(spiData.findDataBy(Key_Lat)),
 //                                parseDouble(spiData.findDataBy(Key_Lng))),

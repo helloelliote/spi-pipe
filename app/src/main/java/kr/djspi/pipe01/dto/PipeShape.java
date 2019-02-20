@@ -3,7 +3,7 @@ package kr.djspi.pipe01.dto;
 import lombok.Data;
 
 @Data
-public class SpiShape extends SpiData {
+public class PipeShape implements PipeData {
 
     /**
      * '관로형태(shape)' 와 '방향(direction)' 정보를 함께 다루는 클래스(=테이블)

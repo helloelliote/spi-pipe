@@ -57,10 +57,10 @@ public class MainActivity extends LocationUpdateActivity {
             }
         });
 
-//        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
-//        mainLayout3.setOnClickListener(view ->
-//                startActivity(new Intent(context, NfcRecordInput.class)
-//                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
+        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
+        mainLayout3.setOnClickListener(view ->
+                startActivity(new Intent(context, SpiInputActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
     }
 
     public NfcUtil getNFCUtil() {
@@ -97,9 +97,9 @@ public class MainActivity extends LocationUpdateActivity {
 //            JSONObject jsonObject = new JSONObject();
 //            jsonObject.put(API_KEY_REQUEST, API_REQUEST_SPI_GET);
 //
-//            JSONObject attr = new JSONObject();
-//            attr.put(KEY_SERIAL.getKey(), serialNum);
-//            jsonObject.put(API_KEY_DATA, attr);
+//            JSONObject attrList = new JSONObject();
+//            attrList.put(KEY_SERIAL.getKey(), serialNum);
+//            jsonObject.put(API_KEY_DATA, attrList);
 //
 //            RetrofitUtil.get()
 //                    .setService(new SpiGetService())

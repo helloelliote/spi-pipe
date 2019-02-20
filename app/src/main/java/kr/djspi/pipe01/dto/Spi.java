@@ -10,25 +10,37 @@ import java.util.HashMap;
 import lombok.Data;
 
 @Data
-public class Spi extends SpiData {
+public class Spi implements ListInterface, SpiData {
 
     private int id;
-    private static final int DATA_SIZE = 3;
-    private ArrayList<SpiData> attr = new ArrayList<>(DATA_SIZE);
-    private ArrayList<Spi> spiArrayList;
+    private String serial;
+    private boolean isHidden = false;
+//    private String spiType; // 표지판, 표지기, 표지주
+    private ArrayList<Pipe> pipeList = new ArrayList<>();
+    private ArrayList<SpiData> attrList = new ArrayList<>();
 
     public Spi(int id) {
         this.id = id;
-        attr.clear();
+        pipeList.clear();
+        attrList.clear();
     }
 
-    public void setData(SpiData spiData) {
+    public void addSpiData(SpiData spiData) {
         spiData.setId(id);
-        attr.add(spiData);
+        attrList.add(spiData);
     }
 
-    public void removeData(SpiData spiData) {
-        attr.remove(spiData);
+    public void removeSpiData(SpiData spiData) {
+        attrList.remove(spiData);
+    }
+
+
+    public void addPipe(Pipe pipe) {
+        pipeList.add(pipe);
+    }
+
+    public void removePipe(Pipe pipe) {
+        pipeList.remove(pipe);
     }
 
     @NotNull
