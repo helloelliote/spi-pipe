@@ -6,6 +6,7 @@ import lombok.Data;
 public class SpiPhoto implements SpiData {
 
     private int id;
+    private int spi_id;
     /**
      * (선택입력) 현장 사진이 업로드 된 주소
      */

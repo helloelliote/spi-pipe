@@ -17,19 +17,22 @@ public class Client {
 
     public void setUp() {
         gson = new Gson();
-        spi = new Spi(354);
         spiArrayList = new ArrayList<>();
     }
 
     @Test
     public void doTest() {
-        Spi spi = new Spi(2445);
-        SpiType spiType = new SpiType();
-        spiType.setType("표지판");
-        spi.addSpiData(spiType);
-        Pipe sangsu = new Pipe();
-        sangsu.addPipeData(new PipeConstruction());
-        spi.addPipe(sangsu);
+        spi = new Spi(234)
+                .setSerial("df")
+                .setTypeId(93);
+
+        System.out.println(spi);
+//        SpiType spiType = new SpiType();
+//        spiType.setType("표지판");
+//        spi.addSpiData(spiType);
+//        Pipe sangsu = new Pipe();
+//        sangsu.addPipeData(new PipeConstruction());
+//        spi.addPipe(sangsu);
     }
 
     @Test

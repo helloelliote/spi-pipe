@@ -273,10 +273,10 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
 //                                showMessagePopup(0, "");
 //                            }
 //                            if (statusCode == 200) {
-//                                final ArrayList<SpiData> spiDataArrayList = spiDataSet.getArrayList();
+//                                final ArrayList<SpiData> spiDataList = spiDataSet.getArrayList();
 //                                final PipeType[] pipes = PipeType.values();
 //                                PipeType pipe = PipeType.Pipe_Etc;
-//                                for (SpiData spiData : spiDataArrayList) {
+//                                for (SpiData spiData : spiDataList) {
 //                                    String key = spiData.findDataBy(Key_Pipe);
 //                                    for (PipeType p : pipes) {
 //                                        if (key.equals(getString(p.getNameRes()))) {

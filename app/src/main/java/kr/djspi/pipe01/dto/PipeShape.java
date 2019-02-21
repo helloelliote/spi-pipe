@@ -10,7 +10,8 @@ public class PipeShape implements PipeData {
      * 두 자료를 어떤 자료형으로 입력받을 것인지 논의 필요
      */
     private int id;
-    private String shape;
+    private int pipe_id;
     private int direction;
+    private String shape;
 //    private String direction;
 }

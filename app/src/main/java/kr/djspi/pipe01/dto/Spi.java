@@ -7,40 +7,53 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import lombok.Data;
+import lombok.NonNull;
 
-@Data
-public class Spi implements ListInterface, SpiData {
+public class Spi implements PipeObject, SpiData {
 
     private int id;
+    private int type_id;
     private String serial;
     private boolean isHidden = false;
-//    private String spiType; // 표지판, 표지기, 표지주
-    private ArrayList<Pipe> pipeList = new ArrayList<>();
-    private ArrayList<SpiData> attrList = new ArrayList<>();
+    private ArrayList<PipeObject> pipeList = new ArrayList<>();
+    private ArrayList<SpiData> spiDataList = new ArrayList<>();
 
-    public Spi(int id) {
+    public Spi(@NonNull int id) {
         this.id = id;
         pipeList.clear();
-        attrList.clear();
+        spiDataList.clear();
     }
 
     public void addSpiData(SpiData spiData) {
         spiData.setId(id);
-        attrList.add(spiData);
+        spiDataList.add(spiData);
     }
 
     public void removeSpiData(SpiData spiData) {
-        attrList.remove(spiData);
+        spiDataList.remove(spiData);
     }
 
-
-    public void addPipe(Pipe pipe) {
+    public void addPipe(PipeObject pipe) {
+        pipe.setId(id);
         pipeList.add(pipe);
     }
 
-    public void removePipe(Pipe pipe) {
+    public void removePipe(PipeObject pipe) {
         pipeList.remove(pipe);
+    }
+
+    public Spi setTypeId(@NonNull int type_id) {
+        this.type_id = type_id;
+        return this;
+    }
+
+    public Spi setSerial(@NonNull String serial) {
+        this.serial = serial;
+        return this;
+    }
+
+    public void setId(int id)  {
+        System.err.println("Do not call setId() separately, use constructor to properly set id to: " + id + ".");
     }
 
     @NotNull

@@ -97,9 +97,9 @@ public class MainActivity extends LocationUpdateActivity {
 //            JSONObject jsonObject = new JSONObject();
 //            jsonObject.put(API_KEY_REQUEST, API_REQUEST_SPI_GET);
 //
-//            JSONObject attrList = new JSONObject();
-//            attrList.put(KEY_SERIAL.getKey(), serialNum);
-//            jsonObject.put(API_KEY_DATA, attrList);
+//            JSONObject spiDataList = new JSONObject();
+//            spiDataList.put(KEY_SERIAL.getKey(), serialNum);
+//            jsonObject.put(API_KEY_DATA, spiDataList);
 //
 //            RetrofitUtil.get()
 //                    .setService(new SpiGetService())

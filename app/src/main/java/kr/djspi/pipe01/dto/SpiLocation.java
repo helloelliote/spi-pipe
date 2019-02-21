@@ -6,6 +6,7 @@ import lombok.Data;
 public class SpiLocation implements SpiData {
 
     private int id;
+    private int spi_id;
     /**
      * 위도(latitude), 경도(longitude) 좌표
      */
