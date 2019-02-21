@@ -49,7 +49,6 @@ public class SpiInputActivity extends BaseActivity implements OnClickListener, S
     static File mPhoto;
     ImageView photoView;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

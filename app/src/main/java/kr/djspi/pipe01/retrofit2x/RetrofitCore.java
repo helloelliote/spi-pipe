@@ -13,25 +13,25 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public final class RetrofitUtil {
+public final class RetrofitCore {
 
-    private static final String TAG = RetrofitUtil.class.getSimpleName();
+    private static final String TAG = RetrofitCore.class.getSimpleName();
     private static ServiceStrategy service;
     static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create());
     static JsonObject jsonQuery = new JsonObject();
 
-    private RetrofitUtil() {
+    private RetrofitCore() {
     }
 
     /**
      * LazyHolder 를 활용한 초기화 Singleton 패턴
      */
     private static class LazyHolder {
-        static final RetrofitUtil INSTANCE = new RetrofitUtil();
+        static final RetrofitCore INSTANCE = new RetrofitCore();
     }
 
     @Contract(pure = true)
-    public static RetrofitUtil get() {
+    public static RetrofitCore get() {
         return LazyHolder.INSTANCE;
     }
 
@@ -48,24 +48,22 @@ public final class RetrofitUtil {
      * 사용자가 접근하려고 하는 웹서비스를 클래스로 지정
      *
      * @param service 웹서비스(클래스)
-     * @return RetrofitUtil 자기 자신을 리턴하는 Builder 패턴
      * @see ServiceStrategy 웹서비스를 Strategy 패턴으로 참조하게 해주는 인터페이스
      */
-    public final RetrofitUtil setService(final ServiceStrategy service) {
-        RetrofitUtil.service = service;
-        return this;
+    final boolean setService(final ServiceStrategy service) {
+        RetrofitCore.service = service;
+        return service != null;
     }
 
     /**
      * 사용자 입력값: 웹서비스 종류에 따라 2개 이상의 String 을 참조
      *
      * @param jsonQuery 사용자 입력값
-     * @return RetrofitUtil 자기 자신을 리턴하는 Builder 패턴
      */
-    public final RetrofitUtil setQuery(final JsonObject jsonQuery) {
-        RetrofitUtil.jsonQuery = null;
-        RetrofitUtil.jsonQuery = jsonQuery;
-        return this;
+    final boolean setQuery(final JsonObject jsonQuery) {
+        RetrofitCore.jsonQuery = null;
+        RetrofitCore.jsonQuery = jsonQuery;
+        return jsonQuery != null;
     }
 
     /**
@@ -73,7 +71,7 @@ public final class RetrofitUtil {
      *
      * @param listener Response (또는 예외 Throwable) 리스너
      * @see OnRetrofitListener
-     * @see RetrofitUtil#getRequest 사용자가 지정한 웹서비스에 맞추어 Request 를 생성
+     * @see RetrofitCore#getRequest 사용자가 지정한 웹서비스에 맞추어 Request 를 생성
      */
     public final void run(OnRetrofitListener listener) {
         if (service == null || jsonQuery == null) {

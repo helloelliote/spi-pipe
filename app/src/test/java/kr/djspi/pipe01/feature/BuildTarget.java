@@ -1,4 +1,4 @@
-package kr.djspi.pipe01.dto;
+package kr.djspi.pipe01.feature;
 
 public class BuildTarget {
 

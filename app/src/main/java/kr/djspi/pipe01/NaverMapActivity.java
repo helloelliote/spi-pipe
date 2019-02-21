@@ -53,8 +53,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import kr.djspi.pipe01.retrofit2x.RetrofitUtil;
-import kr.djspi.pipe01.retrofit2x.RetrofitUtil.OnRetrofitListener;
+import kr.djspi.pipe01.retrofit2x.Retrofit2x;
+import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SearchPlacesService;
 import kr.djspi.pipe01.retrofit2x.SpiGetService;
 
@@ -253,11 +253,11 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
         jsonQuery.addProperty("ny", Math.round(bounds.getNorthLatitude() * 1000000d) / 1000000d);
         jsonQuery.addProperty("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
 
-        RetrofitUtil.get()
+        Retrofit2x.newBuilder()
                 .setService(new SpiGetService())
                 .setQuery(jsonQuery)
+                .build()
                 .run(new OnRetrofitListener() {
-
                     @Override
                     public void onResponse(JsonObject response) {
                         Log.w(TAG, response.toString());
@@ -295,23 +295,6 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
                         showMessagePopup(0, getString(R.string.common_spi_error));
                         throwable.printStackTrace();
                     }
-
-//                    private void setMarker(@NotNull SpiData spiData, @NotNull PipeType pipe) {
-//                        Marker marker = new Marker(new LatLng(
-//                                parseDouble(spiData.findDataBy(Key_Lat)),
-//                                parseDouble(spiData.findDataBy(Key_Lng))),
-//                                fromResource(pipe.getDrawRes()));
-//                        HashMap<String, String> hashMap = new HashMap<>(2);
-//                        hashMap.put("label", String.format("%s(%s)",
-//                                spiData.findDataBy(Key_Pipe),
-//                                spiData.findDataBy(Key_Type)));
-//                        hashMap.put("spiData", spiData.toString());
-//                        marker.setTag(hashMap);
-//                        marker.setMinZoom(14);
-//                        marker.setMaxZoom(ZOOM_MAX);
-//                        marker.setOnClickListener(listener);
-//                        marker.setMap(naverMap);
-//                    }
                 });
     }
 
@@ -444,9 +427,10 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
             jsonQuery.addProperty("place", query);
             jsonQuery.addProperty("coordinate", coordinate);
 
-            RetrofitUtil.get()
+            Retrofit2x.newBuilder()
                     .setService(new SearchPlacesService())
                     .setQuery(jsonQuery)
+                    .build()
                     .run(new OnRetrofitListener() {
 
                         @Override

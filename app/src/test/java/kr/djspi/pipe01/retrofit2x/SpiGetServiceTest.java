@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import retrofit2.Call;
 
-import static kr.djspi.pipe01.retrofit2x.RetrofitUtil.BUILDER;
+import static kr.djspi.pipe01.retrofit2x.RetrofitCore.BUILDER;
 
 public class SpiGetServiceTest implements ServiceStrategy {
 
@@ -31,17 +31,6 @@ public class SpiGetServiceTest implements ServiceStrategy {
 
     @Test
     public Call<JsonObject> getRequest() {
-        jsonBounds = new JsonObject();
-//        final LatLngBounds bounds = naverMap.getContentBounds();
-//        jsonBounds.addProperty("sy", Math.round(bounds.getSouthLatitude() * 1000000d) / 1000000d);
-//        jsonBounds.addProperty("sx", Math.round(bounds.getWestLongitude() * 1000000d) / 1000000d);
-//        jsonBounds.addProperty("ny", Math.round(bounds.getNorthLatitude() * 1000000d) / 1000000d);
-//        jsonBounds.addProperty("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
-        jsonBounds.addProperty("sy", 35.869429);
-        jsonBounds.addProperty("sx", 128.614516);
-        jsonBounds.addProperty("ny", 35.870643);
-        jsonBounds.addProperty("nx", 128.615828);
-
         JsonObject jsonQuery = new JsonObject();
         jsonQuery.addProperty("request", "spi-get");
         jsonQuery.add("data", jsonBounds);

@@ -101,10 +101,10 @@ public class MainActivity extends LocationUpdateActivity {
 //            spiDataList.put(KEY_SERIAL.getKey(), serialNum);
 //            jsonObject.put(API_KEY_DATA, spiDataList);
 //
-//            RetrofitUtil.get()
+//            RetrofitCore.get()
 //                    .setService(new SpiGetService())
 //                    .setQuery(jsonObject.toString())
-//                    .run(new OnRetrofitListen(callback));
+//                    .build(new OnRetrofitListen(callback));
 //
 //        } catch (Exception e) {
 //            e.printStackTrace();
