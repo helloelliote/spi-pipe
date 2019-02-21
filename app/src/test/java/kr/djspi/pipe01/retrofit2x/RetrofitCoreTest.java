@@ -89,6 +89,6 @@ public class RetrofitCoreTest {
     }
 
     private static Call<JsonObject> getRequest(@NonNull ServiceStrategy service) {
-        return service.getRequest();
+        return service.getServiceRequest();
     }
 }

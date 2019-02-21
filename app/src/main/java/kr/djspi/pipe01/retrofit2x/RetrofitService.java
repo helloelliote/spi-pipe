@@ -20,18 +20,18 @@ public interface RetrofitService {
             NAVER_KEY_CLIENT_ID + ": " + NAVER_CLIENT_ID,
             NAVER_KEY_CLIENT_SECRET + ": " + NAVER_CLIENT_SECRET})
     @GET("search")
-    Call<JsonObject> getSearchPlacesRequest(
+    Call<JsonObject> getSearchPlaces(
             @Query("query") String query,
             @Query("coordinate") String coordinate
     );
 
     @GET("api")
-    Call<JsonObject> getSpiRequest(
+    Call<JsonObject> getSpi(
             @Query("json") String jsonString
     );
 
     @POST("api")
-    Call<JsonObject> postSpiRequest(
+    Call<JsonObject> postSpi(
             @Query("json") String jsonString
     );
 }

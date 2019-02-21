@@ -30,12 +30,12 @@ public class SpiGetServiceTest implements ServiceStrategy {
     private JsonObject jsonBounds;
 
     @Test
-    public Call<JsonObject> getRequest() {
+    public Call<JsonObject> getServiceRequest() {
         JsonObject jsonQuery = new JsonObject();
         jsonQuery.addProperty("request", "spi-get");
         jsonQuery.add("data", jsonBounds);
         final String query = jsonQuery.toString();
         return BUILDER.baseUrl(URL_SPI).build()
-                .create(RetrofitService.class).getSpiRequest(query);
+                .create(RetrofitService.class).getSpi(query);
     }
 }

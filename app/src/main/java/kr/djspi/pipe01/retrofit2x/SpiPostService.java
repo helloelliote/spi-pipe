@@ -23,12 +23,12 @@ public final class SpiPostService implements ServiceStrategy {
     private static final String URL_TEST = "http://192.168.0.33/";
 
     @Override
-    public Call<JsonObject> getRequest() {
+    public Call<JsonObject> getServiceRequest() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("request", "spi-set");
         hashMap.put("data", jsonQuery);
         final String query = new Gson().toJson(hashMap);
         return BUILDER.baseUrl(URL_TEST).build()
-                .create(RetrofitService.class).postSpiRequest(query);
+                .create(RetrofitService.class).postSpi(query);
     }
 }

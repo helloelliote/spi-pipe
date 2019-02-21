@@ -5,5 +5,5 @@ import com.google.gson.JsonObject;
 import retrofit2.Call;
 
 public interface ServiceStrategy {
-    Call<JsonObject> getRequest();
+    Call<JsonObject> getServiceRequest();
 }

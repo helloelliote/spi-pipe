@@ -20,12 +20,12 @@ public final class SpiGetService implements ServiceStrategy {
     private static final String URL_TEST = "http://192.168.0.33/";
 
     @Override
-    public Call<JsonObject> getRequest() {
+    public Call<JsonObject> getServiceRequest() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("request", "spi-get");
         jsonObject.add("data", jsonQuery);
         final String query = jsonObject.toString();
         return BUILDER.baseUrl(URL_SPI).build()
-                .create(RetrofitService.class).getSpiRequest(query);
+                .create(RetrofitService.class).getSpi(query);
     }
 }

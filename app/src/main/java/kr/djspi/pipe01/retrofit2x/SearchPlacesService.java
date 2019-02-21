@@ -19,10 +19,10 @@ public final class SearchPlacesService implements ServiceStrategy {
     private static final String URL_SEARCH_PLACES = "https://naveropenapi.apigw.ntruss.com/map-place/v1/";
 
     @Override
-    public Call<JsonObject> getRequest() {
+    public Call<JsonObject> getServiceRequest() {
         final String place = jsonQuery.get("place").getAsString();
         final String coordinate = jsonQuery.get("coordinate").getAsString();
         return BUILDER.baseUrl(URL_SEARCH_PLACES).build()
-                .create(RetrofitService.class).getSearchPlacesRequest(place, coordinate);
+                .create(RetrofitService.class).getSearchPlaces(place, coordinate);
     }
 }

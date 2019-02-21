@@ -20,7 +20,7 @@ public class SpiPostServiceTest implements ServiceStrategy {
     private Spi spi;
 
     @Test
-    public Call<JsonObject> getRequest() {
+    public Call<JsonObject> getServiceRequest() {
         return null;
     }
 }

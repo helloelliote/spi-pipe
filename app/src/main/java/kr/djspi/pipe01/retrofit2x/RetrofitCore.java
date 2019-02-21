@@ -1,7 +1,6 @@
 package kr.djspi.pipe01.retrofit2x;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.gson.JsonObject;
 
@@ -45,10 +44,10 @@ public final class RetrofitCore {
     }
 
     /**
-     * 사용자가 접근하려고 하는 웹서비스를 클래스로 지정
+     * 사용자가 접근하려고 하는 네트워크 서비스를 클래스로 지정
      *
-     * @param service 웹서비스(클래스)
-     * @see ServiceStrategy 웹서비스를 Strategy 패턴으로 참조하게 해주는 인터페이스
+     * @param service 네트워크 서비스(클래스)
+     * @see ServiceStrategy Strategy 패턴 인터페이스
      */
     final boolean setService(final ServiceStrategy service) {
         RetrofitCore.service = service;
@@ -56,7 +55,7 @@ public final class RetrofitCore {
     }
 
     /**
-     * 사용자 입력값: 웹서비스 종류에 따라 2개 이상의 String 을 참조
+     * 사용자 입력값(Json) 지정
      *
      * @param jsonQuery 사용자 입력값
      */
@@ -71,14 +70,10 @@ public final class RetrofitCore {
      *
      * @param listener Response (또는 예외 Throwable) 리스너
      * @see OnRetrofitListener
-     * @see RetrofitCore#getRequest 사용자가 지정한 웹서비스에 맞추어 Request 를 생성
+     * @see ServiceStrategy#getServiceRequest 사용자가 지정한 네트워크 서비스에 맞추어 Request 를 생성
      */
     public final void run(OnRetrofitListener listener) {
-        if (service == null || jsonQuery == null) {
-            Log.e(TAG, "Either Service or Query is Null");
-            return;
-        }
-        Call<JsonObject> request = getRequest(service);
+        final Call<JsonObject> request = service.getServiceRequest();
         if (request != null) {
             request.enqueue(new Callback<JsonObject>() {
 
@@ -93,9 +88,5 @@ public final class RetrofitCore {
                 }
             });
         }
-    }
-
-    private static Call<JsonObject> getRequest(@NonNull ServiceStrategy service) {
-        return service.getRequest();
     }
 }
