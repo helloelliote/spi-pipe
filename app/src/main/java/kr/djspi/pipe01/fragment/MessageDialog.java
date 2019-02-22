@@ -128,7 +128,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
             case 5: // (NfcRecordWrite.class) 정보가 정상적으로 기록됨
                 setVisibilityToGone(view);
                 isReturnToMain = true;
-                // FIXME: 2019-01-31 NfcRecordWrite.class 에서 창을 먼저 띄우고, 확인을 누르면 Main 으로 가게 수정
+                // FIXME: 2019-01-31 NfcRecordWrite.class 에서 창을 먼저 띄우고, 확인을 누르면 MainActivity 으로 가게 수정
                 break;
             default:
                 break;

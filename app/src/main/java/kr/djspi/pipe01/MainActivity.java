@@ -10,12 +10,11 @@ import android.widget.Toast;
 
 import kr.djspi.pipe01.util.NfcUtil;
 
-public class MainActivity extends LocationUpdateActivity {
+public class MainActivity extends LocationUpdate {
 
     // TODO: 마무리 이후에 독립 API 만들기
     private static final String TAG = MainActivity.class.getSimpleName();
     private Tag mNfcTag;
-
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -49,7 +48,7 @@ public class MainActivity extends LocationUpdateActivity {
 
         LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
         mainLayout3.setOnClickListener(view ->
-                startActivity(new Intent(context, SpiInputActivity.class)
+                startActivity(new Intent(context, PipeRecordActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
     }
 

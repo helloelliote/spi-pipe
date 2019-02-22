@@ -32,7 +32,6 @@ import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
-import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
@@ -72,7 +71,7 @@ import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 
-public class NaverMapActivity extends LocationUpdateActivity implements OnMapReadyCallback, Serializable {
+public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
 
     private static final String TAG = NaverMapActivity.class.getSimpleName();
     private static final double ZOOM_DEFAULT = 18.0; // 기본 줌레벨
@@ -141,15 +140,15 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
     }
 
     /**
-     * 네이버 지도의 기초 동작 설정. NaverMap 객체가 준비되면 onMapReady() 콜백 메서드가 호출
+     * 네이버 지도의 기초 동작 설정. NaverMapActivity 객체가 준비되면 onMapReady() 콜백 메서드가 호출
      *
-     * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMap 객체
-     *                 getMapAsync() 메서드로 OnMapReadyCallback 을 등록하면 NaverMap 객체를 얻는다.
-     * @see NaverMapActivity#setMapModeSwitch(NaverMap)
+     * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
+     *                 getMapAsync() 메서드로 OnMapReadyCallback 을 등록하면 NaverMapActivity 객체를 얻는다.
+     * @see NaverMapActivity#setMapModeSwitch(com.naver.maps.map.NaverMap)
      */
     @UiThread
     @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
+    public void onMapReady(@NonNull com.naver.maps.map.NaverMap naverMap) {
         naverMap.setLocationSource(locationSource);
         // UI 요소에 가려진 영역을 패딩으로 지정하면 카메라는 콘텐츠 패딩을 제외한 영역의 중심에 위치한다.
         naverMap.setLocationTrackingMode(Follow);
@@ -167,9 +166,9 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
     /**
      * Toolbar 에서 지도 모드 전환 스위치 구현
      *
-     * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMap 객체
+     * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
-    private void setMapModeSwitch(@NonNull NaverMap naverMap) {
+    private void setMapModeSwitch(@NonNull com.naver.maps.map.NaverMap naverMap) {
         ToggleSwitch toggleSwitch = findViewById(R.id.nmap_mapmode_switch);
         toggleSwitch.setVisibility(VISIBLE);
         toggleSwitch.setCheckedPosition(0);
@@ -188,7 +187,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
         });
     }
 
-    private void setOverlayListener(NaverMap naverMap) {
+    private void setOverlayListener(com.naver.maps.map.NaverMap naverMap) {
         InfoWindow infoWindow = new InfoWindow(new DefaultTextAdapter(context) {
 
             @NonNull
@@ -244,7 +243,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
         });
     }
 
-    private void getSpiData(@NotNull NaverMap naverMap) {
+    private void getSpiData(@NotNull com.naver.maps.map.NaverMap naverMap) {
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
         jsonQuery.addProperty("sy", Math.round(bounds.getSouthLatitude() * 1000000d) / 1000000d);
@@ -317,7 +316,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
     }
 
     /**
-     * LocationUpdateActivity 위치를 이동할 때마다 목표 측량점까지의 거리와 직선 경로선을 다시 계산
+     * LocationUpdate 위치를 이동할 때마다 목표 측량점까지의 거리와 직선 경로선을 다시 계산
      *
      * @param location 사용자가 이동한 새 위치
      */
@@ -327,7 +326,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
 
     private final class SetTopSheet {
 
-        SetTopSheet(NaverMap naverMap) {
+        SetTopSheet(com.naver.maps.map.NaverMap naverMap) {
             ListView listView = findViewById(R.id.nmap_listview);
             placesListAdapter = new ListViewAdapter(context, placesArrayList, naverMap);
             listView.setAdapter(placesListAdapter);
@@ -398,9 +397,9 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
 
             private List<HashMap<String, String>> placesList;
             private LayoutInflater inflater;
-            private NaverMap naverMap;
+            private com.naver.maps.map.NaverMap naverMap;
 
-            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, NaverMap naverMap) {
+            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, com.naver.maps.map.NaverMap naverMap) {
                 this.placesList = placesList;
                 inflater = LayoutInflater.from(context);
                 this.naverMap = naverMap;
@@ -462,7 +461,7 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
 
         private final PointF POINT_F = new PointF(0.5f, 0.5f);
 
-        SetBottomSheet(NaverMap naverMap) {
+        SetBottomSheet(com.naver.maps.map.NaverMap naverMap) {
             LinearLayout bottomSheetView = findViewById(R.id.nmap_bottom_sheet);
             TextView bottomSheetText = findViewById(R.id.nmap_bottom_sheet_text);
             bottomSheetText.setOnClickListener((View view) -> {

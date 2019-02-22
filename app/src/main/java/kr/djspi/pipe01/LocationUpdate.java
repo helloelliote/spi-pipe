@@ -15,7 +15,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 
 import static android.location.LocationManager.GPS_PROVIDER;
 
-public abstract class LocationUpdateActivity extends BaseActivity {
+public abstract class LocationUpdate extends BaseActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     /**

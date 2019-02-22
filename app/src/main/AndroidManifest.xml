@@ -73,6 +73,6 @@
             android:name=".NaverMapActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        <activity android:name=".SpiInputActivity" />
+        <activity android:name=".PipeRecordActivity" />
     </application>
 </manifest>

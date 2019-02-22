@@ -30,7 +30,7 @@ public class SpiGetServiceTest implements ServiceStrategy {
     private JsonObject jsonBounds;
 
     @Test
-    public Call<JsonObject> getServiceRequest() {
+    public Call<JsonObject> getRequest() {
         JsonObject jsonQuery = new JsonObject();
         jsonQuery.addProperty("request", "spi-get");
         jsonQuery.add("data", jsonBounds);

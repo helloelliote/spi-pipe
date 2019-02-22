@@ -92,7 +92,7 @@ public class BaseActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.error_location), Toast.LENGTH_LONG).show();
                 return;
             }
-            startActivity(new Intent(getApplicationContext(), NaverMapActivity.class)
+            startActivity(new Intent(context, NaverMapActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         });
     }

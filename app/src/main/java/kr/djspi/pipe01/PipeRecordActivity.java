@@ -9,13 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.media.ExifInterface;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -29,6 +26,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import kr.djspi.pipe01.dto.PipeEntry;
+
 import static android.content.Intent.ACTION_PICK;
 import static android.graphics.Bitmap.CompressFormat.JPEG;
 import static android.os.Environment.getExternalStorageDirectory;
@@ -39,10 +38,9 @@ import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
 import static android.support.media.ExifInterface.TAG_ORIENTATION;
 
-public class SpiInputActivity extends BaseActivity implements OnClickListener, Serializable {
+public class PipeRecordActivity extends BaseActivity implements OnClickListener, Serializable {
 
-    private static final String TAG = SpiInputActivity.class.getSimpleName();
-    public static FragmentManager fragmentManager;
+    private static final String TAG = PipeRecordActivity.class.getSimpleName();
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -52,16 +50,28 @@ public class SpiInputActivity extends BaseActivity implements OnClickListener, S
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentManager = getSupportFragmentManager();
         Intent intent = getIntent();
-        setContentView(R.layout.activity_spi_input);
+        setContentView(R.layout.activity_pipe_record);
     }
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         setToolbarTitle(null);
-        setInput();
+        setPipeCardView();
+//        setInput();
+    }
+
+    private void setPipeCardView() {
+        // Set up the RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager
+                (new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false));
+        PipeCardRecyclerViewAdapter adapter = new PipeCardRecyclerViewAdapter(
+                PipeEntry.initPipeEntryList(getResources()));
+        recyclerView.addItemDecoration(new PipeGridItemDecoration(30, 30));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -74,51 +84,33 @@ public class SpiInputActivity extends BaseActivity implements OnClickListener, S
         if (string != null) toolbar.setTitle(string);
     }
 
-    public void setInput() {
-        TextInputLayout inputLayout = findViewById(R.id.inputLayout1);
-        TextInputEditText editText = findViewById(R.id.editText1);
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > inputLayout.getCounterMaxLength()) {
-                    inputLayout.setError("글자수를 초과하였습니다");
-                } else {
-                    inputLayout.setError(null);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
+//    public void setInput() {
+//        TextInputLayout inputLayout = findViewById(R.id.inputLayout1);
+//        TextInputEditText editText = findViewById(R.id.editText1);
+//        editText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (s.length() > inputLayout.getCounterMaxLength()) {
+//                    inputLayout.setError("글자수를 초과하였습니다");
+//                } else {
+//                    inputLayout.setError(null);
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public void onClick(View v) {
-
-    }
-
-    private void saveState() {
-
-    }
-
-    private void restoreState() {
 
     }
 
