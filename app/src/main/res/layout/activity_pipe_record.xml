@@ -7,14 +7,18 @@
     tools:context=".PipeRecordActivity">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/card_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
     </android.support.v4.widget.NestedScrollView>
 </FrameLayout>

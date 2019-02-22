@@ -75,4 +75,49 @@
     <string name="popup_map_noplace">위치(주소) 검색결과가 없습니다.</string>
     <string name="popup_comm_error">서버와의 통신에 실패하였습니다.</string>
 
+    <!--PipeRecordActivity-->
+    <string name="record_input_0">관로종류</string>
+    <string name="record_input_0_hint">매설관로의 종류 입력</string>
+    <string name="record_input_1">관로형태</string>
+    <string name="record_input_1_hint">매설관로의 형태 선택</string>
+    <string name="record_input_2">이격거리</string>
+    <string name="record_input_2_hint">매설지점과의 이격거리</string>
+    <string name="record_input_2_hor">수평</string>
+    <string name="record_input_2_ver">수직</string>
+    <string name="record_input_3">매설심도</string>
+    <string name="record_input_3_hint">매설심도 입력</string>
+    <string name="record_input_4_1">관로관경</string>
+    <string name="record_input_4_1_hint">관의지름 입력</string>
+    <string name="record_input_4_0_unit">m</string>
+    <string name="record_input_4_1_unit">mm</string>
+    <string name="record_input_4_2">통과전압</string>
+    <string name="record_input_4_2_hint">통과전압 입력</string>
+    <string name="record_input_4_2_unit">Kv</string>
+    <string name="record_input_4_3">코어수</string>
+    <string name="record_input_4_3_hint">통과코어수 입력</string>
+    <string name="record_input_4_3_unit">코어</string>
+    <string name="record_input_4_4">관로압력</string>
+    <string name="record_input_4_4_hint">관로압력 입력</string>
+    <string name="record_input_4_4_unit">㎏/㎠</string>
+    <string name="record_input_4_5">관로용도</string>
+    <string name="record_input_4_5_hint">매설관로의 용도 입력</string>
+    <string name="record_input_5">관로재질</string>
+    <string name="record_input_5_hint">관로재질 입력</string>
+    <string name="record_input_6">관리기관</string>
+    <string name="record_input_6_hint">관리기관 입력</string>
+    <string name="record_input_7">전화번호</string>
+    <string name="record_input_7_hint">비상 연락처 입력</string>
+    <string name="record_input_8">메모</string>
+    <string name="record_input_8_hint">메모 입력(선택사항)</string>
+    <string name="record_input_photo">현장사진</string>
+    <string name="record_input_photo_hint">사진 첨부(선택사항)</string>
+    <string name="record_input_9">시공업체명</string>
+    <string name="record_input_9_hint">시공업체 입력(선택사항)</string>
+    <string name="record_input_10">시공업체 연락처</string>
+    <string name="record_input_10_hint">시공업체 연락처 입력(선택사항)</string>
+    <string name="record_input_2_edit">거리 입력 (m)</string>
+    <string name="record_optional">선택입력 사항</string>
+    <string name="record_confirm">확인하기</string>
+    <string name="record_cancel">취소</string>
+
 </resources>

@@ -33,52 +33,24 @@
         <item name="android:textSize">10sp</item>
     </style>
 
-    <style name="Spi.TextInputLayout.Counter" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="hintTextAppearance">@style/Spi.TextInputLayout.HintText</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:maxLines">1</item>
-        <item name="boxStrokeColor">@color/colorPrimaryDark</item>
-        <item name="boxStrokeWidth">1dp</item>
-        <item name="counterEnabled">true</item>
-        <item name="counterMaxLength">12</item>
-        <item name="errorEnabled">true</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="errorTextAppearance">@style/Spi.ErrorText</item>
-        <item name="counterTextAppearance">@color/colorPrimaryDark</item>
-    </style>
-
-    <style name="Spi.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="hintTextAppearance">@style/Spi.TextInputLayout.HintText</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:maxLines">1</item>
-        <item name="boxStrokeColor">@color/colorPrimaryDark</item>
-        <item name="boxStrokeWidth">1dp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="Spi.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textColorHint">?android:attr/textColorPrimary</item>
-    </style>
-
     <style name="TextFieldBoxes">
-        <item name="android:textSize">16sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="panelBackgroundColor">#0D0D2C54</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="panelBackgroundColor">#0A000000</item>
         <item name="useDenseSpacing">true</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:maxRows">1</item>
+        <item name="primaryColor">@color/bright_blue</item>
         <item name="secondaryColor">@color/colorPrimaryDark</item>
-        <item name="primaryColor">#1c73e8</item>
     </style>
 
-    <style name="Spi.ErrorText" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:textStyle">bold</item>
+    <style name="TextFieldBoxes.FreeSize">
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="panelBackgroundColor">#0A000000</item>
+        <item name="useDenseSpacing">true</item>
+        <item name="secondaryColor">@color/colorPrimaryDark</item>
+        <item name="primaryColor">@color/bright_blue</item>
     </style>
 
     <style name="Spi.TextButton" parent="Widget.MaterialComponents.Button.TextButton">

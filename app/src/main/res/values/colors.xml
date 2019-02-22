@@ -11,4 +11,6 @@
     <color name="line_d">#DDDDDD</color>
     <color name="line_a">#AAAAAA</color>
 
+    <color name="dark_blue">#0D2C54</color>
+    <color name="bright_blue">#1C73E8</color>
 </resources>
