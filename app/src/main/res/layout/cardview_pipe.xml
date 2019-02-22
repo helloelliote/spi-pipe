@@ -3,40 +3,125 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@android:color/white"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="108dp"
-            android:background="#d8e2dc"
-            android:scaleType="centerCrop" />
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/title_attr"
+            style="@style/TextFieldBoxes"
+            android:layout_marginBottom="8dp"
+            app:iconSignifier="@drawable/ic_edit_2"
+            app:labelText="관로종류">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/edit_attr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
-            <TextView
-                android:id="@+id/pipe_title"
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/title_attr"
+            style="@style/TextFieldBoxes"
+            android:layout_marginBottom="8dp"
+            app:iconSignifier="@drawable/ic_check_2"
+            app:labelText="매설형태를 선택하세요">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/edit_attr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/title_attr"
+            style="@style/TextFieldBoxes"
+            android:layout_marginBottom="8dp"
+            app:iconSignifier="@drawable/ic_edit_2"
+            app:labelText="이격거리">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/edit_attr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Title"
-                android:textAppearance="?attr/textAppearanceHeadline6" />
+                android:inputType="numberDecimal"
+                app:suffix="m" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
-            <TextView
-                android:id="@+id/pipe_type"
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/title_attr"
+            style="@style/TextFieldBoxes"
+            android:layout_marginBottom="8dp"
+            app:iconSignifier="@drawable/ic_edit_2"
+            app:labelText="매설심도">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/edit_attr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Secondary Text"
-                android:textAppearance="?attr/textAppearanceBody2" />
-        </LinearLayout>
+                android:inputType="numberDecimal"
+                app:suffix="m" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/title_attr"
+            style="@style/TextFieldBoxes"
+            android:layout_marginBottom="8dp"
+            app:iconSignifier="@drawable/ic_edit_2"
+            app:labelText="관로관경">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/edit_attr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                app:suffix="mm" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/title_attr"
+            style="@style/TextFieldBoxes"
+            android:layout_marginBottom="8dp"
+            app:iconSignifier="@drawable/ic_edit_2"
+            app:labelText="관로재질">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/edit_attr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/title_attr"
+            style="@style/TextFieldBoxes"
+            android:layout_marginBottom="8dp"
+            app:iconSignifier="@drawable/ic_edit_2"
+            app:labelText="관리기관">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/edit_attr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/title_attr"
+            style="@style/TextFieldBoxes"
+            android:layout_marginBottom="8dp"
+            app:iconSignifier="@drawable/ic_edit_2"
+            app:labelText="관리기관 연락처">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/edit_attr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                app:prefix="전화번호" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
     </LinearLayout>
 </android.support.design.card.MaterialCardView>

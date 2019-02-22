@@ -70,7 +70,7 @@
             tools:ignore="SmallSp">
 
             <TableRow
-                style="@style/AppTheme.SPI.TableRow"
+                style="@style/Spi.TableRow"
                 android:layout_width="match_parent"
                 android:layout_height="23dp">
 

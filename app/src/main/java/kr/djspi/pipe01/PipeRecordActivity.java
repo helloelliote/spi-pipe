@@ -59,7 +59,7 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
         super.setContentView(layoutResID);
         setToolbarTitle(null);
         setPipeCardView();
-//        setInput();
+        setInput();
     }
 
     private void setPipeCardView() {
@@ -84,30 +84,9 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
         if (string != null) toolbar.setTitle(string);
     }
 
-//    public void setInput() {
-//        TextInputLayout inputLayout = findViewById(R.id.inputLayout1);
-//        TextInputEditText editText = findViewById(R.id.editText1);
-//        editText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if (s.length() > inputLayout.getCounterMaxLength()) {
-//                    inputLayout.setError("글자수를 초과하였습니다");
-//                } else {
-//                    inputLayout.setError(null);
-//                }
-//            }
-//        });
-//    }
+    public void setInput() {
+
+    }
 
     @Override
     public void onClick(View v) {

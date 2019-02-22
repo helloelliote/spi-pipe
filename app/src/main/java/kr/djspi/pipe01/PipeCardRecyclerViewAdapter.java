@@ -32,8 +32,7 @@ public class PipeCardRecyclerViewAdapter extends RecyclerView.Adapter<PipeCardVi
     public void onBindViewHolder(@NonNull PipeCardViewHolder holder, int position) {
         if (pipeList != null && position < pipeList.size()) {
             PipeEntry pipe = pipeList.get(position);
-            holder.pipeTitle.setText(pipe.title);
-            holder.pipeType.setText(pipe.type);
+//            holder.title_attr.setLabelText(pipe.title);
         }
     }
 
