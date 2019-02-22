@@ -25,6 +25,7 @@ public interface RetrofitService {
             @Query("coordinate") String coordinate
     );
 
+    @Headers("Content-Type: application/json")
     @GET("api")
     Call<JsonObject> getSpi(
             @Query("json") String jsonString

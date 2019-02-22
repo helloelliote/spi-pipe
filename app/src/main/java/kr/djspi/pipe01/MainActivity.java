@@ -1,22 +1,14 @@
 package kr.djspi.pipe01;
 
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import kr.djspi.pipe01.util.NfcUtil;
-
-import static android.net.ConnectivityManager.TYPE_MOBILE;
-import static android.net.ConnectivityManager.TYPE_WIFI;
-import static android.net.ConnectivityManager.TYPE_WIMAX;
 
 public class MainActivity extends LocationUpdateActivity {
 
@@ -32,19 +24,17 @@ public class MainActivity extends LocationUpdateActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        onCreateMenuLayout();
     }
 
     /**
      * 메뉴 레이아웃 구성 및 터치를 통한 화면전환 기능 설정
      * 실제 사용환경에서는 NFC 태그의 태깅을 통해서만 화면이 전환되면 되므로 사용하지 않음
      */
-    private void onCreateMenuLayout() {
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+
         LinearLayout mainLayout1 = findViewById(R.id.lay_main1);
-        mainLayout1.setOnClickListener(view -> {
-//                startActivity(new Intent(context, NfcRecordRead.class)
-//                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
-        });
 
         LinearLayout mainLayout2 = findViewById(R.id.lay_main2);
         mainLayout2.setOnClickListener(view -> {
@@ -63,29 +53,10 @@ public class MainActivity extends LocationUpdateActivity {
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
     }
 
-    public NfcUtil getNFCUtil() {
-        return nfcUtil;
-    }
-
-    // TODO: 2019-01-29 네트워크 검사는 좀 더 앞 단계에서 수행해야 한다.
-    private static boolean checkNetworkState(@NonNull Context context) throws RuntimeException {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo mobile = manager.getNetworkInfo(TYPE_MOBILE);
-        NetworkInfo wifi = manager.getNetworkInfo(TYPE_WIFI);
-        NetworkInfo lte = manager.getNetworkInfo(TYPE_WIMAX);
-
-        return mobile != null && mobile.isConnected() || wifi != null && wifi.isConnected() || lte != null && lte.isConnected();
-        // FIXME: 2018-12-22 최소 SDK 23 으로 넘어가면 교체
-//        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//        Network network = connectivityManager.getActiveNetwork();
-//        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
-//        return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR));
-    }
-
     @Override
     public void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
-        mNfcTag = nfcUtil.intentToTag(intent);
+//        mNfcTag = nfcUtil.intentToTag(intent);
         checkSerialNum(null);
     }
 
@@ -111,16 +82,23 @@ public class MainActivity extends LocationUpdateActivity {
 //        }
     }
 
+    public NfcUtil getNFCUtil() {
+//        return nfcUtil;
+        return null;
+    }
+
     @Override
     @SuppressWarnings("EmptyMethod")
     public void onResume() {
 //        if (!isNfcEnabled()) showMessagePopup(2, getString(R.string.popup_nfc_on));
+//        if (nfcUtil != null) nfcUtil.onResume();
         super.onResume();
     }
 
     @Override
     @SuppressWarnings("EmptyMethod")
     public void onPause() {
+//        if (nfcUtil != null) nfcUtil.onPause();
         super.onPause();
     }
 

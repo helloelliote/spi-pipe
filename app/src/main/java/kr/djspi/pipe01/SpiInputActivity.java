@@ -52,9 +52,14 @@ public class SpiInputActivity extends BaseActivity implements OnClickListener, S
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spi_input);
         fragmentManager = getSupportFragmentManager();
         Intent intent = getIntent();
+        setContentView(R.layout.activity_spi_input);
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
         setToolbarTitle(null);
         setInput();
     }
@@ -66,7 +71,6 @@ public class SpiInputActivity extends BaseActivity implements OnClickListener, S
 
     @Override
     protected void setToolbarTitle(String string) {
-        super.setToolbarTitle(string);
         if (string != null) toolbar.setTitle(string);
     }
 

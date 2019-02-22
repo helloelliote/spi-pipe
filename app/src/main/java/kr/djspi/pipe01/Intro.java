@@ -7,8 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public final class Intro extends AppCompatActivity {
 
-    private static final boolean isDelayed = false;
-    private static final int delayMillis = 2000; // Intro 화면 표시시간
+    private static final int delayMillis = 750; // Intro 화면 표시시간
 
     /**
      * (isDelayed) 지정 시간 후 전환되는 스플래시 화면
@@ -28,18 +27,9 @@ public final class Intro extends AppCompatActivity {
             }
         }
 
-        if (isDelayed) {
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
-            }, delayMillis);
-        } else {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("state", "launch");
-            startActivity(intent);
+        new Handler().postDelayed(() -> {
+            startActivity(new Intent(getBaseContext(), MainActivity.class));
             finish();
-        }
+        }, delayMillis);
     }
 }

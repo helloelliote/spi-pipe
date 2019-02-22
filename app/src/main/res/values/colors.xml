@@ -7,7 +7,7 @@
     <!--BaseActivity-->
     <color name="green">#7FB800</color>
 
-    <!--MessagePopup-->
+    <!--MessageDialog-->
     <color name="line_d">#DDDDDD</color>
     <color name="line_a">#AAAAAA</color>
 

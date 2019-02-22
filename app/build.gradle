@@ -64,7 +64,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-analytics:16.0.7'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.guava:guava:26.0-android'
-    implementation 'com.naver.maps:map-sdk:3.1.0'
+    implementation 'com.naver.maps:map-sdk:3.2.1'
     implementation 'com.llollox:androidtoggleswitch:2.0.1'
     implementation 'com.andkulikov:transitionseverywhere:1.8.1'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'

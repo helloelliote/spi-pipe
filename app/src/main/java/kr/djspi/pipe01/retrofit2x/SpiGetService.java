@@ -25,7 +25,7 @@ public final class SpiGetService implements ServiceStrategy {
         jsonObject.addProperty("request", "spi-get");
         jsonObject.add("data", jsonQuery);
         final String query = jsonObject.toString();
-        return BUILDER.baseUrl(URL_SPI).build()
+        return BUILDER.baseUrl(URL_TEST).build()
                 .create(RetrofitService.class).getSpi(query);
     }
 }

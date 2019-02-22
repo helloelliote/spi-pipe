@@ -14,11 +14,14 @@
     <string name="map_mode_basic">일반</string>
     <string name="map_mode_hybrid">위성</string>
 
+
     <!--NavigationView-->
     <string name="nav_title">SPI(Smart Pipe Indicator)</string>
     <string name="nav_version_name">버전 %1$s (%2$s)</string>
     <string name="nav_phone"><![CDATA[<font color="#0077C8"><a href="tel:%1$s">%1$s</a></font>]]></string>
     <string name="nav_email"><![CDATA[대진기술정보(주) <font color="#0077C8">%1$s</font>]]></string>
+    <string name="nav_dj_email">djgis@chol.com</string>
+    <string name="nav_dj_phone">+82-53-424-9547</string>
     <string name="nav_guide"></string>
 
     <!--MainActivity-->
@@ -32,7 +35,7 @@
     <!--NfcUtil-->
     <string name="toast_error">입력값을 확인해주세요</string>
 
-    <!--MessagePopup & fragment_popup.xml-->
+    <!--MessageDialog & fragment_popup.xml-->
     <string name="popup_warning">주 의</string>
     <string name="popup_ok">확 인</string>
     <string name="popup_cancel">취 소</string>

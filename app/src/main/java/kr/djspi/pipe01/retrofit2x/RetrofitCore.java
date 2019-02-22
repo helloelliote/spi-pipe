@@ -2,6 +2,8 @@ package kr.djspi.pipe01.retrofit2x;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Contract;
@@ -16,7 +18,8 @@ public final class RetrofitCore {
 
     private static final String TAG = RetrofitCore.class.getSimpleName();
     private static ServiceStrategy service;
-    static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create());
+    private static Gson gson = new GsonBuilder().setLenient().create();
+    static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
     static JsonObject jsonQuery = new JsonObject();
 
     private RetrofitCore() {

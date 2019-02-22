@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,6 @@ import com.transitionseverywhere.ChangeText;
 import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionManager;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -78,7 +78,6 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
     private static final double ZOOM_DEFAULT = 18.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 6.0; // 최소 줌레벨
     private static final double ZOOM_MAX = MAXIMUM_ZOOM; // 최대 줌레벨(21)
-    private static NaverMapSdk.Client NMAP_CLIENT;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -89,17 +88,9 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
     static final int PAD_BOT = 45;
     static ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
     static BottomSheetBehavior behavior;
-    static ListViewAdapter placesListAdapter;
+    static SetTopSheet.ListViewAdapter placesListAdapter;
     static Overlay.OnClickListener listener;
     SearchView searchView;
-
-    @Contract(pure = true)
-    private static NaverMapSdk.Client getInstance() {
-        if (NMAP_CLIENT == null) {
-            NMAP_CLIENT = new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID);
-        }
-        return NMAP_CLIENT;
-    }
 
     /**
      * @see NaverMapActivity#setNaverMap() 네이버 지도 구현
@@ -107,14 +98,22 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // '측량점 찾기' 버튼을 클릭한 경우 true 가 전달되어 BottomSheet 을 바로 열어준다. (기본값 false)
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) isIntentSearch = bundle.getBoolean("isIntentSearch", false);
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
-        NaverMapSdk.getInstance(this).setClient(getInstance());
+        NaverMapSdk.getInstance(this)
+                .setClient(new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
         setContentView(R.layout.activity_nmap);
-        findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
         setNaverMap();
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
+    }
+
+    @Override
+    boolean useNavigationView() {
+        return false;
     }
 
     /**
@@ -274,16 +273,16 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
 //                            }
 //                            if (statusCode == 200) {
 //                                final ArrayList<SpiData> spiDataList = spiDataSet.getArrayList();
-//                                final PipeType[] pipes = PipeType.values();
-//                                PipeType pipe = PipeType.Pipe_Etc;
-//                                for (SpiData spiData : spiDataList) {
-//                                    String key = spiData.findDataBy(Key_Pipe);
-//                                    for (PipeType p : pipes) {
-//                                        if (key.equals(getString(p.getNameRes()))) {
-//                                            pipe = p;
-//                                            break;
-//                                        }
-//                                    }
+////                                final PipeType[] pipes = PipeType.values();
+////                                PipeType pipe = PipeType.Pipe_Etc;
+////                                for (SpiData spiData : spiDataList) {
+////                                    String key = spiData.findDataBy(Key_Pipe);
+////                                    for (PipeType p : pipes) {
+////                                        if (key.equals(getString(p.getNameRes()))) {
+////                                            pipe = p;
+////                                            break;
+////                                        }
+////                                    }
 //                                    setMarker(spiData, pipe);
 //                                }
 //                            }
@@ -292,8 +291,8 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        showMessagePopup(0, getString(R.string.common_spi_error));
                         throwable.printStackTrace();
+                        showMessagePopup(0, getString(R.string.common_spi_error));
                     }
                 });
     }
@@ -324,72 +323,6 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
      */
     @Override
     void onLocationUpdate(Location location) {
-    }
-
-    private final class SetBottomSheet {
-
-        private final PointF POINT_F = new PointF(0.5f, 0.5f);
-
-        SetBottomSheet(NaverMap naverMap) {
-            LinearLayout bottomSheetView = findViewById(R.id.nmap_bottom_sheet);
-            TextView bottomSheetText = findViewById(R.id.nmap_bottom_sheet_text);
-            bottomSheetText.setOnClickListener((View view) -> {
-                switch (behavior.getState()) {
-                    case STATE_COLLAPSED:
-                        behavior.setState(STATE_EXPANDED);
-                        break;
-                    case STATE_EXPANDED:
-                        isSearch = false;
-                        behavior.setState(STATE_COLLAPSED);
-                        break;
-                    default:
-                        break;
-                }
-            });
-            Transition changeText = new ChangeText().setChangeBehavior(CHANGE_BEHAVIOR_OUT_IN);
-            String textExpanded = getString(R.string.map_search_input);
-            String textCollapsed = getString(R.string.map_search_point);
-            final int bottomSheetHeight = bottomSheetView.getHeight();
-            behavior = BottomSheetBehavior.from(bottomSheetView);
-            behavior.setBottomSheetCallback(new BottomSheetCallback() {
-
-                @Override
-                public void onStateChanged(@NonNull View view, int newState) {
-                    switch (newState) {
-                        case STATE_EXPANDED:
-                            TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
-                            bottomSheetText.setText(textExpanded);
-                            naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, bottomSheetHeight);
-                            getSpiData(naverMap);
-                            break;
-                        case STATE_COLLAPSED:
-                            if (isSearch) {
-                                TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
-                                naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT);
-                            } else {
-                                TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
-                                bottomSheetText.setText(textCollapsed);
-                                naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT);
-                                clearMarker();
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                @Override
-                public void onSlide(@NonNull View view, float v) {
-                }
-
-                private void clearMarker() {
-                    List<Pickable> overlayList = naverMap.pickAll(POINT_F, screenRadius);
-                    for (Pickable overlay : overlayList) {
-                        if (overlay instanceof Marker) ((Marker) overlay).setMap(null);
-                    }
-                }
-            });
-        }
     }
 
     private final class SetTopSheet {
@@ -460,68 +393,142 @@ public class NaverMapActivity extends LocationUpdateActivity implements OnMapRea
                         }
                     });
         }
+
+        private final class ListViewAdapter extends BaseAdapter {
+
+            private List<HashMap<String, String>> placesList;
+            private LayoutInflater inflater;
+            private NaverMap naverMap;
+
+            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, NaverMap naverMap) {
+                this.placesList = placesList;
+                inflater = LayoutInflater.from(context);
+                this.naverMap = naverMap;
+            }
+
+            class ItemHolder {
+                TextView name;
+            }
+
+            @Override
+            public int getCount() {
+                return placesList.size();
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return placesList.get(position);
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            @SuppressLint("InflateParams")
+            public View getView(final int position, View view, ViewGroup parent) {
+                final ItemHolder holder;
+                if (view == null) {
+                    view = inflater.inflate(R.layout.listview_item, null);
+                    holder = new ItemHolder();
+                    holder.name = view.findViewById(R.id.name);
+                    view.setTag(holder);
+                } else {
+                    holder = (ItemHolder) view.getTag();
+                }
+                holder.name.setText(placesList.get(position).get("name"));
+                view.setOnClickListener((View v) -> {
+                    // searchView 내용 변경과 동시에 Query 를 다시 시작하려면 true
+                    searchView.setQuery(placesList.get(position).get("name"), false);
+                    final double coordinate_x = parseDouble(placesList.get(position).get("x"));
+                    final double coordinate_y = parseDouble(placesList.get(position).get("y"));
+                    naverMap.moveCamera(CameraUpdate
+                            .scrollTo(new LatLng(coordinate_y, coordinate_x))
+                            .animate(CameraAnimation.Fly)
+                            .finishCallback(() -> {
+                                behavior.setState(STATE_EXPANDED);
+                                searchView.clearFocus();
+                            }));
+                    placesList.clear();
+                    placesListAdapter.notifyDataSetChanged();
+                });
+                return view;
+            }
+        }
     }
 
-    private final class ListViewAdapter extends BaseAdapter {
+    private final class SetBottomSheet {
 
-        private List<HashMap<String, String>> placesList;
-        private LayoutInflater inflater;
-        private NaverMap naverMap;
+        private final PointF POINT_F = new PointF(0.5f, 0.5f);
 
-        ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, NaverMap naverMap) {
-            this.placesList = placesList;
-            inflater = LayoutInflater.from(context);
-            this.naverMap = naverMap;
-        }
-
-        class ItemHolder {
-            TextView name;
-        }
-
-        @Override
-        public int getCount() {
-            return placesList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return placesList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        @SuppressLint("InflateParams")
-        public View getView(final int position, View view, ViewGroup parent) {
-            final ItemHolder holder;
-            if (view == null) {
-                view = inflater.inflate(R.layout.listview_item, null);
-                holder = new ItemHolder();
-                holder.name = view.findViewById(R.id.name);
-                view.setTag(holder);
-            } else {
-                holder = (ItemHolder) view.getTag();
-            }
-            holder.name.setText(placesList.get(position).get("name"));
-            view.setOnClickListener((View v) -> {
-                // searchView 내용 변경과 동시에 Query 를 다시 시작하려면 true
-                searchView.setQuery(placesList.get(position).get("name"), false);
-                final double coordinate_x = parseDouble(placesList.get(position).get("x"));
-                final double coordinate_y = parseDouble(placesList.get(position).get("y"));
-                naverMap.moveCamera(CameraUpdate
-                        .scrollTo(new LatLng(coordinate_y, coordinate_x))
-                        .animate(CameraAnimation.Fly)
-                        .finishCallback(() -> {
-                            behavior.setState(STATE_EXPANDED);
-                            searchView.clearFocus();
-                        }));
-                placesList.clear();
-                placesListAdapter.notifyDataSetChanged();
+        SetBottomSheet(NaverMap naverMap) {
+            LinearLayout bottomSheetView = findViewById(R.id.nmap_bottom_sheet);
+            TextView bottomSheetText = findViewById(R.id.nmap_bottom_sheet_text);
+            bottomSheetText.setOnClickListener((View view) -> {
+                switch (behavior.getState()) {
+                    case STATE_COLLAPSED:
+                        behavior.setState(STATE_EXPANDED);
+                        break;
+                    case STATE_EXPANDED:
+                        isSearch = false;
+                        behavior.setState(STATE_COLLAPSED);
+                        break;
+                    default:
+                        break;
+                }
             });
-            return view;
+            Transition changeText = new ChangeText().setChangeBehavior(CHANGE_BEHAVIOR_OUT_IN);
+            String textExpanded = getString(R.string.map_search_input);
+            String textCollapsed = getString(R.string.map_search_point);
+            final int bottomSheetHeight = bottomSheetView.getHeight();
+            behavior = BottomSheetBehavior.from(bottomSheetView);
+            behavior.setBottomSheetCallback(new BottomSheetCallback() {
+
+                @Override
+                public void onStateChanged(@NonNull View view, int newState) {
+                    switch (newState) {
+                        case STATE_EXPANDED:
+                            TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
+                            bottomSheetText.setText(textExpanded);
+                            naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, bottomSheetHeight);
+                            getSpiData(naverMap);
+                            break;
+                        case STATE_COLLAPSED:
+                            if (isSearch) {
+                                TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
+                                naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT);
+                            } else {
+                                TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
+                                bottomSheetText.setText(textCollapsed);
+                                naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT);
+                                clearMarker();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View view, float v) {
+                }
+
+                private void clearMarker() {
+                    List<Pickable> overlayList = naverMap.pickAll(POINT_F, getScreen());
+                    for (Pickable overlay : overlayList) {
+                        if (overlay instanceof Marker) ((Marker) overlay).setMap(null);
+                    }
+                }
+
+                private int getScreen() {
+                    DisplayMetrics displayMetrics = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                    final int screenY = displayMetrics.heightPixels;
+                    final int screenX = displayMetrics.widthPixels;
+                    return screenY > screenX ? screenY : screenX;
+                }
+            });
         }
     }
 }
