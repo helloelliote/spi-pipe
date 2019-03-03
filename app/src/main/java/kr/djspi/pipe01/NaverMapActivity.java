@@ -10,7 +10,6 @@ import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +80,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
     static boolean isSearch = false;
+    static final String URL_SPI = "https://ispi.kr/";
+    static final String URL_TEST = "http://192.168.0.33/";
     static final int PAD_LEFT = 0;
     static final int PAD_TOP = 45;
     static final int PAD_RIGHT = 0;
@@ -252,13 +253,13 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         jsonQuery.addProperty("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
 
         Retrofit2x.newBuilder()
-                .setService(new SpiGetService())
+                .setService(new SpiGetService(URL_SPI))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        Log.w(TAG, response.toString());
+//                        Log.w(TAG, response.toString());
                         int statusCode = response.get("response").getAsInt();
                         if (statusCode == 400) {
                             behavior.setState(STATE_COLLAPSED);
