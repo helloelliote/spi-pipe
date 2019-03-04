@@ -15,10 +15,10 @@ import kr.djspi.pipe01.dto.PipeEntry;
  */
 public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
 
-    private List<PipeEntry> pipeList;
+    private List<PipeEntry> pipeEntries;
 
-    PipeCardRecyclerViewAdapter(List<PipeEntry> pipeList) {
-        this.pipeList = pipeList;
+    PipeCardRecyclerViewAdapter(List<PipeEntry> pipeEntries) {
+        this.pipeEntries = pipeEntries;
     }
 
     @NonNull
@@ -30,14 +30,20 @@ public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PipeCardViewHolder holder, int position) {
-        if (pipeList != null && position < pipeList.size()) {
-            PipeEntry pipe = pipeList.get(position);
-//            holder.title_attr.setLabelText(pipe.title);
+        if (pipeEntries != null && position < pipeEntries.size()) {
+            PipeEntry entry = pipeEntries.get(position);
+            holder.pipe.setText(entry.pipe);
+            if (entry.shape != null) {
+                holder.shape.setText(entry.shape);
+                holder.shape.setEnabled(false);
+            }
+            holder.spec.setPrefix(entry.header + "  ");
+            holder.spec.setSuffix(entry.unit);
         }
     }
 
     @Override
     public int getItemCount() {
-        return pipeList.size();
+        return pipeEntries.size();
     }
 }

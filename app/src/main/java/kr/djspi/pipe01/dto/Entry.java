@@ -1,6 +1,7 @@
 package kr.djspi.pipe01.dto;
 
 import android.content.res.Resources;
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -19,28 +20,25 @@ import java.util.List;
 
 import kr.djspi.pipe01.R;
 
-public class PipeEntry {
+public class Entry {
 
-    private static final String TAG = PipeEntry.class.getSimpleName();
-//    private static JsonObject jsonObject;
+    private static final String TAG = Entry.class.getSimpleName();
+    public final String title;
+    public final Uri dynamicUrl;
+    public final String url;
+    public final String type;
+    public final String description;
 
-    public final String spi_type;
-    public final String pipe;
-    public final String shape;
-    public final String header;
-    public final String unit;
-
-    public PipeEntry(String spi_type, String pipe, String shape, String header, String unit) {
-//        PipeEntry.jsonObject = jsonObject;
-        this.spi_type = spi_type;
-        this.pipe = pipe;
-        this.shape = shape;
-        this.header = header;
-        this.unit = unit;
+    public Entry(String title, String dynamicUrl, String url, String type, String description) {
+        this.title = title;
+        this.dynamicUrl = Uri.parse(dynamicUrl);
+        this.url = url;
+        this.type = type;
+        this.description = description;
     }
 
-    public static List<PipeEntry> initParserList(Resources resources) {
-        InputStream inputStream = resources.openRawResource(R.raw.pipes);
+    public static List<Entry> initPipeEntryList(Resources resources) {
+        InputStream inputStream = resources.openRawResource(R.raw.products);
         Writer writer = new StringWriter();
         char[] buffer = new char[1024];
         try {
@@ -58,11 +56,10 @@ public class PipeEntry {
                 Log.e(TAG, "Error closing the input stream.", exception);
             }
         }
+        String jsonProductsString = writer.toString();
         Gson gson = new Gson();
-        String jsonString = writer.toString();
-//        String jsonString = jsonObject.getInstance("data_new").getAsString();
-        Type pipeListType = new TypeToken<ArrayList<PipeEntry>>() {
+        Type productListType = new TypeToken<ArrayList<Entry>>() {
         }.getType();
-        return gson.fromJson(jsonString, pipeListType);
+        return gson.fromJson(jsonProductsString, productListType);
     }
 }

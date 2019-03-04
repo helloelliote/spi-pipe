@@ -1,20 +1,28 @@
 package kr.djspi.pipe01;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import kr.djspi.pipe01.util.NfcUtil;
+import kr.djspi.pipe01.nfc.NfcUtil;
+
+import static kr.djspi.pipe01.nfc.NfcUtil.createTag;
+import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 
 public class MainActivity extends LocationUpdate {
 
     // TODO: 마무리 이후에 독립 API 만들기
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Tag mNfcTag;
+    public static NfcAdapter nfcAdapter;
+    static NfcUtil nfcUtil;
+
+    private Tag tag;
+
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -23,6 +31,9 @@ public class MainActivity extends LocationUpdate {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        nfcAdapter = MainActivity.getNfcAdapter(this);
+        nfcUtil = NfcUtil.getInstance(nfcAdapter);
+        NfcUtil.setDispatch(this, getClass());
     }
 
     /**
@@ -52,14 +63,19 @@ public class MainActivity extends LocationUpdate {
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
     }
 
+    private static NfcAdapter getNfcAdapter(Context context) {
+        if (nfcAdapter == null) nfcAdapter = NfcAdapter.getDefaultAdapter(context);
+        return nfcAdapter;
+    }
+
     @Override
     public void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
-//        mNfcTag = nfcUtil.intentToTag(intent);
-        checkSerialNum(null);
+        tag = createTag(intent);
+        checkSerialNum();
     }
 
-    private void checkSerialNum(final Handler callback) {
+    private void checkSerialNum() {
 //        try {
 //            String serialNum = Const.ByteArrayToHexString(mNfcTag.getId());
 //            mNfcTag = null;
@@ -71,7 +87,7 @@ public class MainActivity extends LocationUpdate {
 //            spiDataList.put(KEY_SERIAL.getKey(), serialNum);
 //            jsonObject.put(API_KEY_DATA, spiDataList);
 //
-//            RetrofitCore.get()
+//            RetrofitCore.getInstance()
 //                    .setService(new SpiGetService())
 //                    .setQuery(jsonObject.toString())
 //                    .build(new OnRetrofitListen(callback));
@@ -81,23 +97,24 @@ public class MainActivity extends LocationUpdate {
 //        }
     }
 
-    public NfcUtil getNFCUtil() {
-//        return nfcUtil;
-        return null;
-    }
-
+    /**
+     * (필수) NFC 기능을 사용할 Activity 의 onResume 에서 호출 또는 사용시
+     */
     @Override
     @SuppressWarnings("EmptyMethod")
     public void onResume() {
-//        if (!isNfcEnabled()) showMessagePopup(2, getString(R.string.popup_nfc_on));
-//        if (nfcUtil != null) nfcUtil.onResume();
+        if (!isNfcEnabled()) showMessagePopup(2, getString(R.string.popup_nfc_on));
+        nfcUtil.onResume(this);
         super.onResume();
     }
 
+    /**
+     * (필수) NFC 기능을 사용할 Activity 의 onPause 에서 호출 또는 사용 완료시
+     */
     @Override
     @SuppressWarnings("EmptyMethod")
     public void onPause() {
-//        if (nfcUtil != null) nfcUtil.onPause();
+        nfcUtil.onPause(this);
         super.onPause();
     }
 
@@ -120,12 +137,12 @@ public class MainActivity extends LocationUpdate {
 //                showMessagePopup(0, spiDataSet.getError());
 //            } else {
 //                if (callback == null) {
-//                    SPIData spiData = spiDataSet.getArrayList().get(0);
+//                    SPIData spiData = spiDataSet.getArrayList().getInstance(0);
 //                    startActivity(new Intent(context, NfcRecordInput.class)
 //                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 //                            .putExtra("NfcRecordInput", spiData));
 //                } else {
-//                    callback.obtainMessage(0, spiDataSet.getArrayList().get(0)).sendToTarget();
+//                    callback.obtainMessage(0, spiDataSet.getArrayList().getInstance(0)).sendToTarget();
 //                }
 //            }
 //        }
@@ -136,4 +153,8 @@ public class MainActivity extends LocationUpdate {
 //            throwable.printStackTrace();
 //        }
 //    }
+
+    private final class setupNfc {
+
+    }
 }

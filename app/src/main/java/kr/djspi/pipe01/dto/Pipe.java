@@ -18,11 +18,12 @@ public class Pipe <T> implements PipeObject, PipeData {
     /**
      * 관로 종류(pipe)에 따라 '관경' 또는 '전압' 등으로 바뀌는 헤더값
      */
+    private String header;
+
     private ArrayList<PipeData> pipeDataList = new ArrayList<>();
 
     private Spi spi;
 
-    private String header;
     /**
      * 관로 종류: PipeType (enum) 클래스에서 선택된 관로 종류
      * @see PipeType

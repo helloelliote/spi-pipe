@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import kr.djspi.pipe01.dto.PipeEntry;
 
@@ -46,30 +47,32 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
      */
     static File mPhoto;
     ImageView photoView;
+    List<PipeEntry> pipeEntries;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        pipeEntries = PipeEntry.initParserList(resources);
         setContentView(R.layout.activity_pipe_record);
     }
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        setToolbarTitle(null);
+        setToolbarTitle(pipeEntries.get(0).spi_type);
         setPipeCardView();
-        setInput();
+        // TODO: 2019-03-04 ConfirmButton 기능 추가
     }
 
     private void setPipeCardView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager
-                (new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false));
-        PipeCardRecyclerViewAdapter adapter = new PipeCardRecyclerViewAdapter(
-                PipeEntry.initPipeEntryList(getResources()));
-        recyclerView.addItemDecoration(new PipeGridItemDecoration(30, 30));
+        recyclerView.setLayoutManager(
+                new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false));
+        PipeCardRecyclerViewAdapter adapter =
+                new PipeCardRecyclerViewAdapter(pipeEntries);
+        recyclerView.addItemDecoration(new PipeGridItemDecoration(20, 20));
         recyclerView.setAdapter(adapter);
     }
 
@@ -79,12 +82,8 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
     }
 
     @Override
-    protected void setToolbarTitle(String string) {
-        if (string != null) toolbar.setTitle(string);
-    }
-
-    public void setInput() {
-
+    protected void setToolbarTitle(String title) {
+        if (title != null) toolbar.setTitle(String.format("SPI 매설관로 %s", title));
     }
 
     @Override

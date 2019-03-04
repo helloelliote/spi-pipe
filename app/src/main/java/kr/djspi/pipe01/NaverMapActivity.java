@@ -10,6 +10,7 @@ import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,7 +220,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 if (overlay instanceof InfoWindow) {
                     InfoWindow window = (InfoWindow) overlay;
                     if (window.getMarker() != null) {
-//                        String spiData = (String) ((HashMap) window.getMarker().getTag()).get("spiData");
+//                        String spiData = (String) ((HashMap) window.getMarker().getTag()).getInstance("spiData");
 //                        Log.w(TAG, spiData);
 //                        startActivity(new Intent(context, NfcRecordRead.class)
 //                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -259,7 +260,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-//                        Log.w(TAG, response.toString());
+                        Log.w(TAG, response.toString());
                         int statusCode = response.get("response").getAsInt();
                         if (statusCode == 400) {
                             behavior.setState(STATE_COLLAPSED);
@@ -273,11 +274,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 //                            }
 //                            if (statusCode == 200) {
 //                                final ArrayList<SpiData> spiDataList = spiDataSet.getArrayList();
-////                                final PipeType[] pipes = PipeType.values();
+////                                final PipeType[] pipes2 = PipeType.values();
 ////                                PipeType pipe = PipeType.Pipe_Etc;
 ////                                for (SpiData spiData : spiDataList) {
 ////                                    String key = spiData.findDataBy(Key_Pipe);
-////                                    for (PipeType p : pipes) {
+////                                    for (PipeType p : pipes2) {
 ////                                        if (key.equals(getString(p.getNameRes()))) {
 ////                                            pipe = p;
 ////                                            break;

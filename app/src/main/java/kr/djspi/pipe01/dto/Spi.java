@@ -42,6 +42,7 @@ public class Spi implements PipeObject, SpiData {
         pipeList.remove(pipe);
     }
 
+
     public Spi setTypeId(@NonNull int type_id) {
         this.type_id = type_id;
         return this;

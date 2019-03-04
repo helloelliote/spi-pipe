@@ -1,4 +1,4 @@
-package kr.djspi.pipe01.util;
+package kr.djspi.pipe01.nfc;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -40,64 +40,87 @@ import static android.nfc.NdefRecord.TNF_WELL_KNOWN;
 import static com.nxp.nfclib.CardType.NTag216;
 import static kr.djspi.pipe01.BuildConfig.APPLICATION_ID;
 import static kr.djspi.pipe01.BuildConfig.NFC_LICENSE_KEY;
-import static kr.djspi.pipe01.BuildConfig.setReadOnly;
-import static kr.djspi.pipe01.BuildConfig.k;
 import static kr.djspi.pipe01.BuildConfig.a;
+import static kr.djspi.pipe01.BuildConfig.k;
+import static kr.djspi.pipe01.BuildConfig.setReadOnly;
 
 public class NfcUtil {
 
     private static final String TAG = NfcUtil.class.getSimpleName();
     private static NfcAdapter nfcAdapter;
-    private PendingIntent mPendingIntent = null;
-    private String[][] mTechLists = new String[0][];
-    private Activity mActivity = null;
-    private IntentFilter[] mFilters;
-    private NxpNfcLib m_libInstance;
+    private static PendingIntent pendingIntent;
+    private static String[][] techLists;
+    private static IntentFilter[] intentFilters;
+    public NxpNfcLib m_libInstance;
     public static INTag213215216 objNtag;
 
     private NfcUtil() {
     }
 
-    // TODO: 2019-01-28 싱글톤 가능여부 판단
-//    private static class NfcUtilHolder {
-//        private static final NfcUtil UTIL = new NfcUtil();
-//    }
-//
-//    public static NfcUtil get() {
-//        return NfcUtilHolder.UTIL;
-//    }
+    private static class LazyHolder {
+        static final NfcUtil INSTANCE = new NfcUtil();
+    }
 
-    public NfcUtil(Activity activity, Class<?> useActivityClass) {
-        mActivity = activity;
-        nfcAdapter = NfcAdapter.getDefaultAdapter(mActivity);
+    public static NfcUtil getInstance(NfcAdapter nfcAdapter) {
+        NfcUtil.nfcAdapter = nfcAdapter;
+        return LazyHolder.INSTANCE;
+    }
 
-        mPendingIntent = PendingIntent.getActivity(
-                mActivity,
-                0,
-                new Intent(mActivity, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
-                0);
+    public static void setDispatch(Context context, Class<?> useActivityClass) {
+        pendingIntent = PendingIntent.getActivity(context, 0,
+                new Intent(context, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         try {
-            mFilters = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain")};
-            // TODO: 데이터타입 재설정 필요
-            mFilters[0].addDataType("application/com.ynsfuture.spi.survery");
-        } catch (MalformedMimeTypeException e) {
-            e.getMessage();
+            intentFilters = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain")};
+            intentFilters[0].addDataType("application/kr.djspi.pipe01");
+        } catch (MalformedMimeTypeException ignored) {
         }
-        mTechLists = new String[][]{{NfcA.class.getName()}, {Ndef.class.getName()}, {MifareUltralight.class.getName()}};
+        techLists = new String[][]{{NfcA.class.getName()}, {Ndef.class.getName()}, {MifareUltralight.class.getName()}};
+    }
 
-        initializeLibrary(mActivity);
+//    public NfcUtil(Class<?> useActivityClass) {
+////        mActivity = activity;
+//        nfcAdapter = NfcAdapter.getDefaultAdapter(mActivity);
+//
+//        pendingIntent = PendingIntent.getActivity(
+//                mActivity,
+//                0,
+//                new Intent(mActivity, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+//                0);
+//        try {
+//            intentFilters = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain")};
+//            // TODO: 데이터타입 재설정 필요
+//            intentFilters[0].addDataType("application/com.ynsfuture.spi.survery");
+//        } catch (MalformedMimeTypeException e) {
+//            e.getMessage();
+//        }
+//        techLists = new String[][]{{NfcA.class.getName()}, {Ndef.class.getName()}, {MifareUltralight.class.getName()}};
+//
+//        initializeLibrary(mActivity);
+//    }
+
+    public void onResume(Activity activity) {
+        if (nfcAdapter != null) {
+            nfcAdapter.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists);
+        }
+    }
+
+    public void onPause(Activity activity) {
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(activity);
+        }
     }
 
     /**
      * TapLinx NTAG 라이브러리를 불러옴
      */
-    private void initializeLibrary(Activity activity) {
+    private NfcUtil initializeLibrary(Activity activity) {
         try {
             m_libInstance = NxpNfcLib.getInstance();
             m_libInstance.registerActivity(activity, NFC_LICENSE_KEY);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     /**
@@ -122,28 +145,6 @@ public class NfcUtil {
             e.getMessage();
         }
         return objNtag;
-    }
-
-    /**
-     * (필수) NFC 기능을 사용할 Activity 의 onResume 에서 호출 또는 사용시
-     */
-    public void onResume() {
-        if (nfcAdapter != null) {
-            nfcAdapter.enableForegroundDispatch(mActivity, mPendingIntent, mFilters, mTechLists);
-        }
-    }
-
-    /**
-     * (필수) NFC 기능을 사용할 Activity 의 onPause 에서 호출 또는 사용 완료시
-     */
-    public void onPause() {
-        try {
-            if (nfcAdapter != null) {
-                nfcAdapter.disableForegroundDispatch(mActivity);
-            }
-        } catch (Exception e) {
-            e.getMessage();
-        }
     }
 
     /**
@@ -279,11 +280,7 @@ public class NfcUtil {
         return ret;
     }
 
-    public Tag intentToTag(Intent intent) {
-        try {
-            return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-        } catch (Exception e) {
-            return null;
-        }
+    public static Tag createTag(Intent intent) {
+        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
     }
 }

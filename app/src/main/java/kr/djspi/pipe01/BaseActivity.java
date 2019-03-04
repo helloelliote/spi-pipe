@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -23,6 +24,7 @@ import com.nabinbhandari.android.permissions.Permissions;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import kr.djspi.pipe01.fragment.MessageDialog;
@@ -97,7 +99,7 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    void setToolbarTitle(String string) {
+    protected void setToolbarTitle(String string) {
     }
 
     /**
@@ -181,5 +183,19 @@ public class BaseActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
 //        if (nfcUtil != null) nfcUtil.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.MANUFACTURER.equals("samsung")) {
+                Object systemService = getSystemService(Class.forName("com.samsung.android.content.clipboard.SemClipboardManager"));
+                Field mContext = systemService.getClass().getDeclaredField("mContext");
+                mContext.setAccessible(true);
+                mContext.set(systemService, null);
+            }
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored) {
+        }
     }
 }

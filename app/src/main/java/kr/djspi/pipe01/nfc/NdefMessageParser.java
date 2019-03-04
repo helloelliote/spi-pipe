@@ -1,4 +1,4 @@
-package kr.djspi.pipe01.util;
+package kr.djspi.pipe01.nfc;
 
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
