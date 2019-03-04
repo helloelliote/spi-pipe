@@ -23,7 +23,7 @@ public final class Retrofit2x {
     }
 
     public interface SetService {
-        SetQuery setQuery(@NonNull JsonObject jsonObject);
+        SetQuery setQuery(@NonNull JsonObject jsonQuery);
     }
 
     public interface SetQuery {
@@ -54,9 +54,9 @@ public final class Retrofit2x {
         public @NonNull
         RetrofitCore build() {
             RetrofitCore core = RetrofitCore.get();
-            if (!core.setService(service) || !core.setQuery(jsonQuery))
+            if (!core.setService(service) || !core.setQuery(jsonQuery)) {
                 throw new NullPointerException();
-            else return core;
+            } else return core;
         }
     }
 }
