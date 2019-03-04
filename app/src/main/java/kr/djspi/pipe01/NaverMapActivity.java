@@ -32,6 +32,7 @@ import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
@@ -69,6 +70,7 @@ import static com.naver.maps.map.NaverMap.MapType;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
+import static java.util.Objects.requireNonNull;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 
 public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
@@ -80,12 +82,12 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    static boolean isSearch = false;
+    private static boolean isSearch = false;
     static final int PAD_LEFT = 0;
     static final int PAD_TOP = 45;
     static final int PAD_RIGHT = 0;
     static final int PAD_BOT = 45;
-    static ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
+    static final ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
     static BottomSheetBehavior behavior;
     static SetTopSheet.ListViewAdapter placesListAdapter;
     static Overlay.OnClickListener listener;
@@ -144,11 +146,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      *
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      *                 getMapAsync() 메서드로 OnMapReadyCallback 을 등록하면 NaverMapActivity 객체를 얻는다.
-     * @see NaverMapActivity#setMapModeSwitch(com.naver.maps.map.NaverMap)
+     * @see NaverMapActivity#setMapModeSwitch(NaverMap)
      */
     @UiThread
     @Override
-    public void onMapReady(@NonNull com.naver.maps.map.NaverMap naverMap) {
+    public void onMapReady(@NonNull NaverMap naverMap) {
         naverMap.setLocationSource(locationSource);
         // UI 요소에 가려진 영역을 패딩으로 지정하면 카메라는 콘텐츠 패딩을 제외한 영역의 중심에 위치한다.
         naverMap.setLocationTrackingMode(Follow);
@@ -168,7 +170,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      *
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
-    private void setMapModeSwitch(@NonNull com.naver.maps.map.NaverMap naverMap) {
+    private void setMapModeSwitch(@NonNull NaverMap naverMap) {
         ToggleSwitch toggleSwitch = findViewById(R.id.nmap_mapmode_switch);
         toggleSwitch.setVisibility(VISIBLE);
         toggleSwitch.setCheckedPosition(0);
@@ -187,10 +189,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         });
     }
 
-    private void setOverlayListener(com.naver.maps.map.NaverMap naverMap) {
+    private void setOverlayListener(NaverMap naverMap) {
         InfoWindow infoWindow = new InfoWindow(new DefaultTextAdapter(context) {
 
-            @NonNull
+            @SuppressWarnings("ConstantConditions")
+            @NotNull
             @Override
             public CharSequence getText(@NonNull InfoWindow infoWindow) {
                 if (infoWindow.getMarker() != null) {
@@ -236,14 +239,12 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         infoWindow.setOnClickListener(listener);
         naverMap.setOnMapClickListener((PointF point, LatLng coord) -> {
             infoWindow.close();
-            if (placesArrayList != null) {
-                placesArrayList.clear();
-                runOnUiThread(() -> placesListAdapter.notifyDataSetChanged());
-            }
+            placesArrayList.clear();
+            runOnUiThread(() -> placesListAdapter.notifyDataSetChanged());
         });
     }
 
-    private void getSpiData(@NotNull com.naver.maps.map.NaverMap naverMap) {
+    private void getSpiData(@NotNull NaverMap naverMap) {
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
         jsonQuery.addProperty("sy", Math.round(bounds.getSouthLatitude() * 1000000d) / 1000000d);
@@ -326,9 +327,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
     private final class SetTopSheet {
 
-        SetTopSheet(com.naver.maps.map.NaverMap naverMap) {
+        SetTopSheet(NaverMap naverMap) {
             ListView listView = findViewById(R.id.nmap_listview);
-            placesListAdapter = new ListViewAdapter(context, placesArrayList, naverMap);
+            placesListAdapter = new ListViewAdapter(context, naverMap);
             listView.setAdapter(placesListAdapter);
 
             setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
@@ -395,12 +396,12 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         private final class ListViewAdapter extends BaseAdapter {
 
-            private List<HashMap<String, String>> placesList;
-            private LayoutInflater inflater;
-            private com.naver.maps.map.NaverMap naverMap;
+            private final List<HashMap<String, String>> placesList;
+            private final LayoutInflater inflater;
+            private final NaverMap naverMap;
 
-            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, com.naver.maps.map.NaverMap naverMap) {
-                this.placesList = placesList;
+            ListViewAdapter(Context context, NaverMap naverMap) {
+                this.placesList = NaverMapActivity.placesArrayList;
                 inflater = LayoutInflater.from(context);
                 this.naverMap = naverMap;
             }
@@ -428,20 +429,19 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             @SuppressLint("InflateParams")
             public View getView(final int position, View view, ViewGroup parent) {
                 final ItemHolder holder;
-                if (view == null) {
+                if (view != null) holder = (ItemHolder) view.getTag();
+                else {
                     view = inflater.inflate(R.layout.listview_item, null);
                     holder = new ItemHolder();
                     holder.name = view.findViewById(R.id.name);
                     view.setTag(holder);
-                } else {
-                    holder = (ItemHolder) view.getTag();
                 }
                 holder.name.setText(placesList.get(position).get("name"));
                 view.setOnClickListener((View v) -> {
                     // searchView 내용 변경과 동시에 Query 를 다시 시작하려면 true
                     searchView.setQuery(placesList.get(position).get("name"), false);
-                    final double coordinate_x = parseDouble(placesList.get(position).get("x"));
-                    final double coordinate_y = parseDouble(placesList.get(position).get("y"));
+                    double coordinate_x = parseDouble(requireNonNull(placesList.get(position).get("x")));
+                    double coordinate_y = parseDouble(requireNonNull(placesList.get(position).get("y")));
                     naverMap.moveCamera(CameraUpdate
                             .scrollTo(new LatLng(coordinate_y, coordinate_x))
                             .animate(CameraAnimation.Fly)
@@ -461,7 +461,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         private final PointF POINT_F = new PointF(0.5f, 0.5f);
 
-        SetBottomSheet(com.naver.maps.map.NaverMap naverMap) {
+        SetBottomSheet(NaverMap naverMap) {
             LinearLayout bottomSheetView = findViewById(R.id.nmap_bottom_sheet);
             TextView bottomSheetText = findViewById(R.id.nmap_bottom_sheet_text);
             bottomSheetText.setOnClickListener((View view) -> {

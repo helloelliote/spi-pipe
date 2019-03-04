@@ -63,7 +63,6 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
     }
 
     private void setPipeCardView() {
-        // Set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager
