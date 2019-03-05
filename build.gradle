@@ -25,6 +25,13 @@ allprojects {
             url 'https://navercorp.bintray.com/maps'
         }
         maven {
+            credentials {
+                username "sdkuser"
+                password "taplinx"
+            }
+            url "http://maven.taplinx.nxp.com/nexus/content/repositories/taplinx/"
+        }
+        maven {
             url 'https://jitpack.io'
         }
     }

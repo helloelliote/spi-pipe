@@ -44,14 +44,14 @@ import static kr.djspi.pipe01.BuildConfig.a;
 import static kr.djspi.pipe01.BuildConfig.k;
 import static kr.djspi.pipe01.BuildConfig.setReadOnly;
 
-public class NfcUtil {
+public final class NfcUtil {
 
     private static final String TAG = NfcUtil.class.getSimpleName();
     private static NfcAdapter nfcAdapter;
     private static PendingIntent pendingIntent;
     private static String[][] techLists;
     private static IntentFilter[] intentFilters;
-    public NxpNfcLib m_libInstance;
+    public NxpNfcLib nxpNfcLib;
     public static INTag213215216 objNtag;
 
     private NfcUtil() {
@@ -77,51 +77,35 @@ public class NfcUtil {
         techLists = new String[][]{{NfcA.class.getName()}, {Ndef.class.getName()}, {MifareUltralight.class.getName()}};
     }
 
-//    public NfcUtil(Class<?> useActivityClass) {
-////        mActivity = activity;
-//        nfcAdapter = NfcAdapter.getDefaultAdapter(mActivity);
-//
-//        pendingIntent = PendingIntent.getActivity(
-//                mActivity,
-//                0,
-//                new Intent(mActivity, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
-//                0);
-//        try {
-//            intentFilters = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain")};
-//            // TODO: 데이터타입 재설정 필요
-//            intentFilters[0].addDataType("application/com.ynsfuture.spi.survery");
-//        } catch (MalformedMimeTypeException e) {
-//            e.getMessage();
-//        }
-//        techLists = new String[][]{{NfcA.class.getName()}, {Ndef.class.getName()}, {MifareUltralight.class.getName()}};
-//
-//        initializeLibrary(mActivity);
-//    }
-
-    public void onResume(Activity activity) {
-        if (nfcAdapter != null) {
-            nfcAdapter.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists);
-        }
-    }
-
-    public void onPause(Activity activity) {
-        if (nfcAdapter != null) {
-            nfcAdapter.disableForegroundDispatch(activity);
-        }
-    }
-
     /**
      * TapLinx NTAG 라이브러리를 불러옴
      */
-    private NfcUtil initializeLibrary(Activity activity) {
+    public NfcUtil initializeLibrary(Activity activity) {
+        nxpNfcLib = NxpNfcLib.getInstance();
         try {
-            m_libInstance = NxpNfcLib.getInstance();
-            m_libInstance.registerActivity(activity, NFC_LICENSE_KEY);
+            nxpNfcLib.registerActivity(activity, NFC_LICENSE_KEY);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return this;
     }
+
+    public static Tag intentToTag(Intent intent) {
+        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+    }
+
+    private final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
+    public static String bytesToHexSerial(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
 
     /**
      * NTAG 의 모델명을 찾은 뒤 적절한 태그 객체를 리턴
@@ -131,12 +115,10 @@ public class NfcUtil {
      * @return objNtag 인식된 NTAG 216 태그 객체
      */
     @Nullable
-    public static INTag213215216 getTagType(final Intent intent, Activity activity) {
+    public INTag213215216 getTagType(final Intent intent) {
         try {
-            NxpNfcLib m_libInstance = NxpNfcLib.getInstance();
-            m_libInstance.registerActivity(activity, NFC_LICENSE_KEY);
-            if (m_libInstance.getCardType(intent) == NTag216) {
-                objNtag = NTagFactory.getInstance().getNTAG216(m_libInstance.getCustomModules());
+            if (nxpNfcLib.getCardType(intent) == NTag216) {
+                objNtag = NTagFactory.getInstance().getNTAG216(nxpNfcLib.getCustomModules());
             } else {
                 Log.w(TAG, "TAG is NOT NTAG 216 Type");
                 return null;
@@ -148,14 +130,6 @@ public class NfcUtil {
     }
 
     /**
-     * NFC 기능 동작 확인
-     * (NFC 꺼짐) 사용자가 NFC 기능을 켤 수 있게 팝업 생성
-     */
-    public static boolean isNfcEnabled() {
-        return nfcAdapter != null && nfcAdapter.isEnabled();
-    }
-
-    /**
      * 쓰기 대상 태그에 쓰기 작업 수행
      * (setReadOnly) build.gradle 에서 설정: release 버전(true)과 내부용 alpha 버전(false) 구분해 빌드
      *
@@ -163,11 +137,11 @@ public class NfcUtil {
      * @return isSuccess 쓰기 작업 성공 여부
      * @see NdefRecordWrapper[] createRecord 사용자 입력값으로 NDEF 레코드를 생성해 리턴
      */
-    public static boolean writeTag(final Intent intent, String[] recordArray, Activity activity, Context context) {
+    public boolean writeTag(final Intent intent, String[] recordArray, Activity activity, Context context) {
         Log.w(TAG, "writeTag() Called");
         boolean isSuccess = false;
         try {
-            objNtag = getTagType(intent, activity);
+            objNtag = getTagType(intent);
             objNtag.getReader().connect();
             objNtag.getReader().setTimeout(2000);
             objNtag.authenticatePwd(k, a); // 비밀번호 인증
@@ -280,7 +254,23 @@ public class NfcUtil {
         return ret;
     }
 
-    public static Tag createTag(Intent intent) {
-        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+    /**
+     * NFC 기능 동작 확인
+     * (NFC 꺼짐) 사용자가 NFC 기능을 켤 수 있게 팝업 생성
+     */
+    public static boolean isNfcEnabled() {
+        return nfcAdapter != null && nfcAdapter.isEnabled();
+    }
+
+    public void onResume(Activity activity) {
+        if (nfcAdapter != null) {
+            nfcAdapter.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists);
+        }
+    }
+
+    public void onPause(Activity activity) {
+        if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(activity);
+        }
     }
 }

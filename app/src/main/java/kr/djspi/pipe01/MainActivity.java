@@ -6,21 +6,27 @@ import android.location.Location;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import kr.djspi.pipe01.nfc.NfcUtil;
+import com.google.gson.JsonObject;
 
-import static kr.djspi.pipe01.nfc.NfcUtil.createTag;
+import kr.djspi.pipe01.nfc.NfcUtil;
+import kr.djspi.pipe01.retrofit2x.Retrofit2x;
+import kr.djspi.pipe01.retrofit2x.RetrofitCore;
+import kr.djspi.pipe01.retrofit2x.SpiGetService;
+
+import static kr.djspi.pipe01.NaverMapActivity.URL_SPI;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 
 public class MainActivity extends LocationUpdate {
 
     // TODO: 마무리 이후에 독립 API 만들기
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static NfcAdapter nfcAdapter;
+    private static NfcAdapter nfcAdapter;
+    private static Tag tag;
     static NfcUtil nfcUtil;
-    private Tag tag;
 
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
@@ -31,7 +37,7 @@ public class MainActivity extends LocationUpdate {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         nfcAdapter = MainActivity.getNfcAdapter(this);
-        nfcUtil = NfcUtil.getInstance(nfcAdapter);
+        nfcUtil = NfcUtil.getInstance(nfcAdapter).initializeLibrary(this);
         NfcUtil.setDispatch(this, getClass());
     }
 
@@ -70,30 +76,54 @@ public class MainActivity extends LocationUpdate {
     @Override
     public void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
-        tag = createTag(intent);
-        checkSerialNum();
+        tag = NfcUtil.intentToTag(intent);
+        if (isValidSpi()) processSpi(tag);
     }
 
-    private void checkSerialNum() {
+    private boolean isValidSpi() {
 //        try {
 //            String serialNum = Const.ByteArrayToHexString(mNfcTag.getId());
-//            mNfcTag = null;
-//
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put(API_KEY_REQUEST, API_REQUEST_SPI_GET);
-//
-//            JSONObject spiDataList = new JSONObject();
-//            spiDataList.put(KEY_SERIAL.getKey(), serialNum);
-//            jsonObject.put(API_KEY_DATA, spiDataList);
-//
-//            RetrofitCore.getInstance()
-//                    .setService(new SpiGetService())
-//                    .setQuery(jsonObject.toString())
-//                    .build(new OnRetrofitListen(callback));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+////            mNfcTag = null;
+////
+////            JSONObject jsonObject = new JSONObject();
+////            jsonObject.put(API_KEY_REQUEST, API_REQUEST_SPI_GET);
+////
+////            JSONObject spiDataList = new JSONObject();
+////            spiDataList.put(KEY_SERIAL.getKey(), serialNum);
+////            jsonObject.put(API_KEY_DATA, spiDataList);
+////
+////            RetrofitCore.getInstance()
+////                    .setService(new SpiGetService())
+////                    .setQuery(jsonObject.toString())
+////                    .build(new OnRetrofitListen(callback));
+////
+////        } catch (Exception e) {
+////            e.printStackTrace();
+////        }
+        return true;
+    }
+
+    private void processSpi(Tag tag) {
+        String serial = NfcUtil.bytesToHexSerial(tag.getId());
+        Log.w(TAG, serial);
+        JsonObject jsonQuery = new JsonObject();
+        jsonQuery.addProperty("sp_serial", serial);
+
+        Retrofit2x.newBuilder()
+                .setService(new SpiGetService(URL_SPI))
+                .setQuery(jsonQuery)
+                .build()
+                .run(new RetrofitCore.OnRetrofitListener() {
+                    @Override
+                    public void onResponse(JsonObject response) {
+                        Log.w(TAG, response.toString());
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Log.w(TAG, throwable.getMessage());
+                    }
+                });
     }
 
     /**

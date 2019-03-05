@@ -20,7 +20,7 @@ android {
         variant.outputs.all {
             variant.buildConfigField "String", "NAVER_CLIENT_ID", "\"2ckb549ihl\""
             variant.buildConfigField "String", "NAVER_CLIENT_SECRET", "\"OQIllDmpKhAJHgUSChZcBkGTDw5Vq7r0j8QjPxWk\""
-            variant.buildConfigField "String", "NFC_LICENSE_KEY", "\"6b89bd6b316a13aeafd31f98d936c586\""
+            variant.buildConfigField "String", "NFC_LICENSE_KEY", "\"2ec29d3c973e2fa2e8c5ce49f98b5e64\""
             variant.buildConfigField "byte[]", "k", "{(byte) 0x32, (byte) 0x30, (byte) 0x31, (byte) 0x34}"
             variant.buildConfigField "byte[]", "a", "{(byte) 0x73, (byte) 0x77}"
             outputFileName = "${variant.name}-${variant.versionName}.apk"
@@ -62,6 +62,10 @@ dependencies {
 //    implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-analytics:16.0.7'
+    implementation('taplinx-android:nxpnfcandroidlib:1.5@aar') {
+        transitive = true
+        changing = true
+    }
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.guava:guava:26.0-android'
     implementation 'com.naver.maps:map-sdk:3.2.1'
