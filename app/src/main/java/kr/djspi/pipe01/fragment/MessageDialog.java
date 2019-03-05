@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 public class MessageDialog extends DialogFragment implements OnClickListener {
 
     private static boolean isReturnToMain = false;
-    private static int issueId = 0;
+    private static int issueType = 0;
     private TextView popupTitle;
     private TextView popupText;
     private TextView popupSubText;
@@ -34,7 +34,6 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
     private TextView buttonOk;
 
     public MessageDialog() {
-
     }
 
     @Override
@@ -42,7 +41,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
         super.onCreate(savedInstanceState);
         isReturnToMain = false;
         if (getArguments() != null) {
-            issueId = getArguments().getInt("issueId");
+            issueType = getArguments().getInt("issueType");
         }
     }
 
@@ -60,10 +59,10 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
         buttonDismiss = view.findViewById(R.id.btn_dismiss);
         buttonDismiss.setOnClickListener(this); // 취소버튼은 기본적으로 비표시 (invisible) 상태
         buttonOk = view.findViewById(R.id.btn_ok);
-        buttonOk.setOnClickListener(this);
+        buttonOk.setOnClickListener(v -> dismiss());
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 
-        setPopup(issueId, view);
+        setPopup(issueType, view);
 
         return view;
     }
@@ -79,7 +78,6 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
         // 팝업창 제목과 내용, 확인 버튼에 Default 값을 먼저 설정
         popupTitle.setText("알림");
         popupText.setText(getTag());
-        buttonOk.setOnClickListener(v -> dismiss());
         // 전달된 상황에 맞게 팝업창 커스터마이즈
         switch (issueType) {
             case 0: // 일반 메시지 전달
@@ -87,13 +85,10 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 break;
             case 1: // (MainActivity.class) 위치 기능이 꺼져 있음
                 popupTitle.setText("주의");
-//                popupSubText.setText(fromHtml(getString(R.string.popup_location_on_sub)));
+                popupSubText.setText(fromHtml(getString(R.string.popup_location_on_sub)));
                 // 확인버튼 터치 시 위치 설정으로 이동
                 buttonOk.setOnClickListener(v -> {
-                    dismiss();
-                    Intent intent = new Intent(ACTION_LOCATION_SOURCE_SETTINGS);
-                    intent.addCategory(CATEGORY_DEFAULT);
-                    startActivity(intent);
+                    startActivity(new Intent(ACTION_LOCATION_SOURCE_SETTINGS).addCategory(CATEGORY_DEFAULT));
                     dismiss();
                 });
                 break;
@@ -102,10 +97,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 popupSubText.setText(fromHtml(getString(R.string.popup_nfc_on_sub)));
                 // 확인버튼 터치 시 NFC 설정으로 이동
                 buttonOk.setOnClickListener(v -> {
-                    dismiss();
-                    Intent intent = new Intent(ACTION_NFC_SETTINGS);
-                    intent.addCategory(CATEGORY_DEFAULT);
-                    startActivity(intent);
+                    startActivity(new Intent(ACTION_NFC_SETTINGS).addCategory(CATEGORY_DEFAULT));
                     dismiss();
                 });
                 break;
@@ -129,6 +121,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 setVisibilityToGone(view);
                 isReturnToMain = true;
                 // FIXME: 2019-01-31 NfcRecordWrite.class 에서 창을 먼저 띄우고, 확인을 누르면 MainActivity 으로 가게 수정
+                // TODO: 2019-03-05 buttonOk.setOnClickListener(v -> dismiss());
                 break;
             default:
                 break;

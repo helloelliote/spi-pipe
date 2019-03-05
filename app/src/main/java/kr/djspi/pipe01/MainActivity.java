@@ -20,7 +20,6 @@ public class MainActivity extends LocationUpdate {
     private static final String TAG = MainActivity.class.getSimpleName();
     public static NfcAdapter nfcAdapter;
     static NfcUtil nfcUtil;
-
     private Tag tag;
 
     /**

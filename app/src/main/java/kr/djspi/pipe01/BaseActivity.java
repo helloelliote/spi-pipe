@@ -1,12 +1,10 @@
 package kr.djspi.pipe01;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -19,21 +17,10 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nabinbhandari.android.permissions.PermissionHandler;
-import com.nabinbhandari.android.permissions.Permissions;
-
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 import kr.djspi.pipe01.fragment.MessageDialog;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_DIAL;
 import static android.content.Intent.ACTION_SENDTO;
 import static android.text.Html.fromHtml;
@@ -47,19 +34,15 @@ public class BaseActivity extends AppCompatActivity {
 
     static Resources resources;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
-    static Boolean requestLocationUpdates;
     Context context;
     Toolbar toolbar;
     DrawerLayout drawer;
-//    NfcUtil nfcUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
         resources = getResources();
-        requestLocationUpdates = false;
-        requestAllPermissions(this);
     }
 
     @Override
@@ -140,26 +123,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 앱 사용에 필요한 권한을 Array 로 입력 ('Manifest.permission.필요권한')
-     */
-    @SuppressLint("MissingPermission")
-    private static void requestAllPermissions(Context context) {
-        String[] permissions = {ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA};
-        Permissions.check(context/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
-            @Override
-            public void onGranted() {
-                requestLocationUpdates = true;
-            }
-
-            @Override
-            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                requestLocationUpdates = false;
-                Toast.makeText(context, "위치정보를 사용할 수 없습니다", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    /**
      * 팝업 다이얼로그 생성
      *
      * @param issue 팝업에 표시할 내용의 인식번호
@@ -176,26 +139,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-//        if (nfcUtil != null) nfcUtil.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        if (nfcUtil != null) nfcUtil.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.MANUFACTURER.equals("samsung")) {
-                Object systemService = getSystemService(Class.forName("com.samsung.android.content.clipboard.SemClipboardManager"));
-                Field mContext = systemService.getClass().getDeclaredField("mContext");
-                mContext.setAccessible(true);
-                mContext.set(systemService, null);
-            }
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored) {
-        }
     }
 }
