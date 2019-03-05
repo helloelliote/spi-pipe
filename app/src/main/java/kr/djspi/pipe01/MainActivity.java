@@ -1,9 +1,7 @@
 package kr.djspi.pipe01;
 
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import kr.djspi.pipe01.nfc.NfcUtil;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
@@ -22,12 +23,9 @@ import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 
 public class MainActivity extends LocationUpdate {
 
-    // TODO: 마무리 이후에 독립 API 만들기
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static NfcAdapter nfcAdapter;
+    private static NfcUtil nfcUtil;
     private static Tag tag;
-    static NfcUtil nfcUtil;
-
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -36,9 +34,7 @@ public class MainActivity extends LocationUpdate {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        nfcAdapter = MainActivity.getNfcAdapter(this);
-        nfcUtil = NfcUtil.getInstance(nfcAdapter).initializeLibrary(this);
-        NfcUtil.setDispatch(this, getClass());
+        nfcUtil = NfcUtil.getInstance(this, getClass()).initializeLibrary(this);
     }
 
     /**
@@ -68,11 +64,6 @@ public class MainActivity extends LocationUpdate {
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
     }
 
-    private static NfcAdapter getNfcAdapter(Context context) {
-        if (nfcAdapter == null) nfcAdapter = NfcAdapter.getDefaultAdapter(context);
-        return nfcAdapter;
-    }
-
     @Override
     public void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
@@ -80,6 +71,7 @@ public class MainActivity extends LocationUpdate {
         if (isValidSpi()) processSpi(tag);
     }
 
+    @Contract(pure = true)
     private boolean isValidSpi() {
 //        try {
 //            String serialNum = Const.ByteArrayToHexString(mNfcTag.getId());
@@ -103,10 +95,10 @@ public class MainActivity extends LocationUpdate {
         return true;
     }
 
-    private void processSpi(Tag tag) {
-        String serial = NfcUtil.bytesToHexSerial(tag.getId());
-        Log.w(TAG, serial);
+    private void processSpi(@NotNull Tag tag) {
+        final String serial = NfcUtil.bytesToHex(tag.getId());
         JsonObject jsonQuery = new JsonObject();
+        // TODO: 2019-03-05 sp_ 등의 헤더 없애기
         jsonQuery.addProperty("sp_serial", serial);
 
         Retrofit2x.newBuilder()
@@ -117,11 +109,21 @@ public class MainActivity extends LocationUpdate {
                     @Override
                     public void onResponse(JsonObject response) {
                         Log.w(TAG, response.toString());
+                        int statusCode = response.get("response").getAsInt();
+                        if (statusCode == 400) {
+                            startActivity(new Intent(context, PipeRecordActivity.class)
+                                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                    .putExtra("PipeRecordActivity", ""));
+                        }
+                        // TODO: 2019-03-05 시리얼 번호로 조회하여 없으면 신규, 있으면 정보 읽기로?
+                        if (statusCode == 200) {
+
+                        }
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        Log.w(TAG, throwable.getMessage());
+                        showMessagePopup(0, throwable.getMessage());
                     }
                 });
     }

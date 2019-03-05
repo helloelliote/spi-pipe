@@ -292,8 +292,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        throwable.printStackTrace();
-//                        showMessagePopup(0, getString(R.string.common_spi_error));
+                        showMessagePopup(0, getString(R.string.common_spi_error));
                     }
                 });
     }
@@ -366,7 +365,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     .setQuery(jsonQuery)
                     .build()
                     .run(new OnRetrofitListener() {
-
                         @Override
                         public void onResponse(JsonObject response) {
                             placesArrayList.clear();

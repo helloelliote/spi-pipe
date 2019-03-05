@@ -25,6 +25,7 @@ import com.nxp.nfclib.ndef.NdefRecordWrapper;
 import com.nxp.nfclib.ntag.INTag213215216;
 import com.nxp.nfclib.ntag.NTagFactory;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -37,6 +38,7 @@ import kr.djspi.pipe01.R;
 
 import static android.nfc.NdefRecord.RTD_TEXT;
 import static android.nfc.NdefRecord.TNF_WELL_KNOWN;
+import static android.nfc.NfcAdapter.getDefaultAdapter;
 import static com.nxp.nfclib.CardType.NTag216;
 import static kr.djspi.pipe01.BuildConfig.APPLICATION_ID;
 import static kr.djspi.pipe01.BuildConfig.NFC_LICENSE_KEY;
@@ -47,12 +49,13 @@ import static kr.djspi.pipe01.BuildConfig.setReadOnly;
 public final class NfcUtil {
 
     private static final String TAG = NfcUtil.class.getSimpleName();
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static NfcAdapter nfcAdapter;
     private static PendingIntent pendingIntent;
     private static String[][] techLists;
     private static IntentFilter[] intentFilters;
-    public NxpNfcLib nxpNfcLib;
     public static INTag213215216 objNtag;
+    public NxpNfcLib nxpNfcLib;
 
     private NfcUtil() {
     }
@@ -61,14 +64,17 @@ public final class NfcUtil {
         static final NfcUtil INSTANCE = new NfcUtil();
     }
 
-    public static NfcUtil getInstance(NfcAdapter nfcAdapter) {
-        NfcUtil.nfcAdapter = nfcAdapter;
+    public static NfcUtil getInstance(Context context, Class<?> useActivityClass) {
+        if (nfcAdapter == null) {
+            nfcAdapter = getDefaultAdapter(context);
+            setDispatch(context, useActivityClass);
+        }
         return LazyHolder.INSTANCE;
     }
 
-    public static void setDispatch(Context context, Class<?> useActivityClass) {
-        pendingIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+    private static void setDispatch(Context context, Class<?> useActivityClass) {
+        pendingIntent = PendingIntent.getActivity(
+                context, 0, new Intent(context, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         try {
             intentFilters = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain")};
             intentFilters[0].addDataType("application/kr.djspi.pipe01");
@@ -80,6 +86,7 @@ public final class NfcUtil {
     /**
      * TapLinx NTAG 라이브러리를 불러옴
      */
+    @Contract("_ -> this")
     public NfcUtil initializeLibrary(Activity activity) {
         nxpNfcLib = NxpNfcLib.getInstance();
         try {
@@ -90,22 +97,9 @@ public final class NfcUtil {
         return this;
     }
 
-    public static Tag intentToTag(Intent intent) {
+    public static Tag intentToTag(@NotNull Intent intent) {
         return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
     }
-
-    private final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-
-    public static String bytesToHexSerial(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
-
 
     /**
      * NTAG 의 모델명을 찾은 뒤 적절한 태그 객체를 리턴
@@ -252,6 +246,20 @@ public final class NfcUtil {
         } catch (Exception e) {
         }
         return ret;
+    }
+
+    @NotNull
+    @Contract("_ -> new")
+    public static String bytesToHex(@NotNull byte[] bytes) {
+        final int length = bytes.length;
+        char[] hexChars = new char[length * 2];
+        for (int i = 0; i < length; i++) {
+            int var = bytes[i] & 0xFF;
+            hexChars[i * 2] = HEX_ARRAY[var >>> 4];
+            hexChars[i * 2 + 1] = HEX_ARRAY[var & 0x0F];
+        }
+        String string = new String(hexChars).replaceAll("(..)", "$1:");
+        return string.substring(0, string.length() - 1);
     }
 
     /**

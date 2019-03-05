@@ -32,6 +32,7 @@ import static kr.djspi.pipe01.BuildConfig.VERSION_NAME;
 
 public class BaseActivity extends AppCompatActivity {
 
+    private static final String TAG = BaseActivity.class.getSimpleName();
     static Resources resources;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
     Context context;

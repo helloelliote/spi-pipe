@@ -74,7 +74,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
      * @see MessageDialog#setVisibilityToGone(View) 보충 설명(Sub) 을 표시하지 않는다.
      * @see #getTag 팝업을 띄우는 클래스에서 전달하는 메시지를 태그로 받아온다.
      */
-    private void setPopup(int issueType, @NonNull View view) {
+    private void setPopup(final int issueType, @NonNull final View view) {
         // 팝업창 제목과 내용, 확인 버튼에 Default 값을 먼저 설정
         popupTitle.setText("알림");
         popupText.setText(getTag());
@@ -128,7 +128,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
         }
     }
 
-    private static void setVisibilityToGone(@NonNull View view) {
+    private static void setVisibilityToGone(@NonNull final View view) {
         view.findViewById(R.id.popup_contents_sub).setVisibility(GONE);
         view.findViewById(R.id.icon_info_s).setVisibility(GONE);
         view.findViewById(R.id.view_border).setVisibility(GONE);

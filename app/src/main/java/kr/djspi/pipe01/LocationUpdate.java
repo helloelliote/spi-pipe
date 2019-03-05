@@ -156,9 +156,9 @@ public abstract class LocationUpdate extends BaseActivity {
 
     @Override
     public void onPause() {
-        super.onPause();
         // Remove location updates to save battery.
         stopLocationUpdates();
+        super.onPause();
     }
 
     /**
