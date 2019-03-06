@@ -13,4 +13,8 @@
 
     <color name="dark_blue">#0D2C54</color>
     <color name="bright_blue">#1C73E8</color>
+
+    <!--PipeSelect-->
+    <color name="popup_color_bg_title">#ebebeb</color>
+
 </resources>

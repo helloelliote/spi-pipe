@@ -31,7 +31,7 @@ public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PipeCardViewHolder holder, int position) {
         if (pipeEntries != null && position < pipeEntries.size()) {
-            Pipe pipe = pipeEntries.get(position);
+            Pipe entry = pipeEntries.get(position);
 //            holder.pipe.setText(entry.pipe);
 //            if (entry.shape != null) {
 //                holder.shape.setText(entry.shape);
@@ -39,6 +39,7 @@ public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
 //            }
 //            holder.spec.setPrefix(entry.header + "  ");
 //            holder.spec.setSuffix(entry.unit);
+
         }
     }
 

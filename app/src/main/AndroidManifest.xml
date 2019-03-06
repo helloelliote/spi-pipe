@@ -76,5 +76,6 @@
         <activity
             android:name=".PipeRecordActivity"
             android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".RecordInputActivity" />
     </application>
 </manifest>

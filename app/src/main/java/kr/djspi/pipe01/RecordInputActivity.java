@@ -12,8 +12,7 @@ import android.provider.MediaStore;
 import android.support.media.ExifInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -30,7 +29,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import kr.djspi.pipe01.dto.Pipe;
+import kr.djspi.pipe01.dto.PipeType;
 import kr.djspi.pipe01.dto.SpiType;
+import kr.djspi.pipe01.fragment.OnSelectListener;
+import kr.djspi.pipe01.fragment.PipeSelect;
+import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
+import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 import static android.content.Intent.ACTION_PICK;
 import static android.graphics.Bitmap.CompressFormat.JPEG;
@@ -42,15 +46,18 @@ import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
 import static android.support.media.ExifInterface.TAG_ORIENTATION;
 
-public class PipeRecordActivity extends BaseActivity implements OnClickListener, Serializable {
+public class RecordInputActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
-    private static final String TAG = PipeRecordActivity.class.getSimpleName();
+    private static final String TAG = RecordInputActivity.class.getSimpleName();
     private static FragmentManager fragmentManager;
     private static HashMap<?, ?> hashMap;
     private static List<Pipe> pipeEntries;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
+    TextFieldBoxes l_pipe;
+    ExtendedEditText pipe, shape, horizontal, vertical, depth, spec, material,
+            supervise, supervise_contact, spi_memo, construction, construction_contact, spi_photo;
     static File mPhoto;
     ImageView photoView;
 
@@ -60,26 +67,37 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
         fragmentManager = getSupportFragmentManager();
         hashMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
         pipeEntries = Pipe.initPipeEntryList();
-        setContentView(R.layout.activity_pipe_record);
+        setContentView(R.layout.activity_record_input);
     }
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         setToolbarTitle(((SpiType) hashMap.get("spi_type")).getType());
-        setPipeCardView();
         // TODO: 2019-03-04 ConfirmButton 기능 추가
-    }
+        l_pipe = findViewById(R.id.l_pipe);
+        l_pipe.setOnClickListener(v -> {
+            PipeSelect pipeSelect = new PipeSelect();
+            pipeSelect.show(fragmentManager, "");
+        });
+        pipe = findViewById(R.id.pipe);
+        pipe.setEnabled(false);
 
-    private void setPipeCardView() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(
-                new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false));
-        PipeCardRecyclerViewAdapter adapter =
-                new PipeCardRecyclerViewAdapter(pipeEntries);
-        recyclerView.addItemDecoration(new PipeGridItemDecoration(20, 20));
-        recyclerView.setAdapter(adapter);
+        shape = findViewById(R.id.shape);
+        horizontal = findViewById(R.id.horizontal);
+        vertical = findViewById(R.id.vertical);
+        depth = findViewById(R.id.depth);
+        spec = findViewById(R.id.spec);
+        material = findViewById(R.id.material);
+        supervise = findViewById(R.id.supervise);
+        supervise_contact = findViewById(R.id.supervise_contact);
+        supervise_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        spi_memo = findViewById(R.id.spi_memo);
+        construction = findViewById(R.id.construction);
+        construction_contact = findViewById(R.id.construction_contact);
+        supervise_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        spi_photo = findViewById(R.id.spi_photo);
+        spi_photo.setOnClickListener(this);
     }
 
     @Override
@@ -95,6 +113,12 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public void onPipeSelect(int index) {
+        final PipeType[] pipes = PipeType.values();
+        pipe.setText(getString(pipes[index].getNameRes()));
     }
 
     private class OnPhotoInput {

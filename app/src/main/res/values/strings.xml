@@ -120,4 +120,6 @@
     <string name="record_confirm">확인하기</string>
     <string name="record_cancel">취소</string>
 
+    <!--PipeSelect-->
+    <string name="popup_title_select_pipe">매설관로 종류선택</string>
 </resources>

@@ -3,7 +3,9 @@ package kr.djspi.pipe01.dto;
 import java.io.Serializable;
 
 import kr.djspi.pipe01.R;
+import lombok.Getter;
 
+@Getter
 public enum PipeType implements Serializable {
     Pipe_City(R.string.pipe_name_00, R.drawable.cir_01_map, 1),
     Pipe_Water(R.string.pipe_name_01, R.drawable.cir_02_map, 1),

@@ -8,19 +8,19 @@ import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import kr.djspi.pipe01.dto.Spi;
+import kr.djspi.pipe01.dto.SpiData;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.nfc.NfcUtil;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
-import kr.djspi.pipe01.retrofit2x.RetrofitCore;
+import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SpiGetService;
 
 import static kr.djspi.pipe01.NaverMapActivity.URL_SPI;
@@ -65,9 +65,9 @@ public class MainActivity extends LocationUpdate implements Serializable {
         });
 
         LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
-        mainLayout3.setOnClickListener(view ->
-                startActivity(new Intent(context, PipeRecordActivity.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
+//        mainLayout3.setOnClickListener(view ->
+//                startActivity(new Intent(context, PipeRecordActivity.class)
+//                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
     }
 
     @Override
@@ -88,10 +88,10 @@ public class MainActivity extends LocationUpdate implements Serializable {
                 .setService(new SpiGetService(URL_SPI))
                 .setQuery(jsonQuery)
                 .build()
-                .run(new RetrofitCore.OnRetrofitListener() {
+                .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        Log.w(TAG, response.toString());
+//                        Log.w(TAG, response.toString());
                         int statusCode = response.get("response").getAsInt();
                         if (statusCode == 400) {
                             // TODO: 2019-03-06 사용할 수 없는 태그
@@ -101,23 +101,18 @@ public class MainActivity extends LocationUpdate implements Serializable {
 //                            JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
 //                            String id = jsonObject.get("id").getAsString(); // "304"
 //                            여기까지 해서 id 를 넣어줄 것으로 가정
-                            Gson gson = new Gson();
-                            JsonArray array = new JsonArray();
-                            JsonObject object = new JsonObject();
                             Spi spi = new Spi(304);
                             spi.setSerial(serial);
-
                             SpiType spiType = new SpiType();
 //                            String type = jsonObject.get("type").getAsString(); // "표지판"
                             spiType.setType("표지판");
 
-                            object.add("spi", spi);
-                            object.add("spi_type", spiType);
-                            array.add(object);
-                            System.err.println(spi);
-                            startActivity(new Intent(context, PipeRecordActivity.class)
+                            HashMap<String, SpiData> hashMap = new HashMap<>();
+                            hashMap.put("spi", spi);
+                            hashMap.put("spi_type", spiType);
+                            startActivity(new Intent(context, RecordInputActivity.class)
                                     .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                    .putExtra("PipeRecordActivity", (Serializable) spi));
+                                    .putExtra("PipeRecordActivity", hashMap));
                         }
                     }
 

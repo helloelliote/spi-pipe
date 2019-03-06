@@ -4,14 +4,15 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 
-public class PipeCardViewHolder extends ViewHolder implements View.OnClickListener {
+public class PipeCardViewHolder extends ViewHolder implements OnClickListener {
 
     TextView pipe;
-    TextView shape;
+    ExtendedEditText shape;
     ExtendedEditText horizontal;
     ExtendedEditText vertical;
     ExtendedEditText depth;

@@ -14,7 +14,7 @@ public class Client {
 
     @Test
     public void doTest() {
-        Pipe pipe1 = new Pipe();
+        Pipe pipe1 = new Pipe(id, type_id, spi_id, supervise_id, construction_id, spec);
 
 
     }
