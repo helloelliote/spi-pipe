@@ -8,16 +8,16 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import kr.djspi.pipe01.dto.PipeEntry;
+import kr.djspi.pipe01.dto.Pipe;
 
 /**
  * Adapter used to show a simple grid.
  */
 public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
 
-    private List<PipeEntry> pipeEntries;
+    private List<Pipe> pipeEntries;
 
-    PipeCardRecyclerViewAdapter(List<PipeEntry> pipeEntries) {
+    PipeCardRecyclerViewAdapter(List<Pipe> pipeEntries) {
         this.pipeEntries = pipeEntries;
     }
 
@@ -31,19 +31,30 @@ public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PipeCardViewHolder holder, int position) {
         if (pipeEntries != null && position < pipeEntries.size()) {
-            PipeEntry entry = pipeEntries.get(position);
-            holder.pipe.setText(entry.pipe);
-            if (entry.shape != null) {
-                holder.shape.setText(entry.shape);
-                holder.shape.setEnabled(false);
-            }
-            holder.spec.setPrefix(entry.header + "  ");
-            holder.spec.setSuffix(entry.unit);
+            Pipe pipe = pipeEntries.get(position);
+//            holder.pipe.setText(entry.pipe);
+//            if (entry.shape != null) {
+//                holder.shape.setText(entry.shape);
+//                holder.shape.setEnabled(false);
+//            }
+//            holder.spec.setPrefix(entry.header + "  ");
+//            holder.spec.setSuffix(entry.unit);
         }
     }
 
     @Override
     public int getItemCount() {
         return pipeEntries.size();
+    }
+
+    public boolean getItemData(Pipe pipe) {
+        boolean isAllValid = false;
+
+
+
+
+
+
+        return isAllValid;
     }
 }

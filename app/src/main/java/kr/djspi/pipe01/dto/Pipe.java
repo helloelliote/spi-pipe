@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import lombok.Data;
 
 @Data
-public class Pipe <T> implements PipeObject, PipeData {
+public class Pipe implements PipeData {
 
     private int id;
     private int type_id;
@@ -21,9 +21,6 @@ public class Pipe <T> implements PipeObject, PipeData {
     private String header;
 
     private ArrayList<PipeData> pipeDataList = new ArrayList<>();
-
-    private Spi spi;
-
     /**
      * 관로 종류: PipeType (enum) 클래스에서 선택된 관로 종류
      * @see PipeType

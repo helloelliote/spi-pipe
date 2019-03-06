@@ -112,7 +112,7 @@ public abstract class LocationUpdate extends BaseActivity {
         };
     }
 
-    abstract void onLocationUpdate(Location location);
+    public abstract void onLocationUpdate(Location location);
 
     /**
      * Sets up the location request.

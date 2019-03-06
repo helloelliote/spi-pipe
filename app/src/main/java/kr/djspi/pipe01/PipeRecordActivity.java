@@ -27,7 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import kr.djspi.pipe01.dto.PipeEntry;
+import kr.djspi.pipe01.dto.Pipe;
+import kr.djspi.pipe01.dto.Spi;
 
 import static android.content.Intent.ACTION_PICK;
 import static android.graphics.Bitmap.CompressFormat.JPEG;
@@ -47,20 +48,24 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
      */
     static File mPhoto;
     ImageView photoView;
-    List<PipeEntry> pipeEntries;
+    Spi spi;
+    List<Pipe> pipeEntries;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        pipeEntries = PipeEntry.initParserList(resources);
+        spi = (Spi) intent.getSerializableExtra("PipeRecordActivity");
         setContentView(R.layout.activity_pipe_record);
+        System.err.println(spi);
+        // String type = ((SpiType) spi.getSpiData("SpiType")).getType();
     }
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        setToolbarTitle(pipeEntries.get(0).spi_type);
+        // TODO: 2019-03-06 SPI 에서 정보 가져오도록
+        setToolbarTitle("표지판");
         setPipeCardView();
         // TODO: 2019-03-04 ConfirmButton 기능 추가
     }

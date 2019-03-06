@@ -64,15 +64,15 @@ public final class NfcUtil {
         static final NfcUtil INSTANCE = new NfcUtil();
     }
 
-    public static NfcUtil getInstance(Context context, Class<?> useActivityClass) {
+    public static NfcUtil get(Context context, Class<?> useActivityClass) {
         if (nfcAdapter == null) {
             nfcAdapter = getDefaultAdapter(context);
-            setDispatch(context, useActivityClass);
+            setForegroundDispatch(context, useActivityClass);
         }
         return LazyHolder.INSTANCE;
     }
 
-    private static void setDispatch(Context context, Class<?> useActivityClass) {
+    private static void setForegroundDispatch(Context context, Class<?> useActivityClass) {
         pendingIntent = PendingIntent.getActivity(
                 context, 0, new Intent(context, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         try {
@@ -87,7 +87,7 @@ public final class NfcUtil {
      * TapLinx NTAG 라이브러리를 불러옴
      */
     @Contract("_ -> this")
-    public NfcUtil initializeLibrary(Activity activity) {
+    public NfcUtil setNxpLibrary(Activity activity) {
         nxpNfcLib = NxpNfcLib.getInstance();
         try {
             nxpNfcLib.registerActivity(activity, NFC_LICENSE_KEY);
@@ -97,7 +97,7 @@ public final class NfcUtil {
         return this;
     }
 
-    public static Tag intentToTag(@NotNull Intent intent) {
+    public static Tag onNewTagIntent(@NotNull Intent intent) {
         return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
     }
 

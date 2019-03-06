@@ -220,7 +220,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 if (overlay instanceof InfoWindow) {
                     InfoWindow window = (InfoWindow) overlay;
                     if (window.getMarker() != null) {
-//                        String spiData = (String) ((HashMap) window.getMarker().getTag()).getInstance("spiData");
+//                        String spiData = (String) ((HashMap) window.getMarker().getTag()).get("spiData");
 //                        Log.w(TAG, spiData);
 //                        startActivity(new Intent(context, NfcRecordRead.class)
 //                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -254,7 +254,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         jsonQuery.addProperty("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
 
         Retrofit2x.newBuilder()
-                .setService(new SpiGetService(URL_SPI))
+                .setService(new SpiGetService(URL_TEST))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
@@ -273,10 +273,10 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 //                                showMessagePopup(0, "");
 //                            }
 //                            if (statusCode == 200) {
-//                                final ArrayList<SpiData> spiDataList = spiDataSet.getArrayList();
+//                                final ArrayList<SpiData> hashMap = spiDataSet.getArrayList();
 ////                                final PipeType[] pipes2 = PipeType.values();
 ////                                PipeType pipe = PipeType.Pipe_Etc;
-////                                for (SpiData spiData : spiDataList) {
+////                                for (SpiData spiData : hashMap) {
 ////                                    String key = spiData.findDataBy(Key_Pipe);
 ////                                    for (PipeType p : pipes2) {
 ////                                        if (key.equals(getString(p.getNameRes()))) {
@@ -322,7 +322,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      * @param location 사용자가 이동한 새 위치
      */
     @Override
-    void onLocationUpdate(Location location) {
+    public void onLocationUpdate(Location location) {
     }
 
     private final class SetTopSheet {

@@ -26,7 +26,7 @@ public class PipeCardViewHolder extends ViewHolder implements View.OnClickListen
 
     // TODO: 2019-02-23 관로특성: 관로 종류에 따라 prefix suffix hint 조정
 
-    public PipeCardViewHolder(@NonNull View itemView) {
+    PipeCardViewHolder(@NonNull View itemView) {
         super(itemView);
         pipe = itemView.findViewById(R.id.pipe);
         shape = itemView.findViewById(R.id.shape);

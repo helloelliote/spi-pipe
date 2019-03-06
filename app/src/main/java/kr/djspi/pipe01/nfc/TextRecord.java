@@ -51,7 +51,7 @@ public class TextRecord implements ParsedRecord {
                             payload.length - languageCodeLength - 1, textEncoding);
             return new TextRecord(languageCode, text);
         } catch (UnsupportedEncodingException e) {
-            // should never happen unless we getInstance a malformed tag.
+            // should never happen unless we get a malformed tag.
             throw new IllegalArgumentException(e);
         }
     }
