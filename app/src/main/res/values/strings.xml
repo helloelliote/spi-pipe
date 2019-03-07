@@ -118,11 +118,11 @@
     <string name="record_input_10_hint">시공업체 연락처 입력(선택사항)</string>
     <string name="record_input_2_edit">거리 입력 (m)</string>
     <string name="record_optional">선택입력 사항</string>
-    <string name="record_confirm">확인하기</string>
+    <string name="record_confirm">다음: 위치 선택</string>
     <string name="record_cancel">취소</string>
 
     <!--Select-->
-    <string name="popup_hint">터치하여 선택하세요</string>
+    <string name="popup_hint">터치하여 선택하세요.</string>
     <string name="popup_title_select_pipe">매설관로 종류선택</string>
     <string name="popup_title_select_shape">매설관로 형태선택</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>

@@ -10,6 +10,7 @@
         <item name="android:includeFontPadding">false</item>
         <item name="android:textColorPrimary">@android:color/black</item>
         <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:textColorTertiary">@color/colorPrimary</item>
     </style>
 
     <style name="Spi.SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -41,7 +42,9 @@
         <item name="android:paddingEnd">10dp</item>
         <item name="panelBackgroundColor">#0A000000</item>
         <item name="useDenseSpacing">true</item>
-        <item name="primaryColor">@color/bright_blue</item>
+        <item name="manualValidateError">true</item>
+        <item name="android:colorControlHighlight">@color/blue_bright</item>
+        <item name="primaryColor">@color/colorAccent</item>
         <item name="secondaryColor">@color/colorPrimaryDark</item>
     </style>
 
@@ -49,18 +52,21 @@
         <item name="android:layout_marginBottom">8dp</item>
         <item name="panelBackgroundColor">#0A000000</item>
         <item name="useDenseSpacing">true</item>
+        <item name="android:colorControlHighlight">@color/blue_bright</item>
         <item name="secondaryColor">@color/colorPrimaryDark</item>
-        <item name="primaryColor">@color/bright_blue</item>
+        <item name="primaryColor">@color/colorAccent</item>
     </style>
 
     <style name="Spi.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="Spi.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@android:color/white</item>
-        <item name="backgroundTint">@color/colorAccent</item>
+        <item name="backgroundTint">@color/green_2</item>
         <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

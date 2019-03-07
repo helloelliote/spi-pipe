@@ -28,6 +28,7 @@
             style="@style/TextFieldBoxes"
             app:alwaysShowHint="true"
             app:iconSignifier="@drawable/ic_type"
+
             app:labelText="관로종류">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
@@ -42,6 +43,7 @@
             android:id="@+id/l_shape"
             style="@style/TextFieldBoxes"
             app:alwaysShowHint="true"
+
             app:iconSignifier="@drawable/ic_shape"
             app:labelText="관로형태">
 
@@ -64,6 +66,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+
                 android:paddingStart="10dp"
                 android:paddingEnd="5dp"
                 app:labelText="이격거리(수평)">
@@ -85,6 +88,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+
                 android:paddingStart="0dp"
                 android:paddingEnd="10dp"
                 app:labelText="이격거리(수직)">
@@ -104,6 +108,7 @@
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
             android:id="@+id/l_depth"
             style="@style/TextFieldBoxes"
+
             app:iconSignifier="@drawable/ic_depth"
             app:labelText="매설심도">
 
@@ -113,6 +118,7 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:inputType="numberDecimal"
+                android:textAlignment="textEnd"
                 app:prefix="지하  "
                 app:suffix="  m" />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -120,6 +126,7 @@
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
             android:id="@+id/l_spec"
             style="@style/TextFieldBoxes"
+
             app:iconSignifier="@drawable/ic_spec"
             app:labelText="관로스펙">
 
@@ -128,7 +135,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
+                android:textAlignment="textEnd"
                 app:prefix=""
+
                 app:suffix="" />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
@@ -158,9 +167,10 @@
                 android:id="@+id/supervise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
                 android:hint="@string/popup_hint"
+                android:imeOptions="actionNext"
                 android:inputType="text"
+                android:textColorHint="@color/colorPrimaryDark"
                 app:prefix="기관명  " />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
@@ -183,6 +193,7 @@
             android:id="@+id/l_spi_memo"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_memo"
+            app:hasClearButton="true"
             app:labelText="메모">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
@@ -226,19 +237,44 @@
                 app:prefix="전화번호  " />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
-        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/l_spi_photo"
-            style="@style/TextFieldBoxes"
-            app:enabled="false"
-            app:iconSignifier="@drawable/ic_photo"
-            app:labelText="사진을 첨부하려면 터치하세요">
+        <!--<LinearLayout-->
+        <!--android:id="@+id/l_spi_photo"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
 
-            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/spi_photo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textUri" />
-        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+        <!--<studio.carbonylgroup.textfieldboxes.TextFieldBoxes-->
+        <!--android:id="@+id/l_photo"-->
+        <!--style="@style/TextFieldBoxes.FreeSize"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+        <!--app:iconSignifier="@drawable/ic_photo"-->
+        <!--app:labelText="사진 촬영">-->
+
+        <!--<studio.carbonylgroup.textfieldboxes.ExtendedEditText-->
+        <!--android:id="@+id/photo"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="gone" />-->
+        <!--</studio.carbonylgroup.textfieldboxes.TextFieldBoxes>-->
+
+        <!--<studio.carbonylgroup.textfieldboxes.TextFieldBoxes-->
+        <!--android:id="@+id/l_gallery"-->
+        <!--style="@style/TextFieldBoxes.FreeSize"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+        <!--app:iconSignifier="@drawable/ic_gallery"-->
+        <!--app:labelText="사진 갤러리">-->
+
+        <!--<studio.carbonylgroup.textfieldboxes.ExtendedEditText-->
+        <!--android:id="@+id/gallery"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="gone" />-->
+        <!--</studio.carbonylgroup.textfieldboxes.TextFieldBoxes>-->
+        <!--</LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"

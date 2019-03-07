@@ -34,6 +34,16 @@
         android:theme="@style/Spi.Theme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="kr.djspi.pipe01"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+        </provider>
+
         <activity
             android:name=".Intro"
             android:screenOrientation="portrait"

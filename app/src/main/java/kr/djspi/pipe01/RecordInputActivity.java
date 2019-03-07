@@ -70,10 +70,15 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    TextFieldBoxes l_pipe, l_shape, l_supervise;
+    TextFieldBoxes l_pipe, l_shape, l_horizontal, l_vertical, l_depth,
+            l_spec, l_material, l_supervise, l_supervise_contact;
     ExtendedEditText pipe, shape, horizontal, vertical, depth, spec, material,
-            supervise, supervise_contact, spi_memo, construction, construction_contact, spi_photo;
+            supervise, supervise_contact, spi_memo, construction, construction_contact, photo, gallery;
     ImageView photoView;
+    static final int ACTIVITY_REQUEST_CODE_PHOTO = 10001;
+    static final int ACTIVITY_REQUEST_CODE_GAL = 10002;
+    static int requestCode;
+    static OnPhotoInput onPhotoInput;
     static File mPhoto;
 
     @Override
@@ -83,6 +88,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         hashMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
         pipeEntries = Pipe.initPipeEntryList();
         listSupervise = getListSupervise();
+//        onPhotoInput = new OnPhotoInput();
         setContentView(R.layout.activity_record_input);
     }
 
@@ -118,8 +124,12 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         construction = findViewById(R.id.construction);
         construction_contact = findViewById(R.id.construction_contact);
         supervise_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-        spi_photo = findViewById(R.id.spi_photo);
-        spi_photo.setOnClickListener(this);
+
+        // TODO: 2019-03-07 사진 추가 기능 개발
+//        l_photo = findViewById(R.id.l_photo);
+//        l_photo.setOnClickListener(this);
+//        l_gallery = findViewById(R.id.l_gallery);
+//        l_gallery.setOnClickListener(this);
 
         findViewById(R.id.btn_cancel).setOnClickListener(v -> RecordInputActivity.this.onBackPressed());
         findViewById(R.id.btn_confirm).setOnClickListener(new OnNextButtonClick());
@@ -148,8 +158,37 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
             case R.id.l_supervise:
                 ListDialog.get().show(fragmentManager, TAG_SUPER);
                 break;
+//            case R.id.l_photo:
+//                requestCode = ACTIVITY_REQUEST_CODE_PHOTO;
+//                onPhotoInput.setPhoto();
+//                break;
+//            case R.id.l_gallery:
+//                requestCode = ACTIVITY_REQUEST_CODE_GAL;
+//                onPhotoInput.setGallery();
+//                break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (mPhoto != null && mPhoto.isFile()) {
+                mPhoto.delete();
+                mPhoto = null;
+            }
+            switch (requestCode) {
+                case ACTIVITY_REQUEST_CODE_PHOTO:
+//                    onPhotoInput.getPhoto();
+                    break;
+                case ACTIVITY_REQUEST_CODE_GAL:
+//                    onPhotoInput.getGallery(data.getData());
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -166,6 +205,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
             case TAG_SHAPE:
                 shape.setText(resources.getStringArray(R.array.popup_list_shape)[index]);
                 break;
+            case TAG_SUPER:
+                supervise.setText(listSupervise.get(index));
             default:
                 break;
         }
@@ -203,8 +244,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         private static final int MAX_PHOTO_SIZE = 1024;
         private String filePathAbs;
         private Uri fileUri;
-        static final int ACTIVITY_REQUEST_CODE_PHOTO = 10001;
-        static final int ACTIVITY_REQUEST_CODE_GAL = 10002;
 
         private void setPhoto() {
             String state = Environment.getExternalStorageState();
@@ -223,12 +262,12 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
         @SuppressLint("SimpleDateFormat")
         private File getFilePath() {
-            File dir = new File(getExternalStorageDirectory() + "/path/");
+            File dir = new File(getExternalStorageDirectory() + "/SPI/");
             if (!dir.exists()) dir.mkdirs();
             String fileDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File filePath = new File(
                     getExternalStorageDirectory().getAbsoluteFile()
-                            + "/path/"
+                            + "/SPI/"
                             + fileDate
                             + ".jpg");
             filePathAbs = filePath.getAbsolutePath();
@@ -331,9 +370,17 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
         @Override
         public void onClick(View v) {
+            // l_horizontal, l_vertical, l_depth,
+            //            l_spec, l_material, l_supervise, l_supervise_contact
             boolean isAllValid = false;
             InputMethodManager imm = (InputMethodManager) getApplication().getSystemService(INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+            l_pipe.setMinCharacters(1);
+            if (!l_pipe.validate()){
+                l_pipe.setCounterTextColor(android.R.color.white);
+                l_pipe.setError("필수입력 항목입니다.", true);
+            }
 
             if (isAllValid) {
 

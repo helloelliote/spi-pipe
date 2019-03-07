@@ -1,7 +1,5 @@
 package kr.djspi.pipe01.retrofit2x;
 
-import android.util.Log;
-
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -29,7 +27,6 @@ public final class SpiGet implements ServiceStrategy {
         jsonObject.addProperty("request", "spi-get");
         jsonObject.add("data", RetrofitCore.jsonQuery);
         final String query = jsonObject.toString();
-        Log.e("SpiGet", query);
         return BUILDER.baseUrl(url).build()
                 .create(RetrofitService.class).getSpi(query);
     }
