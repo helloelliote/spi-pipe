@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 @Data
-public class Spi implements SpiData, Serializable {
+public class Spi implements DataItem, Serializable {
 
     private int id;
     private int type_id;

@@ -15,15 +15,15 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import kr.djspi.pipe01.dto.DataItem;
 import kr.djspi.pipe01.dto.Spi;
-import kr.djspi.pipe01.dto.SpiData;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.nfc.NfcUtil;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SpiGet;
 
-import static kr.djspi.pipe01.NaverMapActivity.URL_SPI;
+import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 
 public class MainActivity extends LocationUpdate implements Serializable {
@@ -107,7 +107,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 //                            String type = jsonObject.get("type").getAsString(); // "표지판"
                             spiType.setType("표지판");
 
-                            HashMap<String, SpiData> hashMap = new HashMap<>();
+                            HashMap<String, DataItem> hashMap = new HashMap<>();
                             hashMap.put("spi", spi);
                             hashMap.put("spi_type", spiType);
                             startActivity(new Intent(context, RecordInputActivity.class)

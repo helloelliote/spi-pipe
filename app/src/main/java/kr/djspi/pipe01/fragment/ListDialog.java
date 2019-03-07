@@ -21,9 +21,9 @@ import kr.djspi.pipe01.R;
 import kr.djspi.pipe01.RecordInputActivity;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 
-import static kr.djspi.pipe01.RecordInputActivity.TAG_PIPE;
-import static kr.djspi.pipe01.RecordInputActivity.TAG_SHAPE;
-import static kr.djspi.pipe01.RecordInputActivity.TAG_SUPER;
+import static kr.djspi.pipe01.Const.TAG_PIPE;
+import static kr.djspi.pipe01.Const.TAG_SHAPE;
+import static kr.djspi.pipe01.Const.TAG_SUPER;
 import static kr.djspi.pipe01.RecordInputActivity.pipes;
 
 public class ListDialog extends DialogFragment implements OnClickListener {

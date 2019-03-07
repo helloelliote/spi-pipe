@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-public class PipeType implements PipeData {
+public class PipeType implements DataItem {
 
     private int id;
     static final String HEAD_NULL = "";

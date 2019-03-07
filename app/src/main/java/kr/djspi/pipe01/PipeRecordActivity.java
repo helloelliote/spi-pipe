@@ -41,6 +41,8 @@ import static android.support.media.ExifInterface.ORIENTATION_ROTATE_180;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
 import static android.support.media.ExifInterface.TAG_ORIENTATION;
+import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_GAL;
+import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_PHOTO;
 
 public class PipeRecordActivity extends BaseActivity implements OnClickListener, Serializable {
 
@@ -102,8 +104,6 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
         private static final int MAX_PHOTO_SIZE = 1024;
         private String filePathAbs;
         private Uri fileUri;
-        static final int ACTIVITY_REQUEST_CODE_PHOTO = 10001;
-        static final int ACTIVITY_REQUEST_CODE_GAL = 10002;
 
         private void setPhoto() {
             String state = Environment.getExternalStorageState();

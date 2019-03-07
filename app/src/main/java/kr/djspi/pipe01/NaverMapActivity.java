@@ -71,6 +71,7 @@ import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
+import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
 
@@ -82,8 +83,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
     static boolean isSearch = false;
-    public static final String URL_SPI = "https://ispi.kr/";
-    public static final String URL_TEST = "http://192.168.0.33/";
     static final int PAD_LEFT = 0;
     static final int PAD_TOP = 45;
     static final int PAD_RIGHT = 0;

@@ -28,7 +28,6 @@
             style="@style/TextFieldBoxes"
             app:alwaysShowHint="true"
             app:iconSignifier="@drawable/ic_type"
-
             app:labelText="관로종류">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
@@ -43,7 +42,6 @@
             android:id="@+id/l_shape"
             style="@style/TextFieldBoxes"
             app:alwaysShowHint="true"
-
             app:iconSignifier="@drawable/ic_shape"
             app:labelText="관로형태">
 
@@ -66,7 +64,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-
                 android:paddingStart="10dp"
                 android:paddingEnd="5dp"
                 app:labelText="이격거리(수평)">
@@ -88,7 +85,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-
                 android:paddingStart="0dp"
                 android:paddingEnd="10dp"
                 app:labelText="이격거리(수직)">
@@ -108,7 +104,6 @@
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
             android:id="@+id/l_depth"
             style="@style/TextFieldBoxes"
-
             app:iconSignifier="@drawable/ic_depth"
             app:labelText="매설심도">
 
@@ -126,7 +121,6 @@
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
             android:id="@+id/l_spec"
             style="@style/TextFieldBoxes"
-
             app:iconSignifier="@drawable/ic_spec"
             app:labelText="관로스펙">
 
@@ -137,7 +131,6 @@
                 android:imeOptions="actionNext"
                 android:textAlignment="textEnd"
                 app:prefix=""
-
                 app:suffix="" />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
@@ -151,7 +144,7 @@
                 android:id="@+id/material"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:inputType="text"
                 app:prefix="재질명  " />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -168,8 +161,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/popup_hint"
-                android:imeOptions="actionNext"
-                android:inputType="text"
                 android:textColorHint="@color/colorPrimaryDark"
                 app:prefix="기관명  " />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -192,8 +183,8 @@
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
             android:id="@+id/l_spi_memo"
             style="@style/TextFieldBoxes"
-            app:iconSignifier="@drawable/ic_memo"
             app:hasClearButton="true"
+            app:iconSignifier="@drawable/ic_memo"
             app:labelText="메모">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText

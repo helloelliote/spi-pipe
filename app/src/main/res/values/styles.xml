@@ -42,7 +42,6 @@
         <item name="android:paddingEnd">10dp</item>
         <item name="panelBackgroundColor">#0A000000</item>
         <item name="useDenseSpacing">true</item>
-        <item name="manualValidateError">true</item>
         <item name="android:colorControlHighlight">@color/blue_bright</item>
         <item name="primaryColor">@color/colorAccent</item>
         <item name="secondaryColor">@color/colorPrimaryDark</item>

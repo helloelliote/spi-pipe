@@ -3,7 +3,7 @@ package kr.djspi.pipe01.dto;
 import lombok.Data;
 
 @Data
-public class PipePosition implements PipeData {
+public class PipePosition implements DataItem {
 
     private int id;
     private int pipe_id;

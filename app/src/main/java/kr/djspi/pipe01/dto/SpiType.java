@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class SpiType implements SpiData, Serializable {
+public class SpiType implements DataItem, Serializable {
 
     private int id;
     /**

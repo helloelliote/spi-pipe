@@ -16,8 +16,8 @@ import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -32,9 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
-import kr.djspi.pipe01.dto.Pipe;
+import kr.djspi.pipe01.dto.DataItem;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.fragment.ListDialog;
@@ -54,19 +53,20 @@ import static android.support.media.ExifInterface.ORIENTATION_ROTATE_180;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
 import static android.support.media.ExifInterface.TAG_ORIENTATION;
-import static kr.djspi.pipe01.NaverMapActivity.URL_SPI;
+import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_GAL;
+import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_PHOTO;
+import static kr.djspi.pipe01.Const.TAG_PIPE;
+import static kr.djspi.pipe01.Const.TAG_SHAPE;
+import static kr.djspi.pipe01.Const.TAG_SUPER;
+import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class RecordInputActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
     private static final String TAG = RecordInputActivity.class.getSimpleName();
-    public static final String TAG_PIPE = "pipe";
-    public static final String TAG_SHAPE = "shape";
-    public static final String TAG_SUPER = "supervise";
     private static FragmentManager fragmentManager;
-    private static HashMap<?, ?> hashMap;
-    private static List<Pipe> pipeEntries;
-    public static ArrayList<String> listSupervise;
+    private static HashMap<?, ?> itemMap;
     public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
+    public static ArrayList<String> listSupervise;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -75,8 +75,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     ExtendedEditText pipe, shape, horizontal, vertical, depth, spec, material,
             supervise, supervise_contact, spi_memo, construction, construction_contact, photo, gallery;
     ImageView photoView;
-    static final int ACTIVITY_REQUEST_CODE_PHOTO = 10001;
-    static final int ACTIVITY_REQUEST_CODE_GAL = 10002;
     static int requestCode;
     static OnPhotoInput onPhotoInput;
     static File mPhoto;
@@ -85,8 +83,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
-        hashMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
-        pipeEntries = Pipe.initPipeEntryList();
+        itemMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
         listSupervise = getListSupervise();
 //        onPhotoInput = new OnPhotoInput();
         setContentView(R.layout.activity_record_input);
@@ -95,7 +92,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        setToolbarTitle(((SpiType) hashMap.get("spi_type")).getType());
+        setToolbarTitle(((SpiType) itemMap.get("spi_type")).getType());
         // TODO: 2019-03-04 ConfirmButton 기능 추가
         l_pipe = findViewById(R.id.l_pipe);
         l_pipe.setOnClickListener(this);
@@ -107,10 +104,19 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         shape = findViewById(R.id.shape);
         shape.setEnabled(false);
 
+        l_horizontal = findViewById(R.id.l_horizontal);
         horizontal = findViewById(R.id.horizontal);
+
+        l_vertical = findViewById(R.id.l_vertical);
         vertical = findViewById(R.id.vertical);
+
+        l_depth = findViewById(R.id.l_depth);
         depth = findViewById(R.id.depth);
+
+        l_spec = findViewById(R.id.l_spec);
         spec = findViewById(R.id.spec);
+
+        l_material = findViewById(R.id.l_material);
         material = findViewById(R.id.material);
 
         l_supervise = findViewById(R.id.l_supervise);
@@ -118,12 +124,14 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         supervise = findViewById(R.id.supervise);
         supervise.setEnabled(false);
 
+        l_supervise_contact = findViewById(R.id.l_supervise_contact);
         supervise_contact = findViewById(R.id.supervise_contact);
         supervise_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+
         spi_memo = findViewById(R.id.spi_memo);
         construction = findViewById(R.id.construction);
         construction_contact = findViewById(R.id.construction_contact);
-        supervise_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        construction_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         // TODO: 2019-03-07 사진 추가 기능 개발
 //        l_photo = findViewById(R.id.l_photo);
@@ -166,29 +174,11 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 //                requestCode = ACTIVITY_REQUEST_CODE_GAL;
 //                onPhotoInput.setGallery();
 //                break;
+            case R.id.btn_confirm:
+                Toast.makeText(context, "K", Toast.LENGTH_SHORT).show();
+                break;
             default:
                 break;
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (mPhoto != null && mPhoto.isFile()) {
-                mPhoto.delete();
-                mPhoto = null;
-            }
-            switch (requestCode) {
-                case ACTIVITY_REQUEST_CODE_PHOTO:
-//                    onPhotoInput.getPhoto();
-                    break;
-                case ACTIVITY_REQUEST_CODE_GAL:
-//                    onPhotoInput.getGallery(data.getData());
-                    break;
-                default:
-                    break;
-            }
         }
     }
 
@@ -237,6 +227,27 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                     });
             return listSupervise;
         } else return listSupervise;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (mPhoto != null && mPhoto.isFile()) {
+                mPhoto.delete();
+                mPhoto = null;
+            }
+            switch (requestCode) {
+                case ACTIVITY_REQUEST_CODE_PHOTO:
+//                    onPhotoInput.getPhoto();
+                    break;
+                case ACTIVITY_REQUEST_CODE_GAL:
+//                    onPhotoInput.getGallery(data.getData());
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private class OnPhotoInput {
@@ -370,21 +381,34 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
         @Override
         public void onClick(View v) {
-            // l_horizontal, l_vertical, l_depth,
-            //            l_spec, l_material, l_supervise, l_supervise_contact
-            boolean isAllValid = false;
-            InputMethodManager imm = (InputMethodManager) getApplication().getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-            l_pipe.setMinCharacters(1);
-            if (!l_pipe.validate()){
-                l_pipe.setCounterTextColor(android.R.color.white);
-                l_pipe.setError("필수입력 항목입니다.", true);
+        }
+
+        private boolean isAllValid() {
+            boolean isValid = false;
+
+            final TextFieldBoxes[] fields =
+                    {l_pipe, l_shape, l_horizontal, l_vertical, l_depth,
+                            l_spec, l_material, l_supervise, l_supervise_contact};
+
+            for (TextFieldBoxes field : fields) {
+                if (!field.validate()) {
+
+                }
             }
 
-            if (isAllValid) {
+            return isValid;
+        }
 
-            }
+        private void setJson() {
+            // pipe, shape, horizontal, vertical, depth, spec, material,
+            //            supervise, supervise_contact, spi_memo, construction, construction_contact
+
+            itemMap = new HashMap<String, DataItem>();
+
+
+
+//            return object;
         }
     }
 }
