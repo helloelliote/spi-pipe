@@ -123,6 +123,9 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 // FIXME: 2019-01-31 NfcRecordWrite.class 에서 창을 먼저 띄우고, 확인을 누르면 MainActivity 으로 가게 수정
                 // TODO: 2019-03-05 buttonOk.setOnClickListener(v -> dismiss());
                 break;
+            case 6: // (공통) 서버와의 통신 에러
+                popupText.setText(getString(R.string.popup_comm_error));
+                popupSubText.setText(getTag());
             default:
                 break;
         }

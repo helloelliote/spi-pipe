@@ -71,9 +71,10 @@
     <string name="map_info_format">%1$s</string>
     <string name="map_search_hint">찾으시는 위치(지명)을 검색하세요.</string>
 
-    <string name="common_spi_error">SPI정보를 가져오는데 실패하였습니다. 다시 시도해주세요.</string>
+    <string name="popup_spi_error">SPI정보를 가져오지 못하였습니다. 다시 시도해주세요.</string>
+    <string name="popup_supervise_error">관리기관 목록을 가져오지 못하였습니다. 다시 시도해주세요.</string>
     <string name="popup_map_noplace">위치(주소) 검색결과가 없습니다.</string>
-    <string name="popup_comm_error">서버와의 통신에 실패하였습니다.</string>
+    <string name="popup_comm_error">서버와의 통신에 실패하였습니다.\n네트워크 연결을 재확인해 주세요.</string>
 
     <!--PipeRecordActivity-->
     <string name="record_input_0">관로종류</string>
@@ -120,6 +121,15 @@
     <string name="record_confirm">확인하기</string>
     <string name="record_cancel">취소</string>
 
-    <!--PipeSelect-->
+    <!--Select-->
+    <string name="popup_hint">터치하여 선택하세요</string>
     <string name="popup_title_select_pipe">매설관로 종류선택</string>
+    <string name="popup_title_select_shape">매설관로 형태선택</string>
+    <string name="popup_title_select_supervise">관리기관 선택</string>
+    <string-array name="popup_list_shape">
+        <item>직진형</item>
+        <item>T분기형</item>
+        <item>엘보형</item>
+        <item>관말형</item>
+    </string-array>
 </resources>

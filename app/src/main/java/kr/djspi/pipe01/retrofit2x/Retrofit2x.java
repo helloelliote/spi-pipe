@@ -14,7 +14,7 @@ public final class Retrofit2x {
 
     @NotNull
     @Contract(" -> new")
-    public static SetBuilder newBuilder() {
+    public static SetBuilder builder() {
         return new BuildSteps();
     }
 

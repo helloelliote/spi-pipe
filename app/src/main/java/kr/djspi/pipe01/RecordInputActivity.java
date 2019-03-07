@@ -13,10 +13,15 @@ import android.support.media.ExifInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,15 +29,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import kr.djspi.pipe01.dto.Pipe;
-import kr.djspi.pipe01.dto.PipeType;
+import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.dto.SpiType;
+import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
-import kr.djspi.pipe01.fragment.PipeSelect;
+import kr.djspi.pipe01.retrofit2x.Retrofit2x;
+import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
+import kr.djspi.pipe01.retrofit2x.SuperviseGet;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
@@ -45,21 +54,27 @@ import static android.support.media.ExifInterface.ORIENTATION_ROTATE_180;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
 import static android.support.media.ExifInterface.TAG_ORIENTATION;
+import static kr.djspi.pipe01.NaverMapActivity.URL_SPI;
 
 public class RecordInputActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
     private static final String TAG = RecordInputActivity.class.getSimpleName();
+    public static final String TAG_PIPE = "pipe";
+    public static final String TAG_SHAPE = "shape";
+    public static final String TAG_SUPER = "supervise";
     private static FragmentManager fragmentManager;
     private static HashMap<?, ?> hashMap;
     private static List<Pipe> pipeEntries;
+    public static ArrayList<String> listSupervise;
+    public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    TextFieldBoxes l_pipe;
+    TextFieldBoxes l_pipe, l_shape, l_supervise;
     ExtendedEditText pipe, shape, horizontal, vertical, depth, spec, material,
             supervise, supervise_contact, spi_memo, construction, construction_contact, spi_photo;
-    static File mPhoto;
     ImageView photoView;
+    static File mPhoto;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +82,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         fragmentManager = getSupportFragmentManager();
         hashMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
         pipeEntries = Pipe.initPipeEntryList();
+        listSupervise = getListSupervise();
         setContentView(R.layout.activity_record_input);
     }
 
@@ -76,20 +92,26 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         setToolbarTitle(((SpiType) hashMap.get("spi_type")).getType());
         // TODO: 2019-03-04 ConfirmButton 기능 추가
         l_pipe = findViewById(R.id.l_pipe);
-        l_pipe.setOnClickListener(v -> {
-            PipeSelect pipeSelect = new PipeSelect();
-            pipeSelect.show(fragmentManager, "");
-        });
+        l_pipe.setOnClickListener(this);
         pipe = findViewById(R.id.pipe);
         pipe.setEnabled(false);
 
+        l_shape = findViewById(R.id.l_shape);
+        l_shape.setOnClickListener(this);
         shape = findViewById(R.id.shape);
+        shape.setEnabled(false);
+
         horizontal = findViewById(R.id.horizontal);
         vertical = findViewById(R.id.vertical);
         depth = findViewById(R.id.depth);
         spec = findViewById(R.id.spec);
         material = findViewById(R.id.material);
+
+        l_supervise = findViewById(R.id.l_supervise);
+        l_supervise.setOnClickListener(this);
         supervise = findViewById(R.id.supervise);
+        supervise.setEnabled(false);
+
         supervise_contact = findViewById(R.id.supervise_contact);
         supervise_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         spi_memo = findViewById(R.id.spi_memo);
@@ -98,6 +120,9 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         supervise_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         spi_photo = findViewById(R.id.spi_photo);
         spi_photo.setOnClickListener(this);
+
+        findViewById(R.id.btn_cancel).setOnClickListener(v -> RecordInputActivity.this.onBackPressed());
+        findViewById(R.id.btn_confirm).setOnClickListener(new OnNextButtonClick());
     }
 
     @Override
@@ -112,13 +137,65 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
     @Override
     public void onClick(View v) {
-
+        if (ListDialog.get().isAdded()) return;
+        switch (v.getId()) {
+            case R.id.l_pipe:
+                ListDialog.get().show(fragmentManager, TAG_PIPE);
+                break;
+            case R.id.l_shape:
+                ListDialog.get().show(fragmentManager, TAG_SHAPE);
+                break;
+            case R.id.l_supervise:
+                ListDialog.get().show(fragmentManager, TAG_SUPER);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
-    public void onPipeSelect(int index) {
-        final PipeType[] pipes = PipeType.values();
-        pipe.setText(getString(pipes[index].getNameRes()));
+    public void onSelect(String tag, int index) {
+        if (index == -1) return;
+        switch (tag) {
+            case TAG_PIPE:
+                pipe.setText(getString(pipes[index].getNameRes()));
+                spec.setPrefix(pipes[index].getHeader());
+                spec.setSuffix(pipes[index].getUnit());
+                spec.setInputType(index == 5 ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_CLASS_NUMBER);
+                break;
+            case TAG_SHAPE:
+                shape.setText(resources.getStringArray(R.array.popup_list_shape)[index]);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private ArrayList<String> getListSupervise() {
+        if (listSupervise == null) {
+            listSupervise = new ArrayList<>();
+            JsonObject jsonQuery = new JsonObject();
+            jsonQuery.addProperty("json", "");
+            Retrofit2x.builder()
+                    .setService(new SuperviseGet(URL_SPI))
+                    .setQuery(jsonQuery)
+                    .build()
+                    .run(new OnRetrofitListener() {
+                        @Override
+                        public void onResponse(JsonObject response) {
+                            JsonArray jsonArray = response.get("data").getAsJsonArray();
+                            for (JsonElement obj : jsonArray) {
+                                listSupervise.add(obj.getAsString());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            showMessagePopup(6, throwable.getMessage());
+                        }
+                    });
+            return listSupervise;
+        } else return listSupervise;
     }
 
     private class OnPhotoInput {

@@ -32,6 +32,7 @@ import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
@@ -55,7 +56,7 @@ import java.util.Locale;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SearchPlacesService;
-import kr.djspi.pipe01.retrofit2x.SpiGetService;
+import kr.djspi.pipe01.retrofit2x.SpiGet;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
@@ -81,8 +82,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
     static boolean isSearch = false;
-    static final String URL_SPI = "https://ispi.kr/";
-    static final String URL_TEST = "http://192.168.0.33/";
+    public static final String URL_SPI = "https://ispi.kr/";
+    public static final String URL_TEST = "http://192.168.0.33/";
     static final int PAD_LEFT = 0;
     static final int PAD_TOP = 45;
     static final int PAD_RIGHT = 0;
@@ -146,11 +147,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      *
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      *                 getMapAsync() 메서드로 OnMapReadyCallback 을 등록하면 NaverMapActivity 객체를 얻는다.
-     * @see NaverMapActivity#setMapModeSwitch(com.naver.maps.map.NaverMap)
+     * @see NaverMapActivity#setMapModeSwitch(NaverMap)
      */
     @UiThread
     @Override
-    public void onMapReady(@NonNull com.naver.maps.map.NaverMap naverMap) {
+    public void onMapReady(@NonNull NaverMap naverMap) {
         naverMap.setLocationSource(locationSource);
         // UI 요소에 가려진 영역을 패딩으로 지정하면 카메라는 콘텐츠 패딩을 제외한 영역의 중심에 위치한다.
         naverMap.setLocationTrackingMode(Follow);
@@ -170,7 +171,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      *
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
-    private void setMapModeSwitch(@NonNull com.naver.maps.map.NaverMap naverMap) {
+    private void setMapModeSwitch(@NonNull NaverMap naverMap) {
         ToggleSwitch toggleSwitch = findViewById(R.id.nmap_mapmode_switch);
         toggleSwitch.setVisibility(VISIBLE);
         toggleSwitch.setCheckedPosition(0);
@@ -189,7 +190,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         });
     }
 
-    private void setOverlayListener(com.naver.maps.map.NaverMap naverMap) {
+    private void setOverlayListener(NaverMap naverMap) {
         InfoWindow infoWindow = new InfoWindow(new DefaultTextAdapter(context) {
 
             @NonNull
@@ -245,7 +246,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         });
     }
 
-    private void getSpiData(@NotNull com.naver.maps.map.NaverMap naverMap) {
+    private void getSpiData(@NotNull NaverMap naverMap) {
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
         jsonQuery.addProperty("sy", Math.round(bounds.getSouthLatitude() * 1000000d) / 1000000d);
@@ -253,8 +254,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         jsonQuery.addProperty("ny", Math.round(bounds.getNorthLatitude() * 1000000d) / 1000000d);
         jsonQuery.addProperty("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
 
-        Retrofit2x.newBuilder()
-                .setService(new SpiGetService(URL_TEST))
+        Retrofit2x.builder()
+                .setService(new SpiGet(URL_SPI))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
@@ -292,7 +293,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        showMessagePopup(0, getString(R.string.common_spi_error));
+                        showMessagePopup(6, throwable.getMessage());
                     }
                 });
     }
@@ -327,7 +328,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
     private final class SetTopSheet {
 
-        SetTopSheet(com.naver.maps.map.NaverMap naverMap) {
+        SetTopSheet(NaverMap naverMap) {
             ListView listView = findViewById(R.id.nmap_listview);
             placesListAdapter = new ListViewAdapter(context, placesArrayList, naverMap);
             listView.setAdapter(placesListAdapter);
@@ -360,7 +361,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             jsonQuery.addProperty("place", query);
             jsonQuery.addProperty("coordinate", coordinate);
 
-            Retrofit2x.newBuilder()
+            Retrofit2x.builder()
                     .setService(new SearchPlacesService())
                     .setQuery(jsonQuery)
                     .build()
@@ -397,9 +398,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
             private List<HashMap<String, String>> placesList;
             private LayoutInflater inflater;
-            private com.naver.maps.map.NaverMap naverMap;
+            private NaverMap naverMap;
 
-            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, com.naver.maps.map.NaverMap naverMap) {
+            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, NaverMap naverMap) {
                 this.placesList = placesList;
                 inflater = LayoutInflater.from(context);
                 this.naverMap = naverMap;
@@ -461,7 +462,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         private final PointF POINT_F = new PointF(0.5f, 0.5f);
 
-        SetBottomSheet(com.naver.maps.map.NaverMap naverMap) {
+        SetBottomSheet(NaverMap naverMap) {
             LinearLayout bottomSheetView = findViewById(R.id.nmap_bottom_sheet);
             TextView bottomSheetText = findViewById(R.id.nmap_bottom_sheet_text);
             bottomSheetText.setOnClickListener((View view) -> {

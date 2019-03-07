@@ -47,15 +47,4 @@ public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
     public int getItemCount() {
         return pipeEntries.size();
     }
-
-    public boolean getItemData(Pipe pipe) {
-        boolean isAllValid = false;
-
-
-
-
-
-
-        return isAllValid;
-    }
 }

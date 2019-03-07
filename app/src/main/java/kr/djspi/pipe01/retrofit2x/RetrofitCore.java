@@ -20,7 +20,7 @@ public final class RetrofitCore {
     private static ServiceStrategy service;
     private static Gson gson = new GsonBuilder().setLenient().create();
     static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
-    static JsonObject jsonQuery = new JsonObject();
+    static JsonObject jsonQuery;
 
     private RetrofitCore() {
     }

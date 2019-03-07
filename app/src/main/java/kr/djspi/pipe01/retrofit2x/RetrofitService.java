@@ -31,6 +31,12 @@ public interface RetrofitService {
             @Query("json") String jsonString
     );
 
+    @Headers({"Content-Type: application/json", "Pragma: no-cache"})
+    @GET("api")
+    Call<JsonObject> getSupervise(
+            @Query("json") String jsonString
+    );
+
     @POST("api")
     Call<JsonObject> postSpi(
             @Query("json") String jsonString

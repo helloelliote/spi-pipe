@@ -21,7 +21,7 @@ import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.nfc.NfcUtil;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
-import kr.djspi.pipe01.retrofit2x.SpiGetService;
+import kr.djspi.pipe01.retrofit2x.SpiGet;
 
 import static kr.djspi.pipe01.NaverMapActivity.URL_SPI;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
@@ -84,8 +84,8 @@ public class MainActivity extends LocationUpdate implements Serializable {
         // TODO: 2019-03-05 sp_ 등의 헤더 없애기
         jsonQuery.addProperty("serial", serial);
 
-        Retrofit2x.newBuilder()
-                .setService(new SpiGetService(URL_SPI))
+        Retrofit2x.builder()
+                .setService(new SpiGet(URL_SPI))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
@@ -118,7 +118,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        showMessagePopup(0, throwable.getMessage());
+                        showMessagePopup(6, throwable.getMessage());
                     }
                 });
     }
