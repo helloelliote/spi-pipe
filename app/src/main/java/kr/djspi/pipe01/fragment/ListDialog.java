@@ -1,6 +1,7 @@
 package kr.djspi.pipe01.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -59,6 +60,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
         }
+        System.err.println(this.toString());
     }
 
     @Override
@@ -86,16 +88,13 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         }
     }
 
-    /**
-     * 레이아웃 구성 및 기능 초기화
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listselect, container, false);
 
         TextView titleView = view.findViewById(R.id.popup_title);
         titleView.setText(listTitle);
-        view.findViewById(R.id.btn_ok).setOnClickListener(this);
+        view.findViewById(R.id.popup_next).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 
@@ -108,18 +107,22 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_ok:
+            case R.id.popup_next:
                 listener.onSelect(listTag, selectIndex);
-                selectIndex = -1;
-                dismiss();
+                dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:
             case R.id.btn_close:
-                dismiss();
-                dismiss();
+                dismissAllowingStateLoss();
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        selectIndex = -1;
+        super.onDismiss(dialog);
     }
 
     private class ListAdapter extends BaseAdapter {

@@ -37,12 +37,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/list_background_color"
         android:choiceMode="singleChoice"
         android:divider="@color/line_a"
         android:dividerHeight="0.35dp"
-        android:listSelector="@color/colorPrimary"
-        android:scrollbarStyle="outsideOverlay" />
+        android:listSelector="#ffccbc"
+        android:scrollbarStyle="insideOverlay" />
 
     <View
         android:layout_width="match_parent"
@@ -70,13 +69,13 @@
             android:background="@color/line_a" />
 
         <TextView
-            android:id="@+id/btn_ok"
+            android:id="@+id/popup_next"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/popup_ok"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/blue_bright"
             android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>

@@ -58,7 +58,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
         popupSubText = view.findViewById(R.id.popup_contents_sub);
         buttonDismiss = view.findViewById(R.id.btn_dismiss);
         buttonDismiss.setOnClickListener(this); // 취소버튼은 기본적으로 비표시 (invisible) 상태
-        buttonOk = view.findViewById(R.id.btn_ok);
+        buttonOk = view.findViewById(R.id.popup_next);
         buttonOk.setOnClickListener(v -> dismiss());
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 

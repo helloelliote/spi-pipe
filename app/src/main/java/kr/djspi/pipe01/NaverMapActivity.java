@@ -429,7 +429,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             public View getView(final int position, View view, ViewGroup parent) {
                 final ItemHolder holder;
                 if (view == null) {
-                    view = inflater.inflate(R.layout.listview_item, null);
+                    view = inflater.inflate(R.layout.listview_nmap_searchplaces, null);
                     holder = new ItemHolder();
                     holder.name = view.findViewById(R.id.name);
                     view.setTag(holder);

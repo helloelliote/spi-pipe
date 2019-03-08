@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    tools:ignore="ContentDescription,DuplicateIds">
+    tools:ignore="ContentDescription">
 
     <LinearLayout
         android:layout_width="325dp"
@@ -72,7 +72,7 @@
                     android:orientation="horizontal">
 
                     <FrameLayout
-                        android:id="@+id/lay_drive_left"
+                        android:id="@+id/lay_1"
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
@@ -90,7 +90,7 @@
                     </FrameLayout>
 
                     <FrameLayout
-                        android:id="@+id/lay_drive_center"
+                        android:id="@+id/lay_2"
                         android:layout_width="86dp"
                         android:layout_height="86dp"
                         android:layout_marginStart="10dp"
@@ -110,7 +110,7 @@
                     </FrameLayout>
 
                     <FrameLayout
-                        android:id="@+id/lay_drive_right"
+                        android:id="@+id/lay_3"
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
@@ -139,7 +139,7 @@
                     android:visibility="invisible">
 
                     <FrameLayout
-                        android:id="@+id/lay_drive_left"
+                        android:id="@+id/lay_4"
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
@@ -157,7 +157,7 @@
                     </FrameLayout>
 
                     <FrameLayout
-                        android:id="@+id/lay_drive_center"
+                        android:id="@+id/lay_5"
                         android:layout_width="86dp"
                         android:layout_height="86dp"
                         android:layout_marginStart="5dp"
@@ -177,7 +177,7 @@
                     </FrameLayout>
 
                     <FrameLayout
-                        android:id="@+id/lay_drive_right"
+                        android:id="@+id/lay_6"
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
@@ -203,7 +203,7 @@
                     android:orientation="horizontal">
 
                     <FrameLayout
-                        android:id="@+id/lay_walk_left"
+                        android:id="@+id/lay_7"
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
@@ -221,7 +221,7 @@
                     </FrameLayout>
 
                     <FrameLayout
-                        android:id="@+id/lay_walk_center"
+                        android:id="@+id/lay_8"
                         android:layout_width="86dp"
                         android:layout_height="86dp"
                         android:layout_marginStart="10dp"
@@ -241,7 +241,7 @@
                     </FrameLayout>
 
                     <FrameLayout
-                        android:id="@+id/lay_walk_right"
+                        android:id="@+id/lay_9"
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
@@ -288,13 +288,13 @@
             android:background="@color/line_a" />
 
         <TextView
-            android:id="@+id/btn_ok"
+            android:id="@+id/popup_next"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/popup_next"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/blue_bright"
             android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>

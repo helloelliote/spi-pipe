@@ -5,9 +5,9 @@ public final class Const {
     public static final String TAG_PIPE = "pipe";
     public static final String TAG_SHAPE = "shape";
     public static final String TAG_SUPER = "supervise";
-    public static final String TAG_TYPE_P = "type_p";
-    public static final String TAG_TYPE_M = "type_m";
-    public static final String TAG_TYPE_C = "type_c";
+    public static final String TAG_TYPE_P = "표지판";
+    public static final String TAG_TYPE_M = "표지기";
+    public static final String TAG_TYPE_C = "표지주";
 
     static final int ACTIVITY_REQUEST_CODE_PHOTO = 10001;
     static final int ACTIVITY_REQUEST_CODE_GAL = 10002;

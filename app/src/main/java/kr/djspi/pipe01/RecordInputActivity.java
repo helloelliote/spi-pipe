@@ -49,6 +49,8 @@ import kr.djspi.pipe01.dto.SpiMemo;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
+import kr.djspi.pipe01.fragment.PlotDialog;
+import kr.djspi.pipe01.fragment.PlotDialogInterface;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SuperviseGet;
@@ -69,6 +71,9 @@ import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_PHOTO;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPER;
+import static kr.djspi.pipe01.Const.TAG_TYPE_C;
+import static kr.djspi.pipe01.Const.TAG_TYPE_M;
+import static kr.djspi.pipe01.Const.TAG_TYPE_P;
 import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class RecordInputActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
@@ -81,12 +86,12 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    static TextFieldBoxes tPipe, tShape, tHorizontal, tVertical, tDepth,
+    static TextFieldBoxes tPipe, tShape, tPosition, tHorizontal, tVertical, tDepth,
             tSpec, tMaterial, tSupervise, tSuperviseContact;
-    static ExtendedEditText ePipe, eShape, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
+    static ExtendedEditText ePipe, eShape, ePosition, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
             eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
     ImageView photoView;
-    static String header, unit;
+    static String type, header, unit;
     static int requestCode;
     static OnPhotoInput onPhotoInput;
     static File mPhoto;
@@ -97,6 +102,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         fragmentManager = getSupportFragmentManager();
         itemMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
         listSupervise = getListSupervise();
+        type = ((SpiType) itemMap.get("spi_type")).getType();
 //        onPhotoInput = new OnPhotoInput();
         setContentView(R.layout.activity_record_input);
     }
@@ -104,7 +110,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        setToolbarTitle(((SpiType) itemMap.get("spi_type")).getType());
+        setToolbarTitle(type);
         // TODO: 2019-03-04 ConfirmButton 기능 추가
         tPipe = findViewById(R.id.l_pipe);
         tPipe.setOnClickListener(this);
@@ -116,9 +122,12 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         eShape = findViewById(R.id.shape);
         eShape.setEnabled(false);
 
+        tPosition = findViewById(R.id.l_position);
+        tPosition.setOnClickListener(this);
+        ePosition = findViewById(R.id.position);
+        ePosition.setEnabled(false);
         tHorizontal = findViewById(R.id.l_horizontal);
         eHorizontal = findViewById(R.id.horizontal);
-
         tVertical = findViewById(R.id.l_vertical);
         eVertical = findViewById(R.id.vertical);
 
@@ -155,7 +164,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         findViewById(R.id.btn_confirm).setOnClickListener(new OnNextButtonClick());
 
 //        ePipe.setText("상수관로");
-        eShape.setText("직진형");
+//        eShape.setText("직진형");
         eHorizontal.setText("2.45");
         eVertical.setText("1.10");
         eDepth.setText("4.50");
@@ -188,6 +197,10 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 break;
             case R.id.l_supervise:
                 ListDialog.get().show(fragmentManager, TAG_SUPER);
+                break;
+            case R.id.l_position:
+                PlotDialogInterface plotDialog = PlotDialog.get();
+                plotDialog.show(fragmentManager, type);
                 break;
 //            case R.id.l_photo:
 //                requestCode = ACTIVITY_REQUEST_CODE_PHOTO;
@@ -223,6 +236,14 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 break;
             case TAG_SUPER:
                 eSupervise.setText(listSupervise.get(index));
+                break;
+            case TAG_TYPE_P:
+                Toast.makeText(context, "표지판 위치 선택" + index, Toast.LENGTH_SHORT).show();
+                break;
+            case TAG_TYPE_M:
+                break;
+            case TAG_TYPE_C:
+                break;
             default:
                 break;
         }

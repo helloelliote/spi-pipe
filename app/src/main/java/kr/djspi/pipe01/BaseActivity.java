@@ -146,4 +146,9 @@ public class BaseActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

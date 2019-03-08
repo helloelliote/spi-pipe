@@ -79,7 +79,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
     private void onNewTag(@NotNull Tag tag) {
         final String serial = NfcUtil.bytesToHex(tag.getId());
         JsonObject jsonQuery = new JsonObject();
-        jsonQuery.addProperty("serial", serial);
+        jsonQuery.addProperty("sp_serial", serial);
 
         Retrofit2x.builder()
                 .setService(new SpiGet(URL_SPI))
@@ -88,7 +88,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-//                        Log.w(TAG, response.toString());
                         int statusCode = response.get("response").getAsInt();
                         if (statusCode == 400) {
                             // TODO: 2019-03-06 사용할 수 없는 태그
