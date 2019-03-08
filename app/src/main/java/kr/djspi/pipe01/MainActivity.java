@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -80,8 +79,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
     private void onNewTag(@NotNull Tag tag) {
         final String serial = NfcUtil.bytesToHex(tag.getId());
         JsonObject jsonQuery = new JsonObject();
-        Log.w(TAG, serial);
-        // TODO: 2019-03-05 sp_ 등의 헤더 없애기
         jsonQuery.addProperty("serial", serial);
 
         Retrofit2x.builder()
@@ -101,11 +98,9 @@ public class MainActivity extends LocationUpdate implements Serializable {
 //                            JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
 //                            String id = jsonObject.get("id").getAsString(); // "304"
 //                            여기까지 해서 id 를 넣어줄 것으로 가정
-                            Spi spi = new Spi(304);
-                            spi.setSerial(serial);
-                            SpiType spiType = new SpiType();
+                            Spi spi = new Spi(304, serial);
+                            SpiType spiType = new SpiType("표지판");
 //                            String type = jsonObject.get("type").getAsString(); // "표지판"
-                            spiType.setType("표지판");
 
                             HashMap<String, DataItem> hashMap = new HashMap<>();
                             hashMap.put("spi", spi);

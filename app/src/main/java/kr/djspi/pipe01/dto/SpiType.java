@@ -11,5 +11,5 @@ public class SpiType implements DataItem, Serializable {
     /**
      * SPI 제품 종류: 표지기, 표지판, 표지주
      */
-    private String type;
+    private final String type;
 }

@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import kr.djspi.pipe01.dto.Pipe;
+import kr.djspi.pipe01.dto.Pipe_Alt;
 import kr.djspi.pipe01.dto.SpiType;
 
 import static android.content.Intent.ACTION_PICK;
@@ -49,7 +49,7 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
     private static final String TAG = PipeRecordActivity.class.getSimpleName();
     private static FragmentManager fragmentManager;
     private static HashMap<?, ?> hashMap;
-    private static List<Pipe> pipeEntries;
+    private static List<Pipe_Alt> pipeAltEntries;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -61,7 +61,7 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
         super.onCreate(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
         hashMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
-        pipeEntries = Pipe.initPipeEntryList();
+        pipeAltEntries = Pipe_Alt.initPipeEntryList();
         setContentView(R.layout.activity_pipe_record);
     }
 
@@ -79,7 +79,7 @@ public class PipeRecordActivity extends BaseActivity implements OnClickListener,
         recyclerView.setLayoutManager(
                 new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false));
         PipeCardRecyclerViewAdapter adapter =
-                new PipeCardRecyclerViewAdapter(pipeEntries);
+                new PipeCardRecyclerViewAdapter(pipeAltEntries);
         recyclerView.addItemDecoration(new PipeGridItemDecoration(20, 20));
         recyclerView.setAdapter(adapter);
     }

@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -32,9 +33,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
-import kr.djspi.pipe01.dto.DataItem;
+import kr.djspi.pipe01.dto.Entry;
+import kr.djspi.pipe01.dto.Pipe;
+import kr.djspi.pipe01.dto.PipeConstruction;
+import kr.djspi.pipe01.dto.PipePosition;
+import kr.djspi.pipe01.dto.PipeShape;
+import kr.djspi.pipe01.dto.PipeSupervise;
+import kr.djspi.pipe01.dto.PipeType;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
+import kr.djspi.pipe01.dto.Spi;
+import kr.djspi.pipe01.dto.SpiLocation;
+import kr.djspi.pipe01.dto.SpiMemo;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
@@ -70,11 +81,12 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    TextFieldBoxes l_pipe, l_shape, l_horizontal, l_vertical, l_depth,
-            l_spec, l_material, l_supervise, l_supervise_contact;
-    ExtendedEditText pipe, shape, horizontal, vertical, depth, spec, material,
-            supervise, supervise_contact, spi_memo, construction, construction_contact, photo, gallery;
+    static TextFieldBoxes tPipe, tShape, tHorizontal, tVertical, tDepth,
+            tSpec, tMaterial, tSupervise, tSuperviseContact;
+    static ExtendedEditText ePipe, eShape, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
+            eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
     ImageView photoView;
+    static String header, unit;
     static int requestCode;
     static OnPhotoInput onPhotoInput;
     static File mPhoto;
@@ -94,44 +106,44 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         super.setContentView(layoutResID);
         setToolbarTitle(((SpiType) itemMap.get("spi_type")).getType());
         // TODO: 2019-03-04 ConfirmButton 기능 추가
-        l_pipe = findViewById(R.id.l_pipe);
-        l_pipe.setOnClickListener(this);
-        pipe = findViewById(R.id.pipe);
-        pipe.setEnabled(false);
+        tPipe = findViewById(R.id.l_pipe);
+        tPipe.setOnClickListener(this);
+        ePipe = findViewById(R.id.pipe);
+        ePipe.setEnabled(false);
 
-        l_shape = findViewById(R.id.l_shape);
-        l_shape.setOnClickListener(this);
-        shape = findViewById(R.id.shape);
-        shape.setEnabled(false);
+        tShape = findViewById(R.id.l_shape);
+        tShape.setOnClickListener(this);
+        eShape = findViewById(R.id.shape);
+        eShape.setEnabled(false);
 
-        l_horizontal = findViewById(R.id.l_horizontal);
-        horizontal = findViewById(R.id.horizontal);
+        tHorizontal = findViewById(R.id.l_horizontal);
+        eHorizontal = findViewById(R.id.horizontal);
 
-        l_vertical = findViewById(R.id.l_vertical);
-        vertical = findViewById(R.id.vertical);
+        tVertical = findViewById(R.id.l_vertical);
+        eVertical = findViewById(R.id.vertical);
 
-        l_depth = findViewById(R.id.l_depth);
-        depth = findViewById(R.id.depth);
+        tDepth = findViewById(R.id.l_depth);
+        eDepth = findViewById(R.id.depth);
 
-        l_spec = findViewById(R.id.l_spec);
-        spec = findViewById(R.id.spec);
+        tSpec = findViewById(R.id.l_spec);
+        eSpec = findViewById(R.id.spec);
 
-        l_material = findViewById(R.id.l_material);
-        material = findViewById(R.id.material);
+        tMaterial = findViewById(R.id.l_material);
+        eMaterial = findViewById(R.id.material);
 
-        l_supervise = findViewById(R.id.l_supervise);
-        l_supervise.setOnClickListener(this);
-        supervise = findViewById(R.id.supervise);
-        supervise.setEnabled(false);
+        tSupervise = findViewById(R.id.l_supervise);
+        tSupervise.setOnClickListener(this);
+        eSupervise = findViewById(R.id.supervise);
+        eSupervise.setEnabled(false);
 
-        l_supervise_contact = findViewById(R.id.l_supervise_contact);
-        supervise_contact = findViewById(R.id.supervise_contact);
-        supervise_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        tSuperviseContact = findViewById(R.id.l_supervise_contact);
+        eSuperviseContact = findViewById(R.id.supervise_contact);
+        eSuperviseContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
-        spi_memo = findViewById(R.id.spi_memo);
-        construction = findViewById(R.id.construction);
-        construction_contact = findViewById(R.id.construction_contact);
-        construction_contact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        eSpiMemo = findViewById(R.id.spi_memo);
+        eConstruction = findViewById(R.id.construction);
+        eConstructionContact = findViewById(R.id.construction_contact);
+        eConstructionContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         // TODO: 2019-03-07 사진 추가 기능 개발
 //        l_photo = findViewById(R.id.l_photo);
@@ -141,6 +153,17 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
         findViewById(R.id.btn_cancel).setOnClickListener(v -> RecordInputActivity.this.onBackPressed());
         findViewById(R.id.btn_confirm).setOnClickListener(new OnNextButtonClick());
+
+//        ePipe.setText("상수관로");
+        eShape.setText("직진형");
+        eHorizontal.setText("2.45");
+        eVertical.setText("1.10");
+        eDepth.setText("4.50");
+        eSpec.setText("250");
+        eMaterial.setText("알루미늄");
+//        eSupervise.setText("");
+        eSuperviseContact.setText("053-424-9547");
+        eSpiMemo.setText("테스트 메모");
     }
 
     @Override
@@ -187,16 +210,19 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         if (index == -1) return;
         switch (tag) {
             case TAG_PIPE:
-                pipe.setText(getString(pipes[index].getNameRes()));
-                spec.setPrefix(pipes[index].getHeader());
-                spec.setSuffix(pipes[index].getUnit());
-                spec.setInputType(index == 5 ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_CLASS_NUMBER);
+                ePipe.setText(getString(pipes[index].getNameRes()));
+                header = pipes[index].getHeader();
+                eSpec.setPrefix(header + "  ");
+                unit = pipes[index].getUnit();
+                eSpec.setSuffix("  " + unit);
+                eSpec.setInputType(index == 5 ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_CLASS_NUMBER);
                 break;
             case TAG_SHAPE:
-                shape.setText(resources.getStringArray(R.array.popup_list_shape)[index]);
+                eShape.setText(resources.getStringArray(R.array.popup_list_shape)[index]);
+                // TODO: 2019-03-08 수평, 수직을 좌,우로 바꾸기
                 break;
             case TAG_SUPER:
-                supervise.setText(listSupervise.get(index));
+                eSupervise.setText(listSupervise.get(index));
             default:
                 break;
         }
@@ -377,19 +403,49 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         }
     }
 
+    private static Entry setEntry() {
+        Spi spi = (Spi) itemMap.get("spi");
+        SpiType spiType = (SpiType) itemMap.get("spi_type");
+        // TODO: 2019-03-08 SpiLocation
+        SpiLocation spiLocation = new SpiLocation();
+        SpiMemo spiMemo = new SpiMemo(eSpiMemo.getText().toString());
+        Pipe pipe = new Pipe(
+                Objects.requireNonNull(spi).getId(),
+                Double.valueOf(eDepth.getText().toString()),
+                Integer.valueOf(eSpec.getText().toString()),
+                eMaterial.getText().toString());
+        PipeType pipeType = new PipeType(header, ePipe.getText().toString(), unit);
+        // TODO: 2019-03-08 PipeShape
+        PipeShape pipeShape = new PipeShape();
+        // TODO: 2019-03-08 PipePosition
+        PipePosition pipePosition = new PipePosition();
+        PipeSupervise pipeSupervise = new PipeSupervise(
+                eSupervise.getText().toString(),
+                eSuperviseContact.getText().toString());
+        PipeConstruction pipeConstruction = new PipeConstruction(
+                eConstruction.getText().toString(),
+                eConstructionContact.getText().toString());
+        return new Entry(
+                spi, spiType, spiLocation, spiMemo,
+                pipe, pipeType, pipeShape, pipePosition, pipeSupervise, pipeConstruction);
+    }
+
     private class OnNextButtonClick implements OnClickListener {
 
         @Override
         public void onClick(View v) {
-
+            final Entry entry = setEntry();
+            ArrayList<Entry> entries = new ArrayList<>(2);
+            entries.add(entry);
+            System.err.println(new Gson().toJson(entries));
         }
 
         private boolean isAllValid() {
             boolean isValid = false;
 
             final TextFieldBoxes[] fields =
-                    {l_pipe, l_shape, l_horizontal, l_vertical, l_depth,
-                            l_spec, l_material, l_supervise, l_supervise_contact};
+                    {tPipe, tShape, tHorizontal, tVertical, tDepth,
+                            tSpec, tMaterial, tSupervise, tSuperviseContact};
 
             for (TextFieldBoxes field : fields) {
                 if (!field.validate()) {
@@ -398,17 +454,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
             }
 
             return isValid;
-        }
-
-        private void setJson() {
-            // pipe, shape, horizontal, vertical, depth, spec, material,
-            //            supervise, supervise_contact, spi_memo, construction, construction_contact
-
-            itemMap = new HashMap<String, DataItem>();
-
-
-
-//            return object;
         }
     }
 }

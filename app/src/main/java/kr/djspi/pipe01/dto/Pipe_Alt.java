@@ -10,17 +10,18 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class Pipe2 implements DataItem {
+public class Pipe_Alt implements DataItem {
 
+    private static final String TAG = Pipe_Alt.class.getSimpleName();
     private static String json;
-    private int id;
-    private int type_id;
-    private int spi_id;
-    private int supervise_id;
-    private int construction_id;
-    private int spec;
-    private double depth;
-    private String material;
+    public final int id;
+    public final int type_id;
+    public final int spi_id;
+    public final int supervise_id;
+    public final int construction_id;
+    public final int spec;
+    public double depth;
+    public String material;
     /**
      * 관로 종류(pipe)에 따라 '관경' 또는 '전압' 등으로 바뀌는 헤더값
      */
@@ -36,17 +37,24 @@ public class Pipe2 implements DataItem {
      */
     private String unit;
 
-    public Pipe2() {
+    public Pipe_Alt(int id, int type_id, int spi_id, int supervise_id, int construction_id, int spec) {
+        this.id = id;
+        this.type_id = type_id;
+        this.spi_id = spi_id;
+        this.supervise_id = supervise_id;
+        this.construction_id = construction_id;
+        this.spec = spec;
+        toJson();
     }
 
     private void toJson() {
         json = new Gson().toJson(this);
     }
 
-    public static List<Pipe> initPipeEntryList() {
+    public static List<Pipe_Alt> initPipeEntryList() {
         ArrayList<String> list = new ArrayList<>();
         list.add(json);
-        Type listType = new TypeToken<ArrayList<Pipe>>() {
+        Type listType = new TypeToken<ArrayList<Pipe_Alt>>() {
         }.getType();
         return new Gson().fromJson(list.toString(), listType);
     }

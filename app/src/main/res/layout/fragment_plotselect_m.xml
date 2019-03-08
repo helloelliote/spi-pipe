@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:ignore="ContentDescription">
+
+    <LinearLayout
+        android:layout_width="325dp"
+        android:layout_height="50dp"
+        android:background="@color/popup_color_bg_title"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/popup_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/btn_close"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/btn_close_black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_tab_body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:text="@string/toast_buried_select_none"
+            android:textColor="@color/common_color_gray_popup"
+            android:textSize="13.33sp" />
+
+        <FrameLayout
+            android:layout_width="315dp"
+            android:layout_height="315dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg1_2" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:id="@+id/lay_drive_left"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_10_7" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/lay_drive_center"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_10_8" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/lay_drive_right"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_10_9" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="invisible">
+
+                    <FrameLayout
+                        android:id="@+id/lay_border_left"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:visibility="invisible">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_01_7" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/lay_border_center"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_10_2" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/lay_border_right"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:visibility="invisible">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_01_9" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:id="@+id/lay_walk_left"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:visibility="gone">
+
+                        <View
+                            android:layout_width="86dp"
+                            android:layout_height="86dp"
+                            android:background="@drawable/btn_01_1" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/lay_walk_center"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_10_2" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/lay_walk_right"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:visibility="gone">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_01_3" />
+
+                        <View
+                            android:id="@+id/v_select"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/btn_on"
+                            android:visibility="gone"
+                            tools:ignore="DuplicateIds" />
+                    </FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.33dp"
+        android:background="@color/line_a" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/popup_cancel"
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="0.33dp"
+            android:layout_height="match_parent"
+            android:background="@color/line_a" />
+
+        <TextView
+            android:id="@+id/btn_ok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/popup_next"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>

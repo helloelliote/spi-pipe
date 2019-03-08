@@ -10,9 +10,12 @@ import lombok.Getter;
 public class PipeType implements DataItem {
 
     private int id;
+    private final String header;
+    private final String pipe;
+    private final String unit;
     static final String HEAD_NULL = "";
-    static final String HEAD_RAD = "관경  ";
-    static final String UNIT_MM = "  mm";
+    static final String HEAD_RAD = "관경";
+    static final String UNIT_MM = "mm";
     static final String UNIT_CORE = "  코어";
 
     @Getter
@@ -29,6 +32,7 @@ public class PipeType implements DataItem {
         Pipe_Cctv(R.string.pipe_name_09, R.drawable.cir_10_map, 5, HEAD_RAD, UNIT_MM),
         Pipe_Traffic(R.string.pipe_name_10, R.drawable.cir_11_map, 5, HEAD_RAD, UNIT_MM),
         Pipe_Etc(R.string.pipe_name_11, R.drawable.cir_12_map, 5, HEAD_RAD, UNIT_MM);
+
 
         private int nameRes;
         private int drawRes;

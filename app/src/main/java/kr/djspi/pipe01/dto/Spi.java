@@ -3,17 +3,12 @@ package kr.djspi.pipe01.dto;
 import java.io.Serializable;
 
 import lombok.Data;
-import lombok.NonNull;
 
 @Data
 public class Spi implements DataItem, Serializable {
 
-    private int id;
+    private final int id;
+    private final String serial;
     private int type_id;
-    private String serial;
     private boolean hidden = false;
-
-    public Spi(@NonNull int id) {
-        this.id = id;
-    }
 }

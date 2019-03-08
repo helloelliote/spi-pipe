@@ -53,6 +53,21 @@
                 android:textColorHint="@color/colorPrimaryDark" />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_position"
+            style="@style/TextFieldBoxes"
+            app:alwaysShowHint="true"
+            app:iconSignifier="@drawable/ic_position"
+            app:labelText="관로위치">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/popup_hint"
+                android:textColorHint="@color/colorPrimaryDark" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -185,7 +200,7 @@
             style="@style/TextFieldBoxes"
             app:hasClearButton="true"
             app:iconSignifier="@drawable/ic_memo"
-            app:labelText="메모">
+            app:labelText="메모(선택입력)">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                 android:id="@+id/spi_memo"
@@ -200,7 +215,7 @@
             android:id="@+id/l_construction"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_construction"
-            app:labelText="시공업체">
+            app:labelText="시공업체(선택입력)">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                 android:id="@+id/construction"
@@ -216,7 +231,7 @@
             android:id="@+id/l_construction_contact"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_contact"
-            app:labelText="시공업체 연락처">
+            app:labelText="시공업체 연락처(선택입력)">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
                 android:id="@+id/construction_contact"

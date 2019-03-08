@@ -21,6 +21,7 @@ public final class RetrofitCore {
     private static Gson gson = new GsonBuilder().setLenient().create();
     static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
     static JsonObject jsonQuery;
+    static String stringQuery;
 
     private RetrofitCore() {
     }
@@ -66,6 +67,17 @@ public final class RetrofitCore {
         RetrofitCore.jsonQuery = null;
         RetrofitCore.jsonQuery = jsonQuery;
         return jsonQuery != null;
+    }
+
+    /**
+     * 사용자 입력값(String) 지정
+     *
+     * @param stringQuery 사용자 입력값
+     */
+    final boolean setQuery(final String stringQuery) {
+        RetrofitCore.stringQuery = null;
+        RetrofitCore.stringQuery = stringQuery;
+        return stringQuery != null;
     }
 
     /**

@@ -24,6 +24,8 @@ public final class Retrofit2x {
 
     public interface SetService {
         SetQuery setQuery(@NonNull JsonObject jsonQuery);
+
+        SetQuery setQuery(@NonNull String stringQuery);
     }
 
     public interface SetQuery {
@@ -35,6 +37,7 @@ public final class Retrofit2x {
 
         private ServiceStrategy service;
         private JsonObject jsonQuery;
+        private String stringQuery;
 
         @Contract("_ -> this")
         @Override
@@ -51,12 +54,18 @@ public final class Retrofit2x {
         }
 
         @Override
+        public SetQuery setQuery(@NonNull String stringQuery) {
+            this.stringQuery = stringQuery;
+            return null;
+        }
+
+        @Override
         public @NonNull
         RetrofitCore build() {
             RetrofitCore core = RetrofitCore.get();
-            if (!core.setService(service) || !core.setQuery(jsonQuery)) {
-                throw new NullPointerException();
-            } else return core;
+            if (core.setService(service) && core.setQuery(jsonQuery) || core.setQuery(stringQuery)) {
+                return core;
+            } else throw new NullPointerException();
         }
     }
 }

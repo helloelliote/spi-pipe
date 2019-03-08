@@ -8,17 +8,17 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import kr.djspi.pipe01.dto.Pipe;
+import kr.djspi.pipe01.dto.Pipe_Alt;
 
 /**
  * Adapter used to show a simple grid.
  */
 public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
 
-    private List<Pipe> pipeEntries;
+    private List<Pipe_Alt> pipeAltEntries;
 
-    PipeCardRecyclerViewAdapter(List<Pipe> pipeEntries) {
-        this.pipeEntries = pipeEntries;
+    PipeCardRecyclerViewAdapter(List<Pipe_Alt> pipeAltEntries) {
+        this.pipeAltEntries = pipeAltEntries;
     }
 
     @NonNull
@@ -30,9 +30,7 @@ public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PipeCardViewHolder holder, int position) {
-        if (pipeEntries != null && position < pipeEntries.size()) {
-            Pipe entry = pipeEntries.get(position);
-//            holder.pipe.setText(entry.pipe);
+        if (pipeAltEntries != null && position < pipeAltEntries.size()) {
 //            if (entry.shape != null) {
 //                holder.shape.setText(entry.shape);
 //                holder.shape.setEnabled(false);
@@ -45,6 +43,6 @@ public class PipeCardRecyclerViewAdapter extends Adapter<PipeCardViewHolder> {
 
     @Override
     public int getItemCount() {
-        return pipeEntries.size();
+        return pipeAltEntries.size();
     }
 }

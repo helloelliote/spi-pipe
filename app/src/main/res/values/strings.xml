@@ -84,6 +84,7 @@
     <string name="popup_hint">터치하여 선택하세요.</string>
     <string name="popup_title_select_pipe">매설관로 종류선택</string>
     <string name="popup_title_select_shape">매설관로 형태선택</string>
+    <string name="popup_title_select_position">매설관로 위치선택</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>
     <string-array name="popup_list_shape">
         <item>직진형</item>
@@ -91,4 +92,8 @@
         <item>엘보형</item>
         <item>관말형</item>
     </string-array>
+
+    <!--PlotDialog-->
+    <string name="toast_buried_select_none">매설관로의 위치를 선택해주세요.</string>
+
 </resources>

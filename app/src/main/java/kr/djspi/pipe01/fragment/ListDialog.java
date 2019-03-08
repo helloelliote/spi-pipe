@@ -91,7 +91,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pipeselect, container, false);
+        View view = inflater.inflate(R.layout.fragment_listselect, container, false);
 
         TextView titleView = view.findViewById(R.id.popup_title);
         titleView.setText(listTitle);
