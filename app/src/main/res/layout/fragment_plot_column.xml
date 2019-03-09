@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:gravity="center"
-            android:text="@string/toast_buried_select_none"
+            android:text="@string/popup_error_select_position"
             android:textColor="@color/common_color_gray_popup"
             android:textSize="13.33sp" />
 
@@ -297,7 +297,7 @@
             android:background="@color/line_a" />
 
         <TextView
-            android:id="@+id/popup_next"
+            android:id="@+id/btn_ok"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

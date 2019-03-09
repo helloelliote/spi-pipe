@@ -2,15 +2,14 @@
     <string name="app_name">SPI</string>
 
     <!--BaseActivity-->
-    <string name="app_exit_toast">뒤로가기 버튼을 한번 더 누르면 종료됩니다.</string>
     <string name="app_title_alt">SPI %1$s %2$s</string>
-    <string name="main_title_common">매설관로</string>
-    <string name="button_find">주변관로\n정보조회</string>
+    <string name="app_exit_toast">뒤로가기 버튼을 한번 더 누르면 종료됩니다.</string>
+    <string name="btn_find_spi">주변관로\n정보조회</string>
     <string name="nav_close">닫기</string>
     <string name="nav_flush_cache">캐시 초기화</string>
-    <string name="navigation_drawer_open">Open</string>
-    <string name="navigation_drawer_close">Close</string>
-    <string name="error_location">위치 정보를 불러오지 못했습니다.\n잠시후에 다시 시도해주세요.</string>
+    <string name="nav_drawer_open">Open</string>
+    <string name="nav_drawer_close">Close</string>
+    <string name="toast_error_location">위치 정보를 불러오지 못했습니다.\n잠시후에 다시 시도해주세요.</string>
     <string name="map_mode_basic">일반</string>
     <string name="map_mode_hybrid">위성</string>
 
@@ -34,7 +33,7 @@
     <!--NfcUtil-->
     <string name="toast_error">입력값을 확인해주세요</string>
 
-    <!--MessageDialog & fragment_popup.xml-->
+    <!--MessageDialog-->
     <string name="popup_warning">주 의</string>
     <string name="popup_ok">확 인</string>
     <string name="popup_cancel">취 소</string>
@@ -48,8 +47,8 @@
     <string name="popup_location_on_sub"><![CDATA[<font color="#000000">GPS 기능은 측량기준점의 위치를 찾아가기 위해 필요한 기능입니다.
     </font><font color="#F24E4E"> GPS 기능을 활성화 하십시오.</font>]]>
     </string>
-    <string name="popup_comm_error">서버와의 통신에 실패하였습니다.\n네트워크 연결을 재확인해 주세요.</string>
-    <string name="popup_supervise_error">관리기관 목록을 가져오지 못하였습니다. 다시 시도해주세요.</string>
+    <string name="popup_error_comm">서버와의 통신에 실패하였습니다.\n네트워크 연결을 재확인해 주세요.</string>
+    <string name="popup_error_supervise">관리기관 목록을 가져오지 못하였습니다. 다시 시도해주세요.</string>
 
     <!--NaverMapActivity-->
     <string name="pipe_name_00">도시가스</string>
@@ -69,8 +68,8 @@
     <string name="map_search_input">포인트를 선택하시면 상세정보가 제공됩니다.</string>
     <string name="map_search_hint">찾으시는 위치(지명)을 검색하세요.</string>
 
-    <string name="popup_spi_error">SPI정보를 가져오지 못하였습니다. 다시 시도해주세요.</string>
-    <string name="popup_map_noplace">위치(주소) 검색결과가 없습니다.</string>
+    <string name="popup_error_spi">SPI정보를 가져오지 못하였습니다. 다시 시도해주세요.</string>
+    <string name="popup_error_noplace">위치(주소) 검색결과가 없습니다.</string>
 
     <!--RecordInputActivity-->
     <string name="record_input_2_hor">수평</string>
@@ -79,12 +78,15 @@
     <string name="record_confirm">다음: 위치 선택</string>
     <string name="record_cancel">취소</string>
     <string name="record_error">필수입력 항목입니다.</string>
-
-    <!--ListDialog-->
     <string name="popup_hint">터치하여 선택하세요.</string>
+
+    <!--Dialog-->
     <string name="popup_title_select_pipe">매설관로 종류선택</string>
     <string name="popup_title_select_shape">매설관로 형태선택</string>
     <string name="popup_title_select_position">매설관로 위치선택</string>
+    <string name="popup_error_select_position">매설관로의 위치를 선택해주세요.</string>
+    <string name="popup_error_select_direction">매설관로의 방향을 선택해주세요.</string>
+    <string name="popup_title_select_direction">매설관로 방향선택</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>
     <string-array name="popup_list_shape">
         <item>직진형</item>
@@ -92,8 +94,4 @@
         <item>엘보형</item>
         <item>관말형</item>
     </string-array>
-
-    <!--PlotDialog-->
-    <string name="toast_buried_select_none">매설관로의 위치를 선택해주세요.</string>
-
 </resources>

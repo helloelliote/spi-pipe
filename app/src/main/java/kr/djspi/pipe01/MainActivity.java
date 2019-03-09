@@ -95,11 +95,12 @@ public class MainActivity extends LocationUpdate implements Serializable {
                         if (statusCode == 200) {
 //                            JsonArray jsonArray = response.get("data").getAsJsonArray();
 //                            JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-//                            String id = jsonObject.get("id").getAsString(); // "304"
-//                            여기까지 해서 id 를 넣어줄 것으로 가정
-                            Spi spi = new Spi(304, serial);
-                            SpiType spiType = new SpiType("표지판");
+//                            String id = jsonObject.get("id").getAsString(); // 304
+//                            int type_id = jsonObject.get("type_id").getAsInt(); // 1
+//                            여기까지 해서 id, type 를 넣어줄 것으로 가정
+                            Spi spi = new Spi(304, serial, 1);
 //                            String type = jsonObject.get("type").getAsString(); // "표지판"
+                            SpiType spiType = new SpiType(1, "표지판");
 
                             HashMap<String, DataItem> hashMap = new HashMap<>();
                             hashMap.put("spi", spi);

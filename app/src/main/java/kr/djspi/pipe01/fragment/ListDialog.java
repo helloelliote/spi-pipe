@@ -24,15 +24,17 @@ import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
-import static kr.djspi.pipe01.Const.TAG_SUPER;
+import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.RecordInputActivity.pipes;
 
+/**
+ * 관로종류 목록과 관리기관 목록을 보여주는데 공용으로 사용하는 Dialog 클래스
+ */
 public class ListDialog extends DialogFragment implements OnClickListener {
 
-    // FIXME: 2019-03-07 선택지 한번 선택 후 재선택시 기존 선택되어 있던 아이템 목록에서 안보임
     private static final String TAG = ListDialog.class.getSimpleName();
     private static String listTag;
-    private static String listTitle;
+    private static String dialogTitle;
     private static ArrayList<String> listItem;
     private static OnSelectListener listener;
     /**
@@ -60,7 +62,6 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
         }
-        System.err.println(this.toString());
     }
 
     @Override
@@ -72,16 +73,16 @@ public class ListDialog extends DialogFragment implements OnClickListener {
                 for (PipeTypeEnum pipe : pipes) {
                     listItem.add(getString(pipe.getNameRes()));
                 }
-                listTitle = getString(R.string.popup_title_select_pipe);
+                dialogTitle = getString(R.string.popup_title_select_pipe);
                 break;
             case TAG_SHAPE:
                 String[] types = getResources().getStringArray(R.array.popup_list_shape);
                 listItem.addAll(Arrays.asList(types));
-                listTitle = getString(R.string.popup_title_select_shape);
+                dialogTitle = getString(R.string.popup_title_select_shape);
                 break;
-            case TAG_SUPER:
+            case TAG_SUPERVISE:
                 listItem = RecordInputActivity.listSupervise;
-                listTitle = getString(R.string.popup_title_select_supervise);
+                dialogTitle = getString(R.string.popup_title_select_supervise);
                 break;
             default:
                 break;
@@ -90,11 +91,11 @@ public class ListDialog extends DialogFragment implements OnClickListener {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_listselect, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         TextView titleView = view.findViewById(R.id.popup_title);
-        titleView.setText(listTitle);
-        view.findViewById(R.id.popup_next).setOnClickListener(this);
+        titleView.setText(dialogTitle);
+        view.findViewById(R.id.btn_ok).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 
@@ -107,7 +108,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.popup_next:
+            case R.id.btn_ok:
                 listener.onSelect(listTag, selectIndex);
                 dismissAllowingStateLoss();
                 break;
@@ -153,7 +154,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         @Override
         public View getView(int position, View convertView, ViewGroup container) {
             if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.fragment_pipeselect_item, null);
+                convertView = LayoutInflater.from(context).inflate(R.layout.fragment_list_item, null);
             }
             TextView textView = convertView.findViewById(R.id.txt_name);
             textView.setText(listItem.get(position));

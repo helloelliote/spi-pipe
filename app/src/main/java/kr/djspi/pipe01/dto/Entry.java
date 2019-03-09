@@ -17,5 +17,4 @@ public class Entry implements Serializable {
     private final PipeShape pipe_shape;
     private final PipePosition pipe_position;
     private final PipeSupervise pipe_supervise;
-    private final PipeConstruction pipe_construction;
 }

@@ -7,10 +7,11 @@ public class Pipe implements DataItem {
 
     private int id = -1;
     private int type_id;
+    private int spi_id;
+    private double depth;
+    private int spec;
+    private String material;
     private int supervise_id;
-    private int construction_id;
-    private final int spi_id;
-    private final double depth;
-    private final int spec;
-    private final String material;
+    private String construction;
+    private String constructionContact;
 }

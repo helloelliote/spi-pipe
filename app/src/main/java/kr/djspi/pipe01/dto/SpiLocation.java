@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class SpiLocation implements DataItem {
 
-    private int id;
-    private int spi_id;
+    private final int id;
+    private final int spi_id;
     /**
      * 위도(latitude), 경도(longitude) 좌표
      */

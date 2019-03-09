@@ -371,7 +371,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                             behavior.setState(STATE_COLLAPSED);
                             JsonArray places = response.getAsJsonArray("places");
                             if (places == null || places.size() == 0) {
-                                showMessagePopup(0, getString(R.string.popup_map_noplace));
+                                showMessagePopup(0, getString(R.string.popup_error_noplace));
                                 return;
                             }
                             for (JsonElement place : places) {
@@ -387,7 +387,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            showMessagePopup(0, getString(R.string.popup_comm_error));
+                            showMessagePopup(0, getString(R.string.popup_error_comm));
                             throwable.printStackTrace();
                         }
                     });

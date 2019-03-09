@@ -50,7 +50,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_popup, container, false);
+        View view = inflater.inflate(R.layout.fragment_message, container, false);
 
         popupTitle = view.findViewById(R.id.popup_title);
         popupTitle.setText("알림");
@@ -58,7 +58,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
         popupSubText = view.findViewById(R.id.popup_contents_sub);
         buttonDismiss = view.findViewById(R.id.btn_dismiss);
         buttonDismiss.setOnClickListener(this); // 취소버튼은 기본적으로 비표시 (invisible) 상태
-        buttonOk = view.findViewById(R.id.popup_next);
+        buttonOk = view.findViewById(R.id.btn_ok);
         buttonOk.setOnClickListener(v -> dismiss());
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 
@@ -124,7 +124,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 // TODO: 2019-03-05 buttonOk.setOnClickListener(v -> dismiss());
                 break;
             case 6: // (공통) 서버와의 통신 에러
-                popupText.setText(getString(R.string.popup_comm_error));
+                popupText.setText(getString(R.string.popup_error_comm));
                 popupSubText.setText(getTag());
             default:
                 break;

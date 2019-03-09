@@ -69,7 +69,7 @@
             android:background="@color/line_a" />
 
         <TextView
-            android:id="@+id/popup_next"
+            android:id="@+id/btn_ok"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

@@ -75,7 +75,7 @@ public class BaseActivity extends AppCompatActivity {
         textViewButton.setVisibility(VISIBLE);
         textViewButton.setOnClickListener(v -> {
             if (currentLocation == null) {
-                Toast.makeText(this, getString(R.string.error_location), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.toast_error_location), Toast.LENGTH_LONG).show();
                 return;
             }
             startActivity(new Intent(context, NaverMapActivity.class)
@@ -99,7 +99,7 @@ public class BaseActivity extends AppCompatActivity {
     void setNavigationView(@NotNull View view, boolean useHeader) {
         drawer = view.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
