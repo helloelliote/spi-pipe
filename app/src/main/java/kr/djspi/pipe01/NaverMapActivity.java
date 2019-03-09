@@ -65,7 +65,6 @@ import static android.view.View.VISIBLE;
 import static com.naver.maps.map.LocationTrackingMode.Face;
 import static com.naver.maps.map.LocationTrackingMode.Follow;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
-import static com.naver.maps.map.NaverMap.MAXIMUM_ZOOM;
 import static com.naver.maps.map.NaverMap.MapType;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
@@ -78,7 +77,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     private static final String TAG = NaverMapActivity.class.getSimpleName();
     private static final double ZOOM_DEFAULT = 18.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 6.0; // 최소 줌레벨
-    private static final double ZOOM_MAX = MAXIMUM_ZOOM; // 최대 줌레벨(21)
+    private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */

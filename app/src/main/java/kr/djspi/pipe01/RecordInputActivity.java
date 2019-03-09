@@ -13,17 +13,18 @@ import android.support.media.ExifInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -66,9 +67,12 @@ import static android.support.media.ExifInterface.ORIENTATION_ROTATE_180;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
 import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
 import static android.support.media.ExifInterface.TAG_ORIENTATION;
+import static android.text.InputType.TYPE_CLASS_NUMBER;
+import static android.text.InputType.TYPE_CLASS_TEXT;
 import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_GAL;
 import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_PHOTO;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
+import static kr.djspi.pipe01.Const.PIPE_SHAPES;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
@@ -83,33 +87,33 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
     private static final String TAG = RecordInputActivity.class.getSimpleName();
     private static HashMap<?, ?> itemMap;
-    public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
+    private static ExtendedEditText ePipe, eShape, ePosition, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
+            eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
+    private static String spiType, header, unit;
+    private static Pipe pipe = new Pipe();
+    private static PipeType pipeType = new PipeType();
+    private static PipeShape pipeShape = new PipeShape();
+    private static PipePosition pipePosition = new PipePosition();
+    private static PipeSupervise pipeSupervise = new PipeSupervise();
     public static FragmentManager fragmentManager;
     public static ArrayList<String> listSupervise;
+    public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
     static TextFieldBoxes tPipe, tShape, tPosition, tHorizontal, tVertical, tDepth,
             tSpec, tMaterial, tSupervise, tSuperviseContact;
-    static ExtendedEditText ePipe, eShape, ePosition, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
-            eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
-    ImageView photoView;
-    static String spiType, header, unit;
     static int requestCode;
     static OnPhotoInput onPhotoInput;
     static File mPhoto;
-    public static Pipe pipe = new Pipe();
-    public static PipeType pipeType = new PipeType();
-    public static PipeShape pipeShape = new PipeShape();
-    public static PipePosition pipePosition = new PipePosition();
-    public static PipeSupervise pipeSupervise = new PipeSupervise();
+    ImageView photoView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
-        itemMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
         listSupervise = getListSupervise();
+        itemMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
         spiType = ((SpiType) itemMap.get("spi_type")).getType();
 //        onPhotoInput = new OnPhotoInput();
         setContentView(R.layout.activity_record_input);
@@ -119,7 +123,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         setToolbarTitle(spiType);
-        // TODO: 2019-03-04 ConfirmButton 기능 추가
+
         tPipe = findViewById(R.id.l_pipe);
         tPipe.setOnClickListener(this);
         ePipe = findViewById(R.id.pipe);
@@ -162,6 +166,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         eSuperviseContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         eSpiMemo = findViewById(R.id.spi_memo);
+
         eConstruction = findViewById(R.id.construction);
         eConstructionContact = findViewById(R.id.construction_contact);
         eConstructionContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
@@ -223,8 +228,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                     return;
                 } else {
                     PlotDialog plotDialog = PositionDialog.get();
-                    Bundle bundle = new Bundle(1);
-//                bundle.putSerializable();
                     plotDialog.show(fragmentManager, spiType);
                     break;
 //            case R.id.l_photo:
@@ -236,9 +239,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 //                onPhotoInput.setGallery();
 //                break;
                 }
-            case R.id.btn_confirm:
-                Toast.makeText(context, "K", Toast.LENGTH_SHORT).show();
-                break;
             default:
                 break;
         }
@@ -250,26 +250,26 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         switch (tag) {
             case TAG_PIPE:
                 ePipe.setText(getString(pipes[index].getNameRes()));
-                pipe.setType_id(index);
                 pipeType.setId(index);
-                pipePosition.setPipe_id(index);
+                pipe.setType_id(index);
                 pipeShape.setPipe_id(index);
+                pipePosition.setPipe_id(index);
                 // TODO: 2019-03-09 서버에서의 관로타입 index 는 몇번부터 시작하는지 확인
                 header = pipes[index].getHeader();
                 eSpec.setPrefix(header + "  ");
                 unit = pipes[index].getUnit();
                 eSpec.setSuffix("  " + unit);
-                eSpec.setInputType(index == 5 ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_CLASS_NUMBER);
+                eSpec.setInputType(index == 5 ? TYPE_CLASS_TEXT : TYPE_CLASS_NUMBER); // index == 5 : 통신관로
                 break;
             case TAG_SHAPE:
-                eShape.setText(resources.getStringArray(R.array.popup_list_shape)[index]);
+                eShape.setText(PIPE_SHAPES[index]);
                 ePosition.setHint(R.string.popup_hint);
                 tPosition.setEndIcon(null);
                 break;
             case TAG_SUPERVISE:
                 eSupervise.setText(listSupervise.get(index));
-                pipe.setSupervise_id(index);
                 pipeSupervise.setId(index);
+                pipe.setSupervise_id(index);
                 // TODO: 2019-03-09 서버에서의 관리기관 index 는 몇번부터 시작하는지 확인
                 break;
             case TAG_TYPE_PLATE:
@@ -291,53 +291,53 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                         ePosition.setText("차도 / 길어깨쪽 방향");
                         break;
                     case 2:
-                        eHorizontal.setText("0");
-                        eHorizontal.setPrefix("없음");
                         eHorizontal.setEnabled(false);
+                        eHorizontal.setPrefix("없음");
+                        eHorizontal.setText("0");
                         eVertical.setEnabled(true);
                         ePosition.setText("차도 / 길어깨쪽 방향");
                         break;
                     case 3:
                         eHorizontal.setEnabled(true);
-                        eVertical.setEnabled(true);
                         eHorizontal.setPrefix("우측");
+                        eVertical.setEnabled(true);
                         ePosition.setText("차도 / 길어깨쪽 방향");
                         break;
                     case 4:
-                        eVertical.setText("0");
-                        eVertical.setPrefix("없음");
                         eHorizontal.setEnabled(true);
-                        eVertical.setEnabled(false);
                         eHorizontal.setPrefix("좌측");
+                        eVertical.setEnabled(false);
+                        eVertical.setPrefix("없음");
+                        eVertical.setText("0");
                         ePosition.setText("보차도 경계 위치");
                         break;
                     case 5:
-                        eHorizontal.setText("0");
-                        eVertical.setText("0");
-                        eHorizontal.setPrefix("없음");
-                        eVertical.setPrefix("없음");
                         eHorizontal.setEnabled(false);
+                        eHorizontal.setPrefix("없음");
+                        eHorizontal.setText("0");
                         eVertical.setEnabled(false);
+                        eVertical.setPrefix("없음");
+                        eVertical.setText("0");
                         ePosition.setText("보차도 경계 위치");
                         break;
                     case 6:
-                        eVertical.setText("0");
-                        eVertical.setPrefix("없음");
                         eHorizontal.setEnabled(true);
-                        eVertical.setEnabled(false);
                         eHorizontal.setPrefix("우측");
+                        eVertical.setEnabled(false);
+                        eVertical.setPrefix("없음");
+                        eVertical.setText("0");
                         ePosition.setText("보차도 경계 위치");
                         break;
                     case 7:
                         eHorizontal.setEnabled(true);
-                        eVertical.setEnabled(true);
                         eHorizontal.setPrefix("좌측");
+                        eVertical.setEnabled(true);
                         ePosition.setText("보도 / 차도 반대쪽 방향");
                         break;
                     case 8:
-                        eHorizontal.setText("0");
-                        eHorizontal.setPrefix("없음");
                         eHorizontal.setEnabled(false);
+                        eHorizontal.setPrefix("없음");
+                        eHorizontal.setText("0");
                         eVertical.setEnabled(true);
                         ePosition.setText("보도 / 차도 반대쪽 방향");
                         break;
@@ -349,12 +349,11 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                         break;
                     default:
                         eHorizontal.setEnabled(true);
-                        eVertical.setEnabled(true);
                         eHorizontal.setPrefix("수평");
+                        eVertical.setEnabled(true);
                         ePosition.setText(null);
                         break;
                 }
-                // TODO: 2019-03-08 수평, 수직을 좌,우로 바꾸기
                 break;
             case TAG_DIRECTION:
                 pipePosition.setDirection(PIPE_DIRECTIONS[index]);
@@ -405,6 +404,9 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                     break;
                 case ACTIVITY_REQUEST_CODE_GAL:
 //                    onPhotoInput.getGallery(data.getData());
+                    break;
+                case 3000:
+
                     break;
                 default:
                     break;
@@ -539,6 +541,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         }
     }
 
+    @NotNull
+    @Contract(" -> new")
     private static Entry setEntry() throws Exception {
         Spi spi = (Spi) itemMap.get("spi");
         final int spiId = Objects.requireNonNull(spi).getId();
@@ -577,6 +581,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
             } catch (Exception e) {
                 showMessagePopup(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.");
             }
+            startActivityForResult(new Intent(context, SpiLocationActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 3000);
         }
 
         private boolean isAllValid() {

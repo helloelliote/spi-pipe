@@ -22,6 +22,7 @@ import kr.djspi.pipe01.R;
 import kr.djspi.pipe01.RecordInputActivity;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 
+import static kr.djspi.pipe01.Const.PIPE_SHAPES;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
@@ -76,8 +77,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
                 dialogTitle = getString(R.string.popup_title_select_pipe);
                 break;
             case TAG_SHAPE:
-                String[] types = getResources().getStringArray(R.array.popup_list_shape);
-                listItem.addAll(Arrays.asList(types));
+                listItem.addAll(Arrays.asList(PIPE_SHAPES));
                 dialogTitle = getString(R.string.popup_title_select_shape);
                 break;
             case TAG_SUPERVISE:

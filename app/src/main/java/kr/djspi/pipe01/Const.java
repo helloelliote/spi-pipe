@@ -10,6 +10,7 @@ public final class Const {
     public static final String TAG_TYPE_PLATE = "표지판";
     public static final String TAG_TYPE_MARKER = "표지기";
     public static final String TAG_TYPE_COLUMN = "표지주";
+    public static final String[] PIPE_SHAPES = {"직진형", "T분기형", "엘보형", "관말형"};
     static final String[] PIPE_DIRECTIONS = {null, "nw", "n", "ne", "w", null, "e", "sw", "s", "se"};
 
     static final int ACTIVITY_REQUEST_CODE_PHOTO = 10001;

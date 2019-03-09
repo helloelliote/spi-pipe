@@ -88,10 +88,8 @@
     <string name="popup_error_select_direction">매설관로의 방향을 선택해주세요.</string>
     <string name="popup_title_select_direction">매설관로 방향선택</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>
-    <string-array name="popup_list_shape">
-        <item>직진형</item>
-        <item>T분기형</item>
-        <item>엘보형</item>
-        <item>관말형</item>
-    </string-array>
+
+    <!--SpiLocationActivity-->
+    <string name="map_fix_point">SPI 위치 지정</string>
+    <string name="record_confirm_location">다음: 정보 기록</string>
 </resources>

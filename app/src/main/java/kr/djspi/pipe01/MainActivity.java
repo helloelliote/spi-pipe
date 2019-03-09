@@ -118,10 +118,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
                 });
     }
 
-    private void setGson() {
-
-    }
-
     @Override
     public void onResume() {
         if (!isNfcEnabled()) showMessagePopup(2, getString(R.string.popup_nfc_on));

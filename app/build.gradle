@@ -80,7 +80,7 @@ dependencies {
 
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.4'
     // https://androidexample365.com/a-new-material-design-text-field-that-comes-in-a-box/#hint
-    implementation 'net.steamcrafted:materialiconlib:1.1.5'
+//    implementation 'net.steamcrafted:materialiconlib:1.1.5'
     // https://github.com/code-mc/material-icon-lib
 
     testImplementation 'junit:junit:4.12'
