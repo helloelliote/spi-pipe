@@ -394,9 +394,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         private final class ListViewAdapter extends BaseAdapter {
 
-            private List<HashMap<String, String>> placesList;
-            private LayoutInflater inflater;
-            private NaverMap naverMap;
+            private final List<HashMap<String, String>> placesList;
+            private final LayoutInflater inflater;
+            private final NaverMap naverMap;
 
             ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, NaverMap naverMap) {
                 this.placesList = placesList;

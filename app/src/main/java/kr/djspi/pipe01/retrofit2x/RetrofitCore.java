@@ -18,7 +18,7 @@ public final class RetrofitCore {
 
     private static final String TAG = RetrofitCore.class.getSimpleName();
     private static ServiceStrategy service;
-    private static Gson gson = new GsonBuilder().setLenient().create();
+    private static final Gson gson = new GsonBuilder().setLenient().create();
     static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
     static JsonObject jsonQuery;
     static String stringQuery;

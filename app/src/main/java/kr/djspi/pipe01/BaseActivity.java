@@ -33,11 +33,11 @@ import static kr.djspi.pipe01.BuildConfig.VERSION_NAME;
 public class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
-    static Resources resources;
+    public static Resources resources;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
     Context context;
     Toolbar toolbar;
-    DrawerLayout drawer;
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,7 +96,7 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * 연락처, 버전 정보, 앱 사용 도움말 등이 표시되는 NavigationView 설정
      */
-    void setNavigationView(@NotNull View view, boolean useHeader) {
+    private void setNavigationView(@NotNull View view, boolean useHeader) {
         drawer = view.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
@@ -106,17 +106,22 @@ public class BaseActivity extends AppCompatActivity {
         if (useHeader) {
             NavigationView navigationView = view.findViewById(R.id.nav_view);
             View headerView = navigationView.getHeaderView(0);
+
             TextView versionName = headerView.findViewById(R.id.versionName);
             versionName.setText(getString(R.string.nav_version_name, VERSION_NAME, BUILD_TYPE));
-            // TODO: 2019-01-31 앱 빌드시 파일명에 버전코드 붙이기 build.gradle 수정
+
             TextView email = headerView.findViewById(R.id.email);
-            email.setText(fromHtml(getString(R.string.nav_email, "djspi@chol.com")));
+            String emailStr = getString(R.string.nav_dj_email);
+            email.setText(fromHtml(getString(R.string.nav_email, emailStr)));
             email.setOnClickListener(v ->
-                    startActivity(new Intent(ACTION_SENDTO, Uri.fromParts("mailto", "djspi@chol.com", null))));
+                    startActivity(new Intent(ACTION_SENDTO, Uri.fromParts("mailto", emailStr, null))));
+
             TextView phone = headerView.findViewById(R.id.phone);
-            phone.setText(fromHtml(getString(R.string.nav_phone, "+82-53-424-9547")));
+            String phoneStr = getString(R.string.nav_dj_phone);
+            phone.setText(fromHtml(getString(R.string.nav_phone, phoneStr)));
             phone.setOnClickListener(v ->
-                    startActivity(new Intent(ACTION_DIAL, Uri.parse("tel:" + "+82-53-424-9547"))));
+                    startActivity(new Intent(ACTION_DIAL, Uri.parse("tel:" + phoneStr))));
+
             TextView guide = headerView.findViewById(R.id.guide);
             guide.setText(fromHtml(getString(R.string.nav_guide)));
             navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(START));
@@ -129,7 +134,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param issue 팝업에 표시할 내용의 인식번호
      * @param tag   팝업에 표시할 내용의 인식태그
      */
-    public void showMessagePopup(int issue, String tag) {
+    void showMessagePopup(int issue, String tag) {
         MessageDialog dialog = new MessageDialog();
         Bundle bundle = new Bundle(1);
         bundle.putInt("issueType", issue);

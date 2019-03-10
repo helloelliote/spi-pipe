@@ -41,8 +41,8 @@
 //import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
 //import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
 //import static android.support.media.ExifInterface.TAG_ORIENTATION;
-//import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_GAL;
-//import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_PHOTO;
+//import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
+//import static kr.djspi.pipe01.Const.REQUEST_CODE_PHOTO;
 //
 //public class PipeRecordActivity extends BaseActivity implements OnClickListener, Serializable {
 //
@@ -114,7 +114,7 @@
 //                    if (filePath != null) {
 //                        fileUri = FileProvider.getUriForFile(context, getPackageName(), filePath);
 //                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-//                        startActivityForResult(intent, ACTIVITY_REQUEST_CODE_PHOTO);
+//                        startActivityForResult(intent, REQUEST_CODE_PHOTO);
 //                    }
 //                }
 //            }
@@ -137,7 +137,7 @@
 //        private void setGallery() {
 //            Intent intent = new Intent(ACTION_PICK);
 //            intent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*");
-//            startActivityForResult(intent, ACTIVITY_REQUEST_CODE_GAL);
+//            startActivityForResult(intent, REQUEST_CODE_GALLERY);
 //        }
 //
 //        private void getPhoto() {

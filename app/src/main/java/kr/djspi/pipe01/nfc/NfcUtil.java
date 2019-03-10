@@ -222,7 +222,7 @@ public final class NfcUtil {
      * @param tag
      * @return
      */
-    // FIXME: 2018-12-22 StringBuilder 사용하기
+    // FIXME: 2018-12-22 StringBuilder 사용하기, 예외 처리 전략 개발
     public String readTag(Tag tag) {
         String ret = "";
         try {

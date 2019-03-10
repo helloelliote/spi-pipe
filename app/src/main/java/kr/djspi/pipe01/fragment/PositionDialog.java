@@ -110,7 +110,6 @@ public class PositionDialog extends DialogFragment implements PlotDialog, OnClic
                 }
                 listener.onSelect(TAG_POSITION, selectIndex);
                 PlotDialog plotDialog = DirectionDialog.get();
-                Bundle bundle = new Bundle();
                 plotDialog.show(fragmentManager, spiTypeTag);
                 selectIndex = -1;
                 dismissAllowingStateLoss();

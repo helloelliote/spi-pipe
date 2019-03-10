@@ -19,7 +19,7 @@
     <string name="nav_phone"><![CDATA[<font color="#0077C8"><a href="tel:%1$s">%1$s</a></font>]]></string>
     <string name="nav_email"><![CDATA[대진기술정보(주) <font color="#0077C8">%1$s</font>]]></string>
     <string name="nav_dj_email">djgis@chol.com</string>
-    <string name="nav_dj_phone">+82-53-424-9547</string>
+    <string name="nav_dj_phone">+82–53–424–9547</string>
     <string name="nav_guide"></string>
 
     <!--MainActivity-->
@@ -75,7 +75,8 @@
     <string name="record_input_2_hor">수평</string>
     <string name="record_input_2_ver">수직</string>
     <string name="record_optional">선택입력 사항</string>
-    <string name="record_confirm">다음: 위치 선택</string>
+    <string name="record_location">SPI 위치설정</string>
+    <string name="record_confirm">SPI 정보기록</string>
     <string name="record_cancel">취소</string>
     <string name="record_error">필수입력 항목입니다.</string>
     <string name="popup_hint">터치하여 선택하세요.</string>
@@ -90,6 +91,5 @@
     <string name="popup_title_select_supervise">관리기관 선택</string>
 
     <!--SpiLocationActivity-->
-    <string name="map_fix_point">SPI 위치 지정</string>
-    <string name="record_confirm_location">다음: 정보 기록</string>
+    <string name="record_confirm_location">위치 기록</string>
 </resources>

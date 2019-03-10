@@ -49,7 +49,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
 
     @Contract(pure = true)
     public static ListDialog get() {
-        return ListDialog.LazyHolder.INSTANCE;
+        return LazyHolder.INSTANCE;
     }
 
     public ListDialog() {
@@ -81,7 +81,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
                 dialogTitle = getString(R.string.popup_title_select_shape);
                 break;
             case TAG_SUPERVISE:
-                listItem = RecordInputActivity.listSupervise;
+                listItem = RecordInputActivity.superviseList;
                 dialogTitle = getString(R.string.popup_title_select_supervise);
                 break;
             default:
@@ -128,8 +128,8 @@ public class ListDialog extends DialogFragment implements OnClickListener {
 
     private class ListAdapter extends BaseAdapter {
 
-        private Context context;
-        private ArrayList<String> listItem;
+        private final Context context;
+        private final ArrayList<String> listItem;
 
         ListAdapter(Context context, ArrayList<String> listItem) {
             this.context = context;

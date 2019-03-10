@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.button.MaterialButton;
 import android.support.media.ExifInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
@@ -69,10 +70,11 @@ import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
 import static android.support.media.ExifInterface.TAG_ORIENTATION;
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_CLASS_TEXT;
-import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_GAL;
-import static kr.djspi.pipe01.Const.ACTIVITY_REQUEST_CODE_PHOTO;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.PIPE_SHAPES;
+import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
+import static kr.djspi.pipe01.Const.REQUEST_CODE_MAP;
+import static kr.djspi.pipe01.Const.REQUEST_CODE_PHOTO;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
@@ -82,22 +84,24 @@ import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
 import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
 import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
 import static kr.djspi.pipe01.Const.URL_SPI;
+import static kr.djspi.pipe01.Const.URL_TEST;
 
 public class RecordInputActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
     private static final String TAG = RecordInputActivity.class.getSimpleName();
-    private static HashMap<?, ?> itemMap;
     private static ExtendedEditText ePipe, eShape, ePosition, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
             eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
+    private static HashMap<?, ?> itemMap;
     private static String spiType, header, unit;
     private static Pipe pipe = new Pipe();
     private static PipeType pipeType = new PipeType();
     private static PipeShape pipeShape = new PipeShape();
     private static PipePosition pipePosition = new PipePosition();
     private static PipeSupervise pipeSupervise = new PipeSupervise();
-    public static FragmentManager fragmentManager;
-    public static ArrayList<String> listSupervise;
     public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
+    public static FragmentManager fragmentManager;
+    public static ArrayList<String> superviseList;
+    private MaterialButton buttonConfirm;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -106,15 +110,16 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     static int requestCode;
     static OnPhotoInput onPhotoInput;
     static File mPhoto;
+    static SpiLocation spiLocation = new SpiLocation();
     ImageView photoView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
-        listSupervise = getListSupervise();
+        superviseList = getSuperviseList();
         itemMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
-        spiType = ((SpiType) itemMap.get("spi_type")).getType();
+        spiType = ((SpiType) Objects.requireNonNull(itemMap.get("spi_type"))).getType();
 //        onPhotoInput = new OnPhotoInput();
         setContentView(R.layout.activity_record_input);
     }
@@ -178,7 +183,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 //        l_gallery.setOnClickListener(this);
 
         findViewById(R.id.btn_cancel).setOnClickListener(v -> RecordInputActivity.this.onBackPressed());
-        findViewById(R.id.btn_confirm).setOnClickListener(new OnNextButtonClick());
+        buttonConfirm = findViewById(R.id.btn_confirm);
+        buttonConfirm.setOnClickListener(new OnNextButtonClick());
 
         ePipe.setText("상수관로");
         eHorizontal.setText("2.45");
@@ -205,6 +211,62 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         }
     }
 
+    private ArrayList<String> getSuperviseList() {
+        if (superviseList == null) {
+            superviseList = new ArrayList<>();
+            JsonObject jsonQuery = new JsonObject();
+            jsonQuery.addProperty("json", "");
+            Retrofit2x.builder()
+                    .setService(new SuperviseGet(URL_SPI))
+                    .setQuery(jsonQuery)
+                    .build()
+                    .run(new OnRetrofitListener() {
+                        @Override
+                        public void onResponse(JsonObject response) {
+                            JsonArray jsonArray = response.get("data").getAsJsonArray();
+                            for (JsonElement obj : jsonArray) {
+                                superviseList.add(obj.getAsString());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            showMessagePopup(6, getString(R.string.popup_error_supervise));
+                        }
+                    });
+            return superviseList;
+        } else return superviseList;
+    }
+
+    // TODO: 2019-03-10 테스트 서버 통신 테스트
+    private ArrayList<String> getSuperviseListTest() {
+        if (superviseList == null) {
+            superviseList = new ArrayList<>();
+            JsonObject jsonQuery = new JsonObject();
+            jsonQuery.addProperty("json", "");
+            Retrofit2x.builder()
+                    .setService(new SuperviseGet(URL_TEST))
+                    .setQuery(jsonQuery)
+                    .build()
+                    .run(new OnRetrofitListener() {
+                        @Override
+                        public void onResponse(JsonObject response) {
+                            Log.w(TAG, response.toString());
+//                            JsonArray jsonArray = response.get("data").getAsJsonArray();
+//                            for (JsonElement obj : jsonArray) {
+//                                superviseList.add(obj.getAsString());
+//                            }
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            showMessagePopup(6, throwable.getMessage());
+                        }
+                    });
+            return superviseList;
+        } else return superviseList;
+    }
+
     @Override
     public void onClick(View v) {
         if (ListDialog.get().isAdded()) return;
@@ -229,16 +291,17 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 } else {
                     PlotDialog plotDialog = PositionDialog.get();
                     plotDialog.show(fragmentManager, spiType);
-                    break;
+                }
+                break;
 //            case R.id.l_photo:
-//                requestCode = ACTIVITY_REQUEST_CODE_PHOTO;
+//                requestCode = REQUEST_CODE_PHOTO;
 //                onPhotoInput.setPhoto();
 //                break;
 //            case R.id.l_gallery:
-//                requestCode = ACTIVITY_REQUEST_CODE_GAL;
+//                requestCode = REQUEST_CODE_GALLERY;
 //                onPhotoInput.setGallery();
 //                break;
-                }
+
             default:
                 break;
         }
@@ -267,7 +330,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 tPosition.setEndIcon(null);
                 break;
             case TAG_SUPERVISE:
-                eSupervise.setText(listSupervise.get(index));
+                eSupervise.setText(superviseList.get(index));
                 pipeSupervise.setId(index);
                 pipe.setSupervise_id(index);
                 // TODO: 2019-03-09 서버에서의 관리기관 index 는 몇번부터 시작하는지 확인
@@ -363,33 +426,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         }
     }
 
-    private ArrayList<String> getListSupervise() {
-        if (listSupervise == null) {
-            listSupervise = new ArrayList<>();
-            JsonObject jsonQuery = new JsonObject();
-            jsonQuery.addProperty("json", "");
-            Retrofit2x.builder()
-                    .setService(new SuperviseGet(URL_SPI))
-                    .setQuery(jsonQuery)
-                    .build()
-                    .run(new OnRetrofitListener() {
-                        @Override
-                        public void onResponse(JsonObject response) {
-                            JsonArray jsonArray = response.get("data").getAsJsonArray();
-                            for (JsonElement obj : jsonArray) {
-                                listSupervise.add(obj.getAsString());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            showMessagePopup(6, throwable.getMessage());
-                        }
-                    });
-            return listSupervise;
-        } else return listSupervise;
-    }
-
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -399,14 +436,18 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 mPhoto = null;
             }
             switch (requestCode) {
-                case ACTIVITY_REQUEST_CODE_PHOTO:
+                case REQUEST_CODE_PHOTO:
 //                    onPhotoInput.getPhoto();
                     break;
-                case ACTIVITY_REQUEST_CODE_GAL:
+                case REQUEST_CODE_GALLERY:
 //                    onPhotoInput.getGallery(data.getData());
                     break;
-                case 3000:
-
+                case REQUEST_CODE_MAP:
+                    double[] spiLocationArray = data.getDoubleArrayExtra("SpiLocation");
+                    spiLocation.setLatitude(spiLocationArray[0]);
+                    spiLocation.setLongitude(spiLocationArray[1]);
+                    spiLocation.setCount(0);
+                    buttonConfirm.setText(getString(R.string.record_confirm));
                     break;
                 default:
                     break;
@@ -414,6 +455,46 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         }
     }
 
+    @Override
+    public void onResume() {
+        pipeShape.setShape(null);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        if (spiLocation != null) spiLocation.setCount(-1);
+        super.onPause();
+    }
+
+    @NotNull
+    @Contract(" -> new")
+    private static Entry setEntry() throws Exception {
+        Spi spi = (Spi) itemMap.get("spi");
+        final int spiId = Objects.requireNonNull(spi).getId();
+        SpiType spiType = (SpiType) itemMap.get("spi_type");
+        SpiMemo spiMemo = new SpiMemo(eSpiMemo.getText().toString());
+        spiLocation.setSpi_id(spiId);
+        pipe.setSpi_id(spiId);
+        pipe.setDepth(Double.valueOf(eDepth.getText().toString()));
+        pipe.setSpec(Integer.valueOf(eSpec.getText().toString()));
+        pipe.setMaterial(eMaterial.getText().toString());
+        pipeType.setHeader(header);
+        pipeType.setPipe(ePipe.getText().toString());
+        pipeType.setUnit(unit);
+        pipePosition.setHorizontal(Double.valueOf(eHorizontal.getText().toString()));
+        pipePosition.setVertical(Double.valueOf(eVertical.getText().toString()));
+        pipeSupervise.setSupervise(eSupervise.getText().toString());
+        pipeSupervise.setContact(eSuperviseContact.getText().toString());
+        pipe.setConstruction(eConstruction.getText().toString());
+        pipe.setConstructionContact(eConstructionContact.getText().toString());
+
+        return new Entry(
+                spi, spiType, spiLocation, spiMemo,
+                pipe, pipeType, pipeShape, pipePosition, pipeSupervise);
+    }
+
+    @SuppressWarnings("ALL")
     private class OnPhotoInput {
 
         private static final int MAX_PHOTO_SIZE = 1024;
@@ -429,7 +510,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                     if (filePath != null) {
                         fileUri = FileProvider.getUriForFile(context, getPackageName(), filePath);
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                        startActivityForResult(intent, ACTIVITY_REQUEST_CODE_PHOTO);
+                        startActivityForResult(intent, REQUEST_CODE_PHOTO);
                     }
                 }
             }
@@ -452,7 +533,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         private void setGallery() {
             Intent intent = new Intent(ACTION_PICK);
             intent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*");
-            startActivityForResult(intent, ACTIVITY_REQUEST_CODE_GAL);
+            startActivityForResult(intent, REQUEST_CODE_GALLERY);
         }
 
         private void getPhoto() {
@@ -541,70 +622,36 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         }
     }
 
-    @NotNull
-    @Contract(" -> new")
-    private static Entry setEntry() throws Exception {
-        Spi spi = (Spi) itemMap.get("spi");
-        final int spiId = Objects.requireNonNull(spi).getId();
-        SpiType spiType = (SpiType) itemMap.get("spi_type");
-        // TODO: 2019-03-08 SpiLocation
-        SpiLocation spiLocation = new SpiLocation(spiId, spiId);
-        SpiMemo spiMemo = new SpiMemo(eSpiMemo.getText().toString());
-        pipe.setSpi_id(spiId);
-        pipe.setDepth(Double.valueOf(eDepth.getText().toString()));
-        pipe.setSpec(Integer.valueOf(eSpec.getText().toString()));
-        pipe.setMaterial(eMaterial.getText().toString());
-        pipeType.setHeader(header);
-        pipeType.setPipe(ePipe.getText().toString());
-        pipeType.setUnit(unit);
-        pipePosition.setHorizontal(Double.valueOf(eHorizontal.getText().toString()));
-        pipePosition.setVertical(Double.valueOf(eVertical.getText().toString()));
-        pipeSupervise.setSupervise(eSupervise.getText().toString());
-        pipeSupervise.setContact(eSuperviseContact.getText().toString());
-        pipe.setConstruction(eConstruction.getText().toString());
-        pipe.setConstructionContact(eConstructionContact.getText().toString());
-
-        return new Entry(
-                spi, spiType, spiLocation, spiMemo,
-                pipe, pipeType, pipeShape, pipePosition, pipeSupervise);
-    }
-
     private class OnNextButtonClick implements OnClickListener {
 
         @Override
         public void onClick(View v) {
-            try {
+            if (spiLocation.getCount() != 1) { // 아직 위치 정보가 기록되지 않음
+                startActivityForResult(new Intent(context, SpiLocationActivity.class), REQUEST_CODE_MAP);
+            } else try {
                 final Entry entry = setEntry();
-                ArrayList<Entry> entries = new ArrayList<>(2);
+                ArrayList<Entry> entries = new ArrayList<>(1);
                 entries.add(entry);
                 Log.w(TAG, new Gson().toJson(entries));
             } catch (Exception e) {
                 showMessagePopup(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.");
             }
-            startActivityForResult(new Intent(context, SpiLocationActivity.class)
-                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 3000);
         }
 
-        private boolean isAllValid() {
-            boolean isValid = false;
-
-            final TextFieldBoxes[] fields =
-                    {tPipe, tShape, tHorizontal, tVertical, tDepth,
-                            tSpec, tMaterial, tSupervise, tSuperviseContact};
-
-            for (TextFieldBoxes field : fields) {
-                if (!field.validate()) {
-
-                }
-            }
-
-            return isValid;
-        }
-    }
-
-    @Override
-    public void onResume() {
-        pipeShape.setShape(null);
-        super.onResume();
+//        private boolean isAllValid() {
+//            boolean isValid = false;
+//
+//            final TextFieldBoxes[] fields =
+//                    {tPipe, tShape, tHorizontal, tVertical, tDepth,
+//                            tSpec, tMaterial, tSupervise, tSuperviseContact};
+//
+//            for (TextFieldBoxes field : fields) {
+//                if (!field.validate()) {
+//
+//                }
+//            }
+//
+//            return isValid;
+//        }
     }
 }

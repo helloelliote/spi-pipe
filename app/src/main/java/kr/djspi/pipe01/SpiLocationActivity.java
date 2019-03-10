@@ -1,54 +1,43 @@
 package kr.djspi.pipe01;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.view.View;
-import android.widget.Toast;
+import android.view.View.OnClickListener;
 
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
-import com.naver.maps.map.LocationTrackingMode;
+import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMap.MapType;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.Overlay;
-import com.naver.maps.map.util.MarkerIcons;
 
 import java.io.Serializable;
 import java.util.Locale;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.naver.maps.map.LocationTrackingMode.Follow;
-import static com.naver.maps.map.LocationTrackingMode.NoFollow;
+import static com.naver.maps.map.LocationTrackingMode.None;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 
-public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
+public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCallback, OnClickListener, Serializable {
 
-    private static final String TAG = SpiLocationActivity.class.getSimpleName();
     private static final double ZOOM_DEFAULT = 19.0; // 기본 줌레벨
-    private static final double ZOOM_MIN = 15.0; // 최소 줌레벨
+    private static final double ZOOM_MIN = 16.0; // 최소 줌레벨
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
-    private static Marker currentMarker;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    static final int PAD_LEFT = 0;
-    static final int PAD_TOP = 0;
-    static final int PAD_RIGHT = 0;
-    static final int PAD_BOT = 0;
-    static Overlay.OnClickListener listener;
-    static LatLng currentLatLng;
-    static double value_x, value_y;
+    static NaverMap naverMap;
 
     /**
      * @see SpiLocationActivity#setNaverMap() 네이버 지도 구현
@@ -67,6 +56,8 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
+        findViewById(R.id.btn_reload).setOnClickListener(this);
+        findViewById(R.id.btn_confirm).setOnClickListener(this);
         setToolbarTitle("SPI 위치설정");
     }
 
@@ -88,15 +79,14 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance(new NaverMapOptions()
-                    .contentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT)
-                    .camera(new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT, 0, 0)) // 현재 내 위치 센터
+                    .camera(new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT, 0, 0))
                     .enabledLayerGroups(LAYER_GROUP_BUILDING)
                     .locale(Locale.KOREA)
                     .minZoom(ZOOM_MIN)
                     .maxZoom(ZOOM_MAX)
                     .extent(EXTENT_KOREA)
                     .compassEnabled(true)
-                    .locationButtonEnabled(true)
+                    .locationButtonEnabled(false)
                     .zoomGesturesEnabled(true)
             );
             getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
@@ -114,17 +104,10 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     @UiThread
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
+        SpiLocationActivity.naverMap = naverMap;
         naverMap.setLocationSource(locationSource);
-        // UI 요소에 가려진 영역을 패딩으로 지정하면 카메라는 콘텐츠 패딩을 제외한 영역의 중심에 위치한다.
-        naverMap.setLocationTrackingMode(Follow);
-        naverMap.addOnOptionChangeListener(() -> {
-            LocationTrackingMode mode = naverMap.getLocationTrackingMode();
-            locationSource.setCompassEnabled(mode == NoFollow);
-        });
-        currentLatLng = new LatLng(currentLocation);
+        naverMap.setLocationTrackingMode(None);
         setMapModeSwitch(naverMap);
-        new SetBottomSheet(naverMap);
-        setMarker(naverMap);
     }
 
     /**
@@ -151,29 +134,31 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         });
     }
 
-    private void setMarker(NaverMap naverMap) {
-        // TODO: 2019-03-10 마커 한 가운데에 놓기
-        if (currentLatLng == null) return;
-        if (currentMarker == null) {
-            currentMarker = new Marker(currentLatLng, MarkerIcons.RED);
-        } else currentMarker.setPosition(currentLatLng);
-        currentMarker.setMap(naverMap);
+    @Override
+    public void onLocationUpdate(Location location) {
     }
 
     @Override
-    public void onLocationUpdate(Location location) {
-        currentLatLng = new LatLng(location);
-    }
-
-    private final class SetBottomSheet {
-
-        SetBottomSheet(NaverMap naverMap) {
-            findViewById(R.id.spi_bottom_sheet).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(context, "위치 지정", Toast.LENGTH_SHORT).show();
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_confirm:
+                try {
+                    final LatLng latLng = naverMap.getCameraPosition().target;
+                    double latitude = Math.round(latLng.latitude * 1000000d) / 1000000d;
+                    double longitude = Math.round(latLng.longitude * 1000000d) / 1000000d;
+                    final double[] spiLocation = {latitude, longitude};
+                    setResult(RESULT_OK, new Intent().putExtra("SpiLocation", spiLocation));
+                    finish();
+                } catch (Exception e) {
+                    showMessagePopup(0, getString(R.string.toast_error_location));
+                    return;
                 }
-            });
+                break;
+            case R.id.btn_reload:
+                naverMap.moveCamera(CameraUpdate.scrollTo(new LatLng(currentLocation)));
+                break;
+            default:
+                break;
         }
     }
 }

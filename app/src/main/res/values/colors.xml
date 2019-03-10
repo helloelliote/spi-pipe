@@ -19,6 +19,8 @@
 
     <!--RecordInputActivity-->
     <color name="blue_bright">#1c73e8</color>
-    <color name="red_bright">#ff4081</color>
     <color name="green_2">#4caf50</color>
+
+    <!--SpiLocationActivity-->
+    <color name="orange">#ffa000</color>
 </resources>
