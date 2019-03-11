@@ -56,7 +56,7 @@ public final class Retrofit2x {
         @Override
         public SetQuery setQuery(@NonNull String stringQuery) {
             this.stringQuery = stringQuery;
-            return null;
+            return this;
         }
 
         @Override

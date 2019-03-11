@@ -159,7 +159,7 @@
                 android:id="@+id/material"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:inputType="text"
                 app:prefix="재질명  " />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
@@ -176,6 +176,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/popup_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text"
                 android:textColorHint="@color/colorPrimaryDark"
                 app:prefix="기관명  " />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>

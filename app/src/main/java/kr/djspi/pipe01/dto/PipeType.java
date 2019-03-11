@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-public class PipeType implements DataItem {
+public class PipeType implements DataItem, Serializable {
 
     private int id;
     private String header;

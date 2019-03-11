@@ -14,12 +14,11 @@ import android.support.media.ExifInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -51,7 +50,6 @@ import kr.djspi.pipe01.dto.SpiMemo;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
-import kr.djspi.pipe01.fragment.PlotDialog;
 import kr.djspi.pipe01.fragment.PositionDialog;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
@@ -83,7 +81,6 @@ import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
 import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
 import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
-import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.Const.URL_TEST;
 
 public class RecordInputActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
@@ -117,11 +114,12 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
-        superviseList = getSuperviseList();
-        itemMap = (HashMap<?, ?>) getIntent().getSerializableExtra("PipeRecordActivity");
+        Serializable serializable = getIntent().getSerializableExtra("PipeRecordActivity");
+        if (serializable instanceof HashMap) itemMap = (HashMap) serializable;
         spiType = ((SpiType) Objects.requireNonNull(itemMap.get("spi_type"))).getType();
 //        onPhotoInput = new OnPhotoInput();
         setContentView(R.layout.activity_record_input);
+        superviseList = getSuperviseList();
     }
 
     @Override
@@ -186,17 +184,15 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         buttonConfirm = findViewById(R.id.btn_confirm);
         buttonConfirm.setOnClickListener(new OnNextButtonClick());
 
-        ePipe.setText("상수관로");
         eHorizontal.setText("2.45");
         eVertical.setText("1.10");
         eDepth.setText("4.50");
         eSpec.setText("250");
         eMaterial.setText("알루미늄");
-//        eSupervise.setText("");
         eSuperviseContact.setText("053-424-9547");
         eSpiMemo.setText("테스트 메모");
-        eConstruction.setText("서울시상수도사업본부");
-        eConstructionContact.setText("02-493-3904");
+//        eConstruction.setText("서울시상수도사업본부");
+//        eConstructionContact.setText("02-493-3904");
     }
 
     @Override
@@ -217,50 +213,21 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
             JsonObject jsonQuery = new JsonObject();
             jsonQuery.addProperty("json", "");
             Retrofit2x.builder()
-                    .setService(new SuperviseGet(URL_SPI))
-                    .setQuery(jsonQuery)
-                    .build()
-                    .run(new OnRetrofitListener() {
-                        @Override
-                        public void onResponse(JsonObject response) {
-                            JsonArray jsonArray = response.get("data").getAsJsonArray();
-                            for (JsonElement obj : jsonArray) {
-                                superviseList.add(obj.getAsString());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            showMessagePopup(6, getString(R.string.popup_error_supervise));
-                        }
-                    });
-            return superviseList;
-        } else return superviseList;
-    }
-
-    // TODO: 2019-03-10 테스트 서버 통신 테스트
-    private ArrayList<String> getSuperviseListTest() {
-        if (superviseList == null) {
-            superviseList = new ArrayList<>();
-            JsonObject jsonQuery = new JsonObject();
-            jsonQuery.addProperty("json", "");
-            Retrofit2x.builder()
                     .setService(new SuperviseGet(URL_TEST))
                     .setQuery(jsonQuery)
                     .build()
                     .run(new OnRetrofitListener() {
                         @Override
                         public void onResponse(JsonObject response) {
-                            Log.w(TAG, response.toString());
-//                            JsonArray jsonArray = response.get("data").getAsJsonArray();
-//                            for (JsonElement obj : jsonArray) {
-//                                superviseList.add(obj.getAsString());
-//                            }
+                            final JsonArray jsonArray = response.get("data").getAsJsonArray();
+                            for (JsonElement element : jsonArray) {
+                                superviseList.add(element.getAsJsonObject().get("supervise").getAsString());
+                            }
                         }
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            showMessagePopup(6, throwable.getMessage());
+                            Toast.makeText(context, "관리기관: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
             return superviseList;
@@ -269,7 +236,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
     @Override
     public void onClick(View v) {
-        if (ListDialog.get().isAdded()) return;
         switch (v.getId()) {
             case R.id.l_pipe:
                 ListDialog.get().show(fragmentManager, TAG_PIPE);
@@ -279,19 +245,23 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 ListDialog.get().show(fragmentManager, TAG_SHAPE);
                 break;
             case R.id.l_supervise:
+                if (superviseList.isEmpty()) {
+                    tSupervise.setOnClickListener(null);
+                    eSupervise.setEnabled(true);
+                    eSupervise.setHint("직접 입력해주세요.");
+                    return;
+                }
                 ListDialog.get().show(fragmentManager, TAG_SUPERVISE);
                 break;
             case R.id.l_position:
                 if (pipeShape.getShape() == null) {
                     ePosition.setHint("관로형태를 먼저 선택해 주세요.");
                     tPosition.setEndIcon(R.drawable.ic_shape);
-                    tPosition.getEndIconImageButton().setOnClickListener(v1 ->
-                            ListDialog.get().show(fragmentManager, TAG_SHAPE));
+                    tPosition.getEndIconImageButton()
+                            .setOnClickListener(v1 -> ListDialog.get().show(fragmentManager, TAG_SHAPE));
                     return;
-                } else {
-                    PlotDialog plotDialog = PositionDialog.get();
-                    plotDialog.show(fragmentManager, spiType);
                 }
+                PositionDialog.get().show(fragmentManager, spiType);
                 break;
 //            case R.id.l_photo:
 //                requestCode = REQUEST_CODE_PHOTO;
@@ -301,7 +271,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 //                requestCode = REQUEST_CODE_GALLERY;
 //                onPhotoInput.setGallery();
 //                break;
-
             default:
                 break;
         }
@@ -313,11 +282,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         switch (tag) {
             case TAG_PIPE:
                 ePipe.setText(getString(pipes[index].getNameRes()));
-                pipeType.setId(index);
-                pipe.setType_id(index);
-                pipeShape.setPipe_id(index);
-                pipePosition.setPipe_id(index);
-                // TODO: 2019-03-09 서버에서의 관로타입 index 는 몇번부터 시작하는지 확인
+                pipeType.setId(index + 1);
+                pipe.setType_id(index + 1);
                 header = pipes[index].getHeader();
                 eSpec.setPrefix(header + "  ");
                 unit = pipes[index].getUnit();
@@ -331,9 +297,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 break;
             case TAG_SUPERVISE:
                 eSupervise.setText(superviseList.get(index));
-                pipeSupervise.setId(index);
-                pipe.setSupervise_id(index);
-                // TODO: 2019-03-09 서버에서의 관리기관 index 는 몇번부터 시작하는지 확인
+                pipeSupervise.setId(index + 1);
+                pipe.setSupervise_id(index + 1);
                 break;
             case TAG_TYPE_PLATE:
                 pipePosition.setPosition(index);
@@ -426,7 +391,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -467,6 +431,11 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         super.onPause();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        return;
+    }
+
     @NotNull
     @Contract(" -> new")
     private static Entry setEntry() throws Exception {
@@ -477,8 +446,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         spiLocation.setSpi_id(spiId);
         pipe.setSpi_id(spiId);
         pipe.setDepth(Double.valueOf(eDepth.getText().toString()));
-        pipe.setSpec(Integer.valueOf(eSpec.getText().toString()));
         pipe.setMaterial(eMaterial.getText().toString());
+        pipeShape.setSpec(eSpec.getText().toString());
         pipeType.setHeader(header);
         pipeType.setPipe(ePipe.getText().toString());
         pipeType.setUnit(unit);
@@ -487,7 +456,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         pipeSupervise.setSupervise(eSupervise.getText().toString());
         pipeSupervise.setContact(eSuperviseContact.getText().toString());
         pipe.setConstruction(eConstruction.getText().toString());
-        pipe.setConstructionContact(eConstructionContact.getText().toString());
+        pipe.setConstruction_contact(eConstructionContact.getText().toString());
 
         return new Entry(
                 spi, spiType, spiLocation, spiMemo,
@@ -632,9 +601,12 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 final Entry entry = setEntry();
                 ArrayList<Entry> entries = new ArrayList<>(1);
                 entries.add(entry);
-                Log.w(TAG, new Gson().toJson(entries));
+                startActivity(new Intent(context, RecordWriteActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("entry", entries));
             } catch (Exception e) {
                 showMessagePopup(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.");
+                e.printStackTrace();
             }
         }
 

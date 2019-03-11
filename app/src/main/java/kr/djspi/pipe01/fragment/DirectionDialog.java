@@ -26,7 +26,7 @@ import static kr.djspi.pipe01.Const.TAG_POSITION;
 public class DirectionDialog extends DialogFragment implements PlotDialog, OnSelectListener, OnClickListener {
 
     private static final String TAG = DirectionDialog.class.getSimpleName();
-    private static PlotDialog plotDialog = null;
+    private static PlotDialog directionDialog = null;
     private static String spiTypeTag;
     private static String dialogTitle;
     private static OnSelectListener listener;
@@ -49,11 +49,13 @@ public class DirectionDialog extends DialogFragment implements PlotDialog, OnSel
     }
 
     public synchronized static PlotDialog get() {
-        if (plotDialog == null) {
-            plotDialog = new DirectionDialog();
+        if (directionDialog == null) {
+            directionDialog = new DirectionDialog();
         }
-        return plotDialog;
+        return directionDialog;
     }
+
+
 
     @Override
     public void onAttach(Context context) {

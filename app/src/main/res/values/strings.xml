@@ -91,5 +91,12 @@
     <string name="popup_title_select_supervise">관리기관 선택</string>
 
     <!--SpiLocationActivity-->
-    <string name="record_confirm_location">위치 기록</string>
+    <string name="record_confirm_location">위치 저장</string>
+
+    <!--RecordWriteActivity-->
+    <string name="write_instruction"><![CDATA[스마트폰의 NFC기능이 카드모드로 되어있으면 정보를 읽기/쓰기가 불가능합니다.
+    <font color="#0077C8">기본모드(읽기/쓰기)로 설정후 SPI 표지기의 상면을 스마트폰 뒷면의 NFC 안테나 위치에 접촉</font>
+    하시고 알림음이 들릴때까지 천천히, 조금씩 움직여주세요.]]></string>
+    <string name="popup_read_only">SPI에 정보를 저장하면 새로 쓰거나 지울 수 없습니다. 저장할 내용을 충분히 확인하신 후 기록하십시오.</string>
+
 </resources>

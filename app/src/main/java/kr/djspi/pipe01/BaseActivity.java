@@ -135,11 +135,15 @@ public class BaseActivity extends AppCompatActivity {
      * @param tag   팝업에 표시할 내용의 인식태그
      */
     void showMessagePopup(int issue, String tag) {
-        MessageDialog dialog = new MessageDialog();
-        Bundle bundle = new Bundle(1);
-        bundle.putInt("issueType", issue);
-        dialog.setArguments(bundle);
-        dialog.show(getSupportFragmentManager(), tag);
+        try {
+            MessageDialog dialog = new MessageDialog();
+            Bundle bundle = new Bundle(1);
+            bundle.putInt("issueType", issue);
+            dialog.setArguments(bundle);
+            dialog.show(getSupportFragmentManager(), tag);
+        } catch (IllegalStateException ignored) {
+            // FIXME: 2019-03-11 서버 통신 결과가 ui 갱신 이후에 나타나면 팝업창 예외가 발생
+        }
     }
 
     @Override

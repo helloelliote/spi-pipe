@@ -144,9 +144,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
             case R.id.btn_confirm:
                 try {
                     final LatLng latLng = naverMap.getCameraPosition().target;
-                    double latitude = Math.round(latLng.latitude * 1000000d) / 1000000d;
-                    double longitude = Math.round(latLng.longitude * 1000000d) / 1000000d;
-                    final double[] spiLocation = {latitude, longitude};
+                    final double[] spiLocation = {latLng.latitude, latLng.longitude};
                     setResult(RESULT_OK, new Intent().putExtra("SpiLocation", spiLocation));
                     finish();
                 } catch (Exception e) {

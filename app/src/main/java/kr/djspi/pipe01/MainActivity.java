@@ -98,9 +98,9 @@ public class MainActivity extends LocationUpdate implements Serializable {
 //                            String id = jsonObject.get("id").getAsString(); // 304
 //                            int type_id = jsonObject.get("type_id").getAsInt(); // 1
 //                            여기까지 해서 id, type 를 넣어줄 것으로 가정
-                            Spi spi = new Spi(304, serial, 1);
+                            Spi spi = new Spi(304, "04:D2:7F:7A:89:49:80", 1);
 //                            String type = jsonObject.get("type").getAsString(); // "표지판"
-                            SpiType spiType = new SpiType(1, "표지판");
+                            SpiType spiType = new SpiType(1, "표지주");
 
                             HashMap<String, DataItem> hashMap = new HashMap<>();
                             hashMap.put("spi", spi);

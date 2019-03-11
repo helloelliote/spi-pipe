@@ -13,6 +13,7 @@ public final class Const {
     public static final String[] PIPE_SHAPES = {"직진형", "T분기형", "엘보형", "관말형"};
     static final String[] PIPE_DIRECTIONS = {null, "nw", "n", "ne", "w", null, "e", "sw", "s", "se"};
 
+
     static final int REQUEST_CODE_MAP = 30001;
     static final int REQUEST_CODE_PHOTO = 10001;
     static final int REQUEST_CODE_GALLERY = 10002;

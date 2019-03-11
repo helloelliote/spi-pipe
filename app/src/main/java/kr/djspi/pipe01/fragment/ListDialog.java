@@ -13,8 +13,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -34,6 +32,7 @@ import static kr.djspi.pipe01.RecordInputActivity.pipes;
 public class ListDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = ListDialog.class.getSimpleName();
+    private static ListDialog listDialog = null;
     private static String listTag;
     private static String dialogTitle;
     private static ArrayList<String> listItem;
@@ -43,16 +42,23 @@ public class ListDialog extends DialogFragment implements OnClickListener {
      */
     static int selectIndex = -1;
 
-    private static class LazyHolder {
-        static final ListDialog INSTANCE = new ListDialog();
-    }
-
-    @Contract(pure = true)
-    public static ListDialog get() {
-        return LazyHolder.INSTANCE;
-    }
+//    private static class LazyHolder {
+//        static final ListDialog INSTANCE = new ListDialog();
+//    }
+//
+//    @Contract(pure = true)
+//    public static ListDialog get() {
+//        return LazyHolder.INSTANCE;
+//    }
 
     public ListDialog() {
+    }
+
+    public synchronized static ListDialog get() {
+        if (listDialog == null) {
+            listDialog = new ListDialog();
+        }
+        return listDialog;
     }
 
     @Override

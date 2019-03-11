@@ -34,7 +34,7 @@
 
     <LinearLayout
         android:id="@+id/lay_tab_body1"
-        android:layout_width="match_parent"
+        android:layout_width="325dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -48,23 +48,24 @@
             android:textSize="13.33sp" />
 
         <FrameLayout
-            android:layout_width="315dp"
-            android:layout_height="315dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/lay_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg2_3" />
+                android:src="@drawable/bg_p" />
 
             <LinearLayout
+                android:id="@+id/lay_rows"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/lay_row_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
@@ -129,14 +130,14 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/lay_row_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="invisible">
+                    android:orientation="horizontal">
 
                     <FrameLayout
                         android:id="@+id/lay_4"
@@ -160,8 +161,8 @@
                         android:id="@+id/lay_5"
                         android:layout_width="86dp"
                         android:layout_height="86dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp">
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp">
 
                         <View
                             android:layout_width="match_parent"
@@ -196,6 +197,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/lay_row_3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
