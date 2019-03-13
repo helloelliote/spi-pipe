@@ -35,21 +35,9 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     private static ListDialog listDialog = null;
     private static String listTag;
     private static String dialogTitle;
+    private static int selectIndex = -1;
     private static ArrayList<String> listItem;
     private static OnSelectListener listener;
-    /**
-     * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
-     */
-    static int selectIndex = -1;
-
-//    private static class LazyHolder {
-//        static final ListDialog INSTANCE = new ListDialog();
-//    }
-//
-//    @Contract(pure = true)
-//    public static ListDialog get() {
-//        return LazyHolder.INSTANCE;
-//    }
 
     public ListDialog() {
     }

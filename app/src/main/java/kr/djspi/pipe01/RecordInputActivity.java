@@ -367,13 +367,13 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                         eHorizontal.setPrefix("없음");
                         eHorizontal.setText("0");
                         eVertical.setEnabled(true);
-                        ePosition.setText("보도 / 차도 반대쪽 방향");
+                        ePosition.setText("차도 반대쪽 또는 보도 방향");
                         break;
                     case 9:
                         eHorizontal.setEnabled(true);
                         eVertical.setEnabled(true);
                         eHorizontal.setPrefix("우측");
-                        ePosition.setText("보도 / 차도 반대쪽 방향");
+                        ePosition.setText("차도 반대쪽 또는 보도 방향");
                         break;
                     default:
                         eHorizontal.setEnabled(true);

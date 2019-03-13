@@ -94,6 +94,8 @@
             android:name=".SpiLocationActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        <activity android:name=".RecordWriteActivity" />
+        <activity
+            android:name=".RecordWriteActivity"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

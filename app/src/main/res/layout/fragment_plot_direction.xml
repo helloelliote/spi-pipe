@@ -50,19 +50,19 @@
             android:textSize="13.33sp" />
 
         <LinearLayout
-            android:id="@+id/lay_1"
+            android:id="@+id/lay_row_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
 
             <FrameLayout
-                android:id="@+id/lay_img_1"
+                android:id="@+id/lay_1"
                 android:layout_width="124dp"
                 android:layout_height="124dp">
 
                 <ImageView
-                    android:id="@+id/img_1"
+                    android:id="@+id/image_1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
@@ -75,13 +75,13 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/lay_img_2"
+                android:id="@+id/lay_2"
                 android:layout_width="124dp"
                 android:layout_height="124dp"
                 android:layout_marginStart="10dp">
 
                 <ImageView
-                    android:id="@+id/img_2"
+                    android:id="@+id/image_2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
@@ -95,7 +95,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/lay_2"
+            android:id="@+id/lay_row_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -103,12 +103,12 @@
             android:orientation="horizontal">
 
             <FrameLayout
-                android:id="@+id/lay_img_3"
+                android:id="@+id/lay_3"
                 android:layout_width="124dp"
                 android:layout_height="124dp">
 
                 <ImageView
-                    android:id="@+id/img_3"
+                    android:id="@+id/image_3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
@@ -121,13 +121,13 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/lay_img_4"
+                android:id="@+id/lay_4"
                 android:layout_width="124dp"
                 android:layout_height="124dp"
                 android:layout_marginStart="10dp">
 
                 <ImageView
-                    android:id="@+id/img_4"
+                    android:id="@+id/image_4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 

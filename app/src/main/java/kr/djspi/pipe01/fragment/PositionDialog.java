@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,12 +36,9 @@ public class PositionDialog extends DialogFragment implements PlotDialog, OnClic
     private static PlotDialog positionDialog = null;
     private static String spiTypeTag;
     private static String dialogTitle;
+    private static int selectIndex = -1;
     private static OnSelectListener listener;
-    /**
-     * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
-     */
-    static int selectIndex = -1;
-    View checkView;
+    private View checkView;
 
     public PositionDialog() {
     }
@@ -71,25 +67,17 @@ public class PositionDialog extends DialogFragment implements PlotDialog, OnClic
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_plot_plate, container, false);
+        View view = inflater.inflate(R.layout.fragment_plot_position, container, false);
 
         TextView titleView = view.findViewById(R.id.popup_title);
         titleView.setText(dialogTitle);
 
-        ImageView backgroundImage = view.findViewById(R.id.lay_background);
-
-        LinearLayout layoutAllRows = view.findViewById(R.id.lay_rows);
-
         view.findViewById(R.id.lay_1).setOnClickListener(this);
         view.findViewById(R.id.lay_2).setOnClickListener(this);
         view.findViewById(R.id.lay_3).setOnClickListener(this);
-
-        LinearLayout layoutRow2 = view.findViewById(R.id.lay_row_2);
         view.findViewById(R.id.lay_4).setOnClickListener(this);
         view.findViewById(R.id.lay_5).setOnClickListener(this);
         view.findViewById(R.id.lay_6).setOnClickListener(this);
-
-        LinearLayout layoutRow3 = view.findViewById(R.id.lay_row_3);
         view.findViewById(R.id.lay_7).setOnClickListener(this);
         view.findViewById(R.id.lay_8).setOnClickListener(this);
         view.findViewById(R.id.lay_9).setOnClickListener(this);
@@ -100,26 +88,50 @@ public class PositionDialog extends DialogFragment implements PlotDialog, OnClic
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
         view.findViewById(R.id.btn_ok).setOnClickListener(this);
 
-        setLayoutVisibility(backgroundImage, layoutAllRows, layoutRow2, layoutRow3);
+        setLayoutVisibility(view);
 
         return view;
     }
 
-    private void setLayoutVisibility(ImageView backgroundImage, LinearLayout allRows, LinearLayout layoutRow2, LinearLayout layoutRow3) {
+    private void setLayoutVisibility(View view) {
+        ImageView backgroundImage = view.findViewById(R.id.lay_background);
+        View[] views = new View[10];
+        for (int i = 1; i <= 9; i++) {
+            views[i] = view.findViewById(resources.getIdentifier("image_" + i, "id", getContext().getPackageName()));
+        }
         switch (spiTypeTag) {
             case TAG_TYPE_PLATE:
                 backgroundImage.setImageDrawable(resources.getDrawable(R.drawable.bg_p, null));
-                layoutRow2.setVisibility(INVISIBLE);
+                view.findViewById(R.id.lay_row_2).setVisibility(INVISIBLE);
+                views[1].setBackgroundResource(R.drawable.btn_01_7);
+                views[2].setBackgroundResource(R.drawable.btn_01_8);
+                views[3].setBackgroundResource(R.drawable.btn_01_9);
+                views[7].setBackgroundResource(R.drawable.btn_01_1);
+                views[8].setBackgroundResource(R.drawable.btn_01_2);
+                views[9].setBackgroundResource(R.drawable.btn_01_3);
                 break;
             case TAG_TYPE_MARKER:
                 backgroundImage.setImageDrawable(resources.getDrawable(R.drawable.bg_m, null));
-                layoutRow3.setVisibility(GONE);
+                view.findViewById(R.id.lay_row_3).setVisibility(GONE);
+                views[1].setBackgroundResource(R.drawable.btn_10_7);
+                views[2].setBackgroundResource(R.drawable.btn_10_8);
+                views[3].setBackgroundResource(R.drawable.btn_10_9);
+                views[5].setBackgroundResource(R.drawable.btn_10_2);
                 break;
             case TAG_TYPE_COLUMN:
                 LayoutParams params = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER);
                 params.setMargins(0, 60, 0, 0);
-                allRows.setLayoutParams(params);
+                view.findViewById(R.id.lay_rows).setLayoutParams(params);
                 backgroundImage.setImageDrawable(resources.getDrawable(R.drawable.bg_c_2, null));
+                views[1].setBackgroundResource(R.drawable.btn_11_7);
+                views[2].setBackgroundResource(R.drawable.btn_11_8);
+                views[3].setBackgroundResource(R.drawable.btn_11_9);
+                views[4].setBackgroundResource(R.drawable.btn_11_4);
+                views[5].setBackgroundResource(R.drawable.btn_11_5);
+                views[6].setBackgroundResource(R.drawable.btn_11_6);
+                views[7].setBackgroundResource(R.drawable.btn_11_1);
+                views[8].setBackgroundResource(R.drawable.btn_11_2);
+                views[9].setBackgroundResource(R.drawable.btn_11_3);
                 break;
             default:
                 break;

@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +24,7 @@ import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SpiGet;
 
-import static kr.djspi.pipe01.Const.URL_SPI;
+import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 
 public class MainActivity extends LocationUpdate implements Serializable {
@@ -82,33 +84,29 @@ public class MainActivity extends LocationUpdate implements Serializable {
         jsonQuery.addProperty("sp_serial", serial);
 
         Retrofit2x.builder()
-                .setService(new SpiGet(URL_SPI))
+                .setService(new SpiGet(URL_TEST))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        int statusCode = response.get("response").getAsInt();
-                        if (statusCode == 400) {
-                            // TODO: 2019-03-06 사용할 수 없는 태그
-                        }
-                        if (statusCode == 200) {
-//                            JsonArray jsonArray = response.get("data").getAsJsonArray();
-//                            JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-//                            String id = jsonObject.get("id").getAsString(); // 304
-//                            int type_id = jsonObject.get("type_id").getAsInt(); // 1
-//                            여기까지 해서 id, type 를 넣어줄 것으로 가정
-                            Spi spi = new Spi(304, "04:D2:7F:7A:89:49:80", 1);
-//                            String type = jsonObject.get("type").getAsString(); // "표지판"
-                            SpiType spiType = new SpiType(1, "표지주");
+                        Log.w(TAG, response.toString());
+                        JsonArray jsonArray = response.get("data").getAsJsonArray();
+                        JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
+                        int spi_id = jsonObject.get("spi_id").getAsInt();
+                        int spi_type_id = jsonObject.get("spi_type_id").getAsInt();
+                        String spi_type = jsonObject.get("spi_type").getAsString();
+                        // TODO: 2019-03-06 사용할 수 없는 태그
 
-                            HashMap<String, DataItem> hashMap = new HashMap<>();
-                            hashMap.put("spi", spi);
-                            hashMap.put("spi_type", spiType);
-                            startActivity(new Intent(context, RecordInputActivity.class)
-                                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                    .putExtra("PipeRecordActivity", hashMap));
-                        }
+                        Spi spi = new Spi(spi_id, serial, spi_type_id);
+                        SpiType spiType = new SpiType(spi_id, spi_type);
+
+                        HashMap<String, DataItem> hashMap = new HashMap<>();
+                        hashMap.put("spi", spi);
+                        hashMap.put("spi_type", spiType);
+                        startActivity(new Intent(context, RecordInputActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                .putExtra("PipeRecordActivity", hashMap));
                     }
 
                     @Override
