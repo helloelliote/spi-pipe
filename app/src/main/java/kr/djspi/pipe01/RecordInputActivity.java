@@ -41,6 +41,7 @@ import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.dto.Pipe;
 import kr.djspi.pipe01.dto.PipePosition;
 import kr.djspi.pipe01.dto.PipeShape;
+import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum;
 import kr.djspi.pipe01.dto.PipeSupervise;
 import kr.djspi.pipe01.dto.PipeType;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
@@ -69,7 +70,6 @@ import static android.support.media.ExifInterface.TAG_ORIENTATION;
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
-import static kr.djspi.pipe01.Const.PIPE_SHAPES;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_MAP;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_PHOTO;
@@ -89,13 +89,15 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     private static ExtendedEditText ePipe, eShape, ePosition, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
             eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
     private static HashMap<?, ?> itemMap;
-    private static String spiType, header, unit;
+    private static String header, unit;
+    private static SpiType spiType;
     private static Pipe pipe = new Pipe();
     private static PipeType pipeType = new PipeType();
     private static PipeShape pipeShape = new PipeShape();
     private static PipePosition pipePosition = new PipePosition();
     private static PipeSupervise pipeSupervise = new PipeSupervise();
     public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
+    public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
     public static FragmentManager fragmentManager;
     public static ArrayList<String> superviseList;
     private MaterialButton buttonConfirm;
@@ -115,8 +117,10 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         super.onCreate(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
         Serializable serializable = getIntent().getSerializableExtra("PipeRecordActivity");
-        if (serializable instanceof HashMap) itemMap = (HashMap) serializable;
-        spiType = ((SpiType) Objects.requireNonNull(itemMap.get("spi_type"))).getType();
+        if (serializable instanceof HashMap) {
+            itemMap = (HashMap) serializable;
+            spiType = (SpiType) Objects.requireNonNull(itemMap.get("spiType"));
+        }
 //        onPhotoInput = new OnPhotoInput();
         setContentView(R.layout.activity_record_input);
         superviseList = getSuperviseList();
@@ -125,7 +129,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        setToolbarTitle(spiType);
+        setToolbarTitle(spiType.getType());
 
         tPipe = findViewById(R.id.l_pipe);
         tPipe.setOnClickListener(this);
@@ -261,7 +265,12 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                             .setOnClickListener(v1 -> ListDialog.get().show(fragmentManager, TAG_SHAPE));
                     return;
                 }
-                PositionDialog.get().show(fragmentManager, spiType);
+                PositionDialog dialog = new PositionDialog();
+                Bundle bundle = new Bundle(3);
+                bundle.putString("typeString", spiType.getType());
+                bundle.putString("shapeString", pipeShape.getShape());
+                dialog.setArguments(bundle);
+                dialog.show(fragmentManager, TAG_POSITION);
                 break;
 //            case R.id.l_photo:
 //                requestCode = REQUEST_CODE_PHOTO;
@@ -291,7 +300,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 eSpec.setInputType(index == 5 ? TYPE_CLASS_TEXT : TYPE_CLASS_NUMBER); // index == 5 : 통신관로
                 break;
             case TAG_SHAPE:
-                eShape.setText(PIPE_SHAPES[index]);
+                eShape.setText(getString(shapes[index].getName()));
                 ePosition.setHint(R.string.popup_hint);
                 tPosition.setEndIcon(null);
                 break;
@@ -441,7 +450,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     private static Entry setEntry() throws Exception {
         Spi spi = (Spi) itemMap.get("spi");
         final int spiId = Objects.requireNonNull(spi).getId();
-        SpiType spiType = (SpiType) itemMap.get("spi_type");
         SpiMemo spiMemo = new SpiMemo(eSpiMemo.getText().toString());
         spiLocation.setSpi_id(spiId);
         pipe.setSpi_id(spiId);

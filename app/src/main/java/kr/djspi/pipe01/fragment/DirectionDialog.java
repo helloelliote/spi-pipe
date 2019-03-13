@@ -16,38 +16,37 @@ import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 
 import kr.djspi.pipe01.R;
+import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum;
+import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static kr.djspi.pipe01.BaseActivity.resources;
+import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
+import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
 import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
 import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
 
-public class DirectionDialog extends DialogFragment implements PlotDialog, OnClickListener {
+public class DirectionDialog extends DialogFragment implements OnSelectListener, OnClickListener {
 
     private static final String TAG = DirectionDialog.class.getSimpleName();
-    private static PlotDialog directionDialog = null;
-    private static String spiTypeTag;
     private static String dialogTitle;
+    private static String typeString;
+    private static String shapeString;
     private static int selectIndex = -1;
+    private static int positionIndex = -1;
+    private static Bundle bundle;
     private static OnSelectListener listener;
     private View checkView;
 
     public DirectionDialog() {
     }
 
-    public synchronized static PlotDialog get() {
-        if (directionDialog == null) {
-            directionDialog = new DirectionDialog();
-        }
-        return directionDialog;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        spiTypeTag = getTag();
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
         }
@@ -56,6 +55,12 @@ public class DirectionDialog extends DialogFragment implements PlotDialog, OnCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            bundle = getArguments();
+            typeString = bundle.getString("typeString");
+            shapeString = bundle.getString("shapeString");
+            positionIndex = bundle.getInt("positionInt");
+        }
         dialogTitle = getString(R.string.popup_title_select_direction);
     }
 
@@ -87,9 +92,19 @@ public class DirectionDialog extends DialogFragment implements PlotDialog, OnCli
         ImageView image_2 = view.findViewById(R.id.image_2);
         ImageView image_3 = view.findViewById(R.id.image_3);
         ImageView image_4 = view.findViewById(R.id.image_4);
-        switch (spiTypeTag) {
+        final String resourceId = String.format("plan_%s_%s_%s_%s",
+                SpiTypeEnum.valueOf(typeString),
+                PipeShapeEnum.valueOf(shapeString),
+                String.valueOf(positionIndex),
+                PIPE_DIRECTIONS[2]);
+        final String id = "drawable";
+        final String packageName = getContext().getPackageName();
+//        for (int i = 1; i <= 9; i++) {
+//            views[i] = view.findViewById(resources.getIdentifier("image_" + i, "id", getContext().getPackageName()));
+//        }
+        switch (typeString) {
             case TAG_TYPE_PLATE:
-//                image_1.setBackgroundResource(R.id.);
+                image_1.setBackgroundResource(resources.getIdentifier("", id, packageName));
                 break;
             case TAG_TYPE_MARKER:
 
@@ -149,5 +164,17 @@ public class DirectionDialog extends DialogFragment implements PlotDialog, OnCli
     public void onDismiss(DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onSelect(String tag, int index) {
+        if (index == -1) return;
+        switch (tag) {
+            case TAG_POSITION:
+                positionIndex = index;
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -24,6 +24,7 @@ import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SpiGet;
 
+import static kr.djspi.pipe01.Const.API_SPI;
 import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 
@@ -84,7 +85,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         jsonQuery.addProperty("sp_serial", serial);
 
         Retrofit2x.builder()
-                .setService(new SpiGet(URL_TEST))
+                .setService(new SpiGet(URL_TEST, API_SPI))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
@@ -103,7 +104,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
                         HashMap<String, DataItem> hashMap = new HashMap<>();
                         hashMap.put("spi", spi);
-                        hashMap.put("spi_type", spiType);
+                        hashMap.put("spiType", spiType);
                         startActivity(new Intent(context, RecordInputActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                 .putExtra("PipeRecordActivity", hashMap));

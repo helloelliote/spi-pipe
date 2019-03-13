@@ -24,36 +24,29 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static kr.djspi.pipe01.BaseActivity.resources;
+import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
 import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
 import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
 import static kr.djspi.pipe01.RecordInputActivity.fragmentManager;
 
-public class PositionDialog extends DialogFragment implements PlotDialog, OnClickListener {
+public class PositionDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = PositionDialog.class.getSimpleName();
-    private static PlotDialog positionDialog = null;
-    private static String spiTypeTag;
-    private static String dialogTitle;
     private static int selectIndex = -1;
+    private static String typeString;
+    private static String dialogTitle;
+    private static Bundle bundle;
     private static OnSelectListener listener;
     private View checkView;
 
     public PositionDialog() {
     }
 
-    public synchronized static PlotDialog get() {
-        if (positionDialog == null) {
-            positionDialog = new PositionDialog();
-        }
-        return positionDialog;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        spiTypeTag = getTag();
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
         }
@@ -62,6 +55,10 @@ public class PositionDialog extends DialogFragment implements PlotDialog, OnClic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            bundle = getArguments();
+            typeString = bundle.getString("typeString");
+        }
         dialogTitle = getString(R.string.popup_title_select_position);
     }
 
@@ -99,7 +96,7 @@ public class PositionDialog extends DialogFragment implements PlotDialog, OnClic
         for (int i = 1; i <= 9; i++) {
             views[i] = view.findViewById(resources.getIdentifier("image_" + i, "id", getContext().getPackageName()));
         }
-        switch (spiTypeTag) {
+        switch (typeString) {
             case TAG_TYPE_PLATE:
                 backgroundImage.setImageDrawable(resources.getDrawable(R.drawable.bg_p, null));
                 view.findViewById(R.id.lay_row_2).setVisibility(INVISIBLE);
@@ -147,8 +144,10 @@ public class PositionDialog extends DialogFragment implements PlotDialog, OnClic
                     return;
                 }
                 listener.onSelect(TAG_POSITION, selectIndex);
-                PlotDialog plotDialog = DirectionDialog.get();
-                plotDialog.show(fragmentManager, spiTypeTag);
+                DirectionDialog dialog = new DirectionDialog();
+                bundle.putInt("positionInt", selectIndex);
+                dialog.setArguments(bundle);
+                dialog.show(fragmentManager, TAG_DIRECTION);
                 selectIndex = -1;
                 dismissAllowingStateLoss();
                 break;

@@ -16,15 +16,17 @@ import static kr.djspi.pipe01.retrofit2x.RetrofitCore.BUILDER;
 public final class SpiGet implements ServiceStrategy {
 
     private static String url;
+    private static String api;
 
-    public SpiGet(String url) {
+    public SpiGet(String url, String api) {
         SpiGet.url = url;
+        SpiGet.api = api;
     }
 
     @Override
     public Call<JsonObject> getServiceRequest() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("request", "spi-get");
+        jsonObject.addProperty("request", api);
         jsonObject.add("data", RetrofitCore.jsonQuery);
         final String query = jsonObject.toString();
         return BUILDER.baseUrl(url).build()

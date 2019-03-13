@@ -45,4 +45,12 @@ public class PipeType implements DataItem, Serializable {
             this.unit = unit;
         }
     }
+
+//    public PipeTypeEnum parsePipeType(String name) {
+//        for (PipeTypeEnum pipeType : PipeTypeEnum.values()) {
+//            if (name == pipeType.getName()) {
+//                return pipeType;
+//            }
+//        }
+//    }
 }

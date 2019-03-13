@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SearchPlacesService;
@@ -66,11 +67,13 @@ import static com.naver.maps.map.LocationTrackingMode.Face;
 import static com.naver.maps.map.LocationTrackingMode.Follow;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
 import static com.naver.maps.map.NaverMap.MapType;
+import static com.naver.maps.map.overlay.OverlayImage.fromResource;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
-import static kr.djspi.pipe01.Const.URL_SPI;
+import static kr.djspi.pipe01.Const.API_PIPE;
+import static kr.djspi.pipe01.Const.URL_TEST;
 
 public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
 
@@ -90,6 +93,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     static BottomSheetBehavior behavior;
     static SetTopSheet.ListViewAdapter placesListAdapter;
     static Overlay.OnClickListener listener;
+    static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     SearchView searchView;
 
     /**
@@ -194,8 +198,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             @NonNull
             @Override
             public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                if (infoWindow.getMarker() != null) {
-                    return (CharSequence) ((HashMap) infoWindow.getMarker().getTag()).get("label");
+                if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
+                    JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
+                    String pipe = jsonObject.get("pipe").getAsString();
+                    String desc = jsonObject.get("spi_id").getAsString();
+                    return String.format("%s(%s)", pipe, desc);
                 }
                 return "ERROR";
             }
@@ -247,51 +254,55 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     private void getSpiData(@NotNull NaverMap naverMap) {
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
-        jsonQuery.addProperty("sy", Math.round(bounds.getSouthLatitude() * 1000000d) / 1000000d);
-        jsonQuery.addProperty("sx", Math.round(bounds.getWestLongitude() * 1000000d) / 1000000d);
-        jsonQuery.addProperty("ny", Math.round(bounds.getNorthLatitude() * 1000000d) / 1000000d);
-        jsonQuery.addProperty("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
+        jsonQuery.addProperty("sx", String.valueOf(bounds.getWestLongitude()));
+        jsonQuery.addProperty("sy", String.valueOf(bounds.getSouthLatitude()));
+        jsonQuery.addProperty("nx", String.valueOf(bounds.getEastLongitude()));
+        jsonQuery.addProperty("ny", String.valueOf(bounds.getNorthLatitude()));
 
+        // TODO: 2019-03-13 로딩 진행상황 표시해주기
         Retrofit2x.builder()
-                .setService(new SpiGet(URL_SPI))
+                .setService(new SpiGet(URL_TEST, API_PIPE))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
                         Log.w(TAG, response.toString());
-                        int statusCode = response.get("response").getAsInt();
-                        if (statusCode == 400) {
-                            behavior.setState(STATE_COLLAPSED);
-                            showMessagePopup(0, response.get("error").getAsString());
+                        // API_PIPE:
+//                        final int statusCode = response.get("response").getAsInt();
+                        // API_SPI:
+//                        final int totalCount = response.get("total_count").getAsInt();
+//                        if (totalCount == 0) {
+//                            behavior.setState(STATE_COLLAPSED);
+//                            showMessagePopup(0, "표시할 SPI 정보가 없습니다");
+////                            showMessagePopup(0, response.get("error").getAsString());
+//                            return;
+//                        }
+//                        JsonArray jsonArray = response.get("data").getAsJsonArray();
+                        JsonArray jsonArray = response.get("data_new").getAsJsonArray();
+                        for (JsonElement element : jsonArray) {
+                            JsonObject jsonObject = element.getAsJsonObject();
+                            setMarker(jsonObject);
                         }
-//                        final int statusCode = 200;
-//                        runOnUiThread(() -> {
-//                            if (statusCode == 400) {
-//                                behavior.setState(STATE_COLLAPSED);
-//                                showMessagePopup(0, "");
-//                            }
-//                            if (statusCode == 200) {
-//                                final ArrayList<SpiData> hashMap = spiDataSet.getArrayList();
-////                                final PipeType[] pipes2 = PipeType.values();
-////                                PipeType pipe = PipeType.Pipe_Etc;
-////                                for (SpiData spiData : hashMap) {
-////                                    String key = spiData.findDataBy(Key_Pipe);
-////                                    for (PipeType p : pipes2) {
-////                                        if (key.equals(getString(p.getNameRes()))) {
-////                                            pipe = p;
-////                                            break;
-////                                        }
-////                                    }
-//                                    setMarker(spiData, pipe);
-//                                }
-//                            }
-//                        });
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
                         showMessagePopup(6, throwable.getMessage());
+                    }
+
+                    // FIXME: 2019-03-13 관로종류 그림 resId 안맞음: pipe-get: type_id?
+                    private void setMarker(JsonObject jsonObject) {
+                        double lat = jsonObject.get("spi_latitude").getAsDouble();
+                        double lng = jsonObject.get("spi_longitude").getAsDouble();
+                        int resId = pipes[jsonObject.get("type_id").getAsInt()].getDrawRes();
+                        Marker marker = new Marker(new LatLng(lat, lng), fromResource(resId));
+//                        Marker marker = new Marker(new LatLng(lat, lng));
+                        marker.setTag(jsonObject);
+                        marker.setMinZoom(14);
+                        marker.setMaxZoom(ZOOM_MAX);
+                        marker.setOnClickListener(listener);
+                        marker.setMap(naverMap);
                     }
                 });
     }

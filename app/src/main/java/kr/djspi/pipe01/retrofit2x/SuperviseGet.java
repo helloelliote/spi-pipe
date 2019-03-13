@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 
+import static kr.djspi.pipe01.Const.API_SUPERVISE;
 import static kr.djspi.pipe01.retrofit2x.RetrofitCore.BUILDER;
 
 /**
@@ -24,7 +25,7 @@ public final class SuperviseGet implements ServiceStrategy {
     @Override
     public Call<JsonObject> getServiceRequest() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("request", "supervise-get");
+        jsonObject.addProperty("request", API_SUPERVISE);
         final String query = jsonObject.toString();
         return BUILDER.baseUrl(url).build()
                 .create(RetrofitService.class).getSupervise(query);

@@ -90,6 +90,11 @@
     <string name="popup_title_select_direction">매설관로 방향선택</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>
 
+    <string name="shape_name_00">직진형</string>
+    <string name="shape_name_01">T분기형</string>
+    <string name="shape_name_02">엘보형</string>
+    <string name="shape_name_03">관말형</string>
+
     <!--SpiLocationActivity-->
     <string name="record_confirm_location">위치 저장</string>
 

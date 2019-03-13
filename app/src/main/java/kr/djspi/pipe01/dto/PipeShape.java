@@ -2,7 +2,9 @@ package kr.djspi.pipe01.dto;
 
 import java.io.Serializable;
 
+import kr.djspi.pipe01.R;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class PipeShape implements DataItem, Serializable {
@@ -16,4 +18,21 @@ public class PipeShape implements DataItem, Serializable {
     private String shape;
     private String spec;
     private String spec_sub;
+
+    @Getter
+    public enum PipeShapeEnum {
+
+        직진형(R.string.shape_name_00, "str"),
+        T분기형(R.string.shape_name_01, "tbr"),
+        엘보형(R.string.shape_name_02, "elb"),
+        관말형(R.string.shape_name_03, "end");
+
+        private int name;
+        private String code;
+
+        PipeShapeEnum(int name, String code) {
+            this.name = name;
+            this.code = code;
+        }
+    }
 }
