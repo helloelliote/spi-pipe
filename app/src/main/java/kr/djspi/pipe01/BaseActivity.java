@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.fragment.MessageDialog;
 
 import static android.content.Intent.ACTION_DIAL;
@@ -33,11 +34,12 @@ import static kr.djspi.pipe01.BuildConfig.VERSION_NAME;
 public class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
+    public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     public static Resources resources;
+    private DrawerLayout drawer;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
     Context context;
     Toolbar toolbar;
-    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,12 +76,11 @@ public class BaseActivity extends AppCompatActivity {
         TextView textViewButton = findViewById(R.id.nmap_find);
         textViewButton.setVisibility(VISIBLE);
         textViewButton.setOnClickListener(v -> {
-            if (currentLocation == null) {
+            if (currentLocation != null) {
+                startActivity(new Intent(context, NaverMapActivity.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+            } else {
                 Toast.makeText(this, getString(R.string.toast_error_location), Toast.LENGTH_LONG).show();
-                return;
             }
-            startActivity(new Intent(context, NaverMapActivity.class)
-                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         });
     }
 

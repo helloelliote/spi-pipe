@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,8 +17,6 @@ import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 
 import kr.djspi.pipe01.R;
-import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum;
-import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -28,6 +27,8 @@ import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
 import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
 import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
+import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
+import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
 
 public class DirectionDialog extends DialogFragment implements OnSelectListener, OnClickListener {
 
@@ -71,10 +72,10 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
         TextView titleView = view.findViewById(R.id.popup_title);
         titleView.setText(dialogTitle);
 
-        view.findViewById(R.id.lay_1).setOnClickListener(this);
         view.findViewById(R.id.lay_2).setOnClickListener(this);
-        view.findViewById(R.id.lay_3).setOnClickListener(this);
         view.findViewById(R.id.lay_4).setOnClickListener(this);
+        view.findViewById(R.id.lay_6).setOnClickListener(this);
+        view.findViewById(R.id.lay_8).setOnClickListener(this);
 
         checkView = view.findViewById(R.id.v_select);
 
@@ -88,23 +89,34 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
     }
 
     private void setLayoutVisibility(View view) {
-        ImageView image_1 = view.findViewById(R.id.image_1);
         ImageView image_2 = view.findViewById(R.id.image_2);
-        ImageView image_3 = view.findViewById(R.id.image_3);
+        ImageView image_8 = view.findViewById(R.id.image_8);
         ImageView image_4 = view.findViewById(R.id.image_4);
-        final String resourceId = String.format("plan_%s_%s_%s_%s",
-                SpiTypeEnum.valueOf(typeString),
-                PipeShapeEnum.valueOf(shapeString),
-                String.valueOf(positionIndex),
-                PIPE_DIRECTIONS[2]);
-        final String id = "drawable";
+        ImageView image_6 = view.findViewById(R.id.image_6);
+
+        String[] resIds = new String[10];
+        for (int i = 1; i <= 4; i++) {
+            resIds[i * 2] = String.format("plan_%s_%s_%s_%s",
+                    parseSpiType(typeString),
+                    parsePipeShape(shapeString),
+                    String.valueOf(positionIndex),
+                    PIPE_DIRECTIONS[i * 2]);
+        }
+        Log.w(TAG, resIds[2]);
+        Log.w(TAG, resIds[8]);
+        Log.w(TAG, resIds[4]);
+        Log.w(TAG, resIds[6]);
+
+        final String defType = "drawable";
         final String packageName = getContext().getPackageName();
-//        for (int i = 1; i <= 9; i++) {
-//            views[i] = view.findViewById(resources.getIdentifier("image_" + i, "id", getContext().getPackageName()));
-//        }
+
+        image_2.setBackgroundResource(resources.getIdentifier(resIds[2], defType, packageName));
+        image_4.setBackgroundResource(resources.getIdentifier(resIds[4], defType, packageName));
+        image_6.setBackgroundResource(resources.getIdentifier(resIds[6], defType, packageName));
+        image_8.setBackgroundResource(resources.getIdentifier(resIds[8], defType, packageName));
+
         switch (typeString) {
             case TAG_TYPE_PLATE:
-                image_1.setBackgroundResource(resources.getIdentifier("", id, packageName));
                 break;
             case TAG_TYPE_MARKER:
 
@@ -133,19 +145,19 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
                 selectIndex = -1;
                 dismissAllowingStateLoss();
                 break;
-            case R.id.lay_1:
+            case R.id.lay_2:
                 selectIndex = 2;
                 setFocus(v);
                 break;
-            case R.id.lay_2:
+            case R.id.lay_8:
                 selectIndex = 8;
                 setFocus(v);
                 break;
-            case R.id.lay_3:
+            case R.id.lay_4:
                 selectIndex = 4;
                 setFocus(v);
                 break;
-            case R.id.lay_4:
+            case R.id.lay_6:
                 selectIndex = 6;
                 setFocus(v);
                 break;

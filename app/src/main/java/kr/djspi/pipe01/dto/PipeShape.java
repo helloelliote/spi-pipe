@@ -2,7 +2,6 @@ package kr.djspi.pipe01.dto;
 
 import java.io.Serializable;
 
-import kr.djspi.pipe01.R;
 import lombok.Data;
 import lombok.Getter;
 
@@ -20,19 +19,29 @@ public class PipeShape implements DataItem, Serializable {
     private String spec_sub;
 
     @Getter
+    @SuppressWarnings("NonAsciiCharacters")
     public enum PipeShapeEnum {
 
-        직진형(R.string.shape_name_00, "str"),
-        T분기형(R.string.shape_name_01, "tbr"),
-        엘보형(R.string.shape_name_02, "elb"),
-        관말형(R.string.shape_name_03, "end");
+        직진형("직진형", "str"),
+        T분기형("T분기형", "tbr"),
+        엘보형("엘보형", "elb"),
+        관말형("관말형", "end");
 
-        private int name;
+        private String name;
         private String code;
 
-        PipeShapeEnum(int name, String code) {
+        PipeShapeEnum(String name, String code) {
             this.name = name;
             this.code = code;
+        }
+
+        public static String parsePipeShape(String pipeShape) {
+            for (PipeShapeEnum shapeEnum : PipeShapeEnum.values()) {
+                if (shapeEnum.name.equals(pipeShape)) {
+                    return shapeEnum.code;
+                }
+            }
+            return null;
         }
     }
 }

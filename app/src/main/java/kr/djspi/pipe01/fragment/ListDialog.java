@@ -66,7 +66,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         switch (listTag) {
             case TAG_PIPE:
                 for (PipeTypeEnum pipe : pipes) {
-                    listItem.add(getString(pipe.getNameRes()));
+                    listItem.add(pipe.getName());
                 }
                 dialogTitle = getString(R.string.popup_title_select_pipe);
                 break;

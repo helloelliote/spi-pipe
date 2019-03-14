@@ -92,9 +92,10 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
 
     private void setLayoutVisibility(View view) {
         ImageView backgroundImage = view.findViewById(R.id.lay_background);
+        final String defType = "id";
         View[] views = new View[10];
         for (int i = 1; i <= 9; i++) {
-            views[i] = view.findViewById(resources.getIdentifier("image_" + i, "id", getContext().getPackageName()));
+            views[i] = view.findViewById(resources.getIdentifier("image_" + i, defType, getContext().getPackageName()));
         }
         switch (typeString) {
             case TAG_TYPE_PLATE:

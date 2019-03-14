@@ -53,7 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SearchPlacesService;
@@ -74,6 +73,7 @@ import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 import static kr.djspi.pipe01.Const.API_PIPE;
 import static kr.djspi.pipe01.Const.URL_TEST;
+import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
 
 public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
 
@@ -93,7 +93,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     static BottomSheetBehavior behavior;
     static SetTopSheet.ListViewAdapter placesListAdapter;
     static Overlay.OnClickListener listener;
-    static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     SearchView searchView;
 
     /**
@@ -295,9 +294,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     private void setMarker(JsonObject jsonObject) {
                         double lat = jsonObject.get("spi_latitude").getAsDouble();
                         double lng = jsonObject.get("spi_longitude").getAsDouble();
-                        int resId = pipes[jsonObject.get("type_id").getAsInt()].getDrawRes();
+                        int resId = parsePipeType(jsonObject.get("pipe").getAsString()).getDrawRes();
                         Marker marker = new Marker(new LatLng(lat, lng), fromResource(resId));
-//                        Marker marker = new Marker(new LatLng(lat, lng));
                         marker.setTag(jsonObject);
                         marker.setMinZoom(14);
                         marker.setMaxZoom(ZOOM_MAX);

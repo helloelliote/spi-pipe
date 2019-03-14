@@ -44,7 +44,6 @@ import kr.djspi.pipe01.dto.PipeShape;
 import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum;
 import kr.djspi.pipe01.dto.PipeSupervise;
 import kr.djspi.pipe01.dto.PipeType;
-import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.dto.Spi;
 import kr.djspi.pipe01.dto.SpiLocation;
 import kr.djspi.pipe01.dto.SpiMemo;
@@ -96,7 +95,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     private static PipeShape pipeShape = new PipeShape();
     private static PipePosition pipePosition = new PipePosition();
     private static PipeSupervise pipeSupervise = new PipeSupervise();
-    public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
     public static FragmentManager fragmentManager;
     public static ArrayList<String> superviseList;
@@ -260,6 +258,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
             case R.id.l_position:
                 if (pipeShape.getShape() == null) {
                     ePosition.setHint("관로형태를 먼저 선택해 주세요.");
+                    ePosition.setText(null);
                     tPosition.setEndIcon(R.drawable.ic_shape);
                     tPosition.getEndIconImageButton()
                             .setOnClickListener(v1 -> ListDialog.get().show(fragmentManager, TAG_SHAPE));
@@ -290,17 +289,18 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         if (index == -1) return;
         switch (tag) {
             case TAG_PIPE:
-                ePipe.setText(getString(pipes[index].getNameRes()));
+                ePipe.setText(pipes[index].getName());
                 pipeType.setId(index + 1);
                 pipe.setType_id(index + 1);
                 header = pipes[index].getHeader();
                 eSpec.setPrefix(header + "  ");
+                // TODO: 2019-03-14 전기관로 단위 확인하기 (mm? kV?)
                 unit = pipes[index].getUnit();
                 eSpec.setSuffix("  " + unit);
                 eSpec.setInputType(index == 5 ? TYPE_CLASS_TEXT : TYPE_CLASS_NUMBER); // index == 5 : 통신관로
                 break;
             case TAG_SHAPE:
-                eShape.setText(getString(shapes[index].getName()));
+                eShape.setText(shapes[index].name());
                 ePosition.setHint(R.string.popup_hint);
                 tPosition.setEndIcon(null);
                 break;
@@ -376,13 +376,13 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                         eHorizontal.setPrefix("없음");
                         eHorizontal.setText("0");
                         eVertical.setEnabled(true);
-                        ePosition.setText("차도 반대쪽 또는 보도 방향");
+                        ePosition.setText("차도 반대쪽 / 보도 방향");
                         break;
                     case 9:
                         eHorizontal.setEnabled(true);
                         eVertical.setEnabled(true);
                         eHorizontal.setPrefix("우측");
-                        ePosition.setText("차도 반대쪽 또는 보도 방향");
+                        ePosition.setText("차도 반대쪽 / 보도 방향");
                         break;
                     default:
                         eHorizontal.setEnabled(true);

@@ -9,6 +9,7 @@ import java.util.List;
 
 import lombok.Data;
 
+@Deprecated
 @Data
 public class Pipe_Alt implements DataItem {
 
