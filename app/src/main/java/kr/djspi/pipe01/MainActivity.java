@@ -24,7 +24,7 @@ import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SpiGet;
 
-import static kr.djspi.pipe01.Const.API_SPI;
+import static kr.djspi.pipe01.Const.API_SPI_GET;
 import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 
@@ -76,7 +76,18 @@ public class MainActivity extends LocationUpdate implements Serializable {
     public void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         tag = NfcUtil.onNewTagIntent(intent);
-        onNewTag(tag);
+
+        Spi spi = new Spi(943, "04:98:E2:A2:B1:49:80", 2);
+        SpiType spiType = new SpiType(943, "표지주");
+
+        HashMap<String, DataItem> hashMap = new HashMap<>();
+        hashMap.put("spi", spi);
+        hashMap.put("spiType", spiType);
+        startActivity(new Intent(context, RecordInputActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra("PipeRecordActivity", hashMap));
+
+//        onNewTag(tag);
     }
 
     private void onNewTag(@NotNull Tag tag) {
@@ -85,7 +96,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         jsonQuery.addProperty("sp_serial", serial);
 
         Retrofit2x.builder()
-                .setService(new SpiGet(URL_TEST, API_SPI))
+                .setService(new SpiGet(URL_TEST, API_SPI_GET))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
@@ -95,8 +106,10 @@ public class MainActivity extends LocationUpdate implements Serializable {
                         JsonArray jsonArray = response.get("data").getAsJsonArray();
                         JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
                         int spi_id = jsonObject.get("spi_id").getAsInt();
-                        int spi_type_id = jsonObject.get("spi_type_id").getAsInt();
-                        String spi_type = jsonObject.get("spi_type").getAsString();
+                        int spi_type_id = 2;
+                        String spi_type = "표지주";
+//                        int spi_type_id = jsonObject.get("spi_type_id").getAsInt();
+//                        String spi_type = jsonObject.get("spi_type").getAsString();
                         // TODO: 2019-03-06 사용할 수 없는 태그
 
                         Spi spi = new Spi(spi_id, serial, spi_type_id);

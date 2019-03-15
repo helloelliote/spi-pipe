@@ -53,6 +53,7 @@ public final class Retrofit2x {
             return this;
         }
 
+        @Contract("_ -> this")
         @Override
         public SetQuery setQuery(@NonNull String stringQuery) {
             this.stringQuery = stringQuery;

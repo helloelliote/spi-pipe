@@ -90,7 +90,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
         return view;
     }
 
-    private void setLayoutVisibility(View view) {
+    private void setLayoutVisibility(@NotNull View view) {
         ImageView backgroundImage = view.findViewById(R.id.lay_background);
         final String defType = "id";
         View[] views = new View[10];
@@ -144,17 +144,15 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
                     Toast.makeText(getContext(), "관로의 위치를 선택해주세요", Toast.LENGTH_LONG).show();
                     return;
                 }
-                listener.onSelect(TAG_POSITION, selectIndex);
+                listener.onSelect(TAG_POSITION, selectIndex, null);
                 DirectionDialog dialog = new DirectionDialog();
                 bundle.putInt("positionInt", selectIndex);
                 dialog.setArguments(bundle);
                 dialog.show(fragmentManager, TAG_DIRECTION);
-                selectIndex = -1;
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:
             case R.id.btn_close:
-                selectIndex = -1;
                 dismissAllowingStateLoss();
                 break;
             case R.id.lay_1:

@@ -39,6 +39,7 @@ import java.util.Objects;
 
 import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.dto.Pipe;
+import kr.djspi.pipe01.dto.PipePlan;
 import kr.djspi.pipe01.dto.PipePosition;
 import kr.djspi.pipe01.dto.PipeShape;
 import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum;
@@ -85,8 +86,9 @@ import static kr.djspi.pipe01.Const.URL_TEST;
 public class RecordInputActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
     private static final String TAG = RecordInputActivity.class.getSimpleName();
-    private static ExtendedEditText ePipe, eShape, ePosition, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
-            eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
+    public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
+    public static FragmentManager fragmentManager;
+    public static ArrayList<String> superviseList;
     private static HashMap<?, ?> itemMap;
     private static String header, unit;
     private static SpiType spiType;
@@ -94,10 +96,10 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     private static PipeType pipeType = new PipeType();
     private static PipeShape pipeShape = new PipeShape();
     private static PipePosition pipePosition = new PipePosition();
+    private static PipePlan pipePlan = new PipePlan();
     private static PipeSupervise pipeSupervise = new PipeSupervise();
-    public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
-    public static FragmentManager fragmentManager;
-    public static ArrayList<String> superviseList;
+    private static ExtendedEditText ePipe, eShape, ePosition, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
+            eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
     private MaterialButton buttonConfirm;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
@@ -238,6 +240,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
     @Override
     public void onClick(View v) {
+        if (ListDialog.get().isAdded()) return;
         switch (v.getId()) {
             case R.id.l_pipe:
                 ListDialog.get().show(fragmentManager, TAG_PIPE);
@@ -264,12 +267,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                             .setOnClickListener(v1 -> ListDialog.get().show(fragmentManager, TAG_SHAPE));
                     return;
                 }
-                PositionDialog dialog = new PositionDialog();
-                Bundle bundle = new Bundle(3);
-                bundle.putString("typeString", spiType.getType());
-                bundle.putString("shapeString", pipeShape.getShape());
-                dialog.setArguments(bundle);
-                dialog.show(fragmentManager, TAG_POSITION);
+                showPositionDialog();
                 break;
 //            case R.id.l_photo:
 //                requestCode = REQUEST_CODE_PHOTO;
@@ -284,8 +282,17 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         }
     }
 
+    public static void showPositionDialog() {
+        PositionDialog dialog = new PositionDialog();
+        Bundle bundle = new Bundle(3);
+        bundle.putString("typeString", spiType.getType());
+        bundle.putString("shapeString", pipeShape.getShape());
+        dialog.setArguments(bundle);
+        dialog.show(fragmentManager, TAG_POSITION);
+    }
+
     @Override
-    public void onSelect(String tag, int index) {
+    public void onSelect(String tag, int index, String text) {
         if (index == -1) return;
         switch (tag) {
             case TAG_PIPE:
@@ -394,6 +401,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 break;
             case TAG_DIRECTION:
                 pipePosition.setDirection(PIPE_DIRECTIONS[index]);
+                pipePlan.setFile_plane(text + ".png");
                 break;
             default:
                 break;
@@ -443,32 +451,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     @Override
     protected void onNewIntent(Intent intent) {
         return;
-    }
-
-    @NotNull
-    @Contract(" -> new")
-    private static Entry setEntry() throws Exception {
-        Spi spi = (Spi) itemMap.get("spi");
-        final int spiId = Objects.requireNonNull(spi).getId();
-        SpiMemo spiMemo = new SpiMemo(eSpiMemo.getText().toString());
-        spiLocation.setSpi_id(spiId);
-        pipe.setSpi_id(spiId);
-        pipe.setDepth(Double.valueOf(eDepth.getText().toString()));
-        pipe.setMaterial(eMaterial.getText().toString());
-        pipeShape.setSpec(eSpec.getText().toString());
-        pipeType.setHeader(header);
-        pipeType.setPipe(ePipe.getText().toString());
-        pipeType.setUnit(unit);
-        pipePosition.setHorizontal(Double.valueOf(eHorizontal.getText().toString()));
-        pipePosition.setVertical(Double.valueOf(eVertical.getText().toString()));
-        pipeSupervise.setSupervise(eSupervise.getText().toString());
-        pipeSupervise.setContact(eSuperviseContact.getText().toString());
-        pipe.setConstruction(eConstruction.getText().toString());
-        pipe.setConstruction_contact(eConstructionContact.getText().toString());
-
-        return new Entry(
-                spi, spiType, spiLocation, spiMemo,
-                pipe, pipeType, pipeShape, pipePosition, pipeSupervise);
     }
 
     @SuppressWarnings("ALL")
@@ -633,5 +615,31 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 //
 //            return isValid;
 //        }
+    }
+
+    @Contract(" -> new")
+    @NotNull
+    private static Entry setEntry() throws Exception {
+        Spi spi = (Spi) itemMap.get("spi");
+        final int spiId = Objects.requireNonNull(spi).getId();
+        SpiMemo spiMemo = new SpiMemo(eSpiMemo.getText().toString());
+        spiLocation.setSpi_id(spiId);
+        pipe.setSpi_id(spiId);
+        pipe.setDepth(Double.valueOf(eDepth.getText().toString()));
+        pipe.setMaterial(eMaterial.getText().toString());
+        pipeShape.setSpec(eSpec.getText().toString());
+        pipeType.setHeader(header);
+        pipeType.setPipe(ePipe.getText().toString());
+        pipeType.setUnit(unit);
+        pipePosition.setHorizontal(Double.valueOf(eHorizontal.getText().toString()));
+        pipePosition.setVertical(Double.valueOf(eVertical.getText().toString()));
+        pipeSupervise.setSupervise(eSupervise.getText().toString());
+        pipeSupervise.setContact(eSuperviseContact.getText().toString());
+        pipe.setConstruction(eConstruction.getText().toString());
+        pipe.setConstruction_contact(eConstructionContact.getText().toString());
+
+        return new Entry(
+                spi, spiType, spiLocation, spiMemo,
+                pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
     }
 }

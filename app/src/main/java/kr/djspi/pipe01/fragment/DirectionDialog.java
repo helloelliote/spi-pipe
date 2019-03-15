@@ -24,9 +24,7 @@ import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
-import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
-import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
-import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
+import static kr.djspi.pipe01.RecordInputActivity.showPositionDialog;
 import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
 
@@ -36,9 +34,9 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
     private static String dialogTitle;
     private static String typeString;
     private static String shapeString;
+    private static String[] resIds;
     private static int selectIndex = -1;
     private static int positionIndex = -1;
-    private static Bundle bundle;
     private static OnSelectListener listener;
     private View checkView;
 
@@ -57,7 +55,7 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bundle = getArguments();
+            Bundle bundle = getArguments();
             typeString = bundle.getString("typeString");
             shapeString = bundle.getString("shapeString");
             positionIndex = bundle.getInt("positionInt");
@@ -88,13 +86,13 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
         return view;
     }
 
-    private void setLayoutVisibility(View view) {
+    private void setLayoutVisibility(@NotNull View view) {
         ImageView image_2 = view.findViewById(R.id.image_2);
         ImageView image_8 = view.findViewById(R.id.image_8);
         ImageView image_4 = view.findViewById(R.id.image_4);
         ImageView image_6 = view.findViewById(R.id.image_6);
 
-        String[] resIds = new String[10];
+        resIds = new String[10];
         for (int i = 1; i <= 4; i++) {
             resIds[i * 2] = String.format("plan_%s_%s_%s_%s",
                     parseSpiType(typeString),
@@ -114,19 +112,6 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
         image_4.setBackgroundResource(resources.getIdentifier(resIds[4], defType, packageName));
         image_6.setBackgroundResource(resources.getIdentifier(resIds[6], defType, packageName));
         image_8.setBackgroundResource(resources.getIdentifier(resIds[8], defType, packageName));
-
-        switch (typeString) {
-            case TAG_TYPE_PLATE:
-                break;
-            case TAG_TYPE_MARKER:
-
-                break;
-            case TAG_TYPE_COLUMN:
-
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -137,12 +122,14 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
                     Toast.makeText(getContext(), "관로의 방향을 선택해주세요", Toast.LENGTH_LONG).show();
                     return;
                 }
-                listener.onSelect(TAG_DIRECTION, selectIndex);
+                listener.onSelect(TAG_DIRECTION, selectIndex, resIds[selectIndex]);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:
+                dismissAllowingStateLoss();
+                showPositionDialog();
+                break;
             case R.id.btn_close:
-                selectIndex = -1;
                 dismissAllowingStateLoss();
                 break;
             case R.id.lay_2:
@@ -175,11 +162,12 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
     @Override
     public void onDismiss(DialogInterface dialog) {
         selectIndex = -1;
+        resIds = null;
         super.onDismiss(dialog);
     }
 
     @Override
-    public void onSelect(String tag, int index) {
+    public void onSelect(String tag, int index, String text) {
         if (index == -1) return;
         switch (tag) {
             case TAG_POSITION:

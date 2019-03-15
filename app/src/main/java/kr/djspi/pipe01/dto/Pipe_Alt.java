@@ -48,15 +48,15 @@ public class Pipe_Alt implements DataItem {
         toJson();
     }
 
-    private void toJson() {
-        json = new Gson().toJson(this);
-    }
-
     public static List<Pipe_Alt> initPipeEntryList() {
         ArrayList<String> list = new ArrayList<>();
         list.add(json);
         Type listType = new TypeToken<ArrayList<Pipe_Alt>>() {
         }.getType();
         return new Gson().fromJson(list.toString(), listType);
+    }
+
+    private void toJson() {
+        json = new Gson().toJson(this);
     }
 }

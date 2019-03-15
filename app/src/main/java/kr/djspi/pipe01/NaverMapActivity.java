@@ -45,6 +45,7 @@ import com.transitionseverywhere.ChangeText;
 import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionManager;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -71,7 +72,7 @@ import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
-import static kr.djspi.pipe01.Const.API_PIPE;
+import static kr.djspi.pipe01.Const.API_PIPE_GET;
 import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
 
@@ -260,38 +261,36 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         // TODO: 2019-03-13 로딩 진행상황 표시해주기
         Retrofit2x.builder()
-                .setService(new SpiGet(URL_TEST, API_PIPE))
+                .setService(new SpiGet(URL_TEST, API_PIPE_GET))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        Log.w(TAG, response.toString());
-                        // API_PIPE:
-//                        final int statusCode = response.get("response").getAsInt();
-                        // API_SPI:
-//                        final int totalCount = response.get("total_count").getAsInt();
-//                        if (totalCount == 0) {
-//                            behavior.setState(STATE_COLLAPSED);
-//                            showMessagePopup(0, "표시할 SPI 정보가 없습니다");
-////                            showMessagePopup(0, response.get("error").getAsString());
-//                            return;
-//                        }
-//                        JsonArray jsonArray = response.get("data").getAsJsonArray();
-                        JsonArray jsonArray = response.get("data_new").getAsJsonArray();
-                        for (JsonElement element : jsonArray) {
-                            JsonObject jsonObject = element.getAsJsonObject();
-                            setMarker(jsonObject);
+                        try {
+                            Log.w(TAG, response.toString());
+                            final int totalCount = response.get("total_count").getAsInt();
+                            if (totalCount != 0) {
+                                JsonArray jsonArray = response.get("data").getAsJsonArray();
+                                for (JsonElement element : jsonArray) {
+                                    JsonObject jsonObject = element.getAsJsonObject();
+                                    setMarker(jsonObject);
+                                }
+                            } else {
+                                behavior.setState(STATE_COLLAPSED);
+                                showMessagePopup(0, "표시할 SPI 정보가 없습니다");
+                            }
+                        } catch (Exception e) {
+                            onFailure(e);
                         }
                     }
 
                     @Override
-                    public void onFailure(Throwable throwable) {
+                    public void onFailure(@NotNull Throwable throwable) {
                         showMessagePopup(6, throwable.getMessage());
                     }
 
-                    // FIXME: 2019-03-13 관로종류 그림 resId 안맞음: pipe-get: type_id?
-                    private void setMarker(JsonObject jsonObject) {
+                    private void setMarker(@NotNull JsonObject jsonObject) {
                         double lat = jsonObject.get("spi_latitude").getAsDouble();
                         double lng = jsonObject.get("spi_longitude").getAsDouble();
                         int resId = parsePipeType(jsonObject.get("pipe").getAsString()).getDrawRes();
@@ -422,11 +421,13 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 return placesList.size();
             }
 
+            @Contract(pure = true)
             @Override
             public Object getItem(int position) {
                 return placesList.get(position);
             }
 
+            @Contract(value = "_ -> param1", pure = true)
             @Override
             public long getItemId(int position) {
                 return position;

@@ -103,7 +103,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_ok:
-                listener.onSelect(listTag, selectIndex);
+                listener.onSelect(listTag, selectIndex, null);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:

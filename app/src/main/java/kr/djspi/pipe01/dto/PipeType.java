@@ -1,5 +1,7 @@
 package kr.djspi.pipe01.dto;
 
+import org.jetbrains.annotations.Contract;
+
 import java.io.Serializable;
 
 import kr.djspi.pipe01.R;
@@ -11,14 +13,22 @@ import static kr.djspi.pipe01.BaseActivity.pipes;
 @Data
 public class PipeType implements DataItem, Serializable {
 
-    private int id;
-    private String header;
-    private String pipe;
-    private String unit;
     static final String HEAD_NULL = "";
     static final String HEAD_RAD = "관경";
     static final String UNIT_MM = "mm";
     static final String UNIT_CORE = "  코어";
+    private int id;
+    private String header;
+    private String pipe;
+    private String unit;
+
+    @Contract(pure = true)
+    public static PipeTypeEnum parsePipeType(String name) {
+        for (PipeTypeEnum pipe : pipes) {
+            if (pipe.name.equals(name)) return pipe;
+        }
+        return PipeTypeEnum.기타관로;
+    }
 
     /**
      * Enum 목록의 순서는 변경하지 않는다.
@@ -50,12 +60,5 @@ public class PipeType implements DataItem, Serializable {
             this.header = header;
             this.unit = unit;
         }
-    }
-
-    public static PipeTypeEnum parsePipeType(String name) {
-        for (PipeTypeEnum pipe : pipes) {
-            if (pipe.name.equals(name)) return pipe;
-        }
-        return PipeTypeEnum.기타관로;
     }
 }

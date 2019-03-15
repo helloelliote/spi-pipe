@@ -22,6 +22,7 @@ import static kr.djspi.pipe01.Const.URL_TEST;
 
 public class RecordWriteActivity extends BaseActivity implements Serializable, OnClickListener {
 
+    // TODO: 2019-03-15 통합형으로 관로 정보 전송시 에러 발생하는 관로에 대해서 롤백 및 롤백 안내
     private static final String TAG = RecordWriteActivity.class.getSimpleName();
     private static ArrayList entries;
 

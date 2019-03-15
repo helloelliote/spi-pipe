@@ -17,34 +17,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class RetrofitCore {
 
     private static final String TAG = RetrofitCore.class.getSimpleName();
-    private static ServiceStrategy service;
     private static final Gson gson = new GsonBuilder().setLenient().create();
     static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
     static JsonObject jsonQuery;
     static String stringQuery;
+    private static ServiceStrategy service;
 
     private RetrofitCore() {
-    }
-
-    /**
-     * LazyHolder 를 활용한 초기화 Singleton 패턴
-     */
-    private static class LazyHolder {
-        static final RetrofitCore INSTANCE = new RetrofitCore();
     }
 
     @Contract(pure = true)
     public static RetrofitCore get() {
         return LazyHolder.INSTANCE;
-    }
-
-    /**
-     * 결과값인 Response (또는 예외 Throwable) 리스너
-     */
-    public interface OnRetrofitListener {
-        void onResponse(JsonObject response);
-
-        void onFailure(Throwable throwable);
     }
 
     /**
@@ -103,5 +87,21 @@ public final class RetrofitCore {
                 }
             });
         }
+    }
+
+    /**
+     * 결과값인 Response (또는 예외 Throwable) 리스너
+     */
+    public interface OnRetrofitListener {
+        void onResponse(JsonObject response);
+
+        void onFailure(Throwable throwable);
+    }
+
+    /**
+     * LazyHolder 를 활용한 초기화 Singleton 패턴
+     */
+    private static class LazyHolder {
+        static final RetrofitCore INSTANCE = new RetrofitCore();
     }
 }
