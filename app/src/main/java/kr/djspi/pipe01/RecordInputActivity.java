@@ -195,8 +195,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         eMaterial.setText("알루미늄");
         eSuperviseContact.setText("053-424-9547");
         eSpiMemo.setText("테스트 메모");
-//        eConstruction.setText("서울시상수도사업본부");
-//        eConstructionContact.setText("02-493-3904");
     }
 
     @Override
@@ -330,8 +328,9 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 switch (index) {
                     case 1:
                         eHorizontal.setEnabled(true);
-                        eVertical.setEnabled(true);
                         eHorizontal.setPrefix("좌측");
+                        eVertical.setEnabled(true);
+                        eVertical.setPrefix("수직");
                         ePosition.setText("차도 / 길어깨쪽 방향");
                         break;
                     case 2:
@@ -339,12 +338,14 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                         eHorizontal.setPrefix("없음");
                         eHorizontal.setText("0");
                         eVertical.setEnabled(true);
+                        eVertical.setPrefix("수직");
                         ePosition.setText("차도 / 길어깨쪽 방향");
                         break;
                     case 3:
                         eHorizontal.setEnabled(true);
                         eHorizontal.setPrefix("우측");
                         eVertical.setEnabled(true);
+                        eVertical.setPrefix("수직");
                         ePosition.setText("차도 / 길어깨쪽 방향");
                         break;
                     case 4:
@@ -376,6 +377,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                         eHorizontal.setEnabled(true);
                         eHorizontal.setPrefix("좌측");
                         eVertical.setEnabled(true);
+                        eVertical.setPrefix("수직");
                         ePosition.setText("보도 / 차도 반대쪽 방향");
                         break;
                     case 8:
@@ -383,18 +385,21 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                         eHorizontal.setPrefix("없음");
                         eHorizontal.setText("0");
                         eVertical.setEnabled(true);
+                        eVertical.setPrefix("수직");
                         ePosition.setText("차도 반대쪽 / 보도 방향");
                         break;
                     case 9:
                         eHorizontal.setEnabled(true);
-                        eVertical.setEnabled(true);
                         eHorizontal.setPrefix("우측");
+                        eVertical.setEnabled(true);
+                        eVertical.setPrefix("수직");
                         ePosition.setText("차도 반대쪽 / 보도 방향");
                         break;
                     default:
                         eHorizontal.setEnabled(true);
                         eHorizontal.setPrefix("수평");
                         eVertical.setEnabled(true);
+                        eVertical.setPrefix("수직");
                         ePosition.setText(null);
                         break;
                 }
@@ -425,8 +430,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                     break;
                 case REQUEST_CODE_MAP:
                     double[] spiLocationArray = data.getDoubleArrayExtra("SpiLocation");
-                    spiLocation.setLatitude(spiLocationArray[0]);
-                    spiLocation.setLongitude(spiLocationArray[1]);
+//                    spiLocation.setLatitude(spiLocationArray[0]);
+//                    spiLocation.setLongitude(spiLocationArray[1]);
                     spiLocation.setCount(0);
                     buttonConfirm.setText(getString(R.string.record_confirm));
                     break;
@@ -450,7 +455,6 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
     @Override
     protected void onNewIntent(Intent intent) {
-        return;
     }
 
     @SuppressWarnings("ALL")

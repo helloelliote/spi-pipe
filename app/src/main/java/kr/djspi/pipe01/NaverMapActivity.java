@@ -130,8 +130,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             mapFragment = MapFragment.newInstance(new NaverMapOptions()
                     .contentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT)
                     .camera(new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT, 0, 0)) // 현재 내 위치 센터
-                    .enabledLayerGroups(LAYER_GROUP_BUILDING)
                     .locale(Locale.KOREA)
+                    .enabledLayerGroups(LAYER_GROUP_BUILDING)
                     .minZoom(ZOOM_MIN)
                     .maxZoom(ZOOM_MAX)
                     .extent(EXTENT_KOREA)
