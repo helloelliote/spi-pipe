@@ -2,6 +2,7 @@ package kr.djspi.pipe01;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.location.Location;
 import android.os.Bundle;
@@ -225,12 +226,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 }
                 if (overlay instanceof InfoWindow) {
                     InfoWindow window = (InfoWindow) overlay;
-                    if (window.getMarker() != null) {
-//                        String spiData = (String) ((HashMap) window.getMarker().getTag()).get("spiData");
-//                        Log.w(TAG, spiData);
-//                        startActivity(new Intent(context, NfcRecordRead.class)
-//                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//                                .putExtra("NfcRecordRead", spiData));
+                    if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
+                        JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
+                        startActivity(new Intent(context, RecordViewActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                .putExtra("RecordViewActivity", jsonObject.toString()));
                     }
                     window.close();
                 }

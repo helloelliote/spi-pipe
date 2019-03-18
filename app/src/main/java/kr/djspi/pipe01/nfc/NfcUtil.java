@@ -78,7 +78,7 @@ public final class NfcUtil {
         try {
             intentFilters = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain")};
             intentFilters[0].addDataType("application/kr.djspi.pipe01");
-        } catch (MalformedMimeTypeException ignored) {
+        } catch (MalformedMimeTypeException ignore) {
         }
         techLists = new String[][]{{NfcA.class.getName()}, {Ndef.class.getName()}, {MifareUltralight.class.getName()}};
     }

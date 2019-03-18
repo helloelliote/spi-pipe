@@ -104,4 +104,18 @@
     하시고 알림음이 들릴때까지 천천히, 조금씩 움직여주세요.]]></string>
     <string name="popup_read_only">SPI에 정보를 저장하면 새로 쓰거나 지울 수 없습니다. 저장할 내용을 충분히 확인하신 후 기록하십시오.</string>
 
+    <!--RecordViewActivity-->
+    <string name="pipe_info">관로정보</string>
+    <string name="pipe_section">단면도</string>
+    <string name="pipe_plane">평면도</string>
+
+    <string name="nfc_info_read_contents"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font> 로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s</font><font color="#F24E4E"> %4$s</font> 관로가 SPI로부터 <font color="#F24E4E">%5$s</font> 이격되어 지표면으로부터 <font color="#F24E4E">%6$s</font> 깊이에 매설되어 있습니다. 굴착 시 주의하여 주십시오.]]></string>
+    <string name="nfc_info_company"><![CDATA[본 관로는 <font color="#0077C8">%1$s</font>에서 관리하고 있습니다.]]></string>
+    <string name="nfc_info_company_contact"><![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
+    <string name="nfc_info_construction"><![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
+    <string name="nfc_info_construction_contact"><![CDATA[(<font color="#0077C8"><a href="tel:%1$s">%1$s</a></font>)]]></string>
+    <string name="nfc_info_serial"><![CDATA[SPI 시리얼번호는 <font color="#0077C8">%1$s</font>입니다.]]></string>
+    <string name="nfc_info_id"><![CDATA[SPI 아이디는 <font color="#0077C8">%1$s</font>입니다.]]></string>
+    <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
+
 </resources>

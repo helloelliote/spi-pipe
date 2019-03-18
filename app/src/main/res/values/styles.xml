@@ -68,4 +68,13 @@
         <item name="android:textStyle">bold</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
+
+    <style name="Spi.Tab" parent="Widget.AppCompat.Toolbar">
+        <item name="android:theme">@style/Spi.Theme</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="tabIndicatorColor">@color/yellow</item>
+        <item name="tabSelectedTextColor">@color/yellow</item>
+        <item name="tabTextColor">@android:color/white</item>
+        <item name="tabIndicatorHeight">6dp</item>
+    </style>
 </resources>

@@ -77,7 +77,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         super.onNewIntent(intent);
         tag = NfcUtil.onNewTagIntent(intent);
 
-        Spi spi = new Spi(511, "04:AA:A4:A2:B1:49:80", 2); // 표지주
+        Spi spi = new Spi(-1, "04:AA:A4:A2:B1:49:80", 2); // 표지주
         SpiType spiType = new SpiType(2, "표지주");
 
 //        Spi spi = new Spi(1165, "04:4B:B8:9A:BF:5B:80", 1); // 표지기

@@ -23,4 +23,7 @@
 
     <!--SpiLocationActivity-->
     <color name="orange">#ffa000</color>
+
+    <color name="yellow">#ffed66</color>
+
 </resources>

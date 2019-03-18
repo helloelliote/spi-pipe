@@ -142,7 +142,7 @@ public class BaseActivity extends AppCompatActivity {
             bundle.putInt("issueType", issue);
             dialog.setArguments(bundle);
             dialog.show(getSupportFragmentManager(), tag);
-        } catch (IllegalStateException ignored) {
+        } catch (IllegalStateException ignore) {
             // FIXME: 2019-03-11 서버 통신 결과가 ui 갱신 이후에 나타나면 팝업창 예외가 발생
         }
     }
