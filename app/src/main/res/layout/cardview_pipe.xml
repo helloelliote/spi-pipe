@@ -14,33 +14,37 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/pipe"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_marginBottom="15dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="10dp"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
         <!--<studio.carbonylgroup.textfieldboxes.TextFieldBoxes-->
-        <!--android:id="@+id/p_type"-->
-        <!--style="@style/TextFieldBoxes"-->
-        <!--app:iconSignifier="@drawable/ic_edit"-->
-        <!--app:labelText="관로종류">-->
+            <!--android:id="@+id/l_pipe"-->
+            <!--style="@style/TextFieldBoxes"-->
+            <!--app:iconSignifier="@drawable/ic_type"-->
+            <!--app:labelText="관로종류">-->
 
-        <!--<studio.carbonylgroup.textfieldboxes.ExtendedEditText-->
-        <!--android:id="@+id/in_type"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
+            <!--<studio.carbonylgroup.textfieldboxes.ExtendedEditText-->
+                <!--android:id="@+id/pipe_spinner"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:imeOptions="actionNext"-->
+                <!--android:inputType="textImeMultiLine" />-->
         <!--</studio.carbonylgroup.textfieldboxes.TextFieldBoxes>-->
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_shape"
+            android:id="@+id/l_shape"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_shape"
-            app:labelText="매설형태를 선택하세요">
+            app:labelText="관로형태">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_shape"
+                android:id="@+id/shape"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -53,7 +57,7 @@
             android:orientation="horizontal">
 
             <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                android:id="@+id/p_dist_hor"
+                android:id="@+id/l_horizontal"
                 style="@style/TextFieldBoxes.FreeSize"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -63,7 +67,7 @@
                 app:labelText="이격거리(수평)">
 
                 <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                    android:id="@+id/in_dist_hor"
+                    android:id="@+id/horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/record_input_2_hor"
@@ -73,7 +77,7 @@
             </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
             <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                android:id="@+id/p_dist_ver"
+                android:id="@+id/l_vertical"
                 style="@style/TextFieldBoxes.FreeSize"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -83,7 +87,7 @@
                 app:labelText="이격거리(수직)">
 
                 <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                    android:id="@+id/in_dist_ver"
+                    android:id="@+id/vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/record_input_2_ver"
@@ -94,13 +98,13 @@
         </LinearLayout>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_depth"
+            android:id="@+id/l_depth"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_depth"
             app:labelText="매설심도">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_depth"
+                android:id="@+id/depth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -110,29 +114,29 @@
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_spec"
+            android:id="@+id/l_spec"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_spec"
             app:labelText="관로스펙">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_spec"
+                android:id="@+id/spec"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:inputType="number"
-                app:prefix="지름  "
-                app:suffix="mm" />
+                app:prefix=""
+                app:suffix="" />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_material"
+            android:id="@+id/l_material"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_material"
             app:labelText="관로재질">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_material"
+                android:id="@+id/material"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -140,13 +144,13 @@
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_supervise"
+            android:id="@+id/l_supervise"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_supervise"
             app:labelText="관리기관">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_supervise"
+                android:id="@+id/supervise"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -155,13 +159,13 @@
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_supervise_contact"
+            android:id="@+id/l_supervise_contact"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_contact"
             app:labelText="관리기관 연락처">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_supervise_contact"
+                android:id="@+id/supervise_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
@@ -170,13 +174,13 @@
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_memo"
+            android:id="@+id/l_spi_memo"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_memo"
             app:labelText="메모">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_memo"
+                android:id="@+id/spi_memo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/record_optional"
@@ -185,13 +189,13 @@
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_construction"
+            android:id="@+id/l_construction"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_construction"
             app:labelText="시공업체">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_construction"
+                android:id="@+id/construction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/record_optional"
@@ -201,13 +205,13 @@
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_construction_contact"
+            android:id="@+id/l_construction_contact"
             style="@style/TextFieldBoxes"
             app:iconSignifier="@drawable/ic_contact"
             app:labelText="시공업체 연락처">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_construction_contact"
+                android:id="@+id/construction_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/record_optional"
@@ -217,17 +221,17 @@
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
         <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-            android:id="@+id/p_photo"
+            android:id="@+id/l_spi_photo"
             style="@style/TextFieldBoxes"
             app:enabled="false"
             app:iconSignifier="@drawable/ic_photo"
             app:labelText="사진을 첨부하려면 터치하세요">
 
             <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                android:id="@+id/in_photo"
+                android:id="@+id/spi_photo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textUri"/>
+                android:inputType="textUri" />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
     </LinearLayout>
 </android.support.design.card.MaterialCardView>

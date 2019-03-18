@@ -2,6 +2,7 @@ package kr.djspi.pipe01;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.location.Location;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
@@ -44,6 +46,7 @@ import com.transitionseverywhere.ChangeText;
 import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionManager;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -55,7 +58,7 @@ import java.util.Locale;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SearchPlacesService;
-import kr.djspi.pipe01.retrofit2x.SpiGetService;
+import kr.djspi.pipe01.retrofit2x.SpiGet;
 
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
@@ -64,19 +67,22 @@ import static android.view.View.VISIBLE;
 import static com.naver.maps.map.LocationTrackingMode.Face;
 import static com.naver.maps.map.LocationTrackingMode.Follow;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
-import static com.naver.maps.map.NaverMap.MAXIMUM_ZOOM;
 import static com.naver.maps.map.NaverMap.MapType;
+import static com.naver.maps.map.overlay.OverlayImage.fromResource;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
+import static kr.djspi.pipe01.Const.API_PIPE_GET;
+import static kr.djspi.pipe01.Const.URL_TEST;
+import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
 
 public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
 
     private static final String TAG = NaverMapActivity.class.getSimpleName();
     private static final double ZOOM_DEFAULT = 18.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 6.0; // 최소 줌레벨
-    private static final double ZOOM_MAX = MAXIMUM_ZOOM; // 최대 줌레벨(21)
+    private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -125,8 +131,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             mapFragment = MapFragment.newInstance(new NaverMapOptions()
                     .contentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT)
                     .camera(new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT, 0, 0)) // 현재 내 위치 센터
-                    .enabledLayerGroups(LAYER_GROUP_BUILDING)
                     .locale(Locale.KOREA)
+                    .enabledLayerGroups(LAYER_GROUP_BUILDING)
                     .minZoom(ZOOM_MIN)
                     .maxZoom(ZOOM_MAX)
                     .extent(EXTENT_KOREA)
@@ -144,11 +150,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      *
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      *                 getMapAsync() 메서드로 OnMapReadyCallback 을 등록하면 NaverMapActivity 객체를 얻는다.
-     * @see NaverMapActivity#setMapModeSwitch(com.naver.maps.map.NaverMap)
+     * @see NaverMapActivity#setMapModeSwitch(NaverMap)
      */
     @UiThread
     @Override
-    public void onMapReady(@NonNull com.naver.maps.map.NaverMap naverMap) {
+    public void onMapReady(@NonNull NaverMap naverMap) {
         naverMap.setLocationSource(locationSource);
         // UI 요소에 가려진 영역을 패딩으로 지정하면 카메라는 콘텐츠 패딩을 제외한 영역의 중심에 위치한다.
         naverMap.setLocationTrackingMode(Follow);
@@ -168,7 +174,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      *
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
-    private void setMapModeSwitch(@NonNull com.naver.maps.map.NaverMap naverMap) {
+    private void setMapModeSwitch(@NonNull NaverMap naverMap) {
         ToggleSwitch toggleSwitch = findViewById(R.id.nmap_mapmode_switch);
         toggleSwitch.setVisibility(VISIBLE);
         toggleSwitch.setCheckedPosition(0);
@@ -187,14 +193,17 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         });
     }
 
-    private void setOverlayListener(com.naver.maps.map.NaverMap naverMap) {
+    private void setOverlayListener(NaverMap naverMap) {
         InfoWindow infoWindow = new InfoWindow(new DefaultTextAdapter(context) {
 
             @NonNull
             @Override
             public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                if (infoWindow.getMarker() != null) {
-                    return (CharSequence) ((HashMap) infoWindow.getMarker().getTag()).get("label");
+                if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
+                    JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
+                    String pipe = jsonObject.get("spi_id").getAsString();
+                    String desc = jsonObject.get("pipe").getAsString();
+                    return String.format("%s %s", pipe, desc);
                 }
                 return "ERROR";
             }
@@ -217,12 +226,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 }
                 if (overlay instanceof InfoWindow) {
                     InfoWindow window = (InfoWindow) overlay;
-                    if (window.getMarker() != null) {
-//                        String spiData = (String) ((HashMap) window.getMarker().getTag()).get("spiData");
-//                        Log.w(TAG, spiData);
-//                        startActivity(new Intent(context, NfcRecordRead.class)
-//                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//                                .putExtra("NfcRecordRead", spiData));
+                    if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
+                        JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
+                        startActivity(new Intent(context, RecordViewActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                .putExtra("RecordViewActivity", jsonObject.toString()));
                     }
                     window.close();
                 }
@@ -243,55 +251,55 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         });
     }
 
-    private void getSpiData(@NotNull com.naver.maps.map.NaverMap naverMap) {
+    private void getSpiData(@NotNull NaverMap naverMap) {
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
-        jsonQuery.addProperty("sy", Math.round(bounds.getSouthLatitude() * 1000000d) / 1000000d);
-        jsonQuery.addProperty("sx", Math.round(bounds.getWestLongitude() * 1000000d) / 1000000d);
-        jsonQuery.addProperty("ny", Math.round(bounds.getNorthLatitude() * 1000000d) / 1000000d);
-        jsonQuery.addProperty("nx", Math.round(bounds.getEastLongitude() * 1000000d) / 1000000d);
+        jsonQuery.addProperty("sx", String.valueOf(bounds.getWestLongitude()));
+        jsonQuery.addProperty("sy", String.valueOf(bounds.getSouthLatitude()));
+        jsonQuery.addProperty("nx", String.valueOf(bounds.getEastLongitude()));
+        jsonQuery.addProperty("ny", String.valueOf(bounds.getNorthLatitude()));
 
-        Retrofit2x.newBuilder()
-                .setService(new SpiGetService())
+        // TODO: 2019-03-13 로딩 진행상황 표시해주기
+        Retrofit2x.builder()
+                .setService(new SpiGet(URL_TEST, API_PIPE_GET))
                 .setQuery(jsonQuery)
                 .build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        Log.w(TAG, response.toString());
-                        int statusCode = response.get("response").getAsInt();
-                        if (statusCode == 400) {
-                            behavior.setState(STATE_COLLAPSED);
-                            showMessagePopup(0, response.get("error").getAsString());
+                        try {
+                            Log.w(TAG, response.toString());
+                            final int totalCount = response.get("total_count").getAsInt();
+                            if (totalCount != 0) {
+                                JsonArray jsonArray = response.get("data").getAsJsonArray();
+                                for (JsonElement element : jsonArray) {
+                                    JsonObject jsonObject = element.getAsJsonObject();
+                                    setMarker(jsonObject);
+                                }
+                            } else {
+                                behavior.setState(STATE_COLLAPSED);
+                                showMessageDialog(0, "표시할 SPI 정보가 없습니다");
+                            }
+                        } catch (Exception e) {
+                            onFailure(e);
                         }
-//                        final int statusCode = 200;
-//                        runOnUiThread(() -> {
-//                            if (statusCode == 400) {
-//                                behavior.setState(STATE_COLLAPSED);
-//                                showMessagePopup(0, "");
-//                            }
-//                            if (statusCode == 200) {
-//                                final ArrayList<SpiData> spiDataList = spiDataSet.getArrayList();
-////                                final PipeType[] pipes = PipeType.values();
-////                                PipeType pipe = PipeType.Pipe_Etc;
-////                                for (SpiData spiData : spiDataList) {
-////                                    String key = spiData.findDataBy(Key_Pipe);
-////                                    for (PipeType p : pipes) {
-////                                        if (key.equals(getString(p.getNameRes()))) {
-////                                            pipe = p;
-////                                            break;
-////                                        }
-////                                    }
-//                                    setMarker(spiData, pipe);
-//                                }
-//                            }
-//                        });
                     }
 
                     @Override
-                    public void onFailure(Throwable throwable) {
-                        throwable.printStackTrace();
-//                        showMessagePopup(0, getString(R.string.common_spi_error));
+                    public void onFailure(@NotNull Throwable throwable) {
+                        showMessageDialog(6, throwable.getMessage());
+                    }
+
+                    private void setMarker(@NotNull JsonObject jsonObject) {
+                        double lat = jsonObject.get("spi_latitude").getAsDouble();
+                        double lng = jsonObject.get("spi_longitude").getAsDouble();
+                        int resId = parsePipeType(jsonObject.get("pipe").getAsString()).getDrawRes();
+                        Marker marker = new Marker(new LatLng(lat, lng), fromResource(resId));
+                        marker.setTag(jsonObject);
+                        marker.setMinZoom(14);
+                        marker.setMaxZoom(ZOOM_MAX);
+                        marker.setOnClickListener(listener);
+                        marker.setMap(naverMap);
                     }
                 });
     }
@@ -321,12 +329,12 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      * @param location 사용자가 이동한 새 위치
      */
     @Override
-    void onLocationUpdate(Location location) {
+    public void onLocationUpdate(Location location) {
     }
 
     private final class SetTopSheet {
 
-        SetTopSheet(com.naver.maps.map.NaverMap naverMap) {
+        SetTopSheet(NaverMap naverMap) {
             ListView listView = findViewById(R.id.nmap_listview);
             placesListAdapter = new ListViewAdapter(context, placesArrayList, naverMap);
             listView.setAdapter(placesListAdapter);
@@ -359,19 +367,18 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             jsonQuery.addProperty("place", query);
             jsonQuery.addProperty("coordinate", coordinate);
 
-            Retrofit2x.newBuilder()
+            Retrofit2x.builder()
                     .setService(new SearchPlacesService())
                     .setQuery(jsonQuery)
                     .build()
                     .run(new OnRetrofitListener() {
-
                         @Override
                         public void onResponse(JsonObject response) {
                             placesArrayList.clear();
                             behavior.setState(STATE_COLLAPSED);
                             JsonArray places = response.getAsJsonArray("places");
                             if (places == null || places.size() == 0) {
-                                showMessagePopup(0, getString(R.string.popup_map_noplace));
+                                showMessageDialog(0, getString(R.string.popup_error_noplace));
                                 return;
                             }
                             for (JsonElement place : places) {
@@ -387,7 +394,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            showMessagePopup(0, getString(R.string.popup_comm_error));
+                            showMessageDialog(0, getString(R.string.popup_error_comm));
                             throwable.printStackTrace();
                         }
                     });
@@ -395,11 +402,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         private final class ListViewAdapter extends BaseAdapter {
 
-            private List<HashMap<String, String>> placesList;
-            private LayoutInflater inflater;
-            private com.naver.maps.map.NaverMap naverMap;
+            private final List<HashMap<String, String>> placesList;
+            private final LayoutInflater inflater;
+            private final NaverMap naverMap;
 
-            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, com.naver.maps.map.NaverMap naverMap) {
+            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, NaverMap naverMap) {
                 this.placesList = placesList;
                 inflater = LayoutInflater.from(context);
                 this.naverMap = naverMap;
@@ -414,11 +421,13 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 return placesList.size();
             }
 
+            @Contract(pure = true)
             @Override
             public Object getItem(int position) {
                 return placesList.get(position);
             }
 
+            @Contract(value = "_ -> param1", pure = true)
             @Override
             public long getItemId(int position) {
                 return position;
@@ -429,7 +438,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             public View getView(final int position, View view, ViewGroup parent) {
                 final ItemHolder holder;
                 if (view == null) {
-                    view = inflater.inflate(R.layout.listview_item, null);
+                    view = inflater.inflate(R.layout.listview_nmap_searchplaces, null);
                     holder = new ItemHolder();
                     holder.name = view.findViewById(R.id.name);
                     view.setTag(holder);
@@ -461,7 +470,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         private final PointF POINT_F = new PointF(0.5f, 0.5f);
 
-        SetBottomSheet(com.naver.maps.map.NaverMap naverMap) {
+        SetBottomSheet(NaverMap naverMap) {
             LinearLayout bottomSheetView = findViewById(R.id.nmap_bottom_sheet);
             TextView bottomSheetText = findViewById(R.id.nmap_bottom_sheet_text);
             bottomSheetText.setOnClickListener((View view) -> {

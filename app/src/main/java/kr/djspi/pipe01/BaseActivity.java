@@ -1,6 +1,5 @@
 package kr.djspi.pipe01;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -18,20 +17,11 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nabinbhandari.android.permissions.PermissionHandler;
-import com.nabinbhandari.android.permissions.Permissions;
-
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
+import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.fragment.MessageDialog;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_DIAL;
 import static android.content.Intent.ACTION_SENDTO;
 import static android.text.Html.fromHtml;
@@ -43,21 +33,19 @@ import static kr.djspi.pipe01.BuildConfig.VERSION_NAME;
 
 public class BaseActivity extends AppCompatActivity {
 
-    static Resources resources;
+    private static final String TAG = BaseActivity.class.getSimpleName();
+    public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
+    public static Resources resources;
+    private DrawerLayout drawer;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
-    static Boolean requestLocationUpdates;
     Context context;
     Toolbar toolbar;
-    DrawerLayout drawer;
-//    NfcUtil nfcUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
         resources = getResources();
-        requestLocationUpdates = false;
-        requestAllPermissions(this);
     }
 
     @Override
@@ -88,16 +76,15 @@ public class BaseActivity extends AppCompatActivity {
         TextView textViewButton = findViewById(R.id.nmap_find);
         textViewButton.setVisibility(VISIBLE);
         textViewButton.setOnClickListener(v -> {
-            if (currentLocation == null) {
-                Toast.makeText(this, getString(R.string.error_location), Toast.LENGTH_LONG).show();
-                return;
+            if (currentLocation != null) {
+                startActivity(new Intent(context, NaverMapActivity.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+            } else {
+                Toast.makeText(this, getString(R.string.toast_error_location), Toast.LENGTH_LONG).show();
             }
-            startActivity(new Intent(context, NaverMapActivity.class)
-                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         });
     }
 
-    void setToolbarTitle(String string) {
+    protected void setToolbarTitle(String string) {
     }
 
     /**
@@ -110,51 +97,36 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * 연락처, 버전 정보, 앱 사용 도움말 등이 표시되는 NavigationView 설정
      */
-    void setNavigationView(@NotNull View view, boolean useHeader) {
+    private void setNavigationView(@NotNull View view, boolean useHeader) {
         drawer = view.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         if (useHeader) {
             NavigationView navigationView = view.findViewById(R.id.nav_view);
             View headerView = navigationView.getHeaderView(0);
+
             TextView versionName = headerView.findViewById(R.id.versionName);
             versionName.setText(getString(R.string.nav_version_name, VERSION_NAME, BUILD_TYPE));
-            // TODO: 2019-01-31 앱 빌드시 파일명에 버전코드 붙이기 build.gradle 수정
+
             TextView email = headerView.findViewById(R.id.email);
-            email.setText(fromHtml(getString(R.string.nav_email, "djspi@chol.com")));
+            String emailStr = getString(R.string.nav_dj_email);
+            email.setText(fromHtml(getString(R.string.nav_email, emailStr)));
             email.setOnClickListener(v ->
-                    startActivity(new Intent(ACTION_SENDTO, Uri.fromParts("mailto", "djspi@chol.com", null))));
+                    startActivity(new Intent(ACTION_SENDTO, Uri.fromParts("mailto", emailStr, null))));
+
             TextView phone = headerView.findViewById(R.id.phone);
-            phone.setText(fromHtml(getString(R.string.nav_phone, "+82-53-424-9547")));
+            String phoneStr = getString(R.string.nav_dj_phone);
+            phone.setText(fromHtml(getString(R.string.nav_phone, phoneStr)));
             phone.setOnClickListener(v ->
-                    startActivity(new Intent(ACTION_DIAL, Uri.parse("tel:" + "+82-53-424-9547"))));
+                    startActivity(new Intent(ACTION_DIAL, Uri.parse("tel:" + phoneStr))));
+
             TextView guide = headerView.findViewById(R.id.guide);
             guide.setText(fromHtml(getString(R.string.nav_guide)));
             navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(START));
         }
-    }
-
-    /**
-     * 앱 사용에 필요한 권한을 Array 로 입력 ('Manifest.permission.필요권한')
-     */
-    @SuppressLint("MissingPermission")
-    private static void requestAllPermissions(Context context) {
-        String[] permissions = {ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA};
-        Permissions.check(context/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
-            @Override
-            public void onGranted() {
-                requestLocationUpdates = true;
-            }
-
-            @Override
-            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                requestLocationUpdates = false;
-                Toast.makeText(context, "위치정보를 사용할 수 없습니다", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     /**
@@ -163,23 +135,30 @@ public class BaseActivity extends AppCompatActivity {
      * @param issue 팝업에 표시할 내용의 인식번호
      * @param tag   팝업에 표시할 내용의 인식태그
      */
-    public void showMessagePopup(int issue, String tag) {
-        MessageDialog dialog = new MessageDialog();
-        Bundle bundle = new Bundle(1);
-        bundle.putInt("issueType", issue);
-        dialog.setArguments(bundle);
-        dialog.show(getSupportFragmentManager(), tag);
+    void showMessageDialog(int issue, String tag) {
+        try {
+            MessageDialog dialog = new MessageDialog();
+            Bundle bundle = new Bundle(1);
+            bundle.putInt("issueType", issue);
+            dialog.setArguments(bundle);
+            dialog.show(getSupportFragmentManager(), tag);
+        } catch (IllegalStateException ignore) {
+            // FIXME: 2019-03-11 서버 통신 결과가 ui 갱신 이후에 나타나면 팝업창 예외가 발생
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        if (nfcUtil != null) nfcUtil.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        if (nfcUtil != null) nfcUtil.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

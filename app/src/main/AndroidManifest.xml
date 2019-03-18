@@ -34,6 +34,16 @@
         android:theme="@style/Spi.Theme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="kr.djspi.pipe01"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+        </provider>
+
         <activity
             android:name=".Intro"
             android:screenOrientation="portrait"
@@ -73,6 +83,22 @@
             android:name=".NaverMapActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        <activity android:name=".PipeRecordActivity" />
+        <!--<activity-->
+        <!--android:name=".PipeRecordActivity"-->
+        <!--android:windowSoftInputMode="stateHidden" />-->
+        <activity
+            android:name=".RecordInputActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".SpiLocationActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RecordWriteActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RecordViewActivity"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

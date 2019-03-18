@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0D2C54</color>
-    <color name="colorPrimaryDark">#0D2C54</color>
-    <color name="colorAccent">#F24E4E</color>
+    <color name="colorPrimary">#0d2c54</color>
+    <color name="colorPrimaryDark">#0d2c54</color>
+    <color name="colorAccent">#f24e4e</color>
 
     <!--BaseActivity-->
-    <color name="green">#7FB800</color>
+    <color name="green">#7fb800</color>
 
     <!--MessageDialog-->
-    <color name="line_d">#DDDDDD</color>
-    <color name="line_a">#AAAAAA</color>
+    <color name="line_d">#dddddd</color>
+    <color name="line_a">#aaaaaa</color>
 
-    <color name="dark_blue">#0D2C54</color>
-    <color name="bright_blue">#1C73E8</color>
+    <!--ListDialog-->
+    <color name="popup_color_bg_title">#ebebeb</color>
+
+    <!--PositionDialog-->
+    <color name="common_color_gray_popup">#020202</color>
+
+    <!--RecordInputActivity-->
+    <color name="blue_bright">#1c73e8</color>
+    <color name="green_2">#4caf50</color>
+
+    <!--SpiLocationActivity-->
+    <color name="orange">#ffa000</color>
+
+    <color name="yellow">#ffed66</color>
+
 </resources>

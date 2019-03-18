@@ -1,18 +1,29 @@
 package kr.djspi.pipe01;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 import com.naver.maps.map.util.FusedLocationSource;
 
+import java.util.ArrayList;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.location.LocationManager.GPS_PROVIDER;
 
 public abstract class LocationUpdate extends BaseActivity {
@@ -20,42 +31,32 @@ public abstract class LocationUpdate extends BaseActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
+     */
+    private static final long UPDATE_INTERVAL_IN_MS = 10000;
+    /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
      * than this value.
      */
-    private static final long UPDATE_INTERVAL_IN_MS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 2;
-    // Keys for storing activity state in the Bundle.
-    private static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting-location-updates";
-    private static final String KEY_LOCATION = "location";
-    /**
-     * Provides access to the Location Settings API.
-     */
-    private static LocationManager locationManager;
     /**
      * Provides access to the Fused Location Provider API.
      */
-    private FusedLocationProviderClient locationProviderClient;
+    private FusedLocationProviderClient fusedLocationClient;
     /**
      * Stores parameters for requests to the FusedLocationProviderApi.
      */
     private LocationRequest locationRequest;
     /**
-     * Creates a callback for receiving location events.
+     * Tracks the status of the location updates request. Value changes when the user presses the
+     * Start Updates and Stop Updates buttons.
      */
-    private final LocationCallback locationCallback = new LocationCallback() {
-        /**
-         * This is the callback that is triggered when the
-         * FusedLocationClient updates your location.
-         * @param locationResult The result containing the device location.
-         */
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-            currentLocation = locationResult.getLastLocation();
-            onLocationUpdate(currentLocation);
-        }
-    };
+    private static Boolean requestingLocationUpdates;
+    /**
+     * Callback for Location events.
+     */
+    private static LocationCallback locationCallback;
+
+    private static LocationManager locationManager;
     FusedLocationSource locationSource;
 
     /**
@@ -65,44 +66,53 @@ public abstract class LocationUpdate extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Update values using attr stored in the Bundle.
-        updateValuesFromBundle(savedInstanceState);
-
+        requestingLocationUpdates = false;
+        requestAllPermissions(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
-        locationSource.activate(location -> {
-        });
-        locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Kick off the process of building the LocationCallback, LocationRequest, and
         // LocationSettingsRequest objects.
+        createLocationCallback();
         createLocationRequest();
     }
 
     /**
-     * Updates fields based on attr stored in the bundle.
-     *
-     * @param savedInstanceState The activity state saved in the Bundle.
+     * 앱 사용에 필요한 권한을 Array 로 입력 ('Manifest.permission.필요권한')
      */
-    private void updateValuesFromBundle(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            // Update the value of requestLocationUpdates from the Bundle.
-            if (savedInstanceState.keySet().contains(KEY_REQUESTING_LOCATION_UPDATES)) {
-                requestLocationUpdates
-                        = savedInstanceState.getBoolean(KEY_REQUESTING_LOCATION_UPDATES);
+    @SuppressLint("MissingPermission")
+    private static void requestAllPermissions(Context context) {
+        String[] permissions = {ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA};
+        Permissions.check(context/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                requestingLocationUpdates = true;
             }
 
-            // Update the value of currentLocation from the Bundle and update the UI to show the
-            // correct latitude and longitude.
-            if (savedInstanceState.keySet().contains(KEY_LOCATION)) {
-                // Since KEY_LOCATION was found in the Bundle, we can be sure that currentLocation
-                // is not null.
-                currentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            @Override
+            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                requestingLocationUpdates = false;
+                Toast.makeText(context, "위치정보를 사용할 수 없습니다", Toast.LENGTH_LONG).show();
             }
-        }
+        });
     }
 
-    abstract void onLocationUpdate(Location location);
+    /**
+     * Creates a callback for receiving location events.
+     */
+    private void createLocationCallback() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                currentLocation = locationResult.getLastLocation();
+                onLocationUpdate(currentLocation);
+            }
+        };
+    }
+
+    public abstract void onLocationUpdate(Location location);
 
     /**
      * Sets up the location request.
@@ -112,9 +122,27 @@ public abstract class LocationUpdate extends BaseActivity {
      */
     private void createLocationRequest() {
         locationRequest = new LocationRequest();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
         locationRequest.setInterval(UPDATE_INTERVAL_IN_MS);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
         locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MS);
+
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    @Override
+    public void onResume() {
+        if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
+            showMessageDialog(1, getString(R.string.popup_location_on));
+        }
+        if (requestingLocationUpdates || currentLocation == null) startLocationUpdates();
+        super.onResume();
     }
 
     /**
@@ -122,45 +150,25 @@ public abstract class LocationUpdate extends BaseActivity {
      */
     @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
-        locationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-    }
-
-    private void isLocationEnabled() {
-        if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
-            showMessagePopup(1, getString(R.string.popup_location_on));
-        }
+        fusedLocationClient
+                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
     }
 
     @Override
-    public void onResume() {
-        isLocationEnabled();
-        if (requestLocationUpdates || currentLocation == null) startLocationUpdates();
-        super.onResume();
+    public void onPause() {
+        // Remove location updates to save battery.
+        stopLocationUpdates();
+        super.onPause();
     }
 
     /**
      * Removes location updates from the FusedLocationApi.
      */
     private void stopLocationUpdates() {
-        if (!requestLocationUpdates) return;
+        if (!requestingLocationUpdates) return;
         // Recommended in applications that request frequent location updates.
-        locationProviderClient.removeLocationUpdates(locationCallback)
-                .addOnCompleteListener(this, task -> requestLocationUpdates = false);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        // Remove location updates to save battery.
-        stopLocationUpdates();
-    }
-
-    /**
-     * Stores activity attr in the Bundle.
-     */
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean(KEY_REQUESTING_LOCATION_UPDATES, requestLocationUpdates);
-        savedInstanceState.putParcelable(KEY_LOCATION, currentLocation);
-        super.onSaveInstanceState(savedInstanceState);
+        fusedLocationClient
+                .removeLocationUpdates(locationCallback)
+                .addOnCompleteListener(this, task -> requestingLocationUpdates = false);
     }
 }

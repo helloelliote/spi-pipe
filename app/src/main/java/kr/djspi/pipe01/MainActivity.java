@@ -4,17 +4,36 @@ import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import kr.djspi.pipe01.util.NfcUtil;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
-public class MainActivity extends LocationUpdate {
+import org.jetbrains.annotations.NotNull;
 
-    // TODO: 마무리 이후에 독립 API 만들기
+import java.io.Serializable;
+import java.util.HashMap;
+
+import kr.djspi.pipe01.dto.DataItem;
+import kr.djspi.pipe01.dto.Spi;
+import kr.djspi.pipe01.dto.SpiType;
+import kr.djspi.pipe01.nfc.NfcUtil;
+import kr.djspi.pipe01.retrofit2x.Retrofit2x;
+import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
+import kr.djspi.pipe01.retrofit2x.SpiGet;
+
+import static kr.djspi.pipe01.Const.API_SPI_GET;
+import static kr.djspi.pipe01.Const.URL_TEST;
+import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
+
+public class MainActivity extends LocationUpdate implements Serializable {
+
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Tag mNfcTag;
+    private static Tag tag;
+    public static NfcUtil nfcUtil;
+
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -23,6 +42,7 @@ public class MainActivity extends LocationUpdate {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        nfcUtil = NfcUtil.get(this, getClass()).setNxpLibrary(this);
     }
 
     /**
@@ -47,93 +67,89 @@ public class MainActivity extends LocationUpdate {
         });
 
         LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
-        mainLayout3.setOnClickListener(view ->
-                startActivity(new Intent(context, PipeRecordActivity.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
+//        mainLayout3.setOnClickListener(view ->
+//                startActivity(new Intent(context, PipeRecordActivity.class)
+//                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
     }
 
     @Override
     public void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
-//        mNfcTag = nfcUtil.intentToTag(intent);
-        checkSerialNum(null);
+        tag = NfcUtil.onNewTagIntent(intent);
+
+        Spi spi = new Spi(-1, "04:96:33:9A:BF:5B:83", 2); // 표지주
+        SpiType spiType = new SpiType(2, "표지주");
+
+//        Spi spi = new Spi(1165, "04:4B:B8:9A:BF:5B:80", 1); // 표지기
+//        SpiType spiType = new SpiType(1, "표지기");
+
+//        Spi spi = new Spi(1152, "04:7D:AD:A2:B1:49:81", 0); // 표지판
+//        SpiType spiType = new SpiType(0, "표지판");
+
+        HashMap<String, DataItem> hashMap = new HashMap<>();
+        hashMap.put("spi", spi);
+        hashMap.put("spiType", spiType);
+        startActivity(new Intent(context, RecordInputActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra("PipeRecordActivity", hashMap));
+
+//        onNewTag(tag);
     }
 
-    private void checkSerialNum(final Handler callback) {
-//        try {
-//            String serialNum = Const.ByteArrayToHexString(mNfcTag.getId());
-//            mNfcTag = null;
-//
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put(API_KEY_REQUEST, API_REQUEST_SPI_GET);
-//
-//            JSONObject spiDataList = new JSONObject();
-//            spiDataList.put(KEY_SERIAL.getKey(), serialNum);
-//            jsonObject.put(API_KEY_DATA, spiDataList);
-//
-//            RetrofitCore.get()
-//                    .setService(new SpiGetService())
-//                    .setQuery(jsonObject.toString())
-//                    .build(new OnRetrofitListen(callback));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }
+    private void onNewTag(@NotNull Tag tag) {
+        final String serial = NfcUtil.bytesToHex(tag.getId());
+        JsonObject jsonQuery = new JsonObject();
+        jsonQuery.addProperty("sp_serial", serial);
 
-    public NfcUtil getNFCUtil() {
-//        return nfcUtil;
-        return null;
+        Retrofit2x.builder()
+                .setService(new SpiGet(URL_TEST, API_SPI_GET))
+                .setQuery(jsonQuery)
+                .build()
+                .run(new OnRetrofitListener() {
+                    @Override
+                    public void onResponse(JsonObject response) {
+                        Log.w(TAG, response.toString());
+                        JsonArray jsonArray = response.get("data").getAsJsonArray();
+                        JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
+                        int spi_id = jsonObject.get("spi_id").getAsInt();
+                        int spi_type_id = 2;
+                        String spi_type = "표지주";
+//                        int spi_type_id = jsonObject.get("spi_type_id").getAsInt();
+//                        String spi_type = jsonObject.get("spi_type").getAsString();
+                        // TODO: 2019-03-06 사용할 수 없는 태그
+
+                        Spi spi = new Spi(spi_id, serial, spi_type_id);
+                        SpiType spiType = new SpiType(spi_id, spi_type);
+
+                        HashMap<String, DataItem> hashMap = new HashMap<>();
+                        hashMap.put("spi", spi);
+                        hashMap.put("spiType", spiType);
+                        startActivity(new Intent(context, RecordInputActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                .putExtra("PipeRecordActivity", hashMap));
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        showMessageDialog(6, throwable.getMessage());
+                    }
+                });
     }
 
     @Override
-    @SuppressWarnings("EmptyMethod")
     public void onResume() {
-//        if (!isNfcEnabled()) showMessagePopup(2, getString(R.string.popup_nfc_on));
-//        if (nfcUtil != null) nfcUtil.onResume();
+        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on));
+        nfcUtil.onResume(this);
         super.onResume();
     }
 
     @Override
-    @SuppressWarnings("EmptyMethod")
     public void onPause() {
-//        if (nfcUtil != null) nfcUtil.onPause();
+        nfcUtil.onPause(this);
         super.onPause();
     }
 
     @Override
-    void onLocationUpdate(Location location) {
+    public void onLocationUpdate(Location location) {
     }
-
-//    private final class OnRetrofitListen implements OnRetrofitListener {
-//
-//        private Handler callback;
-//
-//        private OnRetrofitListen(Handler callback) {
-//            this.callback = callback;
-//        }
-//
-//        @Override
-//        public void onResponse(JsonObject response) {
-//            SPIDataSet spiDataSet = new SPIDataSet(context, response.toString());
-//            if (spiDataSet.getCount() != HAS_SPI) {
-//                showMessagePopup(0, spiDataSet.getError());
-//            } else {
-//                if (callback == null) {
-//                    SPIData spiData = spiDataSet.getArrayList().get(0);
-//                    startActivity(new Intent(context, NfcRecordInput.class)
-//                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//                            .putExtra("NfcRecordInput", spiData));
-//                } else {
-//                    callback.obtainMessage(0, spiDataSet.getArrayList().get(0)).sendToTarget();
-//                }
-//            }
-//        }
-//
-//        @Override
-//        public void onFailure(Throwable throwable) {
-//            showMessagePopup(0, getString(R.string.popup_api_error));
-//            throwable.printStackTrace();
-//        }
-//    }
 }

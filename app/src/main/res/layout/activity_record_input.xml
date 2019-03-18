@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_pipe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <!--<TextView-->
+        <!--android:id="@+id/pipe"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:background="@color/colorPrimaryDark"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textSize="18sp" />-->
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_pipe"
+            style="@style/TextFieldBoxes"
+            app:alwaysShowHint="true"
+            app:iconSignifier="@drawable/ic_type"
+            app:labelText="관로종류">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/pipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/popup_hint"
+                android:textColorHint="@color/colorPrimaryDark" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_shape"
+            style="@style/TextFieldBoxes"
+            app:alwaysShowHint="true"
+            app:iconSignifier="@drawable/ic_shape"
+            app:labelText="관로형태">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/popup_hint"
+                android:textColorHint="@color/colorPrimaryDark" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_position"
+            style="@style/TextFieldBoxes"
+            app:alwaysShowHint="true"
+            app:iconSignifier="@drawable/ic_position"
+            app:labelText="관로위치">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/popup_hint"
+                android:textColorHint="@color/colorPrimaryDark" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                android:id="@+id/l_horizontal"
+                style="@style/TextFieldBoxes.FreeSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="10dp"
+                android:paddingEnd="5dp"
+                app:labelText="이격거리(수평)">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                    android:id="@+id/horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="textEnd"
+                    app:prefix="@string/record_input_2_hor"
+                    app:suffix="  m" />
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+            <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                android:id="@+id/l_vertical"
+                style="@style/TextFieldBoxes.FreeSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="0dp"
+                android:paddingEnd="10dp"
+                app:labelText="이격거리(수직)">
+
+                <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                    android:id="@+id/vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="textEnd"
+                    app:prefix="@string/record_input_2_ver"
+                    app:suffix="  m" />
+            </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+        </LinearLayout>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_depth"
+            style="@style/TextFieldBoxes"
+            app:iconSignifier="@drawable/ic_depth"
+            app:labelText="매설심도">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/depth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:textAlignment="textEnd"
+                app:prefix="지하  "
+                app:suffix="  m" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_spec"
+            style="@style/TextFieldBoxes"
+            app:iconSignifier="@drawable/ic_spec"
+            app:labelText="관로스펙">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/spec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:textAlignment="textEnd"
+                app:prefix=""
+                app:suffix="" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_material"
+            style="@style/TextFieldBoxes"
+            app:iconSignifier="@drawable/ic_material"
+            app:labelText="관로재질">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/material"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                app:prefix="재질명  " />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_supervise"
+            style="@style/TextFieldBoxes"
+            app:alwaysShowHint="true"
+            app:iconSignifier="@drawable/ic_supervise"
+            app:labelText="관리기관">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/supervise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/popup_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:textColorHint="@color/colorPrimaryDark"
+                app:prefix="기관명  " />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_supervise_contact"
+            style="@style/TextFieldBoxes"
+            app:iconSignifier="@drawable/ic_contact"
+            app:labelText="관리기관 연락처">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/supervise_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="phone"
+                app:prefix="전화번호  " />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_spi_memo"
+            style="@style/TextFieldBoxes"
+            app:hasClearButton="true"
+            app:iconSignifier="@drawable/ic_memo"
+            app:labelText="메모(선택입력)">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/spi_memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/record_optional_50"
+                android:imeOptions="actionNext"
+                android:inputType="textMultiLine" />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_construction"
+            style="@style/TextFieldBoxes"
+            app:iconSignifier="@drawable/ic_construction"
+            app:labelText="시공업체(선택입력)">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/construction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/record_optional"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                app:prefix="시공업체명  " />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+            android:id="@+id/l_construction_contact"
+            style="@style/TextFieldBoxes"
+            app:iconSignifier="@drawable/ic_contact"
+            app:labelText="시공업체 연락처(선택입력)">
+
+            <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                android:id="@+id/construction_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/record_optional"
+                android:imeOptions="actionDone"
+                android:inputType="phone"
+                app:prefix="전화번호  " />
+        </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal">
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                style="@style/Spi.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_margin="10dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/record_cancel" />
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btn_confirm"
+                style="@style/Spi.Button"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_margin="10dp"
+                android:layout_weight="2.5"
+                android:gravity="center"
+                android:text="@string/record_location" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

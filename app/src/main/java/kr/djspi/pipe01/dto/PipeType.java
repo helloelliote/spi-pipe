@@ -1,30 +1,64 @@
 package kr.djspi.pipe01.dto;
 
+import org.jetbrains.annotations.Contract;
+
 import java.io.Serializable;
 
 import kr.djspi.pipe01.R;
+import lombok.Data;
+import lombok.Getter;
 
-public enum PipeType implements Serializable {
-    Pipe_City(R.string.pipe_name_00, R.drawable.cir_01_map, 1),
-    Pipe_Water(R.string.pipe_name_01, R.drawable.cir_02_map, 1),
-    Pipe_Drain(R.string.pipe_name_02, R.drawable.cir_03_map, 1),
-    Pipe_Sewer(R.string.pipe_name_03, R.drawable.cir_04_map, 1),
-    Pipe_Electric(R.string.pipe_name_04, R.drawable.cir_05_map, 2),
-    Pipe_Communication(R.string.pipe_name_05, R.drawable.cir_06_map, 3),
-    Pipe_heating(R.string.pipe_name_06, R.drawable.cir_07_map, 4),
-    Pipe_Oil(R.string.pipe_name_07, R.drawable.cir_08_map, 1),
-    Pipe_Lamp(R.string.pipe_name_08, R.drawable.cir_09_map, 5),
-    Pipe_Cctv(R.string.pipe_name_09, R.drawable.cir_10_map, 5),
-    Pipe_Traffic(R.string.pipe_name_10, R.drawable.cir_11_map, 5),
-    Pipe_Etc(R.string.pipe_name_11, R.drawable.cir_12_map, 5);
+import static kr.djspi.pipe01.BaseActivity.pipes;
 
-    private int nameRes;
-    private int drawRes;
-    private int type;
+@Data
+public class PipeType implements DataItem, Serializable {
 
-    PipeType(int name, int draw, int type) {
-        this.nameRes = name;
-        this.drawRes = draw;
-        this.type = type;
+    static final String HEAD_NULL = "";
+    static final String HEAD_RAD = "관경";
+    static final String UNIT_MM = "mm";
+    static final String UNIT_CORE = "코어";
+    private int id;
+    private String header;
+    private String pipe;
+    private String unit;
+
+    @Contract(pure = true)
+    public static PipeTypeEnum parsePipeType(String name) {
+        for (PipeTypeEnum pipe : pipes) {
+            if (pipe.name.equals(name)) return pipe;
+        }
+        return PipeTypeEnum.기타관로;
+    }
+
+    /**
+     * Enum 목록의 순서는 변경하지 않는다.
+     */
+    @Getter
+    @SuppressWarnings("NonAsciiCharacters")
+    public enum PipeTypeEnum implements Serializable {
+        도시가스("도시가스", R.drawable.cir_01_map, HEAD_RAD, UNIT_MM),
+        상수관로("상수관로", R.drawable.cir_02_map, HEAD_RAD, UNIT_MM),
+        하수관로("하수관로", R.drawable.cir_03_map, HEAD_RAD, UNIT_MM),
+        오수관로("오수관로", R.drawable.cir_04_map, HEAD_RAD, UNIT_MM),
+        전기관로("전기관로", R.drawable.cir_05_map, HEAD_RAD, UNIT_MM),
+        통신관로("통신관로", R.drawable.cir_06_map, HEAD_NULL, UNIT_CORE),
+        난방관로("난방관로", R.drawable.cir_07_map, HEAD_RAD, UNIT_MM),
+        유류관로("유류관로", R.drawable.cir_08_map, HEAD_RAD, UNIT_MM),
+        가로등("가로등", R.drawable.cir_09_map, HEAD_RAD, UNIT_MM),
+        CCTV("CCTV", R.drawable.cir_10_map, HEAD_RAD, UNIT_MM),
+        교통관로("교통관로", R.drawable.cir_11_map, HEAD_RAD, UNIT_MM),
+        기타관로("기타관로", R.drawable.cir_12_map, HEAD_RAD, UNIT_MM);
+
+        private String name;
+        private int drawRes;
+        private String header;
+        private String unit;
+
+        PipeTypeEnum(String name, int drawRes, String header, String unit) {
+            this.name = name;
+            this.drawRes = drawRes;
+            this.header = header;
+            this.unit = unit;
+        }
     }
 }
