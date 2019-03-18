@@ -97,6 +97,8 @@
         <activity
             android:name=".RecordWriteActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".RecordViewActivity" />
+        <activity
+            android:name=".RecordViewActivity"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

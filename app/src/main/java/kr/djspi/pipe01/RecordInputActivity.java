@@ -316,6 +316,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 break;
             case TAG_TYPE_PLATE:
                 pipePosition.setPosition(index);
+                pipePosition.setPosition(index);
                 break;
             case TAG_TYPE_MARKER:
                 pipePosition.setPosition(index);
@@ -430,8 +431,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                     break;
                 case REQUEST_CODE_MAP:
                     double[] spiLocationArray = data.getDoubleArrayExtra("SpiLocation");
-//                    spiLocation.setLatitude(spiLocationArray[0]);
-//                    spiLocation.setLongitude(spiLocationArray[1]);
+                    spiLocation.setLatitude(spiLocationArray[0]);
+                    spiLocation.setLongitude(spiLocationArray[1]);
                     spiLocation.setCount(0);
                     buttonConfirm.setText(getString(R.string.record_confirm));
                     break;
@@ -599,7 +600,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("entry", entries));
             } catch (Exception e) {
-                showMessagePopup(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.");
+                showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.");
                 e.printStackTrace();
             }
         }
@@ -631,14 +632,13 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         pipe.setSpi_id(spiId);
         pipe.setDepth(Double.valueOf(eDepth.getText().toString()));
         pipe.setMaterial(eMaterial.getText().toString());
+        pipeShape.setShape(eShape.getText().toString());
         pipeShape.setSpec(eSpec.getText().toString());
-        pipeType.setHeader(header);
         pipeType.setPipe(ePipe.getText().toString());
-        pipeType.setUnit(unit);
         pipePosition.setHorizontal(Double.valueOf(eHorizontal.getText().toString()));
         pipePosition.setVertical(Double.valueOf(eVertical.getText().toString()));
         pipeSupervise.setSupervise(eSupervise.getText().toString());
-        pipeSupervise.setContact(eSuperviseContact.getText().toString());
+        pipe.setSupervise_contact(eSuperviseContact.getText().toString());
         pipe.setConstruction(eConstruction.getText().toString());
         pipe.setConstruction_contact(eConstructionContact.getText().toString());
 

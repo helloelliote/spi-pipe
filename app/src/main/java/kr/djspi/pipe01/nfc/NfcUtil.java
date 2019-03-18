@@ -16,7 +16,6 @@ import android.nfc.tech.NfcA;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.nxp.nfclib.NxpNfcLib;
 import com.nxp.nfclib.exceptions.NxpNfcLibException;
@@ -33,8 +32,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import kr.djspi.pipe01.R;
 
 import static android.nfc.NdefRecord.RTD_TEXT;
 import static android.nfc.NdefRecord.TNF_WELL_KNOWN;
@@ -131,7 +128,7 @@ public final class NfcUtil {
      * @return isSuccess 쓰기 작업 성공 여부
      * @see NdefRecordWrapper[] createRecord 사용자 입력값으로 NDEF 레코드를 생성해 리턴
      */
-    public boolean writeTag(final Intent intent, String[] recordArray, Activity activity, Context context) {
+    public boolean writeTag(final Intent intent, String[] recordArray) {
         Log.w(TAG, "writeTag() Called");
         boolean isSuccess = false;
         try {
@@ -149,7 +146,7 @@ public final class NfcUtil {
             }
         } catch (NullPointerException | NxpNfcLibException | IllegalArgumentException e) {
             Log.e(TAG, "Exception Thrown: writeTag()");
-            Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
             e.getMessage();
         }
         objNtag.getReader().close();

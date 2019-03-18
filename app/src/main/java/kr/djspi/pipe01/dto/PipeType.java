@@ -16,7 +16,7 @@ public class PipeType implements DataItem, Serializable {
     static final String HEAD_NULL = "";
     static final String HEAD_RAD = "관경";
     static final String UNIT_MM = "mm";
-    static final String UNIT_CORE = "  코어";
+    static final String UNIT_CORE = "코어";
     private int id;
     private String header;
     private String pipe;

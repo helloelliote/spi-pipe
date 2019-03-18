@@ -105,8 +105,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 setVisibilityToGone(view);
                 popupTitle.setText("주의");
                 // TODO: 2019-01-31 전달: showMessagePopup(3, getString(R.string.popup_not_spi));
-                buttonOk.setOnClickListener(v -> {
-                    dismiss();
+                buttonOk.setOnClickListener(v -> { dismiss();
                     android.os.Process.killProcess(android.os.Process.myPid());
                     System.exit(1); // 앱 완전종료
                 });
@@ -120,8 +119,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
             case 5: // (NfcRecordWrite.class) 정보가 정상적으로 기록됨
                 setVisibilityToGone(view);
                 isReturnToMain = true;
-                // FIXME: 2019-01-31 NfcRecordWrite.class 에서 창을 먼저 띄우고, 확인을 누르면 MainActivity 으로 가게 수정
-                // TODO: 2019-03-05 buttonOk.setOnClickListener(v -> dismiss());
+                buttonOk.setOnClickListener(view12 -> dismiss());
                 break;
             case 6: // (공통) 서버와의 통신 에러
                 popupText.setText(getString(R.string.popup_error_comm));

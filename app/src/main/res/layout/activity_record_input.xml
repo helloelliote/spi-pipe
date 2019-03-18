@@ -208,7 +208,7 @@
                 android:id="@+id/spi_memo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/record_optional"
+                android:hint="@string/record_optional_50"
                 android:imeOptions="actionNext"
                 android:inputType="textMultiLine" />
         </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>

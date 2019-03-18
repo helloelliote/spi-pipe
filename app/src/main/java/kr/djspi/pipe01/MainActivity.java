@@ -31,8 +31,8 @@ import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 public class MainActivity extends LocationUpdate implements Serializable {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static NfcUtil nfcUtil;
     private static Tag tag;
+    public static NfcUtil nfcUtil;
 
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
@@ -77,7 +77,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         super.onNewIntent(intent);
         tag = NfcUtil.onNewTagIntent(intent);
 
-        Spi spi = new Spi(-1, "04:AA:A4:A2:B1:49:80", 2); // 표지주
+        Spi spi = new Spi(-1, "04:96:33:9A:BF:5B:83", 2); // 표지주
         SpiType spiType = new SpiType(2, "표지주");
 
 //        Spi spi = new Spi(1165, "04:4B:B8:9A:BF:5B:80", 1); // 표지기
@@ -131,14 +131,14 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        showMessagePopup(6, throwable.getMessage());
+                        showMessageDialog(6, throwable.getMessage());
                     }
                 });
     }
 
     @Override
     public void onResume() {
-        if (!isNfcEnabled()) showMessagePopup(2, getString(R.string.popup_nfc_on));
+        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on));
         nfcUtil.onResume(this);
         super.onResume();
     }

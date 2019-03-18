@@ -22,7 +22,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new SectionTab();
             case 2:
-                return new PlotPlaneTab();
+                return new PlaneTab();
             default:
                 return null;
         }

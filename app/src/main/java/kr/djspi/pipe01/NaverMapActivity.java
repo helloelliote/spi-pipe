@@ -201,9 +201,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             public CharSequence getText(@NonNull InfoWindow infoWindow) {
                 if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
                     JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
-                    String pipe = jsonObject.get("pipe").getAsString();
-                    String desc = jsonObject.get("spi_id").getAsString();
-                    return String.format("%s(%s)", pipe, desc);
+                    String pipe = jsonObject.get("spi_id").getAsString();
+                    String desc = jsonObject.get("pipe").getAsString();
+                    return String.format("%s %s", pipe, desc);
                 }
                 return "ERROR";
             }
@@ -278,7 +278,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                                 }
                             } else {
                                 behavior.setState(STATE_COLLAPSED);
-                                showMessagePopup(0, "표시할 SPI 정보가 없습니다");
+                                showMessageDialog(0, "표시할 SPI 정보가 없습니다");
                             }
                         } catch (Exception e) {
                             onFailure(e);
@@ -287,7 +287,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                     @Override
                     public void onFailure(@NotNull Throwable throwable) {
-                        showMessagePopup(6, throwable.getMessage());
+                        showMessageDialog(6, throwable.getMessage());
                     }
 
                     private void setMarker(@NotNull JsonObject jsonObject) {
@@ -378,7 +378,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                             behavior.setState(STATE_COLLAPSED);
                             JsonArray places = response.getAsJsonArray("places");
                             if (places == null || places.size() == 0) {
-                                showMessagePopup(0, getString(R.string.popup_error_noplace));
+                                showMessageDialog(0, getString(R.string.popup_error_noplace));
                                 return;
                             }
                             for (JsonElement place : places) {
@@ -394,7 +394,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            showMessagePopup(0, getString(R.string.popup_error_comm));
+                            showMessageDialog(0, getString(R.string.popup_error_comm));
                             throwable.printStackTrace();
                         }
                     });

@@ -52,9 +52,9 @@
         android:background="#E5E5E5"
         android:orientation="vertical"
         android:paddingLeft="5dp"
-        android:paddingTop="5dp"
+        android:paddingTop="10dp"
         android:paddingRight="5dp"
-        android:paddingBottom="5dp"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +82,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/txt_construction"

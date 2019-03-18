@@ -135,7 +135,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param issue 팝업에 표시할 내용의 인식번호
      * @param tag   팝업에 표시할 내용의 인식태그
      */
-    void showMessagePopup(int issue, String tag) {
+    void showMessageDialog(int issue, String tag) {
         try {
             MessageDialog dialog = new MessageDialog();
             Bundle bundle = new Bundle(1);

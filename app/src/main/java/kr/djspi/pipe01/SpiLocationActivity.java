@@ -148,7 +148,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                     setResult(RESULT_OK, new Intent().putExtra("SpiLocation", spiLocation));
                     finish();
                 } catch (Exception e) {
-                    showMessagePopup(0, getString(R.string.toast_error_location));
+                    showMessageDialog(0, getString(R.string.toast_error_location));
                     return;
                 }
                 break;

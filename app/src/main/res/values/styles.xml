@@ -75,6 +75,6 @@
         <item name="tabIndicatorColor">@color/yellow</item>
         <item name="tabSelectedTextColor">@color/yellow</item>
         <item name="tabTextColor">@android:color/white</item>
-        <item name="tabIndicatorHeight">6dp</item>
+        <item name="tabIndicatorHeight">8dp</item>
     </style>
 </resources>

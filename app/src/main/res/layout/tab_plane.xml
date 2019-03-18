@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    tools:ignore="ContentDescription,DuplicateIds">
+
+    <FrameLayout
+        android:id="@+id/lay_0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/planeImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@+id/planeImageView"
+            android:includeFontPadding="false"
+            android:orientation="vertical"
+            android:textSize="13.33sp"
+            app:layout_constraintBottom_toBottomOf="@+id/planeImageView"
+            app:layout_constraintEnd_toEndOf="@+id/planeImageView"
+            app:layout_constraintStart_toStartOf="@+id/planeImageView"
+            app:layout_constraintTop_toTopOf="@+id/planeImageView">
+
+            <TextView
+                android:id="@+id/txt_distance_fb"
+                android:layout_width="83.33dp"
+                android:layout_height="33.33dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="55dp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/txt_distance_l"
+                android:layout_width="83.33dp"
+                android:layout_height="33.33dp"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="55dp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/txt_distance_r"
+                android:layout_width="83.33dp"
+                android:layout_height="33.33dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginTop="55dp"
+                android:gravity="center" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/lay_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/planeImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@+id/planeImageView"
+            android:includeFontPadding="false"
+            android:orientation="vertical"
+            android:textSize="13.33sp"
+            app:layout_constraintBottom_toBottomOf="@+id/planeImageView"
+            app:layout_constraintEnd_toEndOf="@+id/planeImageView"
+            app:layout_constraintStart_toStartOf="@+id/planeImageView"
+            app:layout_constraintTop_toTopOf="@+id/planeImageView">
+
+            <TextView
+                android:id="@+id/txt_distance_fb"
+                android:layout_width="83.33dp"
+                android:layout_height="33.33dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="55dp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/txt_distance_l"
+                android:layout_width="83.33dp"
+                android:layout_height="33.33dp"
+                android:layout_gravity="top"
+                android:layout_marginTop="55dp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/txt_distance_r"
+                android:layout_width="83.33dp"
+                android:layout_height="33.33dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="55dp"
+                android:gravity="center" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/lay_1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:drawableTop="@drawable/no_img_gray"
+            android:drawablePadding="5dp"
+            android:text="@string/common_load_image_fail"
+            android:textColor="@color/gray"
+            android:textSize="15sp" />
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/btn_photo"
+            style="@style/Spi.Button"
+            android:layout_width="83.67dp"
+            android:layout_height="33dp"
+            android:layout_gravity="bottom|center"
+            android:visibility="invisible" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

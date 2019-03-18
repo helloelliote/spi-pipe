@@ -13,6 +13,7 @@ public class Pipe implements DataItem, Serializable {
     private double depth;
     private String material;
     private int supervise_id;
+    private String supervise_contact;
     private String construction;
     private String construction_contact;
 }
