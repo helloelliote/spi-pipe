@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,17 +21,15 @@ import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SpiPost;
 
 import static kr.djspi.pipe01.Const.URL_TEST;
-import static kr.djspi.pipe01.MainActivity.nfcUtil;
 
 public class RecordWriteActivity extends BaseActivity implements Serializable {
 
     // TODO: 2019-03-15 통합형으로 관로 정보 전송시 에러 발생하는 관로에 대해서 롤백 및 롤백 안내
     private static final String TAG = RecordWriteActivity.class.getSimpleName();
-    private static boolean isSpiSetValid = false;
     private static ArrayList entries;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Serializable serializable = getIntent().getSerializableExtra("entry");
         if (serializable instanceof ArrayList) entries = (ArrayList) serializable;
@@ -44,6 +43,14 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
         textView.setText(Html.fromHtml(getString(R.string.write_instruction)));
 
         runOnUiThread(() -> RecordWriteActivity.this.showMessageDialog(4, getString(R.string.popup_read_only)));
+
+        Log.w(TAG, "setContentView() Called");
+        findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSpiData();
+            }
+        });
     }
 
     @Override
@@ -56,14 +63,20 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
         super.setToolbarTitle(string);
     }
 
+    /**
+     * 쓰기 대상 태그를 인식시키면 최초로 실행
+     *
+     * @param intent 전달된 태그 인텐트
+     * @see #processTag 인텐트를 넘겨받아 처리
+     */
     @Override
-    protected void onNewIntent(final Intent intent) {
+    public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent != null && setSpiData()) processTag(intent);
-        else isSpiSetValid = false;
+        Log.w(TAG, "onNewIntent() Called");
+        setSpiData();
     }
 
-    private boolean setSpiData() {
+    private void setSpiData() {
         Retrofit2x.builder()
                 .setService(new SpiPost(URL_TEST))
                 .setQuery(new Gson().toJson(entries))
@@ -72,16 +85,13 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
                     @Override
                     public void onResponse(JsonObject response) {
                         Log.w(TAG, response.toString());
-                        isSpiSetValid = true;
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
                         showMessageDialog(6, throwable.getMessage());
-                        isSpiSetValid = false;
                     }
                 });
-        return isSpiSetValid;
     }
 
     /**
@@ -94,7 +104,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
      */
     private void processTag(final Intent intent) {
         if (nfcUtil.writeTag(intent, new String[]{})) {
-            nfcUtil.onPause(this);
+            nfcUtil.onPause();
             showMessageDialog(5, getString(R.string.popup_write_success));
         } else {
             Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
@@ -104,12 +114,10 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
     @Override
     public void onResume() {
         super.onResume();
-        isSpiSetValid = false;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        isSpiSetValid = false;
     }
 }

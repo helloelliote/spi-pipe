@@ -30,4 +30,13 @@
         android:paddingEnd="60dp"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/btn_write"
+        style="@style/Spi.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="보내기" />
+
 </LinearLayout>

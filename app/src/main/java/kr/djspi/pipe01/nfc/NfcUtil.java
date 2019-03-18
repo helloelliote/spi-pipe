@@ -2,7 +2,6 @@ package kr.djspi.pipe01.nfc;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentFilter.MalformedMimeTypeException;
@@ -35,7 +34,6 @@ import java.util.Locale;
 
 import static android.nfc.NdefRecord.RTD_TEXT;
 import static android.nfc.NdefRecord.TNF_WELL_KNOWN;
-import static android.nfc.NfcAdapter.getDefaultAdapter;
 import static com.nxp.nfclib.CardType.NTag216;
 import static kr.djspi.pipe01.BuildConfig.APPLICATION_ID;
 import static kr.djspi.pipe01.BuildConfig.NFC_LICENSE_KEY;
@@ -48,50 +46,42 @@ public final class NfcUtil {
     private static final String TAG = NfcUtil.class.getSimpleName();
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static NfcAdapter nfcAdapter;
-    private static PendingIntent pendingIntent;
-    private static String[][] techLists;
-    private static IntentFilter[] intentFilters;
+    private IntentFilter[] intentFilters;
+    private NxpNfcLib nxpNfcLib;
     public static INTag213215216 objNtag;
-    public NxpNfcLib nxpNfcLib;
+    /**
+     * 아래의 변수들은 반드시 final 선언해야만 하며, 그렇지 않을 경우 intent 들 간의 간섭이 발생하여
+     * NFC 태그를 태깅하면 이전 액티비티 인텐트를 실행하기도 한다.
+     */
+    private final PendingIntent pendingIntent;
+    private final String[][] techLists;
+    private final Activity activity;
 
-    private NfcUtil() {
-    }
+    public NfcUtil(Activity activity, Class<?> useActivityClass) {
+        this.activity = activity;
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this.activity);
 
-    private static class LazyHolder {
-        static final NfcUtil INSTANCE = new NfcUtil();
-    }
-
-    public static NfcUtil get(Context context, Class<?> useActivityClass) {
-        if (nfcAdapter == null) {
-            nfcAdapter = getDefaultAdapter(context);
-            setForegroundDispatch(context, useActivityClass);
-        }
-        return LazyHolder.INSTANCE;
-    }
-
-    private static void setForegroundDispatch(Context context, Class<?> useActivityClass) {
-        pendingIntent = PendingIntent.getActivity(
-                context, 0, new Intent(context, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         try {
             intentFilters = new IntentFilter[]{new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain")};
             intentFilters[0].addDataType("application/kr.djspi.pipe01");
         } catch (MalformedMimeTypeException ignore) {
         }
+        pendingIntent = PendingIntent.getActivity(this.activity, 0, new Intent(this.activity, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         techLists = new String[][]{{NfcA.class.getName()}, {Ndef.class.getName()}, {MifareUltralight.class.getName()}};
+
+        initializeLibrary(this.activity);
     }
 
     /**
      * TapLinx NTAG 라이브러리를 불러옴
      */
-    @Contract("_ -> this")
-    public NfcUtil setNxpLibrary(Activity activity) {
-        nxpNfcLib = NxpNfcLib.getInstance();
+    private void initializeLibrary(Activity activity) {
         try {
+            nxpNfcLib = NxpNfcLib.getInstance();
             nxpNfcLib.registerActivity(activity, NFC_LICENSE_KEY);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return this;
     }
 
     public static Tag onNewTagIntent(@NotNull Intent intent) {
@@ -267,13 +257,13 @@ public final class NfcUtil {
         return nfcAdapter != null && nfcAdapter.isEnabled();
     }
 
-    public void onResume(Activity activity) {
+    public void onResume() {
         if (nfcAdapter != null) {
             nfcAdapter.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists);
         }
     }
 
-    public void onPause(Activity activity) {
+    public void onPause() {
         if (nfcAdapter != null) {
             nfcAdapter.disableForegroundDispatch(activity);
         }

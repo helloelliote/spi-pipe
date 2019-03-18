@@ -591,7 +591,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         @Override
         public void onClick(View v) {
             if (spiLocation.getCount() != 1) { // 아직 위치 정보가 기록되지 않음
-                startActivityForResult(new Intent(context, SpiLocationActivity.class), REQUEST_CODE_MAP);
+                startActivityForResult(new Intent(context, SpiLocationActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_CODE_MAP);
             } else try {
                 final Entry entry = setEntry();
                 ArrayList<Entry> entries = new ArrayList<>(1);
@@ -641,6 +642,16 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         pipe.setSupervise_contact(eSuperviseContact.getText().toString());
         pipe.setConstruction(eConstruction.getText().toString());
         pipe.setConstruction_contact(eConstructionContact.getText().toString());
+
+        // 테스트용 강제 데이터 주입
+        spiLocation.setId(387);
+        spiMemo.setId(158);
+
+        pipe.setId(955);
+        pipePosition.setId(11);
+        pipeShape.setId(11);
+        pipePlan.setId(5);
+        pipeType.setId(3);
 
         return new Entry(
                 spi, spiType, spiLocation, spiMemo,

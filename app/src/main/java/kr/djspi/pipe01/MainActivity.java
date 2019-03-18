@@ -32,17 +32,11 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static Tag tag;
-    public static NfcUtil nfcUtil;
-
-    /**
-     * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
-     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        nfcUtil = NfcUtil.get(this, getClass()).setNxpLibrary(this);
     }
 
     /**
@@ -73,12 +67,14 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     @Override
-    public void onNewIntent(final Intent intent) {
+    public void onNewIntent(Intent intent) {
+        Log.w(TAG, "onNewIntent()");
         super.onNewIntent(intent);
-        tag = NfcUtil.onNewTagIntent(intent);
+        if (intent != null) {
+            tag = NfcUtil.onNewTagIntent(intent);
 
-        Spi spi = new Spi(-1, "04:96:33:9A:BF:5B:83", 2); // 표지주
-        SpiType spiType = new SpiType(2, "표지주");
+            Spi spi = new Spi(977, "04:96:33:9A:BF:5B:83", 2); // 표지주
+            SpiType spiType = new SpiType(2, "표지주");
 
 //        Spi spi = new Spi(1165, "04:4B:B8:9A:BF:5B:80", 1); // 표지기
 //        SpiType spiType = new SpiType(1, "표지기");
@@ -86,13 +82,13 @@ public class MainActivity extends LocationUpdate implements Serializable {
 //        Spi spi = new Spi(1152, "04:7D:AD:A2:B1:49:81", 0); // 표지판
 //        SpiType spiType = new SpiType(0, "표지판");
 
-        HashMap<String, DataItem> hashMap = new HashMap<>();
-        hashMap.put("spi", spi);
-        hashMap.put("spiType", spiType);
-        startActivity(new Intent(context, RecordInputActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra("PipeRecordActivity", hashMap));
-
+            HashMap<String, DataItem> hashMap = new HashMap<>();
+            hashMap.put("spi", spi);
+            hashMap.put("spiType", spiType);
+            startActivity(new Intent(context, RecordInputActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    .putExtra("PipeRecordActivity", hashMap));
+        }
 //        onNewTag(tag);
     }
 
@@ -139,13 +135,11 @@ public class MainActivity extends LocationUpdate implements Serializable {
     @Override
     public void onResume() {
         if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on));
-        nfcUtil.onResume(this);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        nfcUtil.onPause(this);
         super.onPause();
     }
 

@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.fragment.MessageDialog;
+import kr.djspi.pipe01.nfc.NfcUtil;
 
 import static android.content.Intent.ACTION_DIAL;
 import static android.content.Intent.ACTION_SENDTO;
@@ -40,12 +42,14 @@ public class BaseActivity extends AppCompatActivity {
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
     Context context;
     Toolbar toolbar;
+    NfcUtil nfcUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
         resources = getResources();
+        nfcUtil = new NfcUtil(this, getClass());
     }
 
     @Override
@@ -148,13 +152,21 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        Log.w(TAG, "onNewIntent()");
+        super.onNewIntent(intent);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        if (nfcUtil != null) nfcUtil.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (nfcUtil != null) nfcUtil.onPause();
     }
 
     @Override
