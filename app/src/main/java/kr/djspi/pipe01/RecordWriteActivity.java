@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +14,7 @@ import com.google.gson.JsonObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import kr.djspi.pipe01.nfc.JsonNdefParser;
 import kr.djspi.pipe01.nfc.NfcUtil;
 import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
@@ -45,12 +45,6 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
         runOnUiThread(() -> RecordWriteActivity.this.showMessageDialog(4, getString(R.string.popup_read_only)));
 
         Log.w(TAG, "setContentView() Called");
-        findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSpiData();
-            }
-        });
     }
 
     @Override
@@ -73,10 +67,10 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.w(TAG, "onNewIntent() Called");
-        setSpiData();
+        setSpiData(intent);
     }
 
-    private void setSpiData() {
+    private void setSpiData(Intent intent) {
         Retrofit2x.builder()
                 .setService(new SpiPost(URL_TEST))
                 .setQuery(new Gson().toJson(entries))
@@ -85,6 +79,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
                     @Override
                     public void onResponse(JsonObject response) {
                         Log.w(TAG, response.toString());
+                        processTag(intent);
                     }
 
                     @Override
@@ -103,7 +98,9 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
      * @see NfcUtil#writeTag(Intent, String[]) 쓰기 작업을 수행, 성공 여부를 리턴
      */
     private void processTag(final Intent intent) {
-        if (nfcUtil.writeTag(intent, new String[]{})) {
+        JsonNdefParser parser = new JsonNdefParser((JsonObject) entries.get(0));
+        String[] strings = parser.getRecordList();
+        if (nfcUtil.writeTag(intent, strings)) {
             nfcUtil.onPause();
             showMessageDialog(5, getString(R.string.popup_write_success));
         } else {

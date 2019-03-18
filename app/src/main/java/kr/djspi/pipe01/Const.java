@@ -23,4 +23,18 @@ public final class Const {
     static final int REQUEST_CODE_PHOTO = 10001;
     static final int REQUEST_CODE_GALLERY = 10002;
 
+    public static final String[] MEMBERS_DEFAULT = {
+            "spi_id",
+            "spi_type",
+            "pipe",
+            "shape",
+            "material",
+            "spec",
+            "unit",
+            "vertical",
+            "horizontal",
+            "depth",
+            "supervise",
+            "supervise_contact",
+            "spi_memo"};
 }
