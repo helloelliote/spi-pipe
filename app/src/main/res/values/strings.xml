@@ -47,6 +47,7 @@
     <string name="popup_location_on_sub"><![CDATA[<font color="#000000">GPS 기능은 측량기준점의 위치를 찾아가기 위해 필요한 기능입니다.
     </font><font color="#F24E4E"> GPS 기능을 활성화 하십시오.</font>]]>
     </string>
+    <string name="popup_error_set">SPI 정보 등록에 실패하였습니다.\n입력하신 데이터를 재확인해 주세요.</string>
     <string name="popup_error_comm">서버와의 통신에 실패하였습니다.\n네트워크 연결을 재확인해 주세요.</string>
     <string name="popup_error_supervise">관리기관 목록을 가져오지 못하였습니다. 다시 시도해주세요.</string>
 

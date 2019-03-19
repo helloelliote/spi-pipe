@@ -1,5 +1,7 @@
 package kr.djspi.pipe01.dto;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 
 import lombok.Data;
@@ -30,6 +32,7 @@ public class SpiType implements DataItem, Serializable {
             this.code = code;
         }
 
+        @Nullable
         public static String parseSpiType(String spiType) {
             for (SpiTypeEnum typeEnum : SpiTypeEnum.values()) {
                 if (typeEnum.name.equals(spiType)) {

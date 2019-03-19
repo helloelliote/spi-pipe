@@ -192,8 +192,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
         eVertical.setText("1.10");
         eDepth.setText("4.50");
         eSpec.setText("250");
-        eMaterial.setText("알루미늄");
-        eSuperviseContact.setText("053-424-9547");
+        eMaterial.setText("스테인레스");
+        eSuperviseContact.setText("010-4242-9547");
         eSpiMemo.setText("테스트 메모");
     }
 

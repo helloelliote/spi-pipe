@@ -11,7 +11,6 @@ import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -268,17 +267,16 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     @Override
                     public void onResponse(JsonObject response) {
                         try {
-                            Log.w(TAG, response.toString());
-                            final int totalCount = response.get("total_count").getAsInt();
-                            if (totalCount != 0) {
-                                JsonArray jsonArray = response.get("data").getAsJsonArray();
-                                for (JsonElement element : jsonArray) {
+                            if (response == null) return;
+                            if (response.get("total_count").getAsInt() == 0) {
+                                behavior.setState(STATE_COLLAPSED);
+                                showMessageDialog(0, "표시할 SPI 정보가 없습니다");
+                            } else {
+                                JsonArray elements = response.get("data").getAsJsonArray();
+                                for (JsonElement element : elements) {
                                     JsonObject jsonObject = element.getAsJsonObject();
                                     setMarker(jsonObject);
                                 }
-                            } else {
-                                behavior.setState(STATE_COLLAPSED);
-                                showMessageDialog(0, "표시할 SPI 정보가 없습니다");
                             }
                         } catch (Exception e) {
                             onFailure(e);

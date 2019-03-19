@@ -37,8 +37,6 @@ import static android.nfc.NdefRecord.TNF_WELL_KNOWN;
 import static com.nxp.nfclib.CardType.NTag216;
 import static kr.djspi.pipe01.BuildConfig.APPLICATION_ID;
 import static kr.djspi.pipe01.BuildConfig.NFC_LICENSE_KEY;
-import static kr.djspi.pipe01.BuildConfig.a;
-import static kr.djspi.pipe01.BuildConfig.k;
 import static kr.djspi.pipe01.BuildConfig.setReadOnly;
 
 public final class NfcUtil {
@@ -118,22 +116,22 @@ public final class NfcUtil {
      * @return isSuccess 쓰기 작업 성공 여부
      * @see NdefRecordWrapper[] createRecord 사용자 입력값으로 NDEF 레코드를 생성해 리턴
      */
-    public boolean writeTag(final Intent intent, String[] recordArray) {
+    public boolean writeTag(final Intent intent, String[] strings) {
         Log.w(TAG, "writeTag() Called");
         boolean isSuccess = false;
         try {
             objNtag = getTagType(intent);
             objNtag.getReader().connect();
             objNtag.getReader().setTimeout(2000);
-            objNtag.authenticatePwd(k, a); // 비밀번호 인증
+//            objNtag.authenticatePwd(k, a); // 비밀번호 인증
 //            recordArray[INPUT_ARRAY_LENGTH] = Utilities.dumpBytes(objNtag.getUID()); // NFC 칩 시리얼번호
-            if (objNtag.isPwdAuthenticated()) {
-                // NDEF 메시지 생성 & 쓰기 작업 실행
-                objNtag.writeNDEF(new NdefMessageWrapper(createRecord(Locale.KOREAN, true, recordArray)));
-                Log.w(TAG, "NTag Written");
-                if (setReadOnly) objNtag.makeCardReadOnly(); // 쓰기 후 Read-Only 로 설정
-                isSuccess = true;
-            }
+//            if (objNtag.isPwdAuthenticated()) {
+            // NDEF 메시지 생성 & 쓰기 작업 실행
+            objNtag.writeNDEF(new NdefMessageWrapper(createRecord(Locale.KOREAN, true, strings)));
+            Log.w(TAG, "NTag Written");
+            if (setReadOnly) objNtag.makeCardReadOnly(); // 쓰기 후 Read-Only 로 설정
+            isSuccess = true;
+//            }
         } catch (NullPointerException | NxpNfcLibException | IllegalArgumentException e) {
             Log.e(TAG, "Exception Thrown: writeTag()");
 //            Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
@@ -154,7 +152,7 @@ public final class NfcUtil {
      * @param encodeInUtf8 UTF-8 인코딩으로 기록
      * @return ndefRecordWrappers 태그에 기록되는 레코드 Array
      */
-    private static NdefRecordWrapper[] createRecord(Locale locale, boolean encodeInUtf8, String[] record) {
+    private static NdefRecordWrapper[] createRecord(Locale locale, boolean encodeInUtf8, String[] records) {
         Charset utfEncoding;
         if (encodeInUtf8) {
             utfEncoding = Charset.forName("UTF-8");
@@ -162,22 +160,22 @@ public final class NfcUtil {
             utfEncoding = Charset.forName("UTF-16");
         }
 
-        final int recordLength = record.length;
+        final int recordLength = records.length;
         byte[][] textBytes = new byte[recordLength][];
         byte[][] data = new byte[recordLength][];
         byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("UTF-8"));
         int langBytesLength = langBytes.length;
         char status = (char) (0 + langBytesLength);
 
-        NdefRecordWrapper[] ndefRecordWrappers = new NdefRecordWrapper[recordLength];
+        NdefRecordWrapper[] ndefRecordWrappers = new NdefRecordWrapper[recordLength + 1];
 
-        for (int i = 1; i < recordLength; i++) {
-            textBytes[i] = record[i].getBytes(utfEncoding);
+        for (int i = 0; i < recordLength; i++) {
+            textBytes[i] = records[i].getBytes(utfEncoding);
             data[i] = new byte[1 + langBytesLength + textBytes[i].length]; // 0번 레코드를 위해 1자리 추가
             data[i][0] = (byte) status;
             System.arraycopy(langBytes, 0, data[i], 1, langBytesLength);
             System.arraycopy(textBytes[i], 0, data[i], 1 + langBytesLength, textBytes[i].length);
-            ndefRecordWrappers[i] = new NdefRecordWrapper(TNF_WELL_KNOWN, RTD_TEXT, BigInteger.valueOf(i).toByteArray(), data[i]);
+            ndefRecordWrappers[i + 1] = new NdefRecordWrapper(TNF_WELL_KNOWN, RTD_TEXT, BigInteger.valueOf(i).toByteArray(), data[i]);
         }
         // 1번 레코드부터 생성하는 for 문이 끝난 뒤 0번 레코드(패키지명)를 생성한다.
         ndefRecordWrappers[0] = new NdefRecordWrapper(NdefRecord.createApplicationRecord(APPLICATION_ID));

@@ -47,20 +47,19 @@ public class MainActivity extends LocationUpdate implements Serializable {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
 
-        LinearLayout mainLayout1 = findViewById(R.id.lay_main1);
+//        LinearLayout mainLayout1 = findViewById(R.id.lay_main1);
 
         LinearLayout mainLayout2 = findViewById(R.id.lay_main2);
         mainLayout2.setOnClickListener(view -> {
-            if (currentLocation != null) {
-                startActivity(new Intent(context, NaverMapActivity.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+            if (currentLocation == null) {
+                Toast.makeText(this, getString(R.string.toast_error_location), Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "위치 정보를 불러오지 못했습니다.\n" +
-                        "잠시후에 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, NaverMapActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
             }
         });
 
-        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
+//        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
 //        mainLayout3.setOnClickListener(view ->
 //                startActivity(new Intent(context, PipeRecordActivity.class)
 //                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
@@ -73,8 +72,9 @@ public class MainActivity extends LocationUpdate implements Serializable {
         if (intent != null) {
             tag = NfcUtil.onNewTagIntent(intent);
 
-            Spi spi = new Spi(977, "04:96:33:9A:BF:5B:83", 2); // 표지주
+            Spi spi = new Spi(1000000, "04:96:33:9A:BF:5B:83", 2); // 표지주
             SpiType spiType = new SpiType(2, "표지주");
+            // "04:96:33:9A:BF:5B:83"
 
 //        Spi spi = new Spi(1165, "04:4B:B8:9A:BF:5B:80", 1); // 표지기
 //        SpiType spiType = new SpiType(1, "표지기");
@@ -85,7 +85,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
             HashMap<String, DataItem> hashMap = new HashMap<>();
             hashMap.put("spi", spi);
             hashMap.put("spiType", spiType);
-            startActivity(new Intent(context, RecordInputActivity.class)
+            startActivity(new Intent(this, RecordInputActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     .putExtra("PipeRecordActivity", hashMap));
         }

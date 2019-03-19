@@ -1,5 +1,10 @@
 package kr.djspi.pipe01;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.NotNull;
+
 public final class Const {
 
     public static final String API_SPI_GET = "spi-get";
@@ -23,18 +28,42 @@ public final class Const {
     static final int REQUEST_CODE_PHOTO = 10001;
     static final int REQUEST_CODE_GALLERY = 10002;
 
-    public static final String[] MEMBERS_DEFAULT = {
-            "spi_id",
-            "spi_type",
-            "pipe",
-            "shape",
-            "material",
-            "spec",
-            "unit",
-            "vertical",
-            "horizontal",
-            "depth",
-            "supervise",
-            "supervise_contact",
-            "spi_memo"};
+    @SuppressWarnings("ALL")
+    public enum NfcRecordEnum {
+        ID("spi_id", "ID:"),
+        PIPE("pipe", ""),
+        SHAPE("shape", ""),
+        MATERIAL("material", ""),
+        HEADER("header", ""),
+        SPEC("spec", ""),
+        UNIT("unit", ""),
+        VERTICAL("vertical", "수직m:"),
+        HORIZONTAL("horizontal", "수평m:"),
+        DEPTH("depth", "심도m:"),
+        SUPERVISE("supervise", "관리:"),
+        CONTACT("supervise_contact", "");
+
+        private String memberName;
+        private String memberLabel;
+
+        NfcRecordEnum(String memberName, String memberLabel) {
+            this.memberName = memberName;
+            this.memberLabel = memberLabel;
+        }
+
+        // TODO: 2019-03-19 통합형: 순차적 기록 루틴 개발
+        public static String[] parseToStringArray(@NotNull JsonObject jsonObject, int index) {
+            final NfcRecordEnum[] values = NfcRecordEnum.values();
+            final int length = NfcRecordEnum.values().length;
+            JsonArray jsonArray = jsonObject.get("data").getAsJsonArray();
+            JsonObject object = jsonArray.get(index).getAsJsonObject();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < length; i++) {
+                builder.append(values[i].memberLabel).append(object.get(values[i].memberName).getAsString()).append(" ");
+            }
+            String[] strings = new String[1];
+            strings[0] = builder.toString();
+            return strings;
+        }
+    }
 }

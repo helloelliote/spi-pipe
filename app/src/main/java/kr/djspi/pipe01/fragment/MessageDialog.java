@@ -83,7 +83,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
             case 0: // 일반 메시지 전달
                 setVisibilityToGone(view);
                 break;
-            case 1: // (MainActivity.class) 위치 기능이 꺼져 있음
+            case 1: // (공통) 위치 기능이 꺼져 있음
                 popupTitle.setText("주의");
                 popupSubText.setText(fromHtml(getString(R.string.popup_location_on_sub)));
                 // 확인버튼 터치 시 위치 설정으로 이동
@@ -92,7 +92,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                     dismiss();
                 });
                 break;
-            case 2: // (BaseActivity.class) NFC 기능이 꺼져 있음
+            case 2: // (공통) NFC 기능이 꺼져 있음
                 popupTitle.setText("주의");
                 popupSubText.setText(fromHtml(getString(R.string.popup_nfc_on_sub)));
                 // 확인버튼 터치 시 NFC 설정으로 이동
@@ -105,23 +105,27 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 setVisibilityToGone(view);
                 popupTitle.setText("주의");
                 // TODO: 2019-01-31 전달: showMessagePopup(3, getString(R.string.popup_not_spi));
-                buttonOk.setOnClickListener(v -> { dismiss();
+                buttonOk.setOnClickListener(v -> {
+                    dismiss();
                     android.os.Process.killProcess(android.os.Process.myPid());
                     System.exit(1); // 앱 완전종료
                 });
                 break;
-            case 4: // (NfcRecordWrite.class) 쓰기 작업 이후 수정이 불가함을 안내
+            case 4: // (RecordWriteActivity.class) 쓰기 작업 이후 수정이 불가함을 안내
                 setVisibilityToGone(view);
                 popupTitle.setText("주의");
                 buttonDismiss.setVisibility(VISIBLE);
                 buttonDismiss.setText(getString(R.string.popup_pre));
                 break;
-            case 5: // (NfcRecordWrite.class) 정보가 정상적으로 기록됨
+            case 5: // (RecordWriteActivity.class) 정보가 정상적으로 기록됨
                 setVisibilityToGone(view);
                 isReturnToMain = true;
-                buttonOk.setOnClickListener(view12 -> dismiss());
                 break;
-            case 6: // (공통) 서버와의 통신 에러
+            case 6: // (RecordWriteActivity.class) 하나 이상의 관로 정보 등록 과정에서 에러 발생 안내
+                popupText.setText(getString(R.string.popup_error_set));
+                popupSubText.setText(getTag());
+                break;
+            case 7: // (공통) 서버와의 통신 에러
                 popupText.setText(getString(R.string.popup_error_comm));
                 popupSubText.setText(getTag());
             default:

@@ -1,5 +1,7 @@
 package kr.djspi.pipe01.dto;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 
 import lombok.Data;
@@ -35,6 +37,7 @@ public class PipeShape implements DataItem, Serializable {
             this.code = code;
         }
 
+        @Nullable
         public static String parsePipeShape(String pipeShape) {
             for (PipeShapeEnum shapeEnum : PipeShapeEnum.values()) {
                 if (shapeEnum.name.equals(pipeShape)) {
