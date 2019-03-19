@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 
-import static kr.djspi.pipe01.Const.API_SUPERVISE;
+import static kr.djspi.pipe01.retrofit2x.ApiKey.API_SUPERVISE;
 import static kr.djspi.pipe01.retrofit2x.RetrofitCore.BUILDER;
 
 /**

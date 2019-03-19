@@ -23,6 +23,7 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static kr.djspi.pipe01.BaseActivity.packageName;
 import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
@@ -95,7 +96,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
         final String defType = "id";
         View[] views = new View[10];
         for (int i = 1; i <= 9; i++) {
-            views[i] = view.findViewById(resources.getIdentifier("image_" + i, defType, getContext().getPackageName()));
+            views[i] = view.findViewById(resources.getIdentifier("image_" + i, defType, packageName));
         }
         switch (typeString) {
             case TAG_TYPE_PLATE:
@@ -196,7 +197,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
         }
     }
 
-    final void setFocus(@NotNull View view) {
+    private void setFocus(@NotNull View view) {
         checkView.setVisibility(INVISIBLE);
         view.findViewById(R.id.v_select).setVisibility(VISIBLE);
         this.checkView = view.findViewById(R.id.v_select);

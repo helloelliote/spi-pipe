@@ -20,6 +20,7 @@ import kr.djspi.pipe01.R;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static kr.djspi.pipe01.BaseActivity.packageName;
 import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
@@ -106,7 +107,6 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
         Log.w(TAG, resIds[6]);
 
         final String defType = "drawable";
-        final String packageName = getContext().getPackageName();
 
         image_2.setBackgroundResource(resources.getIdentifier(resIds[2], defType, packageName));
         image_4.setBackgroundResource(resources.getIdentifier(resIds[4], defType, packageName));
@@ -153,7 +153,7 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
         }
     }
 
-    final void setFocus(@NotNull View view) {
+    private void setFocus(@NotNull View view) {
         checkView.setVisibility(INVISIBLE);
         view.findViewById(R.id.v_select).setVisibility(VISIBLE);
         this.checkView = view.findViewById(R.id.v_select);

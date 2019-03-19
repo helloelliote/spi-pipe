@@ -72,9 +72,9 @@ import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
-import static kr.djspi.pipe01.Const.API_PIPE_GET;
 import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
+import static kr.djspi.pipe01.retrofit2x.ApiKey.API_PIPE_GET;
 
 public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
 
@@ -90,7 +90,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     static final int PAD_TOP = 45;
     static final int PAD_RIGHT = 0;
     static final int PAD_BOT = 45;
-    static ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
+    static final ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
     static BottomSheetBehavior behavior;
     static SetTopSheet.ListViewAdapter placesListAdapter;
     static Overlay.OnClickListener listener;
@@ -243,10 +243,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         infoWindow.setOnClickListener(listener);
         naverMap.setOnMapClickListener((PointF point, LatLng coord) -> {
             infoWindow.close();
-            if (placesArrayList != null) {
-                placesArrayList.clear();
-                runOnUiThread(() -> placesListAdapter.notifyDataSetChanged());
-            }
+            placesArrayList.clear();
+            runOnUiThread(() -> placesListAdapter.notifyDataSetChanged());
         });
     }
 

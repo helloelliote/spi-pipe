@@ -28,7 +28,7 @@
     <string name="lay_main2_title">지도보기</string>
     <string name="lay_main2_sub">내 주변의 관로정보를 확인합니다.</string>
     <string name="lay_main3_title">SPI 조회ㆍ등록</string>
-    <string name="lay_main3_sub">SPI를 태그해 관로정보를 조회\n또는 새로운 관로정보를 등록합니다.</string>
+    <string name="lay_main3_sub">SPI를 태깅해 관로정보를 조회\n또는 새로운 관로정보를 등록합니다.</string>
 
     <!--NfcUtil-->
     <string name="toast_error">입력값을 확인해주세요</string>

@@ -90,14 +90,13 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     public static FragmentManager fragmentManager;
     public static ArrayList<String> superviseList;
     private static HashMap<?, ?> itemMap;
-    private static String header, unit;
     private static SpiType spiType;
-    private static Pipe pipe = new Pipe();
-    private static PipeType pipeType = new PipeType();
-    private static PipeShape pipeShape = new PipeShape();
-    private static PipePosition pipePosition = new PipePosition();
-    private static PipePlan pipePlan = new PipePlan();
-    private static PipeSupervise pipeSupervise = new PipeSupervise();
+    private static final Pipe pipe = new Pipe();
+    private static final PipeType pipeType = new PipeType();
+    private static final PipeShape pipeShape = new PipeShape();
+    private static final PipePosition pipePosition = new PipePosition();
+    private static final PipePlan pipePlan = new PipePlan();
+    private static final PipeSupervise pipeSupervise = new PipeSupervise();
     private static ExtendedEditText ePipe, eShape, ePosition, eHorizontal, eVertical, eDepth, eSpec, eMaterial,
             eSupervise, eSuperviseContact, eSpiMemo, eConstruction, eConstructionContact, photo, gallery;
     private MaterialButton buttonConfirm;
@@ -109,7 +108,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
     static int requestCode;
     static OnPhotoInput onPhotoInput;
     static File mPhoto;
-    static SpiLocation spiLocation = new SpiLocation();
+    static final SpiLocation spiLocation = new SpiLocation();
     ImageView photoView;
 
     @Override
@@ -297,10 +296,9 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
                 ePipe.setText(pipes[index].getName());
                 pipeType.setId(index + 1);
                 pipe.setType_id(index + 1);
-                header = pipes[index].getHeader();
+                String header = pipes[index].getHeader();
                 eSpec.setPrefix(header + "  ");
-                // TODO: 2019-03-14 전기관로 단위 확인하기 (mm? kV?)
-                unit = pipes[index].getUnit();
+                String unit = pipes[index].getUnit();
                 eSpec.setSuffix("  " + unit);
                 eSpec.setInputType(index == 5 ? TYPE_CLASS_TEXT : TYPE_CLASS_NUMBER); // index == 5 : 통신관로
                 break;
@@ -450,7 +448,7 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 
     @Override
     public void onPause() {
-        if (spiLocation != null) spiLocation.setCount(-1);
+        spiLocation.setCount(-1);
         super.onPause();
     }
 
@@ -623,8 +621,8 @@ public class RecordInputActivity extends BaseActivity implements OnSelectListene
 //        }
     }
 
-    @Contract(" -> new")
     @NotNull
+    @Contract(" -> new")
     private static Entry setEntry() throws Exception {
         Spi spi = (Spi) itemMap.get("spi");
         final int spiId = Objects.requireNonNull(spi).getId();

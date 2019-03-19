@@ -11,7 +11,7 @@ import retrofit2.http.Query;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_SECRET;
 
-public interface RetrofitService {
+interface RetrofitService {
 
     String NAVER_KEY_CLIENT_ID = "X-NCP-APIGW-API-KEY-ID";
     String NAVER_KEY_CLIENT_SECRET = "X-NCP-APIGW-API-KEY";

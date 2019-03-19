@@ -9,7 +9,6 @@ import android.support.design.widget.TabLayout.OnTabSelectedListener;
 import android.support.design.widget.TabLayout.Tab;
 import android.support.design.widget.TabLayout.TabLayoutOnPageChangeListener;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -40,7 +39,6 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
         super.onCreate(savedInstanceState);
         String jsonString = getIntent().getStringExtra("RecordViewActivity");
         if (jsonString != null) jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
-        Log.w(TAG, jsonObject.toString());
         setContentView(R.layout.activity_record_view);
     }
 
@@ -64,9 +62,9 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
     }
 
     @Override
-    protected void setToolbarTitle(String string) {
+    void setToolbarTitle(String string) {
         if (string != null) {
-            toolbar.setTitle(String.format(getString(R.string.app_title_alt),
+            toolbar.setTitle(String.format("%s %s",
                     jsonObject.get("spi_id").getAsString(),
                     jsonObject.get("pipe").getAsString()));
         }

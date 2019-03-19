@@ -1,11 +1,10 @@
 package kr.djspi.pipe01.retrofit2x;
 
-import android.util.Log;
-
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 
+import static kr.djspi.pipe01.retrofit2x.ApiKey.API_PIPE_SET;
 import static kr.djspi.pipe01.retrofit2x.RetrofitCore.BUILDER;
 import static kr.djspi.pipe01.retrofit2x.RetrofitCore.stringQuery;
 
@@ -26,8 +25,7 @@ public final class SpiPost implements ServiceStrategy {
 
     @Override
     public Call<JsonObject> getServiceRequest() {
-        String query = String.format("{\"request\":%s,\"data\":%s}", "\"pipe-set\"", stringQuery);
-        Log.w("SpiPost", query);
+        String query = String.format("{\"request\":%s,\"data\":%s}", API_PIPE_SET, stringQuery);
         return BUILDER.baseUrl(url).build()
                 .create(RetrofitService.class).postSpi(query);
     }

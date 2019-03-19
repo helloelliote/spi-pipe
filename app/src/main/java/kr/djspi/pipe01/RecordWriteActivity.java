@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +62,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
      * @see OnRetrofitListener#onResponse(JsonObject) 인텐트를 넘겨받아 처리
      */
     @Override
-    public void onNewIntent(Intent intent) {
+    public void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         setSpiAndPipe(intent);
     }
@@ -77,7 +76,6 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
                     @Override
                     public void onResponse(JsonObject response) {
                         if (response == null) return;
-                        Log.w(TAG, response.toString());
                         // TODO: 2019-03-15 통합형: 관로 정보 전송시 에러 발생하는 관로에 대해서 롤백 및 롤백 안내
                         // TODO: 2019-03-19 통합형: 개별 등록 건수에 대해 응답 & 에러 처리 과정 개발, index 를 활용한다.
                         if (response.get("error_count").getAsInt() == 0) {
@@ -119,11 +117,13 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
     }
 
     @Override
+    @SuppressWarnings("EmptyMethod")
     public void onResume() {
         super.onResume();
     }
 
     @Override
+    @SuppressWarnings("EmptyMethod")
     public void onPause() {
         super.onPause();
     }

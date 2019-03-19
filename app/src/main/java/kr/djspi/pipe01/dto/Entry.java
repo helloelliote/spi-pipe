@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class Entry implements Serializable {
-    //    private final String request = "spi-set";
     private final Spi spi;
     private final SpiType spi_type;
     private final SpiLocation spi_location;

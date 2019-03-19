@@ -19,11 +19,18 @@ public final class RetrofitCore {
     private static final String TAG = RetrofitCore.class.getSimpleName();
     private static final Gson gson = new GsonBuilder().setLenient().create();
     static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
+    private static ServiceStrategy service;
     static JsonObject jsonQuery;
     static String stringQuery;
-    private static ServiceStrategy service;
 
     private RetrofitCore() {
+    }
+
+    /**
+     * LazyHolder 를 활용한 초기화 Singleton 패턴
+     */
+    private static class LazyHolder {
+        static final RetrofitCore INSTANCE = new RetrofitCore();
     }
 
     @Contract(pure = true)
@@ -73,20 +80,18 @@ public final class RetrofitCore {
      */
     public final void run(OnRetrofitListener listener) {
         final Call<JsonObject> request = service.getServiceRequest();
-        if (request != null) {
-            request.enqueue(new Callback<JsonObject>() {
+        if (request != null) request.enqueue(new Callback<JsonObject>() {
 
-                @Override
-                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                    if (response.isSuccessful()) listener.onResponse(response.body());
-                }
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) listener.onResponse(response.body());
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    listener.onFailure(t);
-                }
-            });
-        }
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                listener.onFailure(t);
+            }
+        });
     }
 
     /**
@@ -96,12 +101,5 @@ public final class RetrofitCore {
         void onResponse(JsonObject response);
 
         void onFailure(Throwable throwable);
-    }
-
-    /**
-     * LazyHolder 를 활용한 초기화 Singleton 패턴
-     */
-    private static class LazyHolder {
-        static final RetrofitCore INSTANCE = new RetrofitCore();
     }
 }

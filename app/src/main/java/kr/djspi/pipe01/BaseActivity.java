@@ -12,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -38,6 +37,7 @@ public class BaseActivity extends AppCompatActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();
     public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     public static Resources resources;
+    public static String packageName;
     private DrawerLayout drawer;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
     Context context;
@@ -50,6 +50,7 @@ public class BaseActivity extends AppCompatActivity {
         context = this;
         resources = getResources();
         nfcUtil = new NfcUtil(this, getClass());
+        packageName = context.getPackageName();
     }
 
     @Override
@@ -88,7 +89,7 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    protected void setToolbarTitle(String string) {
+    void setToolbarTitle(String string) {
     }
 
     /**
@@ -152,8 +153,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        Log.w(TAG, "onNewIntent()");
+    @SuppressWarnings("EmptyMethod")
+    protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
     }
 
@@ -167,10 +168,5 @@ public class BaseActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         if (nfcUtil != null) nfcUtil.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

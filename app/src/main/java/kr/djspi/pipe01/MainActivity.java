@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -24,9 +23,9 @@ import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SpiGet;
 
-import static kr.djspi.pipe01.Const.API_SPI_GET;
 import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
+import static kr.djspi.pipe01.retrofit2x.ApiKey.API_SPI_GET;
 
 public class MainActivity extends LocationUpdate implements Serializable {
 
@@ -66,8 +65,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
-        Log.w(TAG, "onNewIntent()");
+    public void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         if (intent != null) {
             tag = NfcUtil.onNewTagIntent(intent);
@@ -81,7 +79,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
 //        Spi spi = new Spi(1152, "04:7D:AD:A2:B1:49:81", 0); // 표지판
 //        SpiType spiType = new SpiType(0, "표지판");
-
             HashMap<String, DataItem> hashMap = new HashMap<>();
             hashMap.put("spi", spi);
             hashMap.put("spiType", spiType);
@@ -104,7 +101,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        Log.w(TAG, response.toString());
+//                        Log.w(TAG, response.toString());
                         JsonArray jsonArray = response.get("data").getAsJsonArray();
                         JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
                         int spi_id = jsonObject.get("spi_id").getAsInt();
@@ -139,6 +136,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     @Override
+    @SuppressWarnings("EmptyMethod")
     public void onPause() {
         super.onPause();
     }

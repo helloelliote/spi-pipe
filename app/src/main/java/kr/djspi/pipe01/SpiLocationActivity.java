@@ -67,7 +67,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     }
 
     @Override
-    protected void setToolbarTitle(String string) {
+    void setToolbarTitle(String string) {
         toolbar.setTitle(string);
     }
 

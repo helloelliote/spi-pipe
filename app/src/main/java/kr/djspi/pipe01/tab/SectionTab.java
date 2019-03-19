@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import kr.djspi.pipe01.R;
 
 import static android.view.View.VISIBLE;
+import static kr.djspi.pipe01.BaseActivity.packageName;
 
 public class SectionTab extends Fragment {
 
@@ -46,7 +47,7 @@ public class SectionTab extends Fragment {
         try {
             final String resId = jsonObject.get("file_section").getAsString().replace(".png", "");
             ImageView imageView = view.findViewById(R.id.planeImageView);
-            imageView.setImageResource(getResources().getIdentifier(resId, "drawable", getContext().getPackageName()));
+            imageView.setImageResource(getResources().getIdentifier(resId, "drawable", packageName));
         } catch (UnsupportedOperationException e) {
             LinearLayout lay_empty = view.findViewById(R.id.lay_empty);
             lay_empty.setVisibility(VISIBLE);

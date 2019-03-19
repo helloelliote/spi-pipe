@@ -117,10 +117,10 @@ public final class NfcUtil {
      * @see NdefRecordWrapper[] createRecord 사용자 입력값으로 NDEF 레코드를 생성해 리턴
      */
     public boolean writeTag(final Intent intent, String[] strings) {
-        Log.w(TAG, "writeTag() Called");
         boolean isSuccess = false;
         try {
             objNtag = getTagType(intent);
+            if (objNtag == null) return false;
             objNtag.getReader().connect();
             objNtag.getReader().setTimeout(2000);
 //            objNtag.authenticatePwd(k, a); // 비밀번호 인증
@@ -165,6 +165,7 @@ public final class NfcUtil {
         byte[][] data = new byte[recordLength][];
         byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("UTF-8"));
         int langBytesLength = langBytes.length;
+        //noinspection PointlessArithmeticExpression
         char status = (char) (0 + langBytesLength);
 
         NdefRecordWrapper[] ndefRecordWrappers = new NdefRecordWrapper[recordLength + 1];
@@ -208,8 +209,9 @@ public final class NfcUtil {
      * @return
      */
     // FIXME: 2018-12-22 StringBuilder 사용하기, 예외 처리 전략 개발
+    @NotNull
     public String readTag(Tag tag) {
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         try {
             Ndef ndefTag = Ndef.get(tag);
             NdefMessage ndefMessage = ndefTag.getCachedNdefMessage();
@@ -218,19 +220,19 @@ public final class NfcUtil {
                 for (NdefRecord item : ndefRecords) {
                     try {
                         if (new String(item.getType()).equals(new String(NdefRecord.RTD_TEXT))) {
-                            ret += new String(item.getPayload(), Charset.forName("UTF-8")).substring("\nko".length());
+                            ret.append(new String(item.getPayload(), Charset.forName("UTF-8")).substring("\nko".length()));
                         } else if (new String(item.getType()).equals(new String(NdefRecord.RTD_URI))) {
-                            ret += new String(item.getPayload(), Charset.forName("UTF-8"));
+                            ret.append(new String(item.getPayload(), Charset.forName("UTF-8")));
                         } else /*NdefRecord.RTD_ANDROID_APP*/ if (new String(item.getType()).equals("android.com:pkg")) {
-                            ret += new String(item.getPayload());
+                            ret.append(new String(item.getPayload()));
                         }
-                    } catch (Exception e) {
+                    } catch (Exception ignore) {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignore) {
         }
-        return ret;
+        return ret.toString();
     }
 
     @NotNull
