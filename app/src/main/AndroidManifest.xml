@@ -96,5 +96,8 @@
         <activity
             android:name=".RecordViewActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".RecordInputActivity2"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

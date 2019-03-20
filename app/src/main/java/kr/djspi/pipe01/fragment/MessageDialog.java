@@ -104,7 +104,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
             case 3: // (MainActivity.class) 정품 SPI 가 아닌 태그가 태깅되었음
                 setVisibilityToGone(view);
                 popupTitle.setText("주의");
-                // TODO: 2019-01-31 전달: showMessagePopup(3, getString(R.string.popup_not_spi));
+                buttonOk.setText("종료");
                 buttonOk.setOnClickListener(v -> {
                     dismiss();
                     android.os.Process.killProcess(android.os.Process.myPid());
