@@ -23,6 +23,7 @@ import kr.djspi.pipe01.retrofit2x.Retrofit2x;
 import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
 import kr.djspi.pipe01.retrofit2x.SpiGet;
 
+import static kr.djspi.pipe01.Const.ERROR_CODE_NONE;
 import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 import static kr.djspi.pipe01.retrofit2x.ApiKey.API_SPI_GET;
@@ -60,7 +61,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
 //        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
 //        mainLayout3.setOnClickListener(view ->
-//                startActivity(new Intent(context, PipeRecordActivity.class)
+//                startActivity(new Intent(context, RecordInputActivity2.class)
 //                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
     }
 
@@ -69,64 +70,51 @@ public class MainActivity extends LocationUpdate implements Serializable {
         super.onNewIntent(intent);
         if (intent != null) {
             tag = NfcUtil.onNewTagIntent(intent);
-
-            Spi spi = new Spi(1000000, "04:96:33:9A:BF:5B:83", 2); // 표지주
-            SpiType spiType = new SpiType(2, "표지주");
-            // "04:96:33:9A:BF:5B:83"
-
-//        Spi spi = new Spi(1165, "04:4B:B8:9A:BF:5B:80", 1); // 표지기
-//        SpiType spiType = new SpiType(1, "표지기");
-
-//        Spi spi = new Spi(1152, "04:7D:AD:A2:B1:49:81", 0); // 표지판
-//        SpiType spiType = new SpiType(0, "표지판");
-            HashMap<String, DataItem> hashMap = new HashMap<>();
-            hashMap.put("spi", spi);
-            hashMap.put("spiType", spiType);
-            startActivity(new Intent(this, RecordInputActivity.class)
-                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    .putExtra("PipeRecordActivity", hashMap));
+            onNewTag(tag);
         }
-//        onNewTag(tag);
     }
 
     private void onNewTag(@NotNull Tag tag) {
         final String serial = NfcUtil.bytesToHex(tag.getId());
         JsonObject jsonQuery = new JsonObject();
-        jsonQuery.addProperty("sp_serial", serial);
+        jsonQuery.addProperty("spi_serial", serial);
+        try {
+            Retrofit2x.builder()
+                    .setService(new SpiGet(URL_TEST, API_SPI_GET))
+                    .setQuery(jsonQuery)
+                    .build()
+                    .run(new OnRetrofitListener() {
+                        @Override
+                        public void onResponse(JsonObject response) {
+                            if (response.get("error_code").getAsInt() == ERROR_CODE_NONE &&
+                                    response.get("total_count").getAsInt() == 1) {
+                                JsonArray dataArray = response.get("data").getAsJsonArray();
+                                JsonObject dataObject = dataArray.get(0).getAsJsonObject();
+                                int id = dataObject.get("spi_id").getAsInt();
+                                int type_id = dataObject.get("spi_type_id").getAsInt();
+                                String spi_type = dataObject.get("spi_type").getAsString();
 
-        Retrofit2x.builder()
-                .setService(new SpiGet(URL_TEST, API_SPI_GET))
-                .setQuery(jsonQuery)
-                .build()
-                .run(new OnRetrofitListener() {
-                    @Override
-                    public void onResponse(JsonObject response) {
-//                        Log.w(TAG, response.toString());
-                        JsonArray jsonArray = response.get("data").getAsJsonArray();
-                        JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-                        int spi_id = jsonObject.get("spi_id").getAsInt();
-                        int spi_type_id = 2;
-                        String spi_type = "표지주";
-//                        int spi_type_id = jsonObject.get("spi_type_id").getAsInt();
-//                        String spi_type = jsonObject.get("spi_type").getAsString();
-                        // TODO: 2019-03-06 사용할 수 없는 태그
+                                // TODO: 2019-03-20 SpiLocation 고유 id 처리
+                                Spi spi = new Spi(id, serial, type_id);
+                                SpiType spiType = new SpiType(type_id, spi_type);
 
-                        Spi spi = new Spi(spi_id, serial, spi_type_id);
-                        SpiType spiType = new SpiType(spi_id, spi_type);
+                                HashMap<String, DataItem> hashMap = new HashMap<>();
+                                hashMap.put("spi", spi);
+                                hashMap.put("spiType", spiType);
+                                startActivity(new Intent(context, RecordInputActivity2.class)
+                                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                        .putExtra("PipeRecordActivity", hashMap));
+                            } else showMessageDialog(3, getString(R.string.popup_error_not_spi));
+                        }
 
-                        HashMap<String, DataItem> hashMap = new HashMap<>();
-                        hashMap.put("spi", spi);
-                        hashMap.put("spiType", spiType);
-                        startActivity(new Intent(context, RecordInputActivity.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                .putExtra("PipeRecordActivity", hashMap));
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        showMessageDialog(6, throwable.getMessage());
-                    }
-                });
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            showMessageDialog(7, throwable.getMessage());
+                        }
+                    });
+        } catch (IllegalStateException | NullPointerException e) {
+            showMessageDialog(7, e.getMessage());
+        }
     }
 
     @Override

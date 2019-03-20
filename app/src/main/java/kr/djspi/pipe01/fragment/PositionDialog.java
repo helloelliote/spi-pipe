@@ -30,7 +30,7 @@ import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
 import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
 import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
-import static kr.djspi.pipe01.RecordInputActivity.fragmentManager;
+import static kr.djspi.pipe01.RecordInputActivity2.fragmentManager;
 
 public class PositionDialog extends DialogFragment implements OnClickListener {
 

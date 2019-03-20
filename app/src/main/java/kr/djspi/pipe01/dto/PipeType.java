@@ -15,6 +15,7 @@ public class PipeType implements DataItem, Serializable {
 
     static final String HEAD_NULL = "";
     static final String HEAD_RAD = "관경";
+    static final String HEAD_CORE = "코어수";
     static final String UNIT_MM = "mm";
     static final String UNIT_CORE = "코어";
     private int id;
@@ -41,7 +42,7 @@ public class PipeType implements DataItem, Serializable {
         하수관로("하수관로", R.drawable.cir_03_map, HEAD_RAD, UNIT_MM),
         오수관로("오수관로", R.drawable.cir_04_map, HEAD_RAD, UNIT_MM),
         전기관로("전기관로", R.drawable.cir_05_map, HEAD_RAD, UNIT_MM),
-        통신관로("통신관로", R.drawable.cir_06_map, HEAD_NULL, UNIT_CORE),
+        통신관로("통신관로", R.drawable.cir_06_map, HEAD_CORE, UNIT_CORE),
         난방관로("난방관로", R.drawable.cir_07_map, HEAD_RAD, UNIT_MM),
         유류관로("유류관로", R.drawable.cir_08_map, HEAD_RAD, UNIT_MM),
         가로등("가로등", R.drawable.cir_09_map, HEAD_RAD, UNIT_MM),

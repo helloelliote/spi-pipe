@@ -89,7 +89,7 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    void setToolbarTitle(String string) {
+    void setToolbarTitle(String title) {
     }
 
     /**

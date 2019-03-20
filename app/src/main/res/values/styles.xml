@@ -54,6 +54,26 @@
         <item name="primaryColor">@color/colorAccent</item>
     </style>
 
+    <style name="FormEditText.Title">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1.25</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="FormEditText">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">3</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="testType">nocheck</item>
+        <item name="emptyErrorString">"필수입력 항목입니다"</item>
+        <item name="android:imeOptions">actionNext</item>
+    </style>
+
     <style name="Spi.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">18sp</item>

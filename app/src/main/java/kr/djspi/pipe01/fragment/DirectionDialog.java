@@ -25,7 +25,7 @@ import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
-import static kr.djspi.pipe01.RecordInputActivity.showPositionDialog;
+import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
 import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
 
