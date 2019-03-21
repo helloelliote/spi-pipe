@@ -145,7 +145,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                 try {
                     final LatLng latLng = naverMap.getCameraPosition().target;
                     final double[] spiLocation = {latLng.latitude, latLng.longitude};
-                    setResult(RESULT_OK, new Intent().putExtra("SpiLocation", spiLocation));
+                    setResult(RESULT_OK, new Intent().putExtra("locations", spiLocation));
                     finish();
                 } catch (Exception e) {
                     showMessageDialog(0, getString(R.string.toast_error_location));

@@ -37,6 +37,8 @@ import static android.nfc.NdefRecord.TNF_WELL_KNOWN;
 import static com.nxp.nfclib.CardType.NTag216;
 import static kr.djspi.pipe01.BuildConfig.APPLICATION_ID;
 import static kr.djspi.pipe01.BuildConfig.NFC_LICENSE_KEY;
+import static kr.djspi.pipe01.BuildConfig.a;
+import static kr.djspi.pipe01.BuildConfig.k;
 import static kr.djspi.pipe01.BuildConfig.setReadOnly;
 
 public final class NfcUtil {
@@ -123,15 +125,14 @@ public final class NfcUtil {
             if (objNtag == null) return false;
             objNtag.getReader().connect();
             objNtag.getReader().setTimeout(2000);
-//            objNtag.authenticatePwd(k, a); // 비밀번호 인증
-//            recordArray[INPUT_ARRAY_LENGTH] = Utilities.dumpBytes(objNtag.getUID()); // NFC 칩 시리얼번호
-//            if (objNtag.isPwdAuthenticated()) {
-            // NDEF 메시지 생성 & 쓰기 작업 실행
-            objNtag.writeNDEF(new NdefMessageWrapper(createRecord(Locale.KOREAN, true, strings)));
-            Log.w(TAG, "NTag Written");
-            if (setReadOnly) objNtag.makeCardReadOnly(); // 쓰기 후 Read-Only 로 설정
-            isSuccess = true;
-//            }
+            objNtag.authenticatePwd(k, a); // 비밀번호 인증
+            if (objNtag.isPwdAuthenticated()) {
+                // NDEF 메시지 생성 & 쓰기 작업 실행
+                objNtag.writeNDEF(new NdefMessageWrapper(createRecord(Locale.KOREAN, true, strings)));
+                Log.w(TAG, "NTag Written");
+                if (setReadOnly) objNtag.makeCardReadOnly(); // 쓰기 후 Read-Only 로 설정
+                isSuccess = true;
+            }
         } catch (NullPointerException | NxpNfcLibException | IllegalArgumentException e) {
             Log.e(TAG, "Exception Thrown: writeTag()");
 //            Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
@@ -208,7 +209,6 @@ public final class NfcUtil {
      * @param tag
      * @return
      */
-    // FIXME: 2018-12-22 StringBuilder 사용하기, 예외 처리 전략 개발
     @NotNull
     public String readTag(Tag tag) {
         StringBuilder ret = new StringBuilder();

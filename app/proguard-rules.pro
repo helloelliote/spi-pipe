@@ -54,6 +54,14 @@
 # EnclosingMethod is required to use InnerClasses.
 -keepattributes Signature, InnerClasses, EnclosingMethod
 
+# Retrofit does reflection on method and parameter annotations.
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+
+# With R8 full mode, it sees no subtypes of Retrofit interfaces since they are created with a Proxy
+# and replaces all potential values with null. Explicitly keeping the interfaces prevents this.
+-if interface * { @retrofit2.http.* <methods>; }
+-keep,allowobfuscation interface <1>
+
 # Guarded by a NoClassDefFoundError try/catch and only used when on the classpath.
 -dontwarn kotlin.Unit
 
@@ -65,9 +73,9 @@
 
 # To remove debug logs:
 -assumenosideeffects class android.util.Log {
-    public static *** d(...);
-    public static *** i(...);
     public static *** v(...);
-    public static *** e(...);
+    public static *** i(...);
     public static *** w(...);
+    public static *** d(...);
+    public static *** e(...);
 }

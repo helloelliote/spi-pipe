@@ -56,6 +56,7 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
 
         setToolbarTitle("");
 
+        setSpiIdInfo();
         setSuperviseInfo();
         setConstructionInfo();
 //        setSerialInfo();
@@ -64,9 +65,18 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
     @Override
     void setToolbarTitle(String string) {
         if (string != null) {
-            toolbar.setTitle(String.format("%s %s",
-                    jsonObject.get("spi_id").getAsString(),
-                    jsonObject.get("pipe").getAsString()));
+            toolbar.setTitle(String.format(getString(R.string.app_title_alt),
+                    jsonObject.get("pipe").getAsString(), ""));
+        }
+    }
+
+    private void setSpiIdInfo() {
+        TextView id = findViewById(R.id.txt_id);
+        try {
+            String idInt = jsonObject.get("spi_id").getAsString();
+            id.setText(fromHtml(getString(R.string.nfc_info_id, idInt)));
+        } catch (RuntimeException e) {
+            id.setVisibility(GONE);
         }
     }
 

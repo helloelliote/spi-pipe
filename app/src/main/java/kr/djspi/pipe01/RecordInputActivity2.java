@@ -3,7 +3,6 @@ package kr.djspi.pipe01;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.v4.app.FragmentManager;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
@@ -26,7 +25,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.dto.Pipe;
@@ -69,32 +67,35 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
     public static FragmentManager fragmentManager;
     public static ArrayList<String> superviseList;
-    private static HashMap<?, ?> itemMap;
+    private static Spi spi;
     private static SpiType spiType;
+    private static SpiMemo spiMemo;
     private static final Pipe pipe = new Pipe();
     private static final PipeType pipeType = new PipeType();
     private static final PipeShape pipeShape = new PipeShape();
     private static final PipePosition pipePosition = new PipePosition();
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
+    private TextView tHeader, tUnit;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    static final SpiLocation spiLocation = new SpiLocation();
+    static SpiLocation spiLocation;
     static FormEditText fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
             fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact;
-    TextView tHeader, tUnit;
-    MaterialButton buttonConfirm;
     static File mPhoto;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
-        Serializable serializable = getIntent().getSerializableExtra("PipeRecordActivity");
+        Serializable serializable = getIntent().getSerializableExtra("PipeRecordActivity2");
         if (serializable instanceof HashMap) {
-            itemMap = (HashMap) serializable;
-            spiType = (SpiType) Objects.requireNonNull(itemMap.get("spiType"));
+            HashMap<?, ?> itemMap = (HashMap) serializable;
+            spi = (Spi) itemMap.get("Spi");
+            spiType = (SpiType) itemMap.get("SpiType");
+            spiLocation = (SpiLocation) itemMap.get("SpiLocation");
+            spiMemo = (SpiMemo) itemMap.get("SpiMemo");
         }
         setContentView(R.layout.activity_record_input_2);
         superviseList = getSuperviseList();
@@ -154,8 +155,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         fConstructionContact = findViewById(R.id.form_construction_contact);
         fConstructionContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
-        buttonConfirm = findViewById(R.id.button_confirm);
-        buttonConfirm.setOnClickListener(new OnNextButtonClick());
+        findViewById(R.id.button_confirm).setOnClickListener(new OnNextButtonClick());
     }
 
     @Override
@@ -172,8 +172,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
             jsonQuery.addProperty("json", "");
             Retrofit2x.builder()
                     .setService(new SuperviseGet(URL_TEST))
-                    .setQuery(jsonQuery)
-                    .build()
+                    .setQuery(jsonQuery).build()
                     .run(new OnRetrofitListener() {
                         @Override
                         public void onResponse(JsonObject response) {
@@ -359,11 +358,10 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 //                    onPhotoInput.getGallery(data.getData());
                     break;
                 case REQUEST_CODE_MAP:
-                    double[] spiLocationArray = data.getDoubleArrayExtra("SpiLocation");
-                    spiLocation.setLatitude(spiLocationArray[0]);
-                    spiLocation.setLongitude(spiLocationArray[1]);
+                    double[] locations = data.getDoubleArrayExtra("locations");
+                    spiLocation.setLatitude(locations[0]);
+                    spiLocation.setLongitude(locations[1]);
                     spiLocation.setCount(0);
-                    buttonConfirm.setText(getString(R.string.record_confirm));
                     break;
                 default:
                     break;
@@ -379,7 +377,6 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
     @Override
     public void onPause() {
-        spiLocation.setCount(-1);
         super.onPause();
     }
 
@@ -387,7 +384,8 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
         @Override
         public void onClick(View v) {
-            if (spiLocation.getCount() != 1) { // 아직 위치 정보가 기록되지 않음
+            if (spiLocation == null) { // 아직 위치 정보가 기록되지 않음
+                spiLocation = new SpiLocation();
                 startActivityForResult(new Intent(context, SpiLocationActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_CODE_MAP);
             } else if (isAllValid()) try {
@@ -417,10 +415,10 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     @NotNull
     @Contract(" -> new")
     private static Entry setEntry() throws Exception {
-        Spi spi = (Spi) itemMap.get("spi");
-        final int spiId = Objects.requireNonNull(spi).getId();
-        SpiMemo spiMemo = new SpiMemo(fMemo.getText().toString());
+        final int spiId = spi.getId();
+        if (spiMemo == null) spiMemo = new SpiMemo();
         spiMemo.setSpi_id(spiId);
+        spiMemo.setMemo(fMemo.getText().toString());
         spiLocation.setSpi_id(spiId);
         pipe.setSpi_id(spiId);
         pipe.setDepth(Double.valueOf(fDepth.getText().toString()));

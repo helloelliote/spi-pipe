@@ -25,6 +25,7 @@ import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.RecordInputActivity2.pipes;
+import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
 
 /**
  * 관로종류 목록과 관리기관 목록을 보여주는데 공용으로 사용하는 Dialog 클래스
@@ -104,6 +105,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         switch (v.getId()) {
             case R.id.btn_ok:
                 listener.onSelect(listTag, selectIndex, null);
+                if (listTag.equals(TAG_SHAPE)) showPositionDialog();
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:

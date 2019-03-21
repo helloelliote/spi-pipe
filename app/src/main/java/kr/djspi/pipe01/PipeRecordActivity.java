@@ -70,7 +70,6 @@
 //        super.setContentView(layoutResID);
 //        setToolbarTitle(((SpiType) hashMap.get("spi_type")).getType());
 //        setPipeCardView();
-//        // TODO: 2019-03-04 ConfirmButton 기능 추가
 //    }
 //
 //    private void setPipeCardView() {
@@ -207,7 +206,6 @@
 //        }
 //
 //        private void deletePhoto() {
-//            // TODO: 2018-11-19 mTxtInputPhoto 다시 힌트메시지와 함께 나타나게 하기
 ////            SPIDataItem item = new SPIDataItem();
 ////            item.setVal("");
 ////            spiData.setItem(KEY_PHOTO.getKey(), item);
@@ -217,7 +215,6 @@
 //        }
 //
 //        private void showPhoto() {
-//            // TODO: 이미지 선택시 전체화면으로 보여주기 구현
 ////        mParentView.showPopup(new p_Common_Photo(mActivity, mParentView), mPhoto, new onPopupActionListener() {
 ////            @Override
 ////            public void onPopupAction(int action, Object ret) {

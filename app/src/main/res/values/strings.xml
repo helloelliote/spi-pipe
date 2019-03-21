@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SPI</string>
+    <string name="app_name">SPI 매설관로</string>
 
     <!--BaseActivity-->
     <string name="app_title_alt">SPI %1$s %2$s</string>
@@ -126,7 +126,7 @@
     <string name="nfc_info_construction"><![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
     <string name="nfc_info_construction_contact"><![CDATA[(<font color="#0077C8"><a href="tel:%1$s">%1$s</a></font>)]]></string>
     <string name="nfc_info_serial"><![CDATA[SPI 시리얼번호는 <font color="#0077C8">%1$s</font>입니다.]]></string>
-    <string name="nfc_info_id"><![CDATA[SPI 아이디는 <font color="#0077C8">%1$s</font>입니다.]]></string>
+    <string name="nfc_info_id"><![CDATA[SPI 아이디는 <font color="#0077C8">%1$s</font> 입니다.]]></string>
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
     <string name="common_load_image_fail">이미지를 불러오지 못하였습니다.</string>
 

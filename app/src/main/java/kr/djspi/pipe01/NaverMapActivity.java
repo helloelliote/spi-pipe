@@ -200,9 +200,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             public CharSequence getText(@NonNull InfoWindow infoWindow) {
                 if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
                     JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
-                    String pipe = jsonObject.get("spi_id").getAsString();
-                    String desc = jsonObject.get("pipe").getAsString();
-                    return String.format("%s %s", pipe, desc);
+                    String pipe = jsonObject.get("pipe").getAsString();
+                    String id = jsonObject.get("spi_id").getAsString();
+                    return String.format("%s (%s)", pipe, id);
                 }
                 return "ERROR";
             }
@@ -259,31 +259,26 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         // TODO: 2019-03-13 로딩 진행상황 표시해주기
         Retrofit2x.builder()
                 .setService(new SpiGet(URL_TEST, API_PIPE_GET))
-                .setQuery(jsonQuery)
-                .build()
+                .setQuery(jsonQuery).build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        try {
-                            if (response == null) return;
-                            if (response.get("total_count").getAsInt() == 0) {
-                                behavior.setState(STATE_COLLAPSED);
-                                showMessageDialog(0, "표시할 SPI 정보가 없습니다");
-                            } else {
-                                JsonArray elements = response.get("data").getAsJsonArray();
-                                for (JsonElement element : elements) {
-                                    JsonObject jsonObject = element.getAsJsonObject();
-                                    setMarker(jsonObject);
-                                }
+                        if (response == null) return;
+                        if (response.get("total_count").getAsInt() == 0) {
+                            behavior.setState(STATE_COLLAPSED);
+                            showMessageDialog(0, "표시할 SPI 정보가 없습니다");
+                        } else {
+                            JsonArray elements = response.get("data").getAsJsonArray();
+                            for (JsonElement element : elements) {
+                                JsonObject jsonObject = element.getAsJsonObject();
+                                setMarker(jsonObject);
                             }
-                        } catch (Exception e) {
-                            onFailure(e);
                         }
                     }
 
                     @Override
                     public void onFailure(@NotNull Throwable throwable) {
-                        showMessageDialog(6, throwable.getMessage());
+                        showMessageDialog(7, throwable.getMessage());
                     }
 
                     private void setMarker(@NotNull JsonObject jsonObject) {

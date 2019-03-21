@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,8 +42,9 @@ public class BaseActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
     Context context;
-    Toolbar toolbar;
     NfcUtil nfcUtil;
+    ProgressBar progressBar;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +68,8 @@ public class BaseActivity extends AppCompatActivity {
 
         if (useNavigationView()) setNavigationView(view, true);
         else setNavigationView(view, false);
+
+        progressBar = findViewById(R.id.progressbar);
     }
 
     /**
@@ -148,7 +152,6 @@ public class BaseActivity extends AppCompatActivity {
             dialog.setArguments(bundle);
             dialog.show(getSupportFragmentManager(), tag);
         } catch (IllegalStateException ignore) {
-            // FIXME: 2019-03-11 서버 통신 결과가 ui 갱신 이후에 나타나면 팝업창 예외가 발생
         }
     }
 

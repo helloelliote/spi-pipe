@@ -24,9 +24,7 @@
 //    ExtendedEditText construction;
 //    ExtendedEditText construction_contact;
 //    ExtendedEditText spi_photo;
-//
-//    // TODO: 2019-02-23 관로특성: 관로 종류에 따라 prefix suffix hint 조정
-//
+////
 //    PipeCardViewHolder(@NonNull View itemView) {
 //        super(itemView);
 //        pipe = itemView.findViewById(R.id.pipe);
