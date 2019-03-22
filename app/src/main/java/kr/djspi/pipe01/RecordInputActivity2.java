@@ -17,6 +17,9 @@ import com.andreabaccega.widget.FormEditText;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.helloelliote.retrofit.Retrofit2x;
+import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.retrofit.SuperviseGet;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +44,6 @@ import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
 import kr.djspi.pipe01.fragment.PositionDialog;
-import kr.djspi.pipe01.retrofit2x.Retrofit2x;
-import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
-import kr.djspi.pipe01.retrofit2x.SuperviseGet;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_CLASS_TEXT;
@@ -169,7 +169,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         if (superviseList == null) {
             superviseList = new ArrayList<>();
             JsonObject jsonQuery = new JsonObject();
-            jsonQuery.addProperty("json", "");
+            jsonQuery.addProperty("com/helloelliote/json", "");
             Retrofit2x.builder()
                     .setService(new SuperviseGet(URL_TEST))
                     .setQuery(jsonQuery).build()

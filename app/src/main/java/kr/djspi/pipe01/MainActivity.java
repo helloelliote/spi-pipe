@@ -4,11 +4,16 @@ import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.helloelliote.json.Json;
+import com.helloelliote.retrofit.Retrofit2x;
+import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.retrofit.SpiGet;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,17 +26,13 @@ import kr.djspi.pipe01.dto.SpiLocation;
 import kr.djspi.pipe01.dto.SpiMemo;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.nfc.NfcUtil;
-import kr.djspi.pipe01.retrofit2x.Retrofit2x;
-import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
-import kr.djspi.pipe01.retrofit2x.SpiGet;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static kr.djspi.pipe01.Const.ERROR_CODE_NONE;
+import static com.helloelliote.retrofit.ApiKey.API_PIPE_GET;
+import static com.helloelliote.retrofit.ApiKey.API_SPI_GET;
 import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
-import static kr.djspi.pipe01.retrofit2x.ApiKey.API_PIPE_GET;
-import static kr.djspi.pipe01.retrofit2x.ApiKey.API_SPI_GET;
 
 public class MainActivity extends LocationUpdate implements Serializable {
 
@@ -100,8 +101,8 @@ public class MainActivity extends LocationUpdate implements Serializable {
         ProcessTag(Intent intent) {
             progressBar.setVisibility(VISIBLE);
             Tag tag = NfcUtil.onNewTagIntent(intent);
-            this.serial = NfcUtil.bytesToHex(tag.getId());
-            this.jsonQuery.addProperty("spi_serial", serial);
+            serial = NfcUtil.bytesToHex(tag.getId());
+            jsonQuery.addProperty("spi_serial", serial);
             getServerData();
         }
 
@@ -112,8 +113,8 @@ public class MainActivity extends LocationUpdate implements Serializable {
                     .run(new OnRetrofitListener() {
                         @Override
                         public void onResponse(JsonObject response) {
-                            if (response.get("error_code").getAsInt() == ERROR_CODE_NONE
-                                    && response.get("total_count").getAsInt() >= 1) {
+                            Log.v(TAG, response.toString());
+                            if (Json.i(response, "total_count") >= 1) {
                                 processServerData(response);
                             } else {
                                 showMessageDialog(3, getString(R.string.popup_error_not_spi));
@@ -122,15 +123,16 @@ public class MainActivity extends LocationUpdate implements Serializable {
                         }
 
                         @Override
-                        public void onFailure(Throwable throwable) {
+                        public void onFailure(@NotNull Throwable throwable) {
                             showMessageDialog(7, throwable.getMessage());
+                            progressBar.setVisibility(GONE);
                         }
                     });
         }
 
         private void processServerData(@NotNull JsonObject response) {
-            JsonObject jsonObject = response.get("data").getAsJsonArray().get(0).getAsJsonObject();
-            if (jsonObject.get("pipe_count").getAsInt() == 0) {
+            JsonObject jsonObject = Json.o(response, "data");
+            if (Json.i(jsonObject, "pipe_count") == 0) {
                 startActivity(new Intent(context, RecordInputActivity2.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("PipeRecordActivity2", parseServerData(response)));
@@ -142,7 +144,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                         .run(new OnRetrofitListener() {
                             @Override
                             public void onResponse(JsonObject response) {
-                                JsonArray elements = response.get("data").getAsJsonArray();
+                                JsonArray elements = Json.a(response, "data");
                                 startActivity(new Intent(context, RecordViewActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                         .putExtra("RecordViewActivity", elements.get(0).toString()));
@@ -159,23 +161,22 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
         private HashMap<String, DataItem> parseServerData(@NotNull JsonObject response) {
             HashMap<String, DataItem> hashMap = new HashMap<>(4);
-            JsonArray dataArray = response.get("data").getAsJsonArray();
-            JsonObject dataObject = dataArray.get(0).getAsJsonObject();
+            JsonObject data = Json.o(response, "data");
             // Spi.class DTO
-            int spi_id = dataObject.get("spi_id").getAsInt();
-            int type_id = dataObject.get("spi_type_id").getAsInt();
+            int spi_id = Json.i(data, "spi_id");
+            int type_id = Json.i(data, "spi_type_id");
             Spi spi = new Spi(spi_id, serial, type_id);
             // SpiType.class DTO
-            String spi_type = dataObject.get("spi_type").getAsString();
+            String spi_type = Json.s(data, "spi_type");
             SpiType spiType = new SpiType(type_id, spi_type);
             // SpiLocation.class DTO
             SpiLocation spiLocation = new SpiLocation();
-            if (dataObject.get("spi_location_id").isJsonNull()) spiLocation = null;
+            if (Json.isNull(data, "spi_location_id")) spiLocation = null;
             else {
-                int location_id = dataObject.get("spi_location_id").getAsInt();
-                double latitude = dataObject.get("spi_latitude").getAsDouble();
-                double longitude = dataObject.get("spi_longitude").getAsDouble();
-                int count = dataObject.get("spi_count").getAsInt();
+                int location_id = Json.i(data, "spi_location_id");
+                double latitude = Json.d(data, "spi_latitude");
+                double longitude = Json.d(data, "spi_longitude");
+                int count = Json.i(data, "spi_count");
                 spiLocation.setId(location_id);
                 spiLocation.setSpi_id(spi_id);
                 spiLocation.setLatitude(latitude);
@@ -184,10 +185,10 @@ public class MainActivity extends LocationUpdate implements Serializable {
             }
             // SpiMemo.class DTO
             SpiMemo spiMemo = new SpiMemo();
-            if (dataObject.get("spi_memo_id").isJsonNull()) spiMemo = null;
+            if (Json.isNull(data, "spi_memo_id")) spiMemo = null;
             else {
-                int memo_id = dataObject.get("spi_memo_id").getAsInt();
-                String memo = dataObject.get("spi_memo").getAsString();
+                int memo_id = Json.i(data, "spi_memo_id");
+                String memo = Json.s(data, "spi_memo");
                 spiMemo.setId(memo_id);
                 spiMemo.setSpi_id(spi_id);
                 spiMemo.setMemo(memo);

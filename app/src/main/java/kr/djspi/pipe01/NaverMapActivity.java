@@ -24,6 +24,11 @@ import android.widget.TextView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.helloelliote.json.Json;
+import com.helloelliote.retrofit.Retrofit2x;
+import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.retrofit.SearchPlacesService;
+import com.helloelliote.retrofit.SpiGet;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
@@ -54,15 +59,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import kr.djspi.pipe01.retrofit2x.Retrofit2x;
-import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
-import kr.djspi.pipe01.retrofit2x.SearchPlacesService;
-import kr.djspi.pipe01.retrofit2x.SpiGet;
-
 import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.helloelliote.retrofit.ApiKey.API_PIPE_GET;
 import static com.naver.maps.map.LocationTrackingMode.Face;
 import static com.naver.maps.map.LocationTrackingMode.Follow;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
@@ -74,7 +75,6 @@ import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
-import static kr.djspi.pipe01.retrofit2x.ApiKey.API_PIPE_GET;
 
 public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
 
@@ -200,8 +200,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             public CharSequence getText(@NonNull InfoWindow infoWindow) {
                 if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
                     JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
-                    String pipe = jsonObject.get("pipe").getAsString();
-                    String id = jsonObject.get("spi_id").getAsString();
+                    String pipe = Json.s(jsonObject, "pipe");
+                    String id = Json.s(jsonObject, "spi_id");
                     return String.format("%s (%s)", pipe, id);
                 }
                 return "ERROR";
@@ -264,7 +264,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     @Override
                     public void onResponse(JsonObject response) {
                         if (response == null) return;
-                        if (response.get("total_count").getAsInt() == 0) {
+                        if (Json.i(response, "total_count") == 0) {
                             behavior.setState(STATE_COLLAPSED);
                             showMessageDialog(0, "표시할 SPI 정보가 없습니다");
                         } else {

@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.helloelliote.retrofit.Retrofit2x;
+import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.retrofit.SpiPost;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,9 +20,6 @@ import java.util.ArrayList;
 
 import kr.djspi.pipe01.Const.NfcRecordEnum;
 import kr.djspi.pipe01.nfc.NfcUtil;
-import kr.djspi.pipe01.retrofit2x.Retrofit2x;
-import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
-import kr.djspi.pipe01.retrofit2x.SpiPost;
 
 import static kr.djspi.pipe01.Const.URL_TEST;
 

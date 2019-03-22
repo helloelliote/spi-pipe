@@ -101,6 +101,7 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
         name.setVisibility(GONE);
         try {
             String constructionName = jsonObject.get("construction").getAsString();
+//            String constructionName = getInstance.s(jsonObject, "construction");
             String constructionContact = jsonObject.get("construction_contact").getAsString();
 
             if (constructionName.length() > 0 || constructionContact.length() > 0) {

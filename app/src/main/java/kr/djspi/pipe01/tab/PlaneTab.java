@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 
 import com.google.gson.JsonObject;
 
+import org.jetbrains.annotations.Contract;
+
 import kr.djspi.pipe01.R;
 
 import static android.view.View.VISIBLE;
@@ -24,6 +26,15 @@ public class PlaneTab extends Fragment {
     private static JsonObject jsonObject;
 
     public PlaneTab() {
+    }
+
+    private static class LazyHolder {
+        static final PlaneTab INSTANCE = new PlaneTab();
+    }
+
+    @Contract(pure = true)
+    public static PlaneTab getInstance() {
+        return LazyHolder.INSTANCE;
     }
 
     @Override

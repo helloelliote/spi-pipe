@@ -1,4 +1,4 @@
-package kr.djspi.pipe01.retrofit2x;
+package com.helloelliote.retrofit;
 
 import android.support.annotation.NonNull;
 
@@ -85,6 +85,7 @@ public final class RetrofitCore {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) listener.onResponse(response.body());
+                else onFailure(call, new Throwable(response.message()));
             }
 
             @Override

@@ -1,9 +1,9 @@
-package kr.djspi.pipe01.retrofit2x;
+package com.helloelliote.retrofit;
 
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 
-interface ServiceStrategy {
+public interface ServiceStrategy {
     Call<JsonObject> getServiceRequest();
 }

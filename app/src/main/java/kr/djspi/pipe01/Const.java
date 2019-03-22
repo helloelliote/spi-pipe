@@ -25,7 +25,7 @@ public final class Const {
     static final int REQUEST_CODE_PHOTO = 10001;
     static final int REQUEST_CODE_GALLERY = 10002;
 
-    static final int ERROR_CODE_NONE = -1;
+    static final int ERROR_NONE = -1;
 
     @SuppressWarnings("ALL")
     public enum NfcRecordEnum {

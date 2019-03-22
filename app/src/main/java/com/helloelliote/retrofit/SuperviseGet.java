@@ -1,10 +1,11 @@
-package kr.djspi.pipe01.retrofit2x;
+package com.helloelliote.retrofit;
 
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 
-import static kr.djspi.pipe01.retrofit2x.RetrofitCore.BUILDER;
+import static com.helloelliote.retrofit.ApiKey.API_SUPERVISE;
+import static com.helloelliote.retrofit.RetrofitCore.BUILDER;
 
 /**
  * 웹서비스를 클래스 형태로 추가하고, ServiceStrategy 인터페이스를 통해 참조시킨다
@@ -13,23 +14,20 @@ import static kr.djspi.pipe01.retrofit2x.RetrofitCore.BUILDER;
  * @see RetrofitCore#jsonQuery
  * @see RetrofitCore#setService(ServiceStrategy)
  */
-public final class SpiGet implements ServiceStrategy {
+public final class SuperviseGet implements ServiceStrategy {
 
     private static String url;
-    private static String api;
 
-    public SpiGet(String url, String api) {
-        SpiGet.url = url;
-        SpiGet.api = api;
+    public SuperviseGet(String url) {
+        SuperviseGet.url = url;
     }
 
     @Override
     public Call<JsonObject> getServiceRequest() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("request", api);
-        jsonObject.add("data", RetrofitCore.jsonQuery);
+        jsonObject.addProperty("request", API_SUPERVISE);
         final String query = jsonObject.toString();
         return BUILDER.baseUrl(url).build()
-                .create(RetrofitService.class).getSpi(query);
+                .create(RetrofitService.class).getSupervise(query);
     }
 }

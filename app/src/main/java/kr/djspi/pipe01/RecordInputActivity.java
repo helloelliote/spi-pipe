@@ -52,9 +52,9 @@
 //import kr.djspi.pipe01.fragment.ListDialog;
 //import kr.djspi.pipe01.fragment.OnSelectListener;
 //import kr.djspi.pipe01.fragment.PositionDialog;
-//import kr.djspi.pipe01.retrofit2x.Retrofit2x;
-//import kr.djspi.pipe01.retrofit2x.RetrofitCore.OnRetrofitListener;
-//import kr.djspi.pipe01.retrofit2x.SuperviseGet;
+//import retrofit2x.Retrofit2x;
+//import retrofit2x.RetrofitCore.OnRetrofitListener;
+//import retrofit2x.SuperviseGet;
 //import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 //import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 //
@@ -118,7 +118,7 @@
 //        Serializable serializable = getIntent().getSerializableExtra("PipeRecordActivity");
 //        if (serializable instanceof HashMap) {
 //            itemMap = (HashMap) serializable;
-//            spiType = (SpiType) Objects.requireNonNull(itemMap.get("spiType"));
+//            spiType = (SpiType) Objects.requireNonNull(itemMap.getInstance("spiType"));
 //        }
 ////        onPhotoInput = new OnPhotoInput();
 //        setContentView(R.layout.activity_record_input);
@@ -212,7 +212,7 @@
 //        if (superviseList == null) {
 //            superviseList = new ArrayList<>();
 //            JsonObject jsonQuery = new JsonObject();
-//            jsonQuery.addProperty("json", "");
+//            jsonQuery.addProperty("com.helloelliote.json", "");
 //            Retrofit2x.builder()
 //                    .setService(new SuperviseGet(URL_TEST))
 //                    .setQuery(jsonQuery)
@@ -220,9 +220,9 @@
 //                    .run(new OnRetrofitListener() {
 //                        @Override
 //                        public void onResponse(JsonObject response) {
-//                            final JsonArray jsonArray = response.get("data").getAsJsonArray();
+//                            final JsonArray jsonArray = response.getInstance("data").getAsJsonArray();
 //                            for (JsonElement element : jsonArray) {
-//                                superviseList.add(element.getAsJsonObject().get("supervise").getAsString());
+//                                superviseList.add(element.getAsJsonObject().getInstance("supervise").getAsString());
 //                            }
 //                        }
 //
@@ -237,14 +237,14 @@
 //
 //    @Override
 //    public void onClick(View v) {
-//        if (ListDialog.get().isAdded()) return;
+//        if (ListDialog.getInstance().isAdded()) return;
 //        switch (v.getId()) {
 //            case R.id.l_pipe:
-//                ListDialog.get().show(fragmentManager, TAG_PIPE);
+//                ListDialog.getInstance().show(fragmentManager, TAG_PIPE);
 //                break;
 //            case R.id.l_shape:
 //                pipeShape.setShape(null);
-//                ListDialog.get().show(fragmentManager, TAG_SHAPE);
+//                ListDialog.getInstance().show(fragmentManager, TAG_SHAPE);
 //                break;
 //            case R.id.l_supervise:
 //                if (superviseList.isEmpty()) {
@@ -253,7 +253,7 @@
 //                    eSupervise.setHint("직접 입력해주세요.");
 //                    return;
 //                }
-//                ListDialog.get().show(fragmentManager, TAG_SUPERVISE);
+//                ListDialog.getInstance().show(fragmentManager, TAG_SUPERVISE);
 //                break;
 //            case R.id.l_position:
 //                if (pipeShape.getShape() == null) {
@@ -261,7 +261,7 @@
 //                    ePosition.setText(null);
 //                    tPosition.setEndIcon(R.drawable.ic_shape);
 //                    tPosition.getEndIconImageButton()
-//                            .setOnClickListener(v1 -> ListDialog.get().show(fragmentManager, TAG_SHAPE));
+//                            .setOnClickListener(v1 -> ListDialog.getInstance().show(fragmentManager, TAG_SHAPE));
 //                    return;
 //                }
 //                showPositionDialog();
@@ -308,7 +308,7 @@
 //                tPosition.setEndIcon(null);
 //                break;
 //            case TAG_SUPERVISE:
-//                eSupervise.setText(superviseList.get(index));
+//                eSupervise.setText(superviseList.getInstance(index));
 //                pipeSupervise.setId(index + 1);
 //                pipe.setSupervise_id(index + 1);
 //                break;
@@ -623,7 +623,7 @@
 //    @NotNull
 //    @Contract(" -> new")
 //    private static Entry setEntry() throws Exception {
-//        Spi spi = (Spi) itemMap.get("spi");
+//        Spi spi = (Spi) itemMap.getInstance("spi");
 //        final int spiId = Objects.requireNonNull(spi).getId();
 //        SpiMemo spiMemo = new SpiMemo(eSpiMemo.getText().toString());
 //        spiLocation.setSpi_id(spiId);

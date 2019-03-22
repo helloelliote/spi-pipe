@@ -9,10 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+import com.helloelliote.json.Json;
+
+import org.jetbrains.annotations.Contract;
 
 import kr.djspi.pipe01.R;
 
@@ -22,9 +24,17 @@ public class InfoTab extends Fragment {
 
     private static final String TAG = InfoTab.class.getSimpleName();
     private static JsonObject jsonObject;
-    private ImageView imageView;
 
     public InfoTab() {
+    }
+
+    private static class LazyHolder {
+        static final InfoTab INSTANCE = new InfoTab();
+    }
+
+    @Contract(pure = true)
+    public static InfoTab getInstance() {
+        return LazyHolder.INSTANCE;
     }
 
     @Override
@@ -48,10 +58,14 @@ public class InfoTab extends Fragment {
 
         String hDirection;
         switch (jsonObject.get("position").getAsInt()) {
-            case 1: case 2: case 3:
+            case 1:
+            case 2:
+            case 3:
                 hDirection = String.format("차도 방향 %s m", jsonObject.get("vertical").getAsString());
                 break;
-            case 7: case 8: case 9:
+            case 7:
+            case 8:
+            case 9:
                 hDirection = String.format("보도 방향 %s m", jsonObject.get("vertical").getAsString());
                 break;
             default:
@@ -61,10 +75,14 @@ public class InfoTab extends Fragment {
 
         String vDirection;
         switch (jsonObject.get("position").getAsInt()) {
-            case 1: case 4: case 7:
+            case 1:
+            case 4:
+            case 7:
                 vDirection = String.format("좌측 %s m", jsonObject.get("horizontal").getAsString());
                 break;
-            case 3: case 6: case 9:
+            case 3:
+            case 6:
+            case 9:
                 vDirection = String.format("우측 %s m", jsonObject.get("horizontal").getAsString());
                 break;
             default:
@@ -73,11 +91,10 @@ public class InfoTab extends Fragment {
         }
 
         TextView txtContents = view.findViewById(R.id.txt_contents);
-        txtContents.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
 
         if (hDirection.equals("") && vDirection.equals("")) {
             txtContents.setText(fromHtml(getString(R.string.nfc_info_read_contents_alt,
-                    jsonObject.get("pipe").getAsString(),
+                    Json.s(jsonObject, "pipe"),
                     jsonObject.get("shape").getAsString(),
                     jsonObject.get("spec").getAsString(),
                     jsonObject.get("unit").getAsString(),

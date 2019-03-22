@@ -1,4 +1,4 @@
-package kr.djspi.pipe01.retrofit2x;
+package com.helloelliote.retrofit;
 
 import com.google.gson.JsonObject;
 
@@ -11,7 +11,7 @@ import retrofit2.http.Query;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_SECRET;
 
-interface RetrofitService {
+public interface RetrofitService {
 
     String NAVER_KEY_CLIENT_ID = "X-NCP-APIGW-API-KEY-ID";
     String NAVER_KEY_CLIENT_SECRET = "X-NCP-APIGW-API-KEY";
@@ -31,7 +31,7 @@ interface RetrofitService {
             @Query("json") String jsonString
     );
 
-    @Headers({"Content-Type: application/json", "Pragma: no-cache"})
+    @Headers("Content-Type: application/json")
     @GET("api")
     Call<JsonObject> getSupervise(
             @Query("json") String jsonString
