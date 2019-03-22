@@ -57,16 +57,16 @@ public class InfoTab extends Fragment {
         View view = inflater.inflate(R.layout.tab_info, container, false);
 
         String hDirection;
-        switch (jsonObject.get("position").getAsInt()) {
+        switch (Json.i(jsonObject, "position")) {
             case 1:
             case 2:
             case 3:
-                hDirection = String.format("차도 방향 %s m", jsonObject.get("vertical").getAsString());
+                hDirection = String.format("차도 방향 %s m", Json.s(jsonObject, "vertical"));
                 break;
             case 7:
             case 8:
             case 9:
-                hDirection = String.format("보도 방향 %s m", jsonObject.get("vertical").getAsString());
+                hDirection = String.format("보도 방향 %s m", Json.s(jsonObject, "vertical"));
                 break;
             default:
                 hDirection = "";
@@ -74,16 +74,16 @@ public class InfoTab extends Fragment {
         }
 
         String vDirection;
-        switch (jsonObject.get("position").getAsInt()) {
+        switch (Json.i(jsonObject, "position")) {
             case 1:
             case 4:
             case 7:
-                vDirection = String.format("좌측 %s m", jsonObject.get("horizontal").getAsString());
+                vDirection = String.format("좌측 %s m", Json.s(jsonObject, "horizontal"));
                 break;
             case 3:
             case 6:
             case 9:
-                vDirection = String.format("우측 %s m", jsonObject.get("horizontal").getAsString());
+                vDirection = String.format("우측 %s m", Json.s(jsonObject, "horizontal"));
                 break;
             default:
                 vDirection = "";
@@ -95,30 +95,30 @@ public class InfoTab extends Fragment {
         if (hDirection.equals("") && vDirection.equals("")) {
             txtContents.setText(fromHtml(getString(R.string.nfc_info_read_contents_alt,
                     Json.s(jsonObject, "pipe"),
-                    jsonObject.get("shape").getAsString(),
-                    jsonObject.get("spec").getAsString(),
-                    jsonObject.get("unit").getAsString(),
-                    jsonObject.get("material").getAsString(),
-                    jsonObject.get("spi_type").getAsString(),
-                    jsonObject.get("depth").getAsString()
+                    Json.s(jsonObject, "shape"),
+                    Json.s(jsonObject, "spec"),
+                    Json.s(jsonObject, "unit"),
+                    Json.s(jsonObject, "material"),
+                    Json.s(jsonObject, "spi_type"),
+                    Json.s(jsonObject, "depth")
             )));
         } else {
             txtContents.setText(fromHtml(getString(R.string.nfc_info_read_contents,
-                    jsonObject.get("pipe").getAsString(),
-                    jsonObject.get("shape").getAsString(),
-                    jsonObject.get("spec").getAsString(),
-                    jsonObject.get("unit").getAsString(),
-                    jsonObject.get("material").getAsString(),
+                    Json.s(jsonObject, "pipe"),
+                    Json.s(jsonObject, "shape"),
+                    Json.s(jsonObject, "spec"),
+                    Json.s(jsonObject, "unit"),
+                    Json.s(jsonObject, "material"),
                     hDirection,
                     vDirection,
-                    jsonObject.get("depth").getAsString()
+                    Json.s(jsonObject, "depth")
             )));
         }
 
-        if (jsonObject.get("spi_memo").getAsString() != null) {
+        if (!jsonObject.get("spi_memo").isJsonNull()) {
             TextView txtMemo = view.findViewById(R.id.txt_memo);
             txtMemo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-            txtMemo.setText(jsonObject.get("spi_memo").getAsString());
+            txtMemo.setText(Json.s(jsonObject, "spi_memo"));
         }
 
         return view;

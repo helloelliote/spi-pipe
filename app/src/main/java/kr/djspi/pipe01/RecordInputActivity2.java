@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import com.andreabaccega.widget.FormEditText;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.helloelliote.json.Json;
 import com.helloelliote.retrofit.Retrofit2x;
 import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.retrofit.SuperviseGet;
@@ -116,12 +118,10 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         fShape.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -176,9 +176,9 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                     .run(new OnRetrofitListener() {
                         @Override
                         public void onResponse(JsonObject response) {
-                            final JsonArray jsonArray = response.get("data").getAsJsonArray();
+                            final JsonArray jsonArray = Json.a(response, "data");
                             for (JsonElement element : jsonArray) {
-                                superviseList.add(element.getAsJsonObject().get("supervise").getAsString());
+                                superviseList.add(Json.s(element.getAsJsonObject(), "supervise"));
                             }
                         }
 
@@ -244,9 +244,9 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 pipeType.setId(index + 1);
                 pipe.setType_id(index + 1);
                 String header = pipes[index].getHeader();
-                tHeader.setText(header + "  ");
+                tHeader.setText(String.format("%s  ", header));
                 String unit = pipes[index].getUnit();
-                tUnit.setText("  " + unit);
+                tUnit.setText(String.format("  %s", unit));
                 fSpec.setInputType(index == 5 ? TYPE_CLASS_TEXT : TYPE_CLASS_NUMBER); // index == 5 : 통신관로
                 break;
             case TAG_SHAPE:
@@ -347,8 +347,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (mPhoto != null && mPhoto.isFile()) {
-                mPhoto.delete();
-                mPhoto = null;
+                if (mPhoto.delete()) mPhoto = null;
             }
             switch (requestCode) {
                 case REQUEST_CODE_PHOTO:
@@ -397,7 +396,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                         .putExtra("entry", entries));
             } catch (Exception e) {
                 showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.");
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
             }
         }
 

@@ -23,6 +23,10 @@ public final class Json {
         return jsonObject.get(obj).getAsJsonArray().get(0).getAsJsonObject();
     }
 
+    public static JsonObject o(@NotNull JsonObject jsonObject, String obj, int index) {
+        return jsonObject.get(obj).getAsJsonArray().get(index).getAsJsonObject();
+    }
+
     public static JsonArray a(@NotNull JsonObject jsonObject, String a) {
         return jsonObject.get(a).getAsJsonArray();
     }

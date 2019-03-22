@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.helloelliote.json.Json;
 
 import java.io.Serializable;
 
@@ -66,14 +67,14 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
     void setToolbarTitle(String string) {
         if (string != null) {
             toolbar.setTitle(String.format(getString(R.string.app_title_alt),
-                    jsonObject.get("pipe").getAsString(), ""));
+                    Json.s(jsonObject, "pipe"), ""));
         }
     }
 
     private void setSpiIdInfo() {
         TextView id = findViewById(R.id.txt_id);
         try {
-            String idInt = jsonObject.get("spi_id").getAsString();
+            String idInt = Json.s(jsonObject, "spi_id");
             id.setText(fromHtml(getString(R.string.nfc_info_id, idInt)));
         } catch (RuntimeException e) {
             id.setVisibility(GONE);
@@ -84,10 +85,10 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
         TextView name = findViewById(R.id.txt_company);
         TextView contact = findViewById(R.id.txt_contact);
         try {
-            String superviseName = jsonObject.get("supervise").getAsString();
+            String superviseName = Json.s(jsonObject, "supervise");
             name.setText(fromHtml(getString(R.string.nfc_info_company, superviseName)));
 
-            String superviseContact = jsonObject.get("supervise_contact").getAsString();
+            String superviseContact = Json.s(jsonObject, "supervise_contact");
             contact.setText(fromHtml(getString(R.string.nfc_info_company_contact, superviseContact)));
             contact.setOnClickListener(v -> startActivity(new Intent(ACTION_DIAL, parse("tel:" + superviseContact))));
         } catch (RuntimeException e) {
@@ -100,10 +101,8 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
         TextView name = findViewById(R.id.txt_construction);
         name.setVisibility(GONE);
         try {
-            String constructionName = jsonObject.get("construction").getAsString();
-//            String constructionName = getInstance.s(jsonObject, "construction");
-            String constructionContact = jsonObject.get("construction_contact").getAsString();
-
+            String constructionName = Json.s(jsonObject, "construction");
+            String constructionContact = Json.s(jsonObject, "construction_contact");
             if (constructionName.length() > 0 || constructionContact.length() > 0) {
                 name.setVisibility(VISIBLE);
                 name.setText(fromHtml(getString(R.string.nfc_info_construction, constructionName, constructionContact)));
@@ -119,7 +118,7 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
     private void setSerialInfo() {
         TextView serial = findViewById(R.id.txt_serial);
         try {
-            String spiId = jsonObject.get("spi_id").getAsString();
+            String spiId = Json.s(jsonObject, "spi_id");
             serial.setText(fromHtml(getString(R.string.nfc_info_id, spiId)));
         } catch (RuntimeException e) {
             serial.setVisibility(GONE);

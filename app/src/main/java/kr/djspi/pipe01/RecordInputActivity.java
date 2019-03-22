@@ -519,7 +519,6 @@
 //                sourcePhoto.recycle();
 //                editPhoto.recycle();
 //            } catch (IOException e) {
-//                e.printStackTrace();
 //            }
 //        }
 //
@@ -599,7 +598,6 @@
 //                        .putExtra("entry", entries));
 //            } catch (Exception e) {
 //                showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.");
-//                e.printStackTrace();
 //            }
 //        }
 //

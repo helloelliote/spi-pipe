@@ -31,6 +31,7 @@ import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 
 public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCallback, OnClickListener, Serializable {
 
+    // TODO: 2019-03-22 위치 지정 아이콘 교체 
     private static final double ZOOM_DEFAULT = 19.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 16.0; // 최소 줌레벨
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)

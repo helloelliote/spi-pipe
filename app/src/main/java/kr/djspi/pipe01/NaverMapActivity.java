@@ -11,6 +11,7 @@ import android.support.annotation.UiThread;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -236,7 +237,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 return true;
             };
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             infoWindow.close();
             return;
         }
@@ -268,8 +269,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                             behavior.setState(STATE_COLLAPSED);
                             showMessageDialog(0, "표시할 SPI 정보가 없습니다");
                         } else {
-                            JsonArray elements = response.get("data").getAsJsonArray();
-                            for (JsonElement element : elements) {
+                            JsonArray jsonArray = Json.a(response, "data");
+                            for (JsonElement element : jsonArray) {
                                 JsonObject jsonObject = element.getAsJsonObject();
                                 setMarker(jsonObject);
                             }
@@ -282,9 +283,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     }
 
                     private void setMarker(@NotNull JsonObject jsonObject) {
-                        double lat = jsonObject.get("spi_latitude").getAsDouble();
-                        double lng = jsonObject.get("spi_longitude").getAsDouble();
-                        int resId = parsePipeType(jsonObject.get("pipe").getAsString()).getDrawRes();
+                        double lat = Json.d(jsonObject, "spi_latitude");
+                        double lng = Json.d(jsonObject, "spi_longitude");
+                        int resId = parsePipeType(Json.s(jsonObject, "pipe")).getDrawRes();
                         Marker marker = new Marker(new LatLng(lat, lng), fromResource(resId));
                         marker.setTag(jsonObject);
                         marker.setMinZoom(14);
@@ -367,7 +368,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                         public void onResponse(JsonObject response) {
                             placesArrayList.clear();
                             behavior.setState(STATE_COLLAPSED);
-                            JsonArray places = response.getAsJsonArray("places");
+                            JsonArray places = Json.a(response, "places");
                             if (places == null || places.size() == 0) {
                                 showMessageDialog(0, getString(R.string.popup_error_noplace));
                                 return;
@@ -375,9 +376,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                             for (JsonElement place : places) {
                                 JsonObject object = (JsonObject) place;
                                 HashMap<String, String> hashMap = new HashMap<>();
-                                hashMap.put("name", object.get("name").getAsString());
-                                hashMap.put("x", object.get("x").getAsString());
-                                hashMap.put("y", object.get("y").getAsString());
+                                hashMap.put("name", Json.s(object, "name"));
+                                hashMap.put("x", Json.s(object, "x"));
+                                hashMap.put("y", Json.s(object, "y"));
                                 placesArrayList.add(hashMap);
                             }
                             placesListAdapter.notifyDataSetChanged();
@@ -385,8 +386,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            showMessageDialog(0, getString(R.string.popup_error_comm));
-                            throwable.printStackTrace();
+                            showMessageDialog(7, throwable.getMessage());
                         }
                     });
         }

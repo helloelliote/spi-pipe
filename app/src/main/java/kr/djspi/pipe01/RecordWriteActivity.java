@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.helloelliote.json.Json;
 import com.helloelliote.retrofit.Retrofit2x;
 import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.retrofit.SpiPost;
@@ -77,7 +78,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
                     public void onResponse(JsonObject response) {
                         if (response == null) return;
                         // TODO: 2019-03-19 통합형: 개별 등록 건수에 대해 응답 & 에러 처리 과정 개발, index 를 활용한다.
-                        if (response.get("error_count").getAsInt() == 0) {
+                        if (Json.i(response, "error_count") == 0) {
                             processTag(intent, response, 0);
                         } else processError(response, 0);
                     }
@@ -106,8 +107,8 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
                     }
 
                     private void processError(@NotNull JsonObject response, int index) {
-                        JsonObject jsonError = response.get("error_data").getAsJsonArray().get(index).getAsJsonObject();
-                        String error = String.format("Error Code: %s", jsonError.get("error_code").getAsString());
+                        JsonObject jsonError = Json.o(response, "error_data", index);
+                        String error = String.format("Error Code: %s", Json.s(jsonError, "error_code"));
                         showMessageDialog(6, error);
                     }
                 });

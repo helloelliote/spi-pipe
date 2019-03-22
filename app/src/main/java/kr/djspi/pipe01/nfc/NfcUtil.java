@@ -48,7 +48,7 @@ public final class NfcUtil {
     private static NfcAdapter nfcAdapter;
     private IntentFilter[] intentFilters;
     private NxpNfcLib nxpNfcLib;
-    public static INTag213215216 objNtag;
+    private static INTag213215216 objNtag;
     /**
      * 아래의 변수들은 반드시 final 선언해야만 하며, 그렇지 않을 경우 intent 들 간의 간섭이 발생하여
      * NFC 태그를 태깅하면 이전 액티비티 인텐트를 실행하기도 한다.
@@ -80,7 +80,7 @@ public final class NfcUtil {
             nxpNfcLib = NxpNfcLib.getInstance();
             nxpNfcLib.registerActivity(activity, NFC_LICENSE_KEY);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -96,7 +96,7 @@ public final class NfcUtil {
      * @return objNtag 인식된 NTAG 216 태그 객체
      */
     @Nullable
-    public INTag213215216 getTagType(final Intent intent) {
+    private INTag213215216 getTagType(final Intent intent) {
         try {
             if (nxpNfcLib.getCardType(intent) == NTag216) {
                 objNtag = NTagFactory.getInstance().getNTAG216(nxpNfcLib.getCustomModules());

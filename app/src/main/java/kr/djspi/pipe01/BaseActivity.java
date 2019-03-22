@@ -35,7 +35,8 @@ import static kr.djspi.pipe01.BuildConfig.VERSION_NAME;
 
 public class BaseActivity extends AppCompatActivity {
 
-    private static final String TAG = BaseActivity.class.getSimpleName();
+    // TODO: 2019-03-22 기본 CI 원래대로 교체
+    // TODO: 2019-03-22 통신이 끊어진 상태에서 앱으로 태깅했을 때 내부 데이터를 보여주는 모듈을 추가
     public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     public static Resources resources;
     public static String packageName;

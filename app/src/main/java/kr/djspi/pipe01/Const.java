@@ -1,7 +1,7 @@
 package kr.djspi.pipe01;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.helloelliote.json.Json;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -54,11 +54,10 @@ public final class Const {
         public static String[] parseToStringArray(@NotNull JsonObject jsonObject, int index) {
             final NfcRecordEnum[] values = NfcRecordEnum.values();
             final int length = NfcRecordEnum.values().length;
-            JsonArray jsonArray = jsonObject.get("data").getAsJsonArray();
-            JsonObject object = jsonArray.get(index).getAsJsonObject();
+            JsonObject object = Json.o(jsonObject, "data", index);
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < length; i++) {
-                builder.append(values[i].memberLabel).append(object.get(values[i].memberName).getAsString()).append(" ");
+                builder.append(values[i].memberLabel).append(Json.s(object, values[i].memberName)).append(" ");
             }
             String[] strings = new String[1];
             strings[0] = builder.toString();

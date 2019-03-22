@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.gson.JsonObject;
+import com.helloelliote.json.Json;
 
 import org.jetbrains.annotations.Contract;
 
@@ -56,7 +57,7 @@ public class PlaneTab extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_plane, container, false);
         try {
-            final String resId = jsonObject.get("file_plane").getAsString().replace(".png", "");
+            final String resId = Json.s(jsonObject, "file_plane").replace(".png", "");
             ImageView imageView = view.findViewById(R.id.planeImageView);
             imageView.setImageResource(getResources().getIdentifier(resId, "drawable", packageName));
         } catch (UnsupportedOperationException e) {
