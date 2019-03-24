@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
 public final class Const {
 
     static final String URL_SPI = "https://ispi.kr/";
-    static final String URL_TEST = "http://192.168.0.33/";
+//    static final String URL_TEST = "http://192.168.0.33/";
+    static final String URL_TEST = "http://djgis.iptime.org:8082/";
 
     public static final String TAG_PIPE = "pipe";
     public static final String TAG_SHAPE = "shape";
