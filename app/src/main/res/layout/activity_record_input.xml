@@ -90,7 +90,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:textAlignment="textEnd"
-                    app:prefix="@string/record_input_2_hor"
+                    app:prefix="@string/record_input_2_horizontal"
                     app:suffix="  m" />
             </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
@@ -111,7 +111,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:textAlignment="textEnd"
-                    app:prefix="@string/record_input_2_ver"
+                    app:prefix="@string/record_input_2_vertical"
                     app:suffix="  m" />
             </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
         </LinearLayout>

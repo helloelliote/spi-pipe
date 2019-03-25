@@ -16,7 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class RetrofitCore {
 
-    private static final String TAG = RetrofitCore.class.getSimpleName();
     private static final Gson gson = new GsonBuilder().setLenient().create();
     static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
     private static ServiceStrategy service;

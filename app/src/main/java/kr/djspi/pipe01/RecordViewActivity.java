@@ -115,16 +115,6 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
         }
     }
 
-    private void setSerialInfo() {
-        TextView serial = findViewById(R.id.txt_serial);
-        try {
-            String spiId = Json.s(jsonObject, "spi_id");
-            serial.setText(fromHtml(getString(R.string.nfc_info_id, spiId)));
-        } catch (RuntimeException e) {
-            serial.setVisibility(GONE);
-        }
-    }
-
     @Override
     public JsonObject getJsonObjectRecord() {
         return jsonObject;

@@ -153,6 +153,7 @@ public final class NfcUtil {
      * @param encodeInUtf8 UTF-8 인코딩으로 기록
      * @return ndefRecordWrappers 태그에 기록되는 레코드 Array
      */
+    @SuppressWarnings("SameParameterValue")
     private static NdefRecordWrapper[] createRecord(Locale locale, boolean encodeInUtf8, String[] records) {
         Charset utfEncoding;
         if (encodeInUtf8) {

@@ -4,7 +4,6 @@
     <!--BaseActivity-->
     <string name="app_title">SPI 지능형매설관로인식표지</string>
     <string name="app_title_alt">SPI %1$s %2$s</string>
-    <string name="app_exit_toast">뒤로가기 버튼을 한번 더 누르면 종료됩니다.</string>
     <string name="btn_find_spi">주변관로\n정보조회</string>
     <string name="nav_close">닫\u0020\u0020\u0020기</string>
     <string name="nav_flush_cache">캐시 초기화</string>
@@ -75,8 +74,6 @@
     <string name="popup_error_noplace">위치(주소) 검색결과가 없습니다.</string>
 
     <!--RecordInputActivity-->
-    <string name="record_input_2_hor">수평</string>
-    <string name="record_input_2_ver">수직</string>
     <string name="record_optional">선택입력 사항</string>
     <string name="record_optional_50">선택입력 사항 (50자 이하)</string>
     <string name="record_location">SPI 위치설정</string>
@@ -85,7 +82,35 @@
     <string name="record_error">필수입력 항목입니다.</string>
     <string name="popup_hint">터치하여 선택하세요.</string>
 
-    <!--Dialog-->
+    <string name="record_input_0">관로종류</string>
+    <string name="record_input_0_hint">매설관로의 종류 입력</string>
+    <string name="record_input_1">관로형태</string>
+    <string name="record_input_1_hint">매설관로의 형태 선택</string>
+    <string name="record_input_2">이격거리</string>
+    <string name="record_input_2_vertical">수직</string>
+    <string name="record_input_2_horizontal">수평</string>
+    <string name="record_input_2_hint">매설지점과의 이격거리</string>
+    <string name="record_input_2_edit">거리 입력 (m)</string>
+    <string name="record_input_3">매설심도</string>
+    <string name="record_input_3_hint">매설심도 입력</string>
+    <string name="record_input_4">관로스펙</string>
+    <string name="record_input_4_hint">관로관경/코어수 등 입력</string>
+    <string name="record_input_5">관로재질</string>
+    <string name="record_input_5_hint">관로재질 입력</string>
+    <string name="record_input_6">관리기관</string>
+    <string name="record_input_6_hint">관리기관명 입력</string>
+    <string name="record_input_7">전화번호</string>
+    <string name="record_input_7_hint">비상 연락처 입력</string>
+    <string name="record_input_8">메\u0020\u0020\u0020\u0020\u0020\u0020\u0020모</string>
+    <string name="record_input_8_hint">메모 입력(선택사항)</string>
+    <string name="record_input_9">시공업체</string>
+    <string name="record_input_9_hint">시공업체 입력(선택사항)</string>
+    <string name="record_input_10">시공업체\n연\u0020\u0020락\u0020\u0020처</string>
+    <string name="record_input_10_hint">시공업체 연락처 입력(선택사항)</string>
+    <string name="record_input_photo">현장사진</string>
+    <string name="record_input_photo_hint">사진 첨부(선택사항)</string>
+
+    <!--RecordInputActivity: Dialog-->
     <string name="popup_title_select_pipe">매설관로 종류선택</string>
     <string name="popup_title_select_shape">매설관로 형태선택</string>
     <string name="popup_title_select_position">매설관로 위치선택</string>
@@ -131,34 +156,4 @@
     <string name="nfc_info_id"><![CDATA[SPI 아이디는 <font color="#0077C8">%1$s</font> 입니다.]]></string>
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
     <string name="common_load_image_fail">이미지를 불러오지 못하였습니다.</string>
-
-    <!--NfcRecordInput-->
-    <string name="record_input_0">관로종류</string>
-    <string name="record_input_0_hint">매설관로의 종류 입력</string>
-    <string name="record_input_1">관로형태</string>
-    <string name="record_input_1_hint">매설관로의 형태 선택</string>
-    <string name="record_input_2">이격거리</string>
-    <string name="record_input_2_vertical">수직</string>
-    <string name="record_input_2_horizontal">수평</string>
-    <string name="record_input_2_hint">매설지점과의 이격거리</string>
-    <string name="record_input_3">매설심도</string>
-    <string name="record_input_3_hint">매설심도 입력</string>
-    <string name="record_input_4">관로스펙</string>
-    <string name="record_input_4_hint">관로관경/코어수 등 입력</string>
-    <string name="record_input_5">관로재질</string>
-    <string name="record_input_5_hint">관로재질 입력</string>
-    <string name="record_input_6">관리기관</string>
-    <string name="record_input_6_hint">관리기관명 입력</string>
-    <string name="record_input_7">전화번호</string>
-    <string name="record_input_7_hint">비상 연락처 입력</string>
-    <string name="record_input_8">메\u0020\u0020\u0020\u0020\u0020\u0020\u0020모</string>
-    <string name="record_input_8_hint">메모 입력(선택사항)</string>
-    <string name="record_input_photo">현장사진</string>
-    <string name="record_input_photo_hint">사진 첨부(선택사항)</string>
-    <string name="record_input_9">시공업체</string>
-    <string name="record_input_9_hint">시공업체 입력(선택사항)</string>
-    <string name="record_input_10">시공업체\n연\u0020\u0020락\u0020\u0020처</string>
-    <string name="record_input_10_hint">시공업체 연락처 입력(선택사항)</string>
-    <string name="record_input_2_edit">거리 입력 (m)</string>
-
 </resources>

@@ -64,7 +64,7 @@ public class BaseActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         if (useToolbar()) setSupportActionBar(toolbar);
-        else findViewById(R.id.appbar).setVisibility(GONE);
+        else toolbar.setVisibility(GONE);
         setNavigationView(view);
         progressBar = findViewById(R.id.progressbar);
     }

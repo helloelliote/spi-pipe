@@ -321,7 +321,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         SetTopSheet(NaverMap naverMap) {
             ListView listView = findViewById(R.id.nmap_listview);
-            placesListAdapter = new ListViewAdapter(context, placesArrayList, naverMap);
+            placesListAdapter = new ListViewAdapter(context, naverMap);
             listView.setAdapter(placesListAdapter);
 
             setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
@@ -390,10 +390,10 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             private final LayoutInflater inflater;
             private final NaverMap naverMap;
 
-            ListViewAdapter(Context context, ArrayList<HashMap<String, String>> placesList, NaverMap naverMap) {
-                this.placesList = placesList;
-                inflater = LayoutInflater.from(context);
+            ListViewAdapter(Context context, NaverMap naverMap) {
+                this.placesList = NaverMapActivity.placesArrayList;
                 this.naverMap = naverMap;
+                this.inflater = LayoutInflater.from(context);
             }
 
             class ItemHolder {

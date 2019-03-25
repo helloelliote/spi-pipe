@@ -70,7 +70,7 @@
                     android:id="@+id/horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/record_input_2_hor"
+                    android:hint="@string/record_input_2_horizontal"
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     app:suffix="m" />
@@ -90,7 +90,7 @@
                     android:id="@+id/vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/record_input_2_ver"
+                    android:hint="@string/record_input_2_vertical"
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     app:suffix="m" />

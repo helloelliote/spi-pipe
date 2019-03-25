@@ -5,6 +5,7 @@
     android:id="@+id/content_record_input"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     android:orientation="vertical"
     android:scrollbarDefaultDelayBeforeFade="3000"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -317,90 +318,12 @@
             android:layout_height="0.4dp"
             android:background="@color/line_d" />
 
-        <!--<LinearLayout-->
-        <!--android:id="@+id/lay_input_photo"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/txt_input_name"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_weight="1.25"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:text="@string/record_input_photo"-->
-        <!--android:textColor="@android:color/black" />-->
-
-        <!--<com.ab.widget.FormEditText-->
-        <!--android:id="@+id/etxt_input_name"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_weight="3"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:focusable="false"-->
-        <!--android:paddingStart="10dp"-->
-        <!--android:text="@string/record_input_photo_hint"-->
-        <!--android:textColor="@color/colorPrimary" />-->
-
-        <!--<TextView-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_weight="0.0"-->
-        <!--android:gravity="center" />-->
-        <!--</LinearLayout>-->
-
-        <!--<LinearLayout-->
-        <!--android:id="@+id/lay_photo"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--<ImageView-->
-        <!--android:id="@+id/img_photo"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_weight="0.75"-->
-        <!--android:gravity="center_vertical" />-->
-
-        <!--<com.ab.widget.FormEditText-->
-        <!--android:id="@+id/txt_photo"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_weight="3"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:paddingStart="10dp"-->
-        <!--android:textColor="@color/colorPrimary"-->
-        <!--app:emptyAllowed="true" />-->
-
-        <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
-        <!--&lt;!&ndash;android:id="@+id/lay_edit"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_weight="1.25"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:background="@android:color/transparent"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:orientation="horizontal">&ndash;&gt;-->
-
-        <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
-        <!--&lt;!&ndash;android:id="@+id/img_edit"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_width="38dp"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_height="38dp"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:src="@drawable/btn_modify" />&ndash;&gt;-->
-
-        <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
-        <!--&lt;!&ndash;android:id="@+id/img_del"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_width="38dp"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_height="38dp"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:src="@drawable/btn_remove" />&ndash;&gt;-->
-        <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
-        <!--</LinearLayout>-->
-
         <android.support.design.button.MaterialButton
             android:id="@+id/button_confirm"
             style="@style/Spi.Button"
-            android:layout_width="match_parent"
+            android:layout_width="194dp"
             android:layout_height="60dp"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:gravity="center"
             android:text="@string/record_confirm" />

@@ -34,13 +34,6 @@
             android:textColor="@color/blue_bright"
             android:textSize="19sp" />
 
-        <!--<LinearLayout-->
-        <!--android:id="@+id/lay_photo"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_margin="20dp"-->
-        <!--android:minHeight="200dp">-->
-
         <ImageView
             android:id="@+id/img_photo"
             android:layout_width="match_parent"

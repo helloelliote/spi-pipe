@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     android:orientation="vertical"
     tools:context=".NaverMapActivity"
     tools:ignore="ContentDescription">
@@ -39,6 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:elevation="4dp"
         android:orientation="vertical"
         android:paddingBottom="7.5dp"
         app:behavior_hideable="false"
@@ -76,75 +78,39 @@
 
                 <TextView
                     android:id="@+id/txt_pipe_00"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_01"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_00"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_00" />
 
                 <TextView
                     android:id="@+id/txt_pipe_01"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_02"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_01"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_01" />
 
                 <TextView
                     android:id="@+id/txt_pipe_02"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_03"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_02"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_02" />
 
                 <TextView
                     android:id="@+id/txt_pipe_03"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_04"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_03"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_03" />
 
                 <TextView
                     android:id="@+id/txt_pipe_04"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_05"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_04"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_04" />
 
                 <TextView
                     android:id="@+id/txt_pipe_05"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_06"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_05"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_05" />
             </TableRow>
 
             <TableRow
@@ -154,86 +120,40 @@
 
                 <TextView
                     android:id="@+id/txt_pipe_06"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_07"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_06"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_06" />
 
                 <TextView
                     android:id="@+id/txt_pipe_07"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_08"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_07"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_07" />
 
                 <TextView
                     android:id="@+id/txt_pipe_08"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_09"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_08"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_08" />
 
                 <TextView
                     android:id="@+id/txt_pipe_09"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_10"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_09"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_09" />
 
                 <TextView
                     android:id="@+id/txt_pipe_10"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_11"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_10"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_10" />
 
                 <TextView
                     android:id="@+id/txt_pipe_11"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_12"
-                    android:drawablePadding="2dp"
-                    android:gravity="center"
-                    android:text="@string/pipe_name_11"
-                    android:textColor="@android:color/black"
-                    android:textSize="11sp" />
+                    android:text="@string/pipe_name_11" />
             </TableRow>
         </LinearLayout>
     </LinearLayout>
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/nmap_fab"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginStart="16dp"-->
-    <!--android:layout_marginEnd="16dp"-->
-    <!--app:backgroundTint="@color/colorControlActivated"-->
-    <!--app:layout_anchor="@+id/nmap_bottom_sheet"-->
-    <!--app:layout_anchorGravity="top|right" />-->
 </android.support.design.widget.CoordinatorLayout>
