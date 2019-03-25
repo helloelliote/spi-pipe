@@ -62,7 +62,7 @@ import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
 import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
 import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
-import static kr.djspi.pipe01.Const.URL_TEST;
+import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class RecordInputActivity2 extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
@@ -180,7 +180,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
             JsonObject jsonQuery = new JsonObject();
             jsonQuery.addProperty("com/helloelliote/json", "");
             Retrofit2x.builder()
-                    .setService(new SuperviseGet(URL_TEST))
+                    .setService(new SuperviseGet(URL_SPI))
                     .setQuery(jsonQuery).build()
                     .run(new OnRetrofitListener() {
                         @Override

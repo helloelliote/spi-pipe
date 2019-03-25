@@ -30,7 +30,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.helloelliote.retrofit.ApiKey.API_PIPE_GET;
 import static com.helloelliote.retrofit.ApiKey.API_SPI_GET;
-import static kr.djspi.pipe01.Const.URL_TEST;
+import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 
 public class MainActivity extends LocationUpdate implements Serializable {
@@ -107,7 +107,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
         private void getServerData() {
             Retrofit2x.builder()
-                    .setService(new SpiGet(URL_TEST, API_SPI_GET))
+                    .setService(new SpiGet(URL_SPI, API_SPI_GET))
                     .setQuery(jsonQuery).build()
                     .run(new OnRetrofitListener() {
                         @Override
@@ -137,7 +137,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                 progressBar.setVisibility(GONE);
             } else {
                 Retrofit2x.builder()
-                        .setService(new SpiGet(URL_TEST, API_PIPE_GET))
+                        .setService(new SpiGet(URL_SPI, API_PIPE_GET))
                         .setQuery(jsonQuery).build()
                         .run(new OnRetrofitListener() {
                             @Override

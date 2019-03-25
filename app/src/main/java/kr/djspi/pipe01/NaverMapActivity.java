@@ -74,7 +74,7 @@ import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
-import static kr.djspi.pipe01.Const.URL_TEST;
+import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
 
 public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallback, Serializable {
@@ -253,7 +253,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         jsonQuery.addProperty("ny", String.valueOf(bounds.getNorthLatitude()));
 
         Retrofit2x.builder()
-                .setService(new SpiGet(URL_TEST, API_PIPE_GET))
+                .setService(new SpiGet(URL_SPI, API_PIPE_GET))
                 .setQuery(jsonQuery).build()
                 .run(new OnRetrofitListener() {
                     @Override

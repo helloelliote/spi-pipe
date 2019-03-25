@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import kr.djspi.pipe01.Const.NfcRecordEnum;
 import kr.djspi.pipe01.nfc.NfcUtil;
 
-import static kr.djspi.pipe01.Const.URL_TEST;
+import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class RecordWriteActivity extends BaseActivity implements Serializable {
 
@@ -67,7 +67,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
 
     private void setSpiAndPipe(Intent intent) {
         Retrofit2x.builder()
-                .setService(new SpiPost(URL_TEST))
+                .setService(new SpiPost(URL_SPI))
                 .setQuery(new Gson().toJson(entries))
                 .build()
                 .run(new OnRetrofitListener() {
