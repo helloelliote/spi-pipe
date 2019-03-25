@@ -76,21 +76,22 @@ public final class RetrofitCore {
      *
      * @param listener Response (또는 예외 Throwable) 리스너
      * @see OnRetrofitListener
-     * @see ServiceStrategy#getServiceRequest 사용자가 지정한 네트워크 서비스에 맞추어 Request 를 생성
+     * @see ServiceStrategy#getServiceCall 사용자가 지정한 네트워크 서비스에 맞추어 Request 를 생성
      */
     public final void run(OnRetrofitListener listener) {
-        final Call<JsonObject> request = service.getServiceRequest();
-        if (request != null) request.enqueue(new Callback<JsonObject>() {
-
+        final Call<JsonObject> call = service.getServiceCall();
+        call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) listener.onResponse(response.body());
                 else onFailure(call, new Throwable(response.message()));
+                call.cancel();
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 listener.onFailure(t);
+                call.cancel();
             }
         });
     }

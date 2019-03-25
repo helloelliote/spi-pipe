@@ -23,7 +23,7 @@ public final class SuperviseGet implements ServiceStrategy {
     }
 
     @Override
-    public Call<JsonObject> getServiceRequest() {
+    public Call<JsonObject> getServiceCall() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("request", API_SUPERVISE);
         final String query = jsonObject.toString();

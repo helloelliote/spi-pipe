@@ -44,8 +44,8 @@
             android:layout_margin="16dp"
             android:gravity="center"
             android:text="@string/popup_error_select_position"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="13.33sp" />
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
 
         <FrameLayout
             android:layout_width="wrap_content"

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -113,7 +112,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
                     .run(new OnRetrofitListener() {
                         @Override
                         public void onResponse(JsonObject response) {
-                            Log.v(TAG, response.toString());
                             if (Json.i(response, "total_count") >= 1) {
                                 processServerData(response);
                             } else {

@@ -31,7 +31,6 @@ import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 
 public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCallback, OnClickListener, Serializable {
 
-    // TODO: 2019-03-22 위치 지정 아이콘 교체 
     private static final double ZOOM_DEFAULT = 19.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 16.0; // 최소 줌레벨
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
@@ -59,12 +58,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
         findViewById(R.id.btn_reload).setOnClickListener(this);
         findViewById(R.id.btn_confirm).setOnClickListener(this);
-        setToolbarTitle("SPI 위치설정");
-    }
-
-    @Override
-    boolean useNavigationView() {
-        return false;
+        setToolbarTitle(getString(R.string.record_location_title));
     }
 
     @Override

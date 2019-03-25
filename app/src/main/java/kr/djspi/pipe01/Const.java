@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Const {
 
-    static final String URL_SPI = "https://ispi.kr/";
-//    static final String URL_TEST = "http://192.168.0.33/";
+    static final String URL_SPI = "https://35.187.193.145/";
+    //    static final String URL_TEST = "http://192.168.0.33/";
     static final String URL_TEST = "http://djgis.iptime.org:8082/";
 
     public static final String TAG_PIPE = "pipe";
@@ -25,8 +25,6 @@ public final class Const {
     static final int REQUEST_CODE_MAP = 30001;
     static final int REQUEST_CODE_PHOTO = 10001;
     static final int REQUEST_CODE_GALLERY = 10002;
-
-    static final int ERROR_NONE = -1;
 
     @SuppressWarnings("ALL")
     public enum NfcRecordEnum {
@@ -51,7 +49,6 @@ public final class Const {
             this.memberLabel = memberLabel;
         }
 
-        // TODO: 2019-03-19 통합형: 순차적 기록 루틴 개발
         public static String[] parseToStringArray(@NotNull JsonObject jsonObject, int index) {
             final NfcRecordEnum[] values = NfcRecordEnum.values();
             final int length = NfcRecordEnum.values().length;

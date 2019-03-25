@@ -24,7 +24,7 @@ public final class SpiGet implements ServiceStrategy {
     }
 
     @Override
-    public Call<JsonObject> getServiceRequest() {
+    public Call<JsonObject> getServiceCall() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("request", api);
         jsonObject.add("data", RetrofitCore.jsonQuery);

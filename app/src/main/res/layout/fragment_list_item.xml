@@ -42,9 +42,8 @@
         android:layout_weight="1"
         android:duplicateParentState="true"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textColor="@color/colorFontDark"
+        android:textSize="18sp" />
     <!--
         The duplicateParentState attribute on this ImageView, along with the state list
         drawable in the src attribute causes its image to change when its parent

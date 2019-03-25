@@ -1,6 +1,7 @@
 package kr.djspi.pipe01;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -155,6 +156,13 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         fConstructionContact = findViewById(R.id.form_construction_contact);
         fConstructionContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
+        final FormEditText[] allFields
+                = {fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
+                fSupervise, fSuperviseContact, fMemo, fConstructionContact, fConstructionContact};
+        for (FormEditText field : allFields) {
+            field.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundb.ttf"));
+        }
+
         findViewById(R.id.button_confirm).setOnClickListener(new OnNextButtonClick());
     }
 
@@ -165,6 +173,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         }
     }
 
+    // TODO: 2019-03-25 관리기관 ㄱ ㄴ ㄷ 카테고리화하기
     private ArrayList<String> getSuperviseList() {
         if (superviseList == null) {
             superviseList = new ArrayList<>();
@@ -402,9 +411,9 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
         private boolean isAllValid() {
             boolean allValid = true;
-            final FormEditText[] allFields
-                    = new FormEditText[]{fPipe, fShape, fHorizontal, fVertical, fDepth, fSpec, fMaterial, fSupervise, fSuperviseContact};
-            for (FormEditText field : allFields) {
+            final FormEditText[] validateFields
+                    = {fPipe, fShape, fHorizontal, fVertical, fDepth, fSpec, fMaterial, fSupervise, fSuperviseContact};
+            for (FormEditText field : validateFields) {
                 allValid = field.testValidity() && allValid;
             }
             return allValid;

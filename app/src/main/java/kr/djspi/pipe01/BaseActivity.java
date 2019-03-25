@@ -35,7 +35,6 @@ import static kr.djspi.pipe01.BuildConfig.VERSION_NAME;
 
 public class BaseActivity extends AppCompatActivity {
 
-    // TODO: 2019-03-22 기본 CI 원래대로 교체
     // TODO: 2019-03-22 통신이 끊어진 상태에서 앱으로 태깅했을 때 내부 데이터를 보여주는 모듈을 추가
     public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     public static Resources resources;
@@ -66,10 +65,7 @@ public class BaseActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         if (useToolbar()) setSupportActionBar(toolbar);
         else findViewById(R.id.appbar).setVisibility(GONE);
-
-        if (useNavigationView()) setNavigationView(view, true);
-        else setNavigationView(view, false);
-
+        setNavigationView(view);
         progressBar = findViewById(R.id.progressbar);
     }
 
@@ -81,8 +77,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+    public void setSupportActionBar(Toolbar toolbar) {
         super.setSupportActionBar(toolbar);
+        toolbar.setTitleTextAppearance(context, R.style.TitleHeader);
         TextView textViewButton = findViewById(R.id.nmap_find);
         textViewButton.setVisibility(VISIBLE);
         textViewButton.setOnClickListener(v -> {
@@ -98,45 +95,36 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * @return Drawer 를 사용하지 않을 액티비티에서는 오버라이딩해 false 를 리턴
-     */
-    boolean useNavigationView() {
-        return true;
-    }
-
-    /**
      * 연락처, 버전 정보, 앱 사용 도움말 등이 표시되는 NavigationView 설정
      */
-    private void setNavigationView(@NotNull View view, boolean useHeader) {
+    private void setNavigationView(@NotNull View view) {
         drawer = view.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        if (useHeader) {
-            NavigationView navigationView = view.findViewById(R.id.nav_view);
-            View headerView = navigationView.getHeaderView(0);
+        NavigationView navigationView = view.findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
 
-            TextView versionName = headerView.findViewById(R.id.versionName);
-            versionName.setText(getString(R.string.nav_version_name, VERSION_NAME, BUILD_TYPE));
+        TextView versionName = headerView.findViewById(R.id.versionName);
+        versionName.setText(getString(R.string.nav_version_name, VERSION_NAME, BUILD_TYPE));
 
-            TextView email = headerView.findViewById(R.id.email);
-            String emailStr = getString(R.string.nav_dj_email);
-            email.setText(fromHtml(getString(R.string.nav_email, emailStr)));
-            email.setOnClickListener(v ->
-                    startActivity(new Intent(ACTION_SENDTO, Uri.fromParts("mailto", emailStr, null))));
+        TextView email = headerView.findViewById(R.id.email);
+        String emailStr = getString(R.string.nav_dj_email);
+        email.setText(fromHtml(getString(R.string.nav_email, emailStr)));
+        email.setOnClickListener(v ->
+                startActivity(new Intent(ACTION_SENDTO, Uri.fromParts("mailto", emailStr, null))));
 
-            TextView phone = headerView.findViewById(R.id.phone);
-            String phoneStr = getString(R.string.nav_dj_phone);
-            phone.setText(fromHtml(getString(R.string.nav_phone, phoneStr)));
-            phone.setOnClickListener(v ->
-                    startActivity(new Intent(ACTION_DIAL, Uri.parse("tel:" + phoneStr))));
+        TextView phone = headerView.findViewById(R.id.phone);
+        String phoneStr = getString(R.string.nav_dj_phone);
+        phone.setText(fromHtml(getString(R.string.nav_phone, phoneStr)));
+        phone.setOnClickListener(v ->
+                startActivity(new Intent(ACTION_DIAL, Uri.parse("tel:" + phoneStr))));
 
-            TextView guide = headerView.findViewById(R.id.guide);
-            guide.setText(fromHtml(getString(R.string.nav_guide)));
-            navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(START));
-        }
+        TextView guide = headerView.findViewById(R.id.guide);
+        guide.setText(fromHtml(getString(R.string.nav_guide)));
+        navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(START));
     }
 
     /**

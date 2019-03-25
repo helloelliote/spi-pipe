@@ -46,8 +46,8 @@
             android:layout_margin="16dp"
             android:gravity="center"
             android:text="@string/popup_error_select_direction"
-            android:textColor="@color/common_color_gray_popup"
-            android:textSize="13.33sp" />
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
 
         <LinearLayout
             android:id="@+id/lay_row_1"

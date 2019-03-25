@@ -20,9 +20,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
                 android:orientation="horizontal"
                 android:paddingStart="0dp"
-                android:paddingEnd="15dp">
+                android:paddingEnd="10dp">
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -30,14 +31,20 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    app:title="@string/app_name"
+                    app:contentInsetEnd="0dp"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetRight="0dp"
+                    app:contentInsetStart="0dp"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:title="@string/app_title"
+                    app:titleMarginStart="0dp"
                     app:titleTextColor="@android:color/white" />
 
                 <TextView
                     android:id="@+id/nmap_find"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|end"
+                    android:layout_gravity="end|center_vertical"
                     android:background="@drawable/button_border"
                     android:gravity="center"
                     android:padding="3dp"
@@ -89,7 +96,7 @@
             android:id="@+id/nav_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
+            android:layout_gravity="bottom|center"
             android:layout_margin="20dp"
             android:background="@drawable/button_border"
             android:backgroundTint="@color/colorPrimary"

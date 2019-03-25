@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">SPI 매설관로</string>
+    <string name="app_name">SPI</string>
 
     <!--BaseActivity-->
+    <string name="app_title">SPI 지능형매설관로인식표지</string>
     <string name="app_title_alt">SPI %1$s %2$s</string>
     <string name="app_exit_toast">뒤로가기 버튼을 한번 더 누르면 종료됩니다.</string>
     <string name="btn_find_spi">주변관로\n정보조회</string>
-    <string name="nav_close">닫기</string>
+    <string name="nav_close">닫\u0020\u0020\u0020기</string>
     <string name="nav_flush_cache">캐시 초기화</string>
     <string name="nav_drawer_open">Open</string>
     <string name="nav_drawer_close">Close</string>
@@ -28,7 +29,7 @@
     <string name="lay_main2_title">지도보기</string>
     <string name="lay_main2_sub">내 주변의 관로정보를 확인합니다.</string>
     <string name="lay_main3_title">SPI 조회ㆍ등록</string>
-    <string name="lay_main3_sub">SPI를 태깅해 관로정보를 조회\n또는 새로운 관로정보를 등록합니다.</string>
+    <string name="lay_main3_sub">SPI를 태깅하여 관로정보를 조회하거나\n새로운 관로정보를 등록합니다.\nSPI를 태깅하세요.</string>
 
     <!--NfcUtil-->
     <string name="toast_error">입력값을 확인해주세요</string>
@@ -99,6 +100,7 @@
     <string name="shape_name_03">관말형</string>
 
     <!--SpiLocationActivity-->
+    <string name="record_location_title">SPI 매설관로 위치설정</string>
     <string name="record_confirm_location">위치 저장</string>
 
     <!--RecordWriteActivity-->
@@ -141,35 +143,21 @@
     <string name="record_input_2_hint">매설지점과의 이격거리</string>
     <string name="record_input_3">매설심도</string>
     <string name="record_input_3_hint">매설심도 입력</string>
-    <string name="record_input_4_1">관로관경</string>
-    <string name="record_input_4_1_hint">관의지름 입력</string>
-    <string name="record_input_4_0_unit">m</string>
-    <string name="record_input_4_1_unit">mm</string>
-    <string name="record_input_4_2">통과전압</string>
-    <string name="record_input_4_2_hint">통과전압 입력</string>
-    <string name="record_input_4_2_unit">Kv</string>
-    <string name="record_input_4_3">코어수</string>
-    <string name="record_input_4_3_hint">통과코어수 입력</string>
-    <string name="record_input_4_3_unit">코어</string>
-    <string name="record_input_4_4">관로압력</string>
-    <string name="record_input_4_4_hint">관로압력 입력</string>
-    <string name="record_input_4_4_unit">㎏/㎠</string>
-    <string name="record_input_4_5">관로용도</string>
-    <string name="record_input_4_5_hint">매설관로의 용도 입력</string>
-    <string name="record_input_4_5_unit"></string>
+    <string name="record_input_4">관로스펙</string>
+    <string name="record_input_4_hint">관로관경/코어수 등 입력</string>
     <string name="record_input_5">관로재질</string>
     <string name="record_input_5_hint">관로재질 입력</string>
     <string name="record_input_6">관리기관</string>
-    <string name="record_input_6_hint">관리기관 입력</string>
+    <string name="record_input_6_hint">관리기관명 입력</string>
     <string name="record_input_7">전화번호</string>
     <string name="record_input_7_hint">비상 연락처 입력</string>
-    <string name="record_input_8">메모</string>
+    <string name="record_input_8">메\u0020\u0020\u0020\u0020\u0020\u0020\u0020모</string>
     <string name="record_input_8_hint">메모 입력(선택사항)</string>
     <string name="record_input_photo">현장사진</string>
     <string name="record_input_photo_hint">사진 첨부(선택사항)</string>
-    <string name="record_input_9">시공업체명</string>
+    <string name="record_input_9">시공업체</string>
     <string name="record_input_9_hint">시공업체 입력(선택사항)</string>
-    <string name="record_input_10">시공업체 연락처</string>
+    <string name="record_input_10">시공업체\n연\u0020\u0020락\u0020\u0020처</string>
     <string name="record_input_10_hint">시공업체 연락처 입력(선택사항)</string>
     <string name="record_input_2_edit">거리 입력 (m)</string>
 

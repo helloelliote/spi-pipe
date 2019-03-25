@@ -24,7 +24,7 @@ public final class SpiPost implements ServiceStrategy {
     }
 
     @Override
-    public Call<JsonObject> getServiceRequest() {
+    public Call<JsonObject> getServiceCall() {
         String query = String.format("{\"request\":%s,\"data\":%s}", API_PIPE_SET, stringQuery);
         return BUILDER.baseUrl(url).build()
                 .create(RetrofitService.class).postSpi(query);

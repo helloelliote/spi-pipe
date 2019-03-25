@@ -9,12 +9,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.helloelliote.json.Json;
 import com.helloelliote.retrofit.Retrofit2x;
 import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.retrofit.SpiPost;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -76,16 +73,13 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        if (response == null) return;
-                        // TODO: 2019-03-19 통합형: 개별 등록 건수에 대해 응답 & 에러 처리 과정 개발, index 를 활용한다.
-                        if (Json.i(response, "error_count") == 0) {
-                            processTag(intent, response, 0);
-                        } else processError(response, 0);
+                        // TODO: 2019-03-25 순차적 데이터 입력에 대한 처리 개발
+                        processTag(intent, response, 0);
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        showMessageDialog(7, throwable.getMessage());
+                        showMessageDialog(6, throwable.getMessage());
                     }
 
                     /**
@@ -104,12 +98,6 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
                         } else {
                             Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
                         }
-                    }
-
-                    private void processError(@NotNull JsonObject response, int index) {
-                        JsonObject jsonError = Json.o(response, "error_data", index);
-                        String error = String.format("Error Code: %s", Json.s(jsonError, "error_code"));
-                        showMessageDialog(6, error);
                     }
                 });
     }

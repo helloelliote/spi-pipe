@@ -116,11 +116,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
     }
 
-    @Override
-    boolean useNavigationView() {
-        return false;
-    }
-
     /**
      * 네이버 지도의 기초 UI 설정
      */
@@ -257,14 +252,12 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         jsonQuery.addProperty("nx", String.valueOf(bounds.getEastLongitude()));
         jsonQuery.addProperty("ny", String.valueOf(bounds.getNorthLatitude()));
 
-        // TODO: 2019-03-13 로딩 진행상황 표시해주기
         Retrofit2x.builder()
                 .setService(new SpiGet(URL_TEST, API_PIPE_GET))
                 .setQuery(jsonQuery).build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        if (response == null) return;
                         if (Json.i(response, "total_count") == 0) {
                             behavior.setState(STATE_COLLAPSED);
                             showMessageDialog(0, "표시할 SPI 정보가 없습니다");
@@ -374,8 +367,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                                 return;
                             }
                             for (JsonElement place : places) {
-                                JsonObject object = (JsonObject) place;
-                                HashMap<String, String> hashMap = new HashMap<>();
+                                JsonObject object = place.getAsJsonObject();
+                                HashMap<String, String> hashMap = new HashMap<>(3);
                                 hashMap.put("name", Json.s(object, "name"));
                                 hashMap.put("x", Json.s(object, "x"));
                                 hashMap.put("y", Json.s(object, "y"));
