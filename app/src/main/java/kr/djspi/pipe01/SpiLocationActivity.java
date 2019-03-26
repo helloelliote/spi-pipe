@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
-import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMap.MapType;
@@ -56,7 +55,6 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
-        findViewById(R.id.btn_reload).setOnClickListener(this);
         findViewById(R.id.btn_confirm).setOnClickListener(this);
         setToolbarTitle(getString(R.string.record_location_title));
     }
@@ -81,7 +79,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                     .maxZoom(ZOOM_MAX)
                     .extent(EXTENT_KOREA)
                     .compassEnabled(true)
-                    .locationButtonEnabled(false)
+                    .locationButtonEnabled(true)
                     .zoomGesturesEnabled(true)
             );
             getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
@@ -146,9 +144,6 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                     showMessageDialog(0, getString(R.string.toast_error_location));
                     return;
                 }
-                break;
-            case R.id.btn_reload:
-                naverMap.moveCamera(CameraUpdate.scrollTo(new LatLng(currentLocation)));
                 break;
             default:
                 break;

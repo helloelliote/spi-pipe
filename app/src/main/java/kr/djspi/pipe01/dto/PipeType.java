@@ -41,13 +41,13 @@ public class PipeType implements DataItem, Serializable {
         상수관로("상수관로", R.drawable.cir_02_map, HEAD_RAD, UNIT_MM),
         하수관로("하수관로", R.drawable.cir_03_map, HEAD_RAD, UNIT_MM),
         오수관로("오수관로", R.drawable.cir_04_map, HEAD_RAD, UNIT_MM),
-        전기관로("전기관로", R.drawable.cir_05_map, HEAD_RAD, UNIT_MM),
+        전기관로("전기관로", R.drawable.cir_05_map, HEAD_CORE, UNIT_CORE),
         통신관로("통신관로", R.drawable.cir_06_map, HEAD_CORE, UNIT_CORE),
         난방관로("난방관로", R.drawable.cir_07_map, HEAD_RAD, UNIT_MM),
         유류관로("유류관로", R.drawable.cir_08_map, HEAD_RAD, UNIT_MM),
-        가로등("가로등", R.drawable.cir_09_map, HEAD_RAD, UNIT_MM),
+        가로등("가로등", R.drawable.cir_09_map, HEAD_CORE, UNIT_CORE),
         CCTV("CCTV", R.drawable.cir_10_map, HEAD_RAD, UNIT_MM),
-        교통관로("교통관로", R.drawable.cir_11_map, HEAD_RAD, UNIT_MM),
+        광케이블("광케이블", R.drawable.cir_11_map, HEAD_CORE, UNIT_CORE),
         기타관로("기타관로", R.drawable.cir_12_map, HEAD_RAD, UNIT_MM);
 
         private String name;

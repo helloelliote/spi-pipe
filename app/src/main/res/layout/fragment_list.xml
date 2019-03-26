@@ -22,7 +22,7 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/btn_close"
@@ -40,6 +40,8 @@
         android:choiceMode="singleChoice"
         android:divider="@color/line_a"
         android:dividerHeight="0.35dp"
+        android:fastScrollAlwaysVisible="true"
+        android:fastScrollEnabled="true"
         android:listSelector="#ffccbc"
         android:scrollbarStyle="insideOverlay" />
 
@@ -61,7 +63,7 @@
             android:gravity="center"
             android:text="@string/popup_cancel"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <View
             android:layout_width="0.33dp"
@@ -76,6 +78,6 @@
             android:gravity="center"
             android:text="@string/popup_ok"
             android:textColor="@color/blue_bright"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>

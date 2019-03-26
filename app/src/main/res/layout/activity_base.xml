@@ -71,18 +71,26 @@
         app:elevation="4dp"
         app:headerLayout="@layout/navigation_header">
 
-        <TextView
+        <ImageButton
+            android:id="@+id/nav_swipe_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:alpha="0.6"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/ic_swipe_left"
+            android:tint="@color/colorPrimary"
+            tools:ignore="ContentDescription" />
+
+        <android.support.design.button.MaterialButton
             android:id="@+id/nav_close"
+            style="@style/Spi.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_margin="20dp"
-            android:background="@drawable/button_border"
-            android:backgroundTint="@color/colorPrimary"
             android:padding="10dp"
-            android:text="@string/nav_close"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:text="@string/nav_close" />
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

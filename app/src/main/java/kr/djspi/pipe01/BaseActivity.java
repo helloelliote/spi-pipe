@@ -125,6 +125,7 @@ public class BaseActivity extends AppCompatActivity {
         TextView guide = headerView.findViewById(R.id.guide);
         guide.setText(fromHtml(getString(R.string.nav_guide)));
         navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(START));
+        navigationView.findViewById(R.id.nav_swipe_close).setOnClickListener(v -> drawer.closeDrawer(START));
     }
 
     /**
