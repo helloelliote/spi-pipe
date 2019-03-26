@@ -409,6 +409,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
             }
         }
 
+        // TODO: 2019-03-26 위치 정보 기록 전에 모두 체크하고 넘기게, 체크 실패 시 다이얼로그 출력
         private boolean isAllValid() {
             boolean allValid = true;
             final FormEditText[] validateFields

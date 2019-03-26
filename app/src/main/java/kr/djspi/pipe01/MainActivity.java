@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -63,10 +64,12 @@ public class MainActivity extends LocationUpdate implements Serializable {
             }
         });
 
-//        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
-//        mainLayout3.setOnClickListener(view ->
-//                startActivity(new Intent(context, RecordInputActivity2.class)
-//                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)));
+        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
+        mainLayout3.setOnClickListener(view -> {
+            Toast toast = Toast.makeText(context, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        });
 
     }
 

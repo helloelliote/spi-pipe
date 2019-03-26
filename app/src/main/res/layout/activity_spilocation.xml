@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,40 +16,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_marker_2" />
+        android:src="@drawable/ic_marker_3" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:orientation="horizontal"
-        android:padding="10dp">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal|bottom"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:padding="10dp">-->
 
-        <android.support.design.button.MaterialButton
-            android:id="@+id/btn_cancel"
-            style="@style/Spi.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="2.5"
-            android:text="@string/record_cancel"
-            android:visibility="invisible" />
+        <!--<android.support.design.button.MaterialButton-->
+            <!--android:id="@+id/btn_cancel"-->
+            <!--style="@style/Spi.TextButton"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="2.5"-->
+            <!--android:text="@string/record_cancel"-->
+            <!--android:visibility="invisible" />-->
 
-        <android.support.design.button.MaterialButton
-            android:id="@+id/btn_reload"
-            style="@style/Spi.Button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:backgroundTint="@color/green"
-            app:icon="@drawable/ic_target"
-            app:iconGravity="start" />
+        <!--<android.support.design.button.MaterialButton-->
+            <!--android:id="@+id/btn_reload"-->
+            <!--style="@style/Spi.Button"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:backgroundTint="@color/green"-->
+            <!--app:icon="@drawable/ic_target"-->
+            <!--app:iconGravity="start" />-->
 
         <android.support.design.button.MaterialButton
             android:id="@+id/btn_confirm"
             style="@style/Spi.Button"
-            android:layout_width="0dp"
+            android:layout_width="120dp"
             android:layout_height="60dp"
+            android:layout_gravity="center_horizontal|bottom"
             android:layout_marginStart="5dp"
-            android:layout_weight="2"
+            android:layout_marginBottom="10dp"
             android:text="@string/record_confirm_location" />
-    </LinearLayout>
+    <!--</LinearLayout>-->
 </android.support.design.widget.CoordinatorLayout>

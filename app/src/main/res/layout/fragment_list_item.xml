@@ -25,7 +25,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
-    android:minHeight="?android:listPreferredItemHeight"
     android:orientation="horizontal"
     android:paddingLeft="8dp"
     android:paddingRight="8dp">
@@ -38,10 +37,12 @@
     <TextView
         android:id="@+id/txt_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:duplicateParentState="true"
-        android:textAlignment="center"
+        android:gravity="center_vertical"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
         android:textColor="@color/colorFontDark"
         android:textSize="18sp" />
     <!--

@@ -154,6 +154,8 @@ public class ListDialog extends DialogFragment implements OnClickListener {
             }
             TextView textView = convertView.findViewById(R.id.txt_name);
             textView.setText(listItem.get(position));
+            textView.setTextAlignment(listTag.equals(TAG_SUPERVISE) ?
+                    View.TEXT_ALIGNMENT_TEXT_START : View.TEXT_ALIGNMENT_CENTER);
             textView.setOnFocusChangeListener((v, hasFocus) -> {
             });
             return convertView;
