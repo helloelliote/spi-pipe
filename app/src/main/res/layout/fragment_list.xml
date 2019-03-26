@@ -32,7 +32,7 @@
             android:src="@drawable/btn_close_black" />
     </LinearLayout>
 
-    <ListView
+    <com.sylversky.indexablelistview.widget.IndexableListView
         android:id="@+id/list_common"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -40,7 +40,7 @@
         android:choiceMode="singleChoice"
         android:divider="@color/line_a"
         android:dividerHeight="0.35dp"
-        android:fastScrollAlwaysVisible="true"
+        android:fastScrollAlwaysVisible="false"
         android:fastScrollEnabled="true"
         android:listSelector="#ffccbc"
         android:scrollbarStyle="insideOverlay" />

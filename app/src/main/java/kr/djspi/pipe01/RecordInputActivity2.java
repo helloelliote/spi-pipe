@@ -70,6 +70,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
     public static FragmentManager fragmentManager;
     public static ArrayList<String> superviseList;
+    public static Typeface typeface;
     private static Spi spi;
     private static SpiType spiType;
     private static SpiMemo spiMemo;
@@ -102,6 +103,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         }
         setContentView(R.layout.activity_record_input_2);
         superviseList = getSuperviseList();
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundb.ttf");
     }
 
     @Override
@@ -159,9 +161,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         final FormEditText[] allFields
                 = {fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
                 fSupervise, fSuperviseContact, fMemo, fConstructionContact, fConstructionContact};
-        for (FormEditText field : allFields) {
-            field.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundb.ttf"));
-        }
+        for (FormEditText field : allFields) field.setTypeface(typeface);
 
         findViewById(R.id.button_confirm).setOnClickListener(new OnNextButtonClick());
     }
