@@ -2,7 +2,9 @@ package kr.djspi.pipe01.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -94,47 +96,55 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
     private void setLayoutVisibility(@NotNull View view) {
         ImageView backgroundImage = view.findViewById(R.id.lay_background);
         final String defType = "id";
-        View[] views = new View[10];
+        ImageView[] views = new ImageView[10];
         for (int i = 1; i <= 9; i++) {
             views[i] = view.findViewById(resources.getIdentifier("image_" + i, defType, packageName));
         }
         switch (typeString) {
             case TAG_TYPE_PLATE:
-                backgroundImage.setImageDrawable(resources.getDrawable(R.drawable.bg_p, null));
+                backgroundImage.setImageDrawable(fromRes(R.drawable.bg_p));
                 view.findViewById(R.id.lay_row_2).setVisibility(INVISIBLE);
-                views[1].setBackgroundResource(R.drawable.btn_01_7);
-                views[2].setBackgroundResource(R.drawable.btn_01_8);
-                views[3].setBackgroundResource(R.drawable.btn_01_9);
-                views[7].setBackgroundResource(R.drawable.btn_01_1);
-                views[8].setBackgroundResource(R.drawable.btn_01_2);
-                views[9].setBackgroundResource(R.drawable.btn_01_3);
+                views[1].setImageDrawable(fromRes(R.drawable.btn_01_7));
+                views[2].setImageDrawable(fromRes(R.drawable.btn_01_8));
+                views[3].setImageDrawable(fromRes(R.drawable.btn_01_9));
+                views[7].setImageDrawable(fromRes(R.drawable.btn_01_1));
+                views[8].setImageDrawable(fromRes(R.drawable.btn_01_2));
+                views[9].setImageDrawable(fromRes(R.drawable.btn_01_3));
                 break;
             case TAG_TYPE_MARKER:
-                backgroundImage.setImageDrawable(resources.getDrawable(R.drawable.bg_m, null));
+                backgroundImage.setImageDrawable(fromRes(R.drawable.bg_m));
                 view.findViewById(R.id.lay_row_3).setVisibility(GONE);
-                views[1].setBackgroundResource(R.drawable.btn_10_7);
-                views[2].setBackgroundResource(R.drawable.btn_10_8);
-                views[3].setBackgroundResource(R.drawable.btn_10_9);
-                views[5].setBackgroundResource(R.drawable.btn_10_2);
+                views[1].setImageDrawable(fromRes(R.drawable.btn_10_7));
+                views[2].setImageDrawable(fromRes(R.drawable.btn_10_8));
+                views[3].setImageDrawable(fromRes(R.drawable.btn_10_9));
+                views[5].setImageDrawable(fromRes(R.drawable.btn_10_2));
                 break;
             case TAG_TYPE_COLUMN:
                 LayoutParams params = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER);
                 params.setMargins(0, 60, 0, 0);
                 view.findViewById(R.id.lay_rows).setLayoutParams(params);
-                backgroundImage.setImageDrawable(resources.getDrawable(R.drawable.bg_c_2, null));
-                views[1].setBackgroundResource(R.drawable.btn_11_7);
-                views[2].setBackgroundResource(R.drawable.btn_11_8);
-                views[3].setBackgroundResource(R.drawable.btn_11_9);
-                views[4].setBackgroundResource(R.drawable.btn_11_4);
-                views[5].setBackgroundResource(R.drawable.btn_11_5);
-                views[6].setBackgroundResource(R.drawable.btn_11_6);
-                views[7].setBackgroundResource(R.drawable.btn_11_1);
-                views[8].setBackgroundResource(R.drawable.btn_11_2);
-                views[9].setBackgroundResource(R.drawable.btn_11_3);
+                backgroundImage.setImageDrawable(fromRes(R.drawable.bg_c_2));
+                views[1].setImageDrawable(fromRes(R.drawable.btn_11_7));
+                views[2].setImageDrawable(fromRes(R.drawable.btn_11_8));
+                views[3].setImageDrawable(fromRes(R.drawable.btn_11_9));
+                views[4].setImageDrawable(fromRes(R.drawable.btn_11_4));
+                views[5].setImageDrawable(fromRes(R.drawable.btn_11_5));
+                views[6].setImageDrawable(fromRes(R.drawable.btn_11_6));
+                views[7].setImageDrawable(fromRes(R.drawable.btn_11_1));
+                views[8].setImageDrawable(fromRes(R.drawable.btn_11_2));
+                views[9].setImageDrawable(fromRes(R.drawable.btn_11_3));
                 break;
             default:
                 break;
         }
+    }
+
+    static Drawable fromRes(String resId) {
+        return resources.getDrawable(resources.getIdentifier(resId, "drawable", packageName), null);
+    }
+
+    static Drawable fromRes(@DrawableRes int resId) {
+        return resources.getDrawable(resId, null);
     }
 
     @Override

@@ -19,8 +19,6 @@ import kr.djspi.pipe01.R;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static kr.djspi.pipe01.BaseActivity.packageName;
-import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
@@ -29,6 +27,7 @@ import static kr.djspi.pipe01.RecordInputActivity2.fragmentManager;
 import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
 import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
+import static kr.djspi.pipe01.fragment.PositionDialog.fromRes;
 
 public class DirectionDialog extends DialogFragment implements OnSelectListener, OnClickListener {
 
@@ -40,6 +39,7 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
     private static int selectIndex = -1;
     private static int positionIndex = -1;
     private static OnSelectListener listener;
+    private static Bundle bundle;
     private View checkView;
 
     public DirectionDialog() {
@@ -57,7 +57,7 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            Bundle bundle = getArguments();
+            bundle = getArguments();
             typeString = bundle.getString("typeString");
             shapeString = bundle.getString("shapeString");
             positionIndex = bundle.getInt("positionInt");
@@ -103,12 +103,10 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
                     PIPE_DIRECTIONS[i * 2]);
         }
 
-        final String defType = "drawable";
-
-        image_2.setImageDrawable(resources.getDrawable(resources.getIdentifier(resIds[2], defType, packageName), null));
-        image_4.setImageDrawable(resources.getDrawable(resources.getIdentifier(resIds[4], defType, packageName), null));
-        image_6.setImageDrawable(resources.getDrawable(resources.getIdentifier(resIds[6], defType, packageName), null));
-        image_8.setImageDrawable(resources.getDrawable(resources.getIdentifier(resIds[8], defType, packageName), null));
+        image_2.setImageDrawable(fromRes(resIds[2]));
+        image_4.setImageDrawable(fromRes(resIds[4]));
+        image_6.setImageDrawable(fromRes(resIds[6]));
+        image_8.setImageDrawable(fromRes(resIds[8]));
     }
 
     @Override
@@ -121,6 +119,8 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
                 }
                 listener.onSelect(TAG_DIRECTION, selectIndex, resIds[selectIndex]);
                 DistanceDialog dialog = new DistanceDialog();
+                bundle.putString("planString", resIds[selectIndex]);
+                dialog.setArguments(bundle);
                 dialog.show(fragmentManager, TAG_DISTANCE);
                 dismissAllowingStateLoss();
                 break;

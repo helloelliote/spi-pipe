@@ -179,7 +179,6 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         }
     }
 
-    // TODO: 2019-03-25 관리기관 ㄱ ㄴ ㄷ 카테고리화하기
     private ArrayList<String> getSuperviseList() {
         if (superviseList == null) {
             superviseList = new ArrayList<>();
@@ -246,7 +245,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
     public static void showPositionDialog() {
         PositionDialog dialog = new PositionDialog();
-        Bundle bundle = new Bundle(3);
+        Bundle bundle = new Bundle(4);
         bundle.putString("typeString", spiType.getType());
         bundle.putString("shapeString", pipeShape.getShape());
         dialog.setArguments(bundle);

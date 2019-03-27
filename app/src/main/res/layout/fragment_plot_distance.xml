@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -63,32 +62,14 @@
 
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/edittext_border"
-                android:ems="3"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:padding="1dp"
-                android:textSize="13sp"
-                android:translationY="-22dp"
-                app:testType="floatNumericRange" />
+                style="@style/FormEditText.Number"
+                android:translationY="-22dp" />
 
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/edittext_border"
-                android:ems="3"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:padding="1dp"
-                android:textSize="13sp"
+                style="@style/FormEditText.Number"
                 android:translationX="38dp"
-                android:translationY="-77dp"
-                app:testType="floatNumericRange" />
+                android:translationY="-77dp" />
         </FrameLayout>
     </LinearLayout>
 

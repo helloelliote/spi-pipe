@@ -77,7 +77,7 @@
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -97,7 +97,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -115,7 +115,7 @@
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -144,7 +144,7 @@
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_4"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -164,7 +164,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_5"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -182,7 +182,7 @@
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_6"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -209,7 +209,7 @@
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_7"
                             android:layout_width="86dp"
                             android:layout_height="86dp" />
@@ -229,7 +229,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_8"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -247,7 +247,7 @@
                         android:layout_width="86dp"
                         android:layout_height="86dp">
 
-                        <View
+                        <ImageView
                             android:id="@+id/image_9"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
