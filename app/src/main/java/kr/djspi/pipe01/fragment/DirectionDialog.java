@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,7 +23,9 @@ import static kr.djspi.pipe01.BaseActivity.packageName;
 import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
+import static kr.djspi.pipe01.Const.TAG_DISTANCE;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
+import static kr.djspi.pipe01.RecordInputActivity2.fragmentManager;
 import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
 import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
@@ -101,17 +102,13 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
                     String.valueOf(positionIndex),
                     PIPE_DIRECTIONS[i * 2]);
         }
-        Log.w(TAG, resIds[2]);
-        Log.w(TAG, resIds[8]);
-        Log.w(TAG, resIds[4]);
-        Log.w(TAG, resIds[6]);
 
         final String defType = "drawable";
 
-        image_2.setBackgroundResource(resources.getIdentifier(resIds[2], defType, packageName));
-        image_4.setBackgroundResource(resources.getIdentifier(resIds[4], defType, packageName));
-        image_6.setBackgroundResource(resources.getIdentifier(resIds[6], defType, packageName));
-        image_8.setBackgroundResource(resources.getIdentifier(resIds[8], defType, packageName));
+        image_2.setImageDrawable(resources.getDrawable(resources.getIdentifier(resIds[2], defType, packageName), null));
+        image_4.setImageDrawable(resources.getDrawable(resources.getIdentifier(resIds[4], defType, packageName), null));
+        image_6.setImageDrawable(resources.getDrawable(resources.getIdentifier(resIds[6], defType, packageName), null));
+        image_8.setImageDrawable(resources.getDrawable(resources.getIdentifier(resIds[8], defType, packageName), null));
     }
 
     @Override
@@ -123,6 +120,8 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
                     return;
                 }
                 listener.onSelect(TAG_DIRECTION, selectIndex, resIds[selectIndex]);
+                DistanceDialog dialog = new DistanceDialog();
+                dialog.show(fragmentManager, TAG_DISTANCE);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:
@@ -160,13 +159,6 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
-        selectIndex = -1;
-        resIds = null;
-        super.onDismiss(dialog);
-    }
-
-    @Override
     public void onSelect(String tag, int index, String text) {
         if (index == -1) return;
         switch (tag) {
@@ -176,5 +168,12 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        selectIndex = -1;
+        resIds = null;
+        super.onDismiss(dialog);
     }
 }

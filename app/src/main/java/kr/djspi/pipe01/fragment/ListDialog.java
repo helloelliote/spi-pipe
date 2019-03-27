@@ -2,6 +2,7 @@ package kr.djspi.pipe01.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -30,7 +31,7 @@ import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.RecordInputActivity2.pipes;
 import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
-import static kr.djspi.pipe01.RecordInputActivity2.typeface;
+import static kr.djspi.pipe01.RecordInputActivity2.state;
 
 /**
  * 관로종류 목록과 관리기관 목록을 보여주는데 공용으로 사용하는 Dialog 클래스
@@ -38,21 +39,14 @@ import static kr.djspi.pipe01.RecordInputActivity2.typeface;
 public class ListDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = ListDialog.class.getSimpleName();
-    private static ListDialog listDialog = null;
     private static String listTag;
     private static String dialogTitle;
     private static int selectIndex = -1;
     private static ArrayList<String> listItem;
     private static OnSelectListener listener;
+    private IndexableListView listView;
 
     public ListDialog() {
-    }
-
-    public synchronized static ListDialog get() {
-        if (listDialog == null) {
-            listDialog = new ListDialog();
-        }
-        return listDialog;
     }
 
     @Override
@@ -99,8 +93,8 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 
-        IndexableListView listView = view.findViewById(R.id.list_common);
-        listView.setIndexTypeface(typeface);
+        listView = view.findViewById(R.id.list_common);
+        listView.setIndexTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/nanumsquareroundr.ttf"));
         if (listTag.equals(TAG_SUPERVISE)) {
             listView.setAdapter(new ListAdapter(getContext(), listItem, true));
         } else {
@@ -108,6 +102,10 @@ public class ListDialog extends DialogFragment implements OnClickListener {
             listView.setFastScrollEnabled(false);
         }
         listView.setOnItemClickListener((parent, view1, position, id) -> selectIndex = position);
+        if (state != null) {
+            listView.requestFocus();
+            listView.onRestoreInstanceState(state);
+        }
         return view;
     }
 
@@ -128,11 +126,20 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
+    public void onPause() {
+        state = listView.onSaveInstanceState();
+        super.onPause();
+    }
+
+    @Override
     public void onDismiss(DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
     }
 
+    /**
+     * @see <a href="IndexableListView"></a>https://github.com/sylversky/IndexableListView.git</a>
+     */
     private class ListAdapter extends BaseAdapter implements Indexer {
 
         private final Context context;

@@ -3,6 +3,7 @@ package kr.djspi.pipe01;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class BaseActivity extends AppCompatActivity {
     public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
     public static Resources resources;
     public static String packageName;
+    public static Typeface typeface;
     private DrawerLayout drawer;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
     Context context;
@@ -53,6 +55,7 @@ public class BaseActivity extends AppCompatActivity {
         resources = getResources();
         nfcUtil = new NfcUtil(this, getClass());
         packageName = context.getPackageName();
+        typeface = Typeface.createFromAsset(context.getAssets(), "fonts/nanumsquareroundr.ttf");
     }
 
     @Override

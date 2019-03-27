@@ -1,8 +1,11 @@
 package kr.djspi.pipe01;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -70,7 +73,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
     public static FragmentManager fragmentManager;
     public static ArrayList<String> superviseList;
-    public static Typeface typeface;
+    public static Parcelable state;
     private static Spi spi;
     private static SpiType spiType;
     private static SpiMemo spiMemo;
@@ -103,7 +106,6 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         }
         setContentView(R.layout.activity_record_input_2);
         superviseList = getSuperviseList();
-        typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundb.ttf");
     }
 
     @Override
@@ -158,10 +160,14 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         fConstructionContact = findViewById(R.id.form_construction_contact);
         fConstructionContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
-        final FormEditText[] allFields
-                = {fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
-                fSupervise, fSuperviseContact, fMemo, fConstructionContact, fConstructionContact};
-        for (FormEditText field : allFields) field.setTypeface(typeface);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            final FormEditText[] allFields
+                    = {fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
+                    fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact};
+            for (FormEditText field : allFields) {
+                field.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/nanumsquareroundr.ttf"));
+            }
+        }
 
         findViewById(R.id.button_confirm).setOnClickListener(new OnNextButtonClick());
     }
@@ -202,16 +208,18 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
     @Override
     public void onClick(View v) {
-        if (ListDialog.get().isAdded()) return;
+        ListDialog listDialog;
         switch (v.getId()) {
             case R.id.lay_pipe:
             case R.id.form_pipe:
-                ListDialog.get().show(fragmentManager, TAG_PIPE);
+                listDialog = new ListDialog();
+                listDialog.show(fragmentManager, TAG_PIPE);
                 break;
             case R.id.lay_shape:
             case R.id.form_shape:
                 pipeShape.setShape(null);
-                ListDialog.get().show(fragmentManager, TAG_SHAPE);
+                listDialog = new ListDialog();
+                listDialog.show(fragmentManager, TAG_SHAPE);
                 break;
             case R.id.lay_supervise:
             case R.id.form_supervise:
@@ -221,7 +229,8 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                     fSupervise.setHint("직접 입력해주세요.");
                     return;
                 }
-                ListDialog.get().show(fragmentManager, TAG_SUPERVISE);
+                listDialog = new ListDialog();
+                listDialog.show(fragmentManager, TAG_SUPERVISE);
                 break;
             case R.id.lay_distance:
                 if (pipeShape.getShape() == null) {
@@ -381,11 +390,39 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     public void onResume() {
         pipeShape.setShape(null);
         super.onResume();
+        restoreState();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        saveState();
+    }
+
+    /**
+     * 마지막 사용자 입력값 저장
+     */
+    private void saveState() {
+        SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("superviseContact", fSuperviseContact.getText().toString())
+                .putString("material", fMaterial.getText().toString())
+                .putString("construction", fConstruction.getText().toString())
+                .putString("constructionContact", fConstructionContact.getText().toString());
+        editor.apply();
+    }
+
+    /**
+     * 마지막 사용자 입력값 불러오기
+     */
+    private void restoreState() {
+        SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        if (preferences != null) {
+            fSuperviseContact.setText(preferences.getString("superviseContact", ""));
+            fMaterial.setText(preferences.getString("material", ""));
+            fConstruction.setText(preferences.getString("construction", ""));
+            fConstructionContact.setText(preferences.getString("constructionContact", ""));
+        }
     }
 
     private class OnNextButtonClick implements OnClickListener {

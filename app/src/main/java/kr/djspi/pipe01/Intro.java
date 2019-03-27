@@ -28,6 +28,7 @@ public final class Intro extends AppCompatActivity {
         }
 
         new Handler().postDelayed(() -> {
+            getSharedPreferences(getPackageName(), MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(getBaseContext(), MainActivity.class));
             finish();
         }, delayMillis);

@@ -85,7 +85,7 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
-    <style name="FormEditText" parent="Spi.Theme">
+    <style name="FormEditText">
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">3</item>

@@ -15,6 +15,7 @@ public final class Const {
     public static final String TAG_SUPERVISE = "supervise";
     public static final String TAG_POSITION = "position";
     public static final String TAG_DIRECTION = "direction";
+    public static final String TAG_DISTANCE = "distance";
     public static final String TAG_TYPE_PLATE = "표지판";
     public static final String TAG_TYPE_MARKER = "표지기";
     public static final String TAG_TYPE_COLUMN = "표지주";
