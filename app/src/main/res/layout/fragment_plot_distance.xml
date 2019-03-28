@@ -52,15 +52,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="#e1e1e2"
             android:padding="2.5dp">
 
             <ImageView
                 android:id="@+id/lay_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:src="@drawable/plan_plate_tbr_3_in_distance" />
+                android:adjustViewBounds="true" />
 
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_vertical"
@@ -75,9 +73,10 @@
                 android:minEms="3"
                 android:padding="2dp"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
+                android:textColor="@color/colorPrimary"
                 android:textSize="13sp"
                 android:textStyle="bold"
+                app:emptyErrorString="필수입력 항목입니다"
                 app:testType="nocheck" />
 
             <com.andreabaccega.widget.FormEditText
@@ -93,9 +92,10 @@
                 android:minEms="3"
                 android:padding="2dp"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
+                android:textColor="@color/colorPrimary"
                 android:textSize="13sp"
                 android:textStyle="bold"
+                app:emptyErrorString="필수입력 항목입니다"
                 app:testType="nocheck" />
         </FrameLayout>
     </LinearLayout>

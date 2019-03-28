@@ -46,25 +46,29 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             bundle = getArguments();
-            resId = String.format("%s", bundle.getString("planString"));
+            resId = String.format("%s_distance", bundle.getString("planString"));
         }
         dialogTitle = getString(R.string.popup_title_input_distance);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_plot_distance, container, false);
 
         TextView titleView = view.findViewById(R.id.popup_title);
         titleView.setText(dialogTitle);
 
         ImageView imageView = view.findViewById(R.id.lay_background);
-        imageView.setImageDrawable(fromRes(resId));
+        // TODO: 2019-03-28 도면 세팅 완료 후 정리하기
+        try {
+            imageView.setImageDrawable(fromRes(resId));
+        } catch (Exception e) {
+            imageView.setImageDrawable(fromRes(bundle.getString("planString")));
+        }
         imageView.setScaleType(ScaleType.FIT_CENTER);
 
         view.findViewById(R.id.btn_close).setOnClickListener(this);
@@ -90,6 +94,9 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
                 break;
             case 4:
                 setTranslation(fVertical, 0.0f, 0.0f, 0.0f);
+                break;
+            case 5:
+                // Unreachable case
                 break;
             case 6:
                 setTranslation(fVertical, 0.0f, 0.0f, 0.0f);
