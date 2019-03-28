@@ -24,7 +24,6 @@ import kr.djspi.pipe01.RecordInputActivity2;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 
 import static android.view.View.TEXT_ALIGNMENT_CENTER;
-import static android.view.View.TEXT_ALIGNMENT_TEXT_START;
 import static kr.djspi.pipe01.Const.PIPE_SHAPES;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
@@ -176,7 +175,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
             }
             TextView textView = convertView.findViewById(R.id.txt_name);
             textView.setText(listItem.get(position));
-            textView.setTextAlignment(isListSupervise ? TEXT_ALIGNMENT_TEXT_START : TEXT_ALIGNMENT_CENTER);
+            textView.setTextAlignment(isListSupervise ? View.TEXT_ALIGNMENT_TEXT_START : TEXT_ALIGNMENT_CENTER);
             textView.setOnFocusChangeListener((v, hasFocus) -> {
             });
             return convertView;

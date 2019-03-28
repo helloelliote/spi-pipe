@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andreabaccega.widget.FormEditText;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -58,13 +59,11 @@ import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_MAP;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_PHOTO;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
+import static kr.djspi.pipe01.Const.TAG_DISTANCE;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
-import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
-import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
-import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
 import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class RecordInputActivity2 extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
@@ -253,7 +252,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     }
 
     @Override
-    public void onSelect(String tag, int index, String text) {
+    public void onSelect(String tag, int index, String... text) {
         if (index == -1) return;
         switch (tag) {
             case TAG_PIPE:
@@ -274,85 +273,64 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 pipeSupervise.setId(index + 1);
                 pipe.setSupervise_id(index + 1);
                 break;
-            case TAG_TYPE_PLATE:
-            case TAG_TYPE_MARKER:
-            case TAG_TYPE_COLUMN:
-                pipePosition.setPosition(index);
-                break;
             case TAG_POSITION:
                 pipePosition.setPosition(index);
                 switch (index) {
                     case 1:
-                        fHorizontal.setEnabled(true);
-                        fHorizontal.setHint("좌측");
-                        fVertical.setEnabled(true);
-                        fVertical.setHint("차도방향");
+                        fHorizontal.setTag("좌측");
+                        fVertical.setTag("차도방향");
                         break;
                     case 2:
-                        fHorizontal.setEnabled(false);
-                        fHorizontal.setHint("없음");
-                        fHorizontal.setText("0");
-                        fVertical.setEnabled(true);
-                        fVertical.setHint("차도방향");
+                        fHorizontal.setTag("");
+                        fVertical.setTag("차도방향");
                         break;
                     case 3:
-                        fHorizontal.setEnabled(true);
-                        fHorizontal.setHint("우측");
-                        fVertical.setEnabled(true);
-                        fVertical.setHint("차도방향");
+                        fHorizontal.setTag("우측");
+                        fVertical.setTag("차도방향");
                         break;
                     case 4:
-                        fHorizontal.setEnabled(true);
-                        fHorizontal.setHint("좌측");
-                        fVertical.setEnabled(false);
-                        fVertical.setHint("없음");
-                        fVertical.setText("0");
+                        fHorizontal.setTag("좌측");
+                        fVertical.setTag("");
                         break;
                     case 5:
-                        fHorizontal.setEnabled(false);
-                        fHorizontal.setHint("없음");
-                        fHorizontal.setText("0");
-                        fVertical.setEnabled(false);
-                        fVertical.setHint("없음");
-                        fVertical.setText("0");
+                        fHorizontal.setTag("직상");
+                        fVertical.setTag("직상");
+                        fHorizontal.setText("0.0");
+                        fVertical.setText("0.0");
+                        pipePosition.setHorizontal(0.0);
+                        pipePosition.setVertical(0.0);
                         break;
                     case 6:
-                        fHorizontal.setEnabled(true);
-                        fHorizontal.setHint("우측");
-                        fVertical.setEnabled(false);
-                        fVertical.setHint("없음");
-                        fVertical.setText("0");
+                        fHorizontal.setTag("우측");
+                        fVertical.setTag("");
                         break;
                     case 7:
-                        fHorizontal.setEnabled(true);
-                        fHorizontal.setHint("좌측");
-                        fVertical.setEnabled(true);
-                        fVertical.setHint("보도방향");
+                        fHorizontal.setTag("좌측");
+                        fVertical.setTag("보도방향");
                         break;
                     case 8:
-                        fHorizontal.setEnabled(false);
-                        fHorizontal.setHint("없음");
-                        fHorizontal.setText("0");
-                        fVertical.setEnabled(true);
-                        fVertical.setHint("보도방향");
+                        fHorizontal.setTag("");
+                        fVertical.setTag("보도방향");
                         break;
                     case 9:
-                        fHorizontal.setEnabled(true);
-                        fHorizontal.setHint("우측");
-                        fVertical.setEnabled(true);
-                        fVertical.setHint("보도방향");
+                        fHorizontal.setTag("우측");
+                        fVertical.setTag("보도방향");
                         break;
                     default:
-                        fHorizontal.setEnabled(true);
-                        fHorizontal.setHint("수평");
-                        fVertical.setEnabled(true);
-                        fVertical.setHint("수직");
+                        fHorizontal.setTag("수평");
+                        fVertical.setTag("수직");
                         break;
                 }
                 break;
             case TAG_DIRECTION:
                 pipePosition.setDirection(PIPE_DIRECTIONS[index]);
-                pipePlan.setFile_plane(text + ".png");
+                pipePlan.setFile_plane(text[0] + ".png");
+                break;
+            case TAG_DISTANCE:
+                fHorizontal.setText(String.format("%s %s", fHorizontal.getTag().toString(), text[0]));
+                fVertical.setText(String.format("%s %s", fVertical.getTag().toString(), text[1]));
+                pipePosition.setHorizontal(Double.valueOf(text[0]));
+                pipePosition.setVertical(Double.valueOf(text[1]));
                 break;
             default:
                 break;
@@ -436,6 +414,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 final Entry entry = setEntry();
                 ArrayList<Entry> entries = new ArrayList<>(1);
                 entries.add(entry);
+                Log.w(TAG, new Gson().toJson(entries));
                 startActivity(new Intent(context, RecordWriteActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("entry", entries));
@@ -471,8 +450,6 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         pipeShape.setShape(fShape.getText().toString());
         pipeShape.setSpec(fSpec.getText().toString());
         pipeType.setPipe(fPipe.getText().toString());
-        pipePosition.setHorizontal(Double.valueOf(fHorizontal.getText().toString()));
-        pipePosition.setVertical(Double.valueOf(fVertical.getText().toString()));
         pipeSupervise.setSupervise(fSupervise.getText().toString());
         pipe.setSupervise_contact(fSuperviseContact.getText().toString());
         pipe.setConstruction(fConstruction.getText().toString());

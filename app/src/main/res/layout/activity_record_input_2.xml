@@ -80,10 +80,8 @@
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_vertical"
                 style="@style/FormEditText"
-                android:layout_weight="1.3"
-                android:hint="@string/record_input_2_vertical"
-                android:inputType="numberDecimal"
-                app:testType="floatNumericRange" />
+                android:layout_weight="1.5"
+                android:hint="@string/record_input_2_vertical" />
 
             <TextView
                 android:layout_width="0dp"
@@ -95,10 +93,8 @@
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_horizontal"
                 style="@style/FormEditText"
-                android:layout_weight="1.3"
-                android:hint="@string/record_input_2_horizontal"
-                android:inputType="numberDecimal"
-                app:testType="floatNumericRange" />
+                android:layout_weight="1.1"
+                android:hint="@string/record_input_2_horizontal" />
 
             <TextView
                 android:layout_width="0dp"

@@ -22,14 +22,13 @@ import static android.view.View.VISIBLE;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
-import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.RecordInputActivity2.fragmentManager;
 import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
 import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
 import static kr.djspi.pipe01.fragment.PositionDialog.fromRes;
 
-public class DirectionDialog extends DialogFragment implements OnSelectListener, OnClickListener {
+public class DirectionDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = DirectionDialog.class.getSimpleName();
     private static String dialogTitle;
@@ -37,7 +36,7 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
     private static String shapeString;
     private static String[] resIds;
     private static int selectIndex = -1;
-    private static int positionIndex = -1;
+    private static int positionInt = -1;
     private static OnSelectListener listener;
     private static Bundle bundle;
     private View checkView;
@@ -60,7 +59,7 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
             bundle = getArguments();
             typeString = bundle.getString("typeString");
             shapeString = bundle.getString("shapeString");
-            positionIndex = bundle.getInt("positionInt");
+            positionInt = bundle.getInt("positionInt");
         }
         dialogTitle = getString(R.string.popup_title_select_direction);
     }
@@ -99,7 +98,7 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
             resIds[i * 2] = String.format("plan_%s_%s_%s_%s",
                     parseSpiType(typeString),
                     parsePipeShape(shapeString),
-                    String.valueOf(positionIndex),
+                    String.valueOf(positionInt),
                     PIPE_DIRECTIONS[i * 2]);
         }
 
@@ -118,11 +117,16 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
                     return;
                 }
                 listener.onSelect(TAG_DIRECTION, selectIndex, resIds[selectIndex]);
-                DistanceDialog dialog = new DistanceDialog();
-                bundle.putString("planString", resIds[selectIndex]);
-                dialog.setArguments(bundle);
-                dialog.show(fragmentManager, TAG_DISTANCE);
-                dismissAllowingStateLoss();
+                if (positionInt == 5) {
+                    dismissAllowingStateLoss();
+                    return;
+                } else {
+                    DistanceDialog dialog = new DistanceDialog();
+                    bundle.putString("planString", resIds[selectIndex]);
+                    dialog.setArguments(bundle);
+                    dialog.show(fragmentManager, TAG_DISTANCE);
+                    dismissAllowingStateLoss();
+                }
                 break;
             case R.id.btn_cancel:
                 dismissAllowingStateLoss();
@@ -156,18 +160,6 @@ public class DirectionDialog extends DialogFragment implements OnSelectListener,
         checkView.setVisibility(INVISIBLE);
         view.findViewById(R.id.v_select).setVisibility(VISIBLE);
         this.checkView = view.findViewById(R.id.v_select);
-    }
-
-    @Override
-    public void onSelect(String tag, int index, String text) {
-        if (index == -1) return;
-        switch (tag) {
-            case TAG_POSITION:
-                positionIndex = index;
-                break;
-            default:
-                break;
-        }
     }
 
     @Override

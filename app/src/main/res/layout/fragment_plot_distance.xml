@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -51,25 +52,51 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:padding="5dp">
+            android:background="#e1e1e2"
+            android:padding="2.5dp">
 
             <ImageView
                 android:id="@+id/lay_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:src="@drawable/plan_plate_tbr_3_in" />
+                android:src="@drawable/plan_plate_tbr_3_in_distance" />
 
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_vertical"
-                style="@style/FormEditText.Number"
-                android:translationY="-22dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext_border"
+                android:gravity="center"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal"
+                android:maxEms="4"
+                android:minEms="3"
+                android:padding="2dp"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:testType="nocheck" />
 
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_horizontal"
-                style="@style/FormEditText.Number"
-                android:translationX="38dp"
-                android:translationY="-77dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext_border"
+                android:gravity="center"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal"
+                android:maxEms="4"
+                android:minEms="3"
+                android:padding="2dp"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:testType="nocheck" />
         </FrameLayout>
     </LinearLayout>
 
@@ -108,4 +135,5 @@
             android:textColor="@color/blue_bright"
             android:textSize="16sp" />
     </LinearLayout>
+
 </LinearLayout>
