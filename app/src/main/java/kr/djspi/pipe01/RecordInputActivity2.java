@@ -278,15 +278,15 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 switch (index) {
                     case 1:
                         fHorizontal.setTag("좌측");
-                        fVertical.setTag("차도방향");
+                        fVertical.setTag("전면");
                         break;
                     case 2:
                         fHorizontal.setTag("");
-                        fVertical.setTag("차도방향");
+                        fVertical.setTag("전면");
                         break;
                     case 3:
                         fHorizontal.setTag("우측");
-                        fVertical.setTag("차도방향");
+                        fVertical.setTag("전면");
                         break;
                     case 4:
                         fHorizontal.setTag("좌측");
@@ -306,15 +306,15 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                         break;
                     case 7:
                         fHorizontal.setTag("좌측");
-                        fVertical.setTag("보도방향");
+                        fVertical.setTag("후면");
                         break;
                     case 8:
                         fHorizontal.setTag("");
-                        fVertical.setTag("보도방향");
+                        fVertical.setTag("후면");
                         break;
                     case 9:
                         fHorizontal.setTag("우측");
-                        fVertical.setTag("보도방향");
+                        fVertical.setTag("후면");
                         break;
                     default:
                         fHorizontal.setTag("수평");

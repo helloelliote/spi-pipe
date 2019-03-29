@@ -84,31 +84,31 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
 
         switch (bundle.getInt("positionInt")) {
             case 1:
-                setTranslation(null, -110.0f, -150.0f, -315.0f);
+                setTranslation(null, -100.0f, -150.0f, -315.0f);
                 break;
             case 2:
-                setTranslation(fHorizontal, -110.0f, 0.0f, 0.0f);
+                setTranslation(fHorizontal, -100.0f, 0.0f, 0.0f);
                 break;
             case 3:
-                setTranslation(null, -110.0f, 150.0f, -315.0f);
+                setTranslation(null, -100.0f, 155.0f, -315.0f);
                 break;
             case 4:
-                setTranslation(fVertical, 0.0f, 0.0f, 0.0f);
+                setTranslation(fVertical, 0.0f, -90.0f, 0.0f);
                 break;
             case 5:
                 // Unreachable case
                 break;
             case 6:
-                setTranslation(fVertical, 0.0f, 0.0f, 0.0f);
+                setTranslation(fVertical, 0.0f, 100.0f, 0.0f);
                 break;
             case 7:
-                setTranslation(null, 110.0f, -150.0f, 315.0f);
+                setTranslation(null, 90.0f, -150.0f, 315.0f);
                 break;
             case 8:
-                setTranslation(fHorizontal, 110.0f, 0.0f, 0.0f);
+                setTranslation(fHorizontal, 95.0f, 0.0f, 0.0f);
                 break;
             case 9:
-                setTranslation(null, 110.0f, 150.0f, 315.0f);
+                setTranslation(null, 95.0f, 155.0f, 315.0f);
                 break;
             default:
                 break;

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +18,11 @@ import org.jetbrains.annotations.NotNull;
 
 import kr.djspi.pipe01.R;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static kr.djspi.pipe01.BaseActivity.packageName;
+import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
@@ -26,11 +30,11 @@ import static kr.djspi.pipe01.RecordInputActivity2.fragmentManager;
 import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
 import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
-import static kr.djspi.pipe01.fragment.PositionDialog.fromRes;
 
 public class DirectionDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = DirectionDialog.class.getSimpleName();
+    private static final String DEF_TYPE = "drawable";
     private static String dialogTitle;
     private static String typeString;
     private static String shapeString;
@@ -102,10 +106,19 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
                     PIPE_DIRECTIONS[i * 2]);
         }
 
-        image_2.setImageDrawable(fromRes(resIds[2]));
-        image_4.setImageDrawable(fromRes(resIds[4]));
-        image_6.setImageDrawable(fromRes(resIds[6]));
-        image_8.setImageDrawable(fromRes(resIds[8]));
+        setImageView(image_2, resIds[2]);
+        setImageView(image_4, resIds[4]);
+        setImageView(image_6, resIds[6]);
+        setImageView(image_8, resIds[8]);
+    }
+
+    private static void setImageView(ImageView view, String resId) {
+        int i = resources.getIdentifier(resId, DEF_TYPE, packageName);
+        if (i != 0) view.setBackgroundResource(i);
+        else {
+            FrameLayout layout = (FrameLayout) view.getParent();
+            layout.setVisibility(GONE);
+        }
     }
 
     @Override

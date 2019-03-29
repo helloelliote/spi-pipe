@@ -80,7 +80,7 @@
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_vertical"
                 style="@style/FormEditText"
-                android:layout_weight="1.5"
+                android:layout_weight="1.3"
                 android:hint="@string/record_input_2_vertical" />
 
             <TextView
@@ -93,7 +93,7 @@
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_horizontal"
                 style="@style/FormEditText"
-                android:layout_weight="1.1"
+                android:layout_weight="1.3"
                 android:hint="@string/record_input_2_horizontal" />
 
             <TextView
