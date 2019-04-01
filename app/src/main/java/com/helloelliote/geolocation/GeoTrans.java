@@ -1,4 +1,4 @@
-package com.helloelliote.geographic;
+package com.helloelliote.geolocation;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

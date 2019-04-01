@@ -187,6 +187,7 @@
                 android:id="@+id/form_material"
                 style="@style/FormEditText"
                 android:hint="@string/record_input_5_hint"
+                android:imeOptions="actionNext"
                 android:inputType="text" />
         </LinearLayout>
 

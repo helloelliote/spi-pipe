@@ -4,6 +4,7 @@ import android.nfc.NdefRecord;
 
 import com.google.common.base.Preconditions;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
@@ -25,6 +26,7 @@ public class TextRecord implements ParsedRecord {
 
     // deal with text fields which span multiple NdefRecords
     @NotNull
+    @Contract("_ -> new")
     static TextRecord parse(@NotNull NdefRecord record) {
         Preconditions.checkArgument(record.getTnf() == NdefRecord.TNF_WELL_KNOWN);
         Preconditions.checkArgument(Arrays.equals(record.getType(), NdefRecord.RTD_TEXT));
@@ -46,9 +48,8 @@ public class TextRecord implements ParsedRecord {
             String textEncoding = ((payload[0] & 0200) == 0) ? "UTF-8" : "UTF-16";
             int languageCodeLength = payload[0] & 0077;
             String languageCode = new String(payload, 1, languageCodeLength, "US-ASCII");
-            String text =
-                    new String(payload, languageCodeLength + 1,
-                            payload.length - languageCodeLength - 1, textEncoding);
+            String text = new String(payload, languageCodeLength + 1,
+                    payload.length - languageCodeLength - 1, textEncoding);
             return new TextRecord(languageCode, text);
         } catch (UnsupportedEncodingException e) {
             // should never happen unless we getInstance a malformed tag.

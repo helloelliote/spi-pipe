@@ -18,7 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.helloelliote.filter.DecimalFilter;
-import com.helloelliote.geographic.GeoTrans;
+import com.helloelliote.geolocation.GeoTrans;
 
 import kr.djspi.pipe01.R;
 

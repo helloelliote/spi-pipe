@@ -79,3 +79,5 @@
     public static *** d(...);
     public static *** e(...);
 }
+
+-keep class kr.djspi.pipe01.dto.** { *; }

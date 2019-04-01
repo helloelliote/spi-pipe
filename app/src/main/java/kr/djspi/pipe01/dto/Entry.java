@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+/**
+ * (중요) DTO 클래스는 Proguard 난독화 대상에서 제외시켜야 Json 파싱 과정에서 각종 변수명들이 유지된다.
+ * proguard-rules.pro: -keep class kr.djspi.pipe01.dto.** { *; }
+ */
 @Data
 public class Entry implements Serializable {
     private final Spi spi;

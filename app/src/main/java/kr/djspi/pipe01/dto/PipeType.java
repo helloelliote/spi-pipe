@@ -47,7 +47,7 @@ public class PipeType implements DataItem, Serializable {
         난방관로("난방관로", R.drawable.cir_07_map, HEAD_RAD, UNIT_MM),
         유류관로("유류관로", R.drawable.cir_08_map, HEAD_RAD, UNIT_MM),
         가로등("가로등", R.drawable.cir_09_map, HEAD_CORE, UNIT_CORE),
-        CCTV("CCTV", R.drawable.cir_10_map, HEAD_RAD, UNIT_MM),
+        CCTV("CCTV", R.drawable.cir_10_map, HEAD_CORE, UNIT_CORE),
         광케이블("광케이블", R.drawable.cir_11_map, HEAD_CORE, UNIT_CORE),
         기타관로("기타관로", R.drawable.cir_12_map, HEAD_RAD, UNIT_MM);
 

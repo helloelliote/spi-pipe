@@ -1,4 +1,4 @@
-package com.helloelliote.geographic;
+package com.helloelliote.geolocation;
 
 import android.support.annotation.NonNull;
 

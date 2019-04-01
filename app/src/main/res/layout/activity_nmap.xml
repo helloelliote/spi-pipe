@@ -25,6 +25,7 @@
         android:focusableInTouchMode="true"
         android:goIcon="@drawable/search_start"
         android:iconifiedByDefault="false"
+        android:imeOptions="actionSearch"
         android:queryHint="@string/map_search_hint"
         android:searchHintIcon="@null"
         android:searchIcon="@null" />

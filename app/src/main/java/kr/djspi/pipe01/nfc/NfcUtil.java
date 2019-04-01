@@ -34,6 +34,7 @@ import java.util.Locale;
 
 import static android.nfc.NdefRecord.RTD_TEXT;
 import static android.nfc.NdefRecord.TNF_WELL_KNOWN;
+import static com.nxp.nfclib.CardType.NTag213;
 import static com.nxp.nfclib.CardType.NTag216;
 import static kr.djspi.pipe01.BuildConfig.APPLICATION_ID;
 import static kr.djspi.pipe01.BuildConfig.NFC_LICENSE_KEY;
@@ -100,6 +101,8 @@ public final class NfcUtil {
         try {
             if (nxpNfcLib.getCardType(intent) == NTag216) {
                 objNtag = NTagFactory.getInstance().getNTAG216(nxpNfcLib.getCustomModules());
+            } else if (nxpNfcLib.getCardType(intent) == NTag213) {
+                objNtag = NTagFactory.getInstance().getNTAG213(nxpNfcLib.getCustomModules());
             } else {
                 Log.w(TAG, "TAG is NOT NTAG 216 Type");
                 return null;
@@ -270,6 +273,3 @@ public final class NfcUtil {
         }
     }
 }
-
-
-// TODO: 2019-04-01 213 지원 추가 (단일형)

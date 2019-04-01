@@ -130,6 +130,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                     });
         }
 
+        // TODO: 2019-04-01 서버측에서 등록된 SPI 를 휴지통으로 보냈을 경우 태깅하면 예외 발생
         private void processServerData(@NotNull JsonObject response) {
             JsonObject jsonObject = Json.o(response, "data");
             if (Json.i(jsonObject, "pipe_count") == 0) {
