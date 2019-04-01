@@ -121,7 +121,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      */
     @UiThread
     private void setNaverMap() {
-        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map_fragment);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance(new NaverMapOptions()
                     .contentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT)
@@ -135,7 +135,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     .locationButtonEnabled(true)
                     .zoomGesturesEnabled(true)
             );
-            getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
+            fragmentManager.beginTransaction().add(R.id.map_fragment, mapFragment).commit();
         }
         mapFragment.getMapAsync(this);
     }

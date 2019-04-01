@@ -4,13 +4,20 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.design.button.MaterialButton;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
+import com.helloelliote.geographic.GeoPoint;
+import com.helloelliote.geographic.GeoTrans;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraPosition;
+import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMap.MapType;
@@ -21,18 +28,31 @@ import com.naver.maps.map.OnMapReadyCallback;
 import java.io.Serializable;
 import java.util.Locale;
 
+import kr.djspi.pipe01.fragment.LocationDialog;
+import kr.djspi.pipe01.fragment.OnSelectListener;
+import kr.djspi.pipe01.fragment.SurveyDialog;
+
 import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.helloelliote.geographic.GeoTrans.Coordinate.GEO;
+import static com.naver.maps.map.CameraUpdate.REASON_GESTURE;
 import static com.naver.maps.map.LocationTrackingMode.None;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
+import static kr.djspi.pipe01.Const.TAG_LOCATION;
+import static kr.djspi.pipe01.Const.TAG_SURVEY;
+import static kr.djspi.pipe01.fragment.SurveyDialog.originPoint;
 
-public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCallback, OnClickListener, Serializable {
+public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCallback, OnClickListener, OnSelectListener, Serializable {
 
     private static final double ZOOM_DEFAULT = 19.0; // 기본 줌레벨
-    private static final double ZOOM_MIN = 16.0; // 최소 줌레벨
+    private static final double ZOOM_MIN = 12.0; // 최소 줌레벨
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
+    private LocationDialog selectDialog = new LocationDialog();
+    private TextView textView;
+    private MaterialButton buttonConfirm;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -55,7 +75,11 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
-        findViewById(R.id.btn_confirm).setOnClickListener(this);
+        textView = findViewById(R.id.record_gps);
+        textView.setOnClickListener(this);
+        buttonConfirm = findViewById(R.id.btn_confirm);
+        buttonConfirm.setOnClickListener(this);
+
         setToolbarTitle(getString(R.string.record_location_title));
     }
 
@@ -69,7 +93,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
      */
     @UiThread
     private void setNaverMap() {
-        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map_fragment);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance(new NaverMapOptions()
                     .camera(new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT, 0, 0))
@@ -82,7 +106,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                     .locationButtonEnabled(true)
                     .zoomGesturesEnabled(true)
             );
-            getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
+            fragmentManager.beginTransaction().add(R.id.map_fragment, mapFragment).commit();
         }
         mapFragment.getMapAsync(this);
     }
@@ -100,7 +124,15 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         SpiLocationActivity.naverMap = naverMap;
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(None);
+        naverMap.addOnCameraChangeListener((reason, animated) -> {
+            if (reason == REASON_GESTURE) textView.setAlpha(0.25f);
+        });
         setMapModeSwitch(naverMap);
+
+        runOnUiThread(() -> {
+            selectDialog.setCancelable(false);
+            selectDialog.show(fragmentManager, TAG_LOCATION);
+        });
     }
 
     /**
@@ -134,6 +166,9 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.record_gps:
+                v.setAlpha(1.0f);
+                break;
             case R.id.btn_confirm:
                 try {
                     final LatLng latLng = naverMap.getCameraPosition().target;
@@ -148,5 +183,60 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onSelect(String tag, int index, @Nullable String... text) {
+        if (index == -1) return;
+        switch (tag) {
+            case TAG_LOCATION:
+                if (index == 1) {
+                    SurveyDialog surveyDialog = new SurveyDialog();
+                    surveyDialog.setCancelable(false);
+                    surveyDialog.show(fragmentManager, TAG_SURVEY);
+                } else {
+                    textView.setVisibility(VISIBLE);
+                    buttonConfirm.setVisibility(VISIBLE);
+                }
+                break;
+            case TAG_SURVEY:
+                if (index == 400) {
+                    selectDialog.setCancelable(false);
+                    selectDialog.show(fragmentManager, TAG_LOCATION);
+                    return;
+                }
+                assert text != null;
+                LatLng surveyLatLng = convertTmToLatLng(Double.valueOf(text[0]), Double.valueOf(text[1]));
+                CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(surveyLatLng, ZOOM_DEFAULT).animate(CameraAnimation.Fly);
+                naverMap.moveCamera(cameraUpdate);
+                buttonConfirm.setVisibility(VISIBLE);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Tm 좌표계를 LatLng 경위도 좌표계로 변환한다. 반드시 변환 과정에서 X, Y 좌표를 반전시켜 리턴한다.
+     *
+     * @param Tm1
+     * @param Tm2
+     * @return
+     */
+    @NonNull
+    private LatLng convertTmToLatLng(double Tm1, double Tm2) {
+        GeoPoint surveyPoint = GeoTrans.convert(originPoint, GEO, new GeoPoint(Tm2, Tm1));
+        return new LatLng(surveyPoint.getY(), surveyPoint.getX());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (selectDialog.isAdded()) return;
+        textView.setVisibility(INVISIBLE);
+        buttonConfirm.setVisibility(INVISIBLE);
+        runOnUiThread(() -> {
+            selectDialog.setCancelable(false);
+            selectDialog.show(fragmentManager, TAG_LOCATION);
+        });
     }
 }

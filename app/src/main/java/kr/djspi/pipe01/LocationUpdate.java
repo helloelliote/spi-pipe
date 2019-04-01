@@ -19,7 +19,6 @@ import com.naver.maps.map.util.FusedLocationSource;
 
 import java.util.ArrayList;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -83,7 +82,7 @@ public abstract class LocationUpdate extends BaseActivity {
      */
     @SuppressLint("MissingPermission")
     private static void requestAllPermissions(Context context) {
-        String[] permissions = {ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA};
+        String[] permissions = {ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA};
         Permissions.check(context/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
             @Override
             public void onGranted() {

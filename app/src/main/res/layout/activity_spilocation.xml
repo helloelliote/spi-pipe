@@ -12,45 +12,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/record_gps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:background="@drawable/record_gps_border"
+        android:lines="1"
+        android:padding="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="@string/record_gps_sub"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:visibility="invisible" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:src="@drawable/ic_marker_3" />
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_horizontal|bottom"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:padding="10dp">-->
-
-        <!--<android.support.design.button.MaterialButton-->
-            <!--android:id="@+id/btn_cancel"-->
-            <!--style="@style/Spi.TextButton"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="2.5"-->
-            <!--android:text="@string/record_cancel"-->
-            <!--android:visibility="invisible" />-->
-
-        <!--<android.support.design.button.MaterialButton-->
-            <!--android:id="@+id/btn_reload"-->
-            <!--style="@style/Spi.Button"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:backgroundTint="@color/green"-->
-            <!--app:icon="@drawable/ic_target"-->
-            <!--app:iconGravity="start" />-->
-
-        <android.support.design.button.MaterialButton
-            android:id="@+id/btn_confirm"
-            style="@style/Spi.Button"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="10dp"
-            android:text="@string/record_confirm_location" />
-    <!--</LinearLayout>-->
+    <android.support.design.button.MaterialButton
+        android:id="@+id/btn_confirm"
+        style="@style/Spi.Button"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/record_confirm_location"
+        android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>

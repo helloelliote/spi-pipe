@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import kr.djspi.pipe01.Const.NfcRecordEnum;
+import kr.djspi.pipe01.fragment.MessageDialog;
 import kr.djspi.pipe01.nfc.NfcUtil;
 
 import static kr.djspi.pipe01.Const.URL_SPI;
@@ -40,7 +41,14 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
         TextView textView = findViewById(R.id.txt_write);
         textView.setText(Html.fromHtml(getString(R.string.write_instruction)));
 
-        runOnUiThread(() -> showMessageDialog(4, getString(R.string.popup_read_only)));
+        runOnUiThread(() -> {
+            MessageDialog dialog = new MessageDialog();
+            dialog.setCancelable(false);
+            Bundle bundle = new Bundle(1);
+            bundle.putInt("issueType", 4);
+            dialog.setArguments(bundle);
+            dialog.show(fragmentManager, getString(R.string.popup_read_only));
+        });
     }
 
     @Override

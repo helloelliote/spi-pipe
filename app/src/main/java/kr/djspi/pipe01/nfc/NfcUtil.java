@@ -270,3 +270,6 @@ public final class NfcUtil {
         }
     }
 }
+
+
+// TODO: 2019-04-01 213 지원 추가 (단일형)

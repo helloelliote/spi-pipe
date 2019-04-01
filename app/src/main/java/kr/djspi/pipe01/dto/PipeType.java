@@ -13,11 +13,6 @@ import static kr.djspi.pipe01.BaseActivity.pipes;
 @Data
 public class PipeType implements DataItem, Serializable {
 
-    static final String HEAD_NULL = "";
-    static final String HEAD_RAD = "관경";
-    static final String HEAD_CORE = "코어수";
-    static final String UNIT_MM = "mm";
-    static final String UNIT_CORE = "코어";
     private int id;
     private String header;
     private String pipe;
@@ -30,6 +25,12 @@ public class PipeType implements DataItem, Serializable {
         }
         return PipeTypeEnum.기타관로;
     }
+
+    static final String HEAD_NULL = "";
+    static final String HEAD_RAD = "관경";
+    static final String HEAD_CORE = "코어수";
+    static final String UNIT_MM = "mm";
+    static final String UNIT_CORE = "코어";
 
     /**
      * Enum 목록의 순서는 변경하지 않는다.

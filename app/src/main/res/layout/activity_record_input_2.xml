@@ -317,7 +317,7 @@
         <android.support.design.button.MaterialButton
             android:id="@+id/button_confirm"
             style="@style/Spi.Button"
-            android:layout_width="194dp"
+            android:layout_width="200dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"

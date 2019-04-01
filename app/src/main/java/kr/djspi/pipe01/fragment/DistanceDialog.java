@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
@@ -21,6 +20,7 @@ import com.helloelliote.filter.DecimalFilter;
 import kr.djspi.pipe01.R;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
 import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
 import static kr.djspi.pipe01.fragment.PositionDialog.fromRes;
@@ -31,6 +31,10 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
     private static String dialogTitle;
     private static String resId;
     private static Bundle bundle;
+    private static String typeString;
+    private static String shapeString;
+    private static int positionInt = -1;
+    private static String planString;
     private static FormEditText fVertical, fHorizontal;
     private static OnSelectListener listener;
 
@@ -50,7 +54,11 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             bundle = getArguments();
-            resId = String.format("%s_distance", bundle.getString("planString"));
+            typeString = bundle.getString("typeString");
+            shapeString = bundle.getString("shapeString");
+            positionInt = bundle.getInt("positionInt");
+            planString = bundle.getString("planString");
+            resId = String.format("%s_distance", planString);
         }
         dialogTitle = getString(R.string.popup_title_input_distance);
     }
@@ -82,46 +90,100 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
         fHorizontal.setFilters(filter);
         fVertical.setFilters(filter);
 
-        switch (bundle.getInt("positionInt")) {
-            case 1:
-                setTranslation(null, -100.0f, -150.0f, -315.0f);
-                break;
-            case 2:
-                setTranslation(fHorizontal, -100.0f, 0.0f, 0.0f);
-                break;
-            case 3:
-                setTranslation(null, -100.0f, 155.0f, -315.0f);
-                break;
-            case 4:
-                setTranslation(fVertical, 0.0f, -90.0f, 0.0f);
-                break;
-            case 5:
-                // Unreachable case
-                break;
-            case 6:
-                setTranslation(fVertical, 0.0f, 100.0f, 0.0f);
-                break;
-            case 7:
-                setTranslation(null, 90.0f, -150.0f, 315.0f);
-                break;
-            case 8:
-                setTranslation(fHorizontal, 95.0f, 0.0f, 0.0f);
-                break;
-            case 9:
-                setTranslation(null, 95.0f, 155.0f, 315.0f);
-                break;
-            default:
-                break;
-        }
+        setPosition();
 
         return view;
     }
 
-    private static void setTranslation(@Nullable FormEditText disable, float vY, float hX, float hY) {
-        if (disable != null) {
-            disable.setText("0.0");
-            disable.setVisibility(GONE);
-            disable.setEnabled(false);
+    private void setPosition() {
+        if (shapeString.equals("직진형")) {
+            switch (positionInt) {
+                case 1:
+                    setTranslation(true, false, 0.0f, -50.0f, 0.0f);
+                    break;
+                case 2:
+                    if (planString.equals("plan_plate_str_2_out") || planString.equals("plan_marker_str_2_out")) {
+                        fVertical.setText("0.0");
+                        fHorizontal.setText("0.0");
+                        listener.onSelect(TAG_DISTANCE, 0, fHorizontal.getText().toString(), fVertical.getText().toString());
+                        dismissAllowingStateLoss();
+                        break;
+                    } else setTranslation(false, true, -50.0f, 0.0f, 0.0f);
+                    break;
+                case 3:
+                    setTranslation(true, false, 0.0f, 50.0f, 0.0f);
+                    break;
+                case 4:
+                    setTranslation(true, false, 0.0f, -100.0f, 0.0f);
+                    break;
+                case 5:
+                    break;
+                // Unreachable case
+                case 6:
+                    setTranslation(true, false, 0.0f, 100.0f, 0.0f);
+                    break;
+                case 7:
+                    setTranslation(true, false, 0.0f, -50.0f, 0.0f);
+                    break;
+                case 8:
+                    if (planString.equals("plan_plate_str_8_out") || planString.equals("plan_marker_str_8_out")) {
+                        fVertical.setText("0.0");
+                        fHorizontal.setText("0.0");
+                        listener.onSelect(TAG_DISTANCE, 0, fHorizontal.getText().toString(), fVertical.getText().toString());
+                        dismissAllowingStateLoss();
+                        break;
+                    } else setTranslation(false, true, 50.0f, 0.0f, 0.0f);
+                    break;
+                case 9:
+                    setTranslation(true, false, 0.0f, 50.0f, 0.0f);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (positionInt) {
+                case 1:
+                    setTranslation(false, false, -100.0f, -150.0f, -315.0f);
+                    break;
+                case 2:
+                    setTranslation(false, true, -100.0f, 0.0f, 0.0f);
+                    break;
+                case 3:
+                    setTranslation(false, false, -100.0f, 155.0f, -315.0f);
+                    break;
+                case 4:
+                    setTranslation(true, false, 0.0f, -90.0f, 0.0f);
+                    break;
+                case 5: // Unreachable case
+                    break;
+                case 6:
+                    setTranslation(true, false, 0.0f, 100.0f, 0.0f);
+                    break;
+                case 7:
+                    setTranslation(false, false, 90.0f, -150.0f, 315.0f);
+                    break;
+                case 8:
+                    setTranslation(false, true, 95.0f, 0.0f, 0.0f);
+                    break;
+                case 9:
+                    setTranslation(false, false, 95.0f, 155.0f, 315.0f);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private static void setTranslation(boolean noV, boolean noH, float vY, float hX, float hY) {
+        if (noV) {
+            fVertical.setText("0.0");
+            fVertical.setVisibility(GONE);
+            fHorizontal.setVisibility(VISIBLE);
+        }
+        if (noH) {
+            fHorizontal.setText("0.0");
+            fHorizontal.setVisibility(GONE);
+            fVertical.setVisibility(VISIBLE);
         }
         fHorizontal.setTranslationX(hX);
         fHorizontal.setTranslationY(hY);
@@ -133,13 +195,15 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
         switch (v.getId()) {
             case R.id.btn_ok:
                 if (isAllValid()) {
-                    listener.onSelect(TAG_DISTANCE, 0,
-                            fHorizontal.getText().toString(),
-                            fVertical.getText().toString());
+                    listener.onSelect(TAG_DISTANCE, 0, fHorizontal.getText().toString(), fVertical.getText().toString());
+                    fHorizontal.setVisibility(VISIBLE);
+                    fVertical.setVisibility(VISIBLE);
                     dismissAllowingStateLoss();
                 } else return;
                 break;
             case R.id.btn_cancel:
+                fHorizontal.setVisibility(VISIBLE);
+                fVertical.setVisibility(VISIBLE);
                 dismissAllowingStateLoss();
                 showPositionDialog();
                 break;

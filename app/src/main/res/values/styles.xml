@@ -97,4 +97,21 @@
         <item name="tabTextColor">@android:color/white</item>
         <item name="tabIndicatorHeight">8dp</item>
     </style>
+
+    <style name="Spi.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="hintTextAppearance">@style/Spi.TextInputLayout.Hint</item>
+        <item name="boxStrokeColor">@color/colorAccent</item>
+        <item name="boxStrokeWidth">2dp</item>
+    </style>
+
+    <style name="Spi.TextInputLayout.Hint" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColorHint">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Spi.ErrorText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

@@ -70,7 +70,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         });
-
     }
 
     @Override

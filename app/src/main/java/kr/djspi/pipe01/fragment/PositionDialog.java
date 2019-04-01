@@ -27,6 +27,7 @@ import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static kr.djspi.pipe01.BaseActivity.packageName;
 import static kr.djspi.pipe01.BaseActivity.resources;
+import static kr.djspi.pipe01.Const.PIPE_SHAPES;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
@@ -41,6 +42,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
     private static String typeString;
     private static String dialogTitle;
     private static Bundle bundle;
+    private static String shapeString;
     private static OnSelectListener listener;
     private View checkView;
 
@@ -61,6 +63,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
         if (getArguments() != null) {
             bundle = getArguments();
             typeString = bundle.getString("typeString");
+            shapeString = bundle.getString("shapeString");
         }
         dialogTitle = getString(R.string.popup_title_select_position);
     }
@@ -133,6 +136,16 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
                 views[7].setImageDrawable(fromRes(R.drawable.btn_11_1));
                 views[8].setImageDrawable(fromRes(R.drawable.btn_11_2));
                 views[9].setImageDrawable(fromRes(R.drawable.btn_11_3));
+                if (shapeString.equals(PIPE_SHAPES[0])) { // 직진형
+                    views[1].setVisibility(GONE);
+                    ((View) views[1].getParent()).setVisibility(GONE);
+                    views[3].setVisibility(GONE);
+                    ((View) views[3].getParent()).setVisibility(GONE);
+                    views[7].setVisibility(GONE);
+                    ((View) views[7].getParent()).setVisibility(GONE);
+                    views[9].setVisibility(GONE);
+                    ((View) views[9].getParent()).setVisibility(GONE);
+                }
                 break;
             default:
                 break;

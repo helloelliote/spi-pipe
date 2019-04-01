@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -70,7 +69,6 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
     private static final String TAG = RecordInputActivity2.class.getSimpleName();
     public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
-    public static FragmentManager fragmentManager;
     public static ArrayList<String> superviseList;
     public static Parcelable state;
     private static Spi spi;
@@ -94,7 +92,6 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentManager = getSupportFragmentManager();
         Serializable serializable = getIntent().getSerializableExtra("PipeRecordActivity2");
         if (serializable instanceof HashMap) {
             HashMap<?, ?> itemMap = (HashMap) serializable;
@@ -135,8 +132,12 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         });
 
         findViewById(R.id.lay_distance).setOnClickListener(this);
-        fVertical = findViewById(R.id.form_vertical);
         fHorizontal = findViewById(R.id.form_horizontal);
+        fHorizontal.setFocusable(false);
+        fHorizontal.setOnClickListener(this);
+        fVertical = findViewById(R.id.form_vertical);
+        fVertical.setFocusable(false);
+        fVertical.setOnClickListener(this);
 
         fDepth = findViewById(R.id.form_depth);
 
@@ -206,18 +207,15 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
     @Override
     public void onClick(View v) {
-        ListDialog listDialog;
         switch (v.getId()) {
             case R.id.lay_pipe:
             case R.id.form_pipe:
-                listDialog = new ListDialog();
-                listDialog.show(fragmentManager, TAG_PIPE);
+                new ListDialog().show(fragmentManager, TAG_PIPE);
                 break;
             case R.id.lay_shape:
             case R.id.form_shape:
                 pipeShape.setShape(null);
-                listDialog = new ListDialog();
-                listDialog.show(fragmentManager, TAG_SHAPE);
+                new ListDialog().show(fragmentManager, TAG_SHAPE);
                 break;
             case R.id.lay_supervise:
             case R.id.form_supervise:
@@ -227,14 +225,11 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                     fSupervise.setHint("직접 입력해주세요.");
                     return;
                 }
-                listDialog = new ListDialog();
-                listDialog.show(fragmentManager, TAG_SUPERVISE);
+                new ListDialog().show(fragmentManager, TAG_SUPERVISE);
                 break;
             case R.id.lay_distance:
-                if (pipeShape.getShape() == null) {
-                    Toast.makeText(context, "관로형태를 먼저 입력해 주세요.", Toast.LENGTH_LONG).show();
-                    return;
-                }
+            case R.id.form_horizontal:
+            case R.id.form_vertical:
                 showPositionDialog();
                 break;
             default:
@@ -244,7 +239,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
     public static void showPositionDialog() {
         PositionDialog dialog = new PositionDialog();
-        Bundle bundle = new Bundle(4);
+        Bundle bundle = new Bundle();
         bundle.putString("typeString", spiType.getType());
         bundle.putString("shapeString", pipeShape.getShape());
         dialog.setArguments(bundle);
@@ -256,11 +251,13 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         if (index == -1) return;
         switch (tag) {
             case TAG_PIPE:
+                // TODO: 2019-04-01 index 번호 대신 서버에서 오는 정보 사용하도록 개선
                 fPipe.setText(pipes[index].getName());
                 pipeType.setId(index + 1);
                 pipe.setType_id(index + 1);
                 String header = pipes[index].getHeader();
                 tHeader.setText(String.format("%s  ", header));
+                fSpec.setHint(String.format("%s 입력", header).replace("관경", "관로관경"));
                 String unit = pipes[index].getUnit();
                 tUnit.setText(String.format("  %s", unit));
                 fSpec.setInputType(index == 5 ? TYPE_CLASS_TEXT : TYPE_CLASS_NUMBER); // index == 5 : 통신관로
@@ -327,6 +324,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 pipePlan.setFile_plane(text[0] + ".png");
                 break;
             case TAG_DISTANCE:
+                // TODO: 2019-04-01 관로형태 먼저 체크 필수
                 fHorizontal.setText(String.format("%s %s", fHorizontal.getTag().toString(), text[0]));
                 fVertical.setText(String.format("%s %s", fVertical.getTag().toString(), text[1]));
                 pipePosition.setHorizontal(Double.valueOf(text[0]));
