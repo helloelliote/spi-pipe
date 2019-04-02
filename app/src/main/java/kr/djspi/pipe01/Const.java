@@ -28,20 +28,19 @@ public final class Const {
     static final int REQUEST_CODE_PHOTO = 10001;
     static final int REQUEST_CODE_GALLERY = 10002;
 
-    // TODO: 2019-04-02 213 사용하지 않을 시 원상복구 필요
     @SuppressWarnings("ALL")
     public enum NfcRecordEnum {
-        //        ID("spi_id", "ID"),
+        ID("spi_id", "ID:"),
         PIPE("pipe", ""),
         SHAPE("shape", ""),
         MATERIAL("material", ""),
         HEADER("header", ""),
         SPEC("spec", ""),
         UNIT("unit", ""),
-        VERTICAL("vertical", "수직m"),
-        HORIZONTAL("horizontal", "수평m"),
-        DEPTH("depth", "심도m"),
-        SUPERVISE("supervise", ""),
+        VERTICAL("vertical", "수직m:"),
+        HORIZONTAL("horizontal", "수평m:"),
+        DEPTH("depth", "심도m:"),
+        SUPERVISE("supervise", "관리처:"),
         CONTACT("supervise_contact", "");
 
         private String memberName;
@@ -61,7 +60,7 @@ public final class Const {
                 builder.append(values[i].memberLabel).append(Json.s(object, values[i].memberName)).append(" ");
             }
             String[] strings = new String[1];
-            strings[0] = builder.toString().replace("-", "").trim();
+            strings[0] = builder.toString().trim();
             return strings;
         }
     }

@@ -26,7 +26,6 @@ import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
-import static kr.djspi.pipe01.RecordInputActivity2.fragmentManager;
 import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
 import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
@@ -137,7 +136,7 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
                     DistanceDialog dialog = new DistanceDialog();
                     bundle.putString("planString", resIds[selectIndex]);
                     dialog.setArguments(bundle);
-                    dialog.show(fragmentManager, TAG_DISTANCE);
+                    dialog.show(getFragmentManager(), TAG_DISTANCE);
                     dismissAllowingStateLoss();
                 }
                 break;

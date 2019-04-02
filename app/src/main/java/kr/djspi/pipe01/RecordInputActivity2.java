@@ -1,17 +1,17 @@
 package kr.djspi.pipe01;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andreabaccega.widget.FormEditText;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -54,8 +53,10 @@ import kr.djspi.pipe01.fragment.OnSelectListener;
 import kr.djspi.pipe01.fragment.PositionDialog;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
-import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_NEXT;
+import static android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY;
+import static android.view.inputmethod.InputMethodManager.SHOW_FORCED;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_MAP;
@@ -72,8 +73,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
     private static final String TAG = RecordInputActivity2.class.getSimpleName();
     public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
-    public static ArrayList<String> superviseList;
-    public static Parcelable state;
+    public static FragmentManager fragmentManager;
     private static Spi spi;
     private static SpiType spiType;
     private static SpiMemo spiMemo;
@@ -84,7 +84,8 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
     private TextView tHeader, tUnit;
-    private static InputMethodManager imm;
+    private Bundle superviseListBundle = new Bundle(1);
+    public ArrayList<String> superviseList;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -106,7 +107,12 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         }
         setContentView(R.layout.activity_record_input_2);
         superviseList = getSuperviseList();
-        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        fragmentManager = getSupportFragmentManager();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -161,8 +167,11 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         fMaterial.setOnEditorActionListener((v, actionId, event) -> {
             boolean isHandled = false;
             if (actionId == IME_ACTION_NEXT && fSupervise.getText().toString().equals("") && !superviseList.isEmpty()) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.toggleSoftInputFromWindow(v.getWindowToken(), 0, 0);
-                new ListDialog().show(fragmentManager, TAG_SUPERVISE);
+                ListDialog listDialog = new ListDialog();
+                listDialog.setArguments(superviseListBundle);
+                listDialog.show(getSupportFragmentManager(), TAG_SUPERVISE);
                 isHandled = true;
             }
             return isHandled;
@@ -207,6 +216,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                             final JsonArray jsonArray = Json.a(response, "data");
                             for (JsonElement element : jsonArray) {
                                 superviseList.add(Json.s(element.getAsJsonObject(), "supervise"));
+                                superviseListBundle.putStringArrayList("superviseList", superviseList);
                             }
                         }
 
@@ -224,12 +234,12 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         switch (v.getId()) {
             case R.id.lay_pipe:
             case R.id.form_pipe:
-                new ListDialog().show(fragmentManager, TAG_PIPE);
+                new ListDialog().show(getSupportFragmentManager(), TAG_PIPE);
                 break;
             case R.id.lay_shape:
             case R.id.form_shape:
                 pipeShape.setShape(null);
-                new ListDialog().show(fragmentManager, TAG_SHAPE);
+                new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
                 break;
             case R.id.lay_supervise:
             case R.id.form_supervise:
@@ -239,13 +249,15 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                     fSupervise.setHint("직접 입력해주세요.");
                     return;
                 }
-                new ListDialog().show(fragmentManager, TAG_SUPERVISE);
+                ListDialog listDialog = new ListDialog();
+                listDialog.setArguments(superviseListBundle);
+                listDialog.show(getSupportFragmentManager(), TAG_SUPERVISE);
                 break;
             case R.id.lay_distance:
             case R.id.form_horizontal:
             case R.id.form_vertical:
                 if (pipeShape.getShape() == null) {
-                    new ListDialog().show(fragmentManager, TAG_SHAPE);
+                    new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
                 } else showPositionDialog();
                 break;
             default:
@@ -265,6 +277,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
     @Override
     public void onSelect(String tag, int index, String... text) {
         if (index == -1) return;
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         switch (tag) {
             case TAG_PIPE:
                 // TODO: 2019-04-01 index 번호 대신 서버에서 오는 정보 사용하도록 개선
@@ -276,9 +289,10 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 fSpec.setHint(String.format("%s 입력", header).replace("관경", "관로관경"));
                 String unit = pipes[index].getUnit();
                 tUnit.setText(String.format("  %s", unit));
-                fSpec.setInputType(index == 5 ? TYPE_CLASS_TEXT : TYPE_CLASS_NUMBER); // index == 5 : 통신관로
+                if (unit.equals("mm")) fSpec.setInputType(TYPE_CLASS_NUMBER);
+                else fSpec.setInputType(TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 pipeShape.setShape(null);
-                new ListDialog().show(fragmentManager, TAG_SHAPE);
+                new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
                 break;
             case TAG_SHAPE:
                 fShape.setText(shapes[index].name());
@@ -288,7 +302,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 pipeSupervise.setId(index + 1);
                 pipe.setSupervise_id(index + 1);
                 fSuperviseContact.requestFocus();
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                imm.toggleSoftInput(SHOW_FORCED, HIDE_IMPLICIT_ONLY);
                 break;
             case TAG_POSITION:
                 pipePosition.setPosition(index);
@@ -349,7 +363,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 pipePosition.setHorizontal(Double.valueOf(text[0]));
                 pipePosition.setVertical(Double.valueOf(text[1]));
                 fDepth.requestFocus();
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                imm.toggleSoftInput(SHOW_FORCED, HIDE_IMPLICIT_ONLY);
                 break;
             default:
                 break;
@@ -433,12 +447,11 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 final Entry entry = setEntry();
                 ArrayList<Entry> entries = new ArrayList<>(1);
                 entries.add(entry);
-                Log.w(TAG, new Gson().toJson(entries));
                 startActivity(new Intent(context, RecordWriteActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("entry", entries));
             } catch (Exception e) {
-                showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.");
+                showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.", true);
                 Log.e(TAG, e.getMessage());
             }
         }

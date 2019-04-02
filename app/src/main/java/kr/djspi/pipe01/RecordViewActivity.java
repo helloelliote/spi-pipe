@@ -49,7 +49,7 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
 
         // (탭) 사용자의 좌우 스와이프 이벤트를 처리가능하게끔 어댑터를 사용
         TabLayout tabLayout = findViewById(R.id.tabs);
-        final TabAdapter tabAdapter = new TabAdapter(fragmentManager, tabLayout.getTabCount());
+        final TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager = findViewById(R.id.container);
         viewPager.setAdapter(tabAdapter);
         viewPager.addOnPageChangeListener(new TabLayoutOnPageChangeListener(tabLayout));
@@ -66,8 +66,7 @@ public class RecordViewActivity extends BaseActivity implements Serializable, On
     @Override
     void setToolbarTitle(String string) {
         if (string != null) {
-            toolbar.setTitle(String.format(getString(R.string.app_title_alt),
-                    Json.s(jsonObject, "pipe"), ""));
+            toolbar.setTitle(String.format(getString(R.string.app_title_alt), Json.s(jsonObject, "pipe"), ""));
         }
     }
 

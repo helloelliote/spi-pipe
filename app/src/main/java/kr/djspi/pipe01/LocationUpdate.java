@@ -138,7 +138,7 @@ public abstract class LocationUpdate extends BaseActivity {
     @Override
     public void onResume() {
         if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
-            showMessageDialog(1, getString(R.string.popup_location_on));
+            showMessageDialog(1, getString(R.string.popup_location_on), false);
         }
         if (requestingLocationUpdates || currentLocation == null) startLocationUpdates();
         super.onResume();

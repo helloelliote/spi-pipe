@@ -35,8 +35,7 @@
                 android:id="@+id/form_pipe"
                 style="@style/FormEditText"
                 android:focusable="false"
-                android:hint="@string/record_input_0_hint"
-                android:inputType="text" />
+                android:hint="@string/record_input_0_hint" />
         </LinearLayout>
 
         <View
@@ -58,8 +57,7 @@
                 android:id="@+id/form_shape"
                 style="@style/FormEditText"
                 android:focusable="false"
-                android:hint="@string/record_input_1_hint"
-                android:inputType="text" />
+                android:hint="@string/record_input_1_hint" />
         </LinearLayout>
 
         <View
@@ -157,7 +155,7 @@
                 style="@style/FormEditText"
                 android:layout_weight="2.5"
                 android:hint="@string/record_input_4_hint"
-                android:inputType="numberDecimal|text" />
+                android:inputType="numberDecimal|textNoSuggestions" />
 
             <TextView
                 android:id="@+id/unit"
@@ -188,7 +186,8 @@
                 style="@style/FormEditText"
                 android:hint="@string/record_input_5_hint"
                 android:imeOptions="actionNext"
-                android:inputType="text" />
+                android:inputType="textNoSuggestions"
+                android:lines="1" />
         </LinearLayout>
 
         <View
@@ -210,8 +209,7 @@
                 android:id="@+id/form_supervise"
                 style="@style/FormEditText"
                 android:focusable="false"
-                android:hint="@string/record_input_6_hint"
-                android:inputType="text" />
+                android:hint="@string/record_input_6_hint" />
         </LinearLayout>
 
         <View
@@ -258,7 +256,7 @@
                 android:id="@+id/form_memo"
                 style="@style/FormEditText"
                 android:hint="@string/record_input_8_hint"
-                android:inputType="text"
+
                 app:emptyAllowed="true" />
         </LinearLayout>
 
@@ -281,7 +279,7 @@
                 android:id="@+id/form_construction"
                 style="@style/FormEditText"
                 android:hint="@string/record_input_9_hint"
-                android:inputType="text"
+
                 app:emptyAllowed="true" />
         </LinearLayout>
 

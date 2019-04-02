@@ -53,10 +53,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     private LocationDialog selectDialog = new LocationDialog();
     private TextView textView;
     private MaterialButton buttonConfirm;
-    /**
-     * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
-     */
-    static NaverMap naverMap;
+    private NaverMap naverMap;
 
     /**
      * @see SpiLocationActivity#setNaverMap() 네이버 지도 구현
@@ -93,7 +90,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
      */
     @UiThread
     private void setNaverMap() {
-        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map_fragment);
+        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance(new NaverMapOptions()
                     .camera(new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT, 0, 0))
@@ -106,7 +103,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                     .locationButtonEnabled(true)
                     .zoomGesturesEnabled(true)
             );
-            fragmentManager.beginTransaction().add(R.id.map_fragment, mapFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
         }
         mapFragment.getMapAsync(this);
     }
@@ -121,7 +118,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     @UiThread
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
-        SpiLocationActivity.naverMap = naverMap;
+        this.naverMap = naverMap;
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(None);
         naverMap.addOnCameraChangeListener((reason, animated) -> {
@@ -131,7 +128,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
 
         runOnUiThread(() -> {
             selectDialog.setCancelable(false);
-            selectDialog.show(fragmentManager, TAG_LOCATION);
+            selectDialog.show(getSupportFragmentManager(), TAG_LOCATION);
         });
     }
 
@@ -176,7 +173,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                     setResult(RESULT_OK, new Intent().putExtra("locations", spiLocation));
                     finish();
                 } catch (Exception e) {
-                    showMessageDialog(0, getString(R.string.toast_error_location));
+                    showMessageDialog(0, getString(R.string.toast_error_location), true);
                     return;
                 }
                 break;
@@ -193,7 +190,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                 if (index == 1) {
                     SurveyDialog surveyDialog = new SurveyDialog();
                     surveyDialog.setCancelable(false);
-                    surveyDialog.show(fragmentManager, TAG_SURVEY);
+                    surveyDialog.show(getSupportFragmentManager(), TAG_SURVEY);
                 } else {
                     textView.setVisibility(VISIBLE);
                     buttonConfirm.setVisibility(VISIBLE);
@@ -202,7 +199,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
             case TAG_SURVEY:
                 if (index == 400) {
                     selectDialog.setCancelable(false);
-                    selectDialog.show(fragmentManager, TAG_LOCATION);
+                    selectDialog.show(getSupportFragmentManager(), TAG_LOCATION);
                     return;
                 }
                 assert text != null;
@@ -236,7 +233,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         buttonConfirm.setVisibility(INVISIBLE);
         runOnUiThread(() -> {
             selectDialog.setCancelable(false);
-            selectDialog.show(fragmentManager, TAG_LOCATION);
+            selectDialog.show(getSupportFragmentManager(), TAG_LOCATION);
         });
     }
 }

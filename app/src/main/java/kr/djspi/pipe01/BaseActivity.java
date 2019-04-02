@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +38,6 @@ public class BaseActivity extends AppCompatActivity {
 
     // TODO: 2019-03-22 통신이 끊어진 상태에서 앱으로 태깅했을 때 내부 데이터를 보여주는 모듈을 추가
     public static final PipeTypeEnum[] pipes = PipeTypeEnum.values();
-    public static FragmentManager fragmentManager;
     public static Resources resources;
     public static String packageName;
     public static Typeface typeface;
@@ -54,7 +52,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        fragmentManager = getSupportFragmentManager();
         resources = getResources();
         nfcUtil = new NfcUtil(this, getClass());
         packageName = context.getPackageName();
@@ -140,13 +137,14 @@ public class BaseActivity extends AppCompatActivity {
      * @param issue 팝업에 표시할 내용의 인식번호
      * @param tag   팝업에 표시할 내용의 인식태그
      */
-    void showMessageDialog(int issue, String tag) {
+    void showMessageDialog(int issue, String tag, boolean isCancelable) {
         try {
             MessageDialog dialog = new MessageDialog();
+            dialog.setCancelable(isCancelable);
             Bundle bundle = new Bundle(1);
             bundle.putInt("issueType", issue);
             dialog.setArguments(bundle);
-            dialog.show(fragmentManager, tag);
+            dialog.show(getSupportFragmentManager(), tag);
         } catch (IllegalStateException ignore) {
         }
     }

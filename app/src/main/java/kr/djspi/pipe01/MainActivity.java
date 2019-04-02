@@ -80,7 +80,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
     @Override
     public void onResume() {
-        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on));
+        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
         super.onResume();
     }
 
@@ -117,20 +117,19 @@ public class MainActivity extends LocationUpdate implements Serializable {
                             if (Json.i(response, "total_count") >= 1) {
                                 processServerData(response);
                             } else {
-                                showMessageDialog(3, getString(R.string.popup_error_not_spi));
+                                showMessageDialog(3, getString(R.string.popup_error_not_spi), false);
                                 progressBar.setVisibility(GONE);
                             }
                         }
 
                         @Override
                         public void onFailure(@NotNull Throwable throwable) {
-                            showMessageDialog(7, throwable.getMessage());
+                            showMessageDialog(7, throwable.getMessage(), true);
                             progressBar.setVisibility(GONE);
                         }
                     });
         }
 
-        // TODO: 2019-04-01 서버측에서 등록된 SPI 를 휴지통으로 보냈을 경우 태깅하면 예외 발생
         private void processServerData(@NotNull JsonObject response) {
             JsonObject jsonObject = Json.o(response, "data");
             if (Json.i(jsonObject, "pipe_count") == 0) {
@@ -153,7 +152,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
                             @Override
                             public void onFailure(Throwable throwable) {
-                                showMessageDialog(7, throwable.getMessage());
+                                showMessageDialog(7, throwable.getMessage(), true);
                             }
                         });
                 progressBar.setVisibility(GONE);

@@ -121,7 +121,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
      */
     @UiThread
     private void setNaverMap() {
-        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map_fragment);
+        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance(new NaverMapOptions()
                     .contentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT)
@@ -135,7 +135,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     .locationButtonEnabled(true)
                     .zoomGesturesEnabled(true)
             );
-            fragmentManager.beginTransaction().add(R.id.map_fragment, mapFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
         }
         mapFragment.getMapAsync(this);
     }
@@ -260,7 +260,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     public void onResponse(JsonObject response) {
                         if (Json.i(response, "total_count") == 0) {
                             behavior.setState(STATE_COLLAPSED);
-                            showMessageDialog(0, "표시할 SPI 정보가 없습니다");
+                            showMessageDialog(0, "표시할 SPI 정보가 없습니다", true);
                         } else {
                             JsonArray jsonArray = Json.a(response, "data");
                             for (JsonElement element : jsonArray) {
@@ -272,7 +272,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                     @Override
                     public void onFailure(@NotNull Throwable throwable) {
-                        showMessageDialog(7, throwable.getMessage());
+                        showMessageDialog(7, throwable.getMessage(), true);
                     }
 
                     private void setMarker(@NotNull JsonObject jsonObject) {
@@ -363,7 +363,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                             behavior.setState(STATE_COLLAPSED);
                             JsonArray places = Json.a(response, "places");
                             if (places == null || places.size() == 0) {
-                                showMessageDialog(0, getString(R.string.popup_error_noplace));
+                                showMessageDialog(0, getString(R.string.popup_error_noplace), true);
                                 return;
                             }
                             for (JsonElement place : places) {
@@ -379,7 +379,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            showMessageDialog(7, throwable.getMessage());
+                            showMessageDialog(7, throwable.getMessage(), true);
                         }
                     });
         }

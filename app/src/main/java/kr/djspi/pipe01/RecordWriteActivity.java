@@ -47,7 +47,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
             Bundle bundle = new Bundle(1);
             bundle.putInt("issueType", 4);
             dialog.setArguments(bundle);
-            dialog.show(fragmentManager, getString(R.string.popup_read_only));
+            dialog.show(getSupportFragmentManager(), getString(R.string.popup_read_only));
         });
     }
 
@@ -87,7 +87,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        showMessageDialog(6, throwable.getMessage());
+                        showMessageDialog(6, throwable.getMessage(), true);
                     }
 
                     /**
@@ -102,7 +102,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
                         String[] strings = NfcRecordEnum.parseToStringArray(response, index);
                         if (nfcUtil.writeTag(intent, strings)) {
                             nfcUtil.onPause();
-                            showMessageDialog(5, getString(R.string.popup_write_success));
+                            showMessageDialog(5, getString(R.string.popup_write_success), true);
                         } else {
                             Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
                         }

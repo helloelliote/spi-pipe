@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import kr.djspi.pipe01.R;
-import kr.djspi.pipe01.RecordInputActivity2;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 
 import static android.view.View.TEXT_ALIGNMENT_CENTER;
@@ -30,7 +30,6 @@ import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.RecordInputActivity2.pipes;
 import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
-import static kr.djspi.pipe01.RecordInputActivity2.state;
 
 /**
  * 관로종류 목록과 관리기관 목록을 보여주는데 공용으로 사용하는 Dialog 클래스
@@ -44,6 +43,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     private static ArrayList<String> listItem;
     private static OnSelectListener listener;
     private IndexableListView listView;
+    private Parcelable state;
 
     public ListDialog() {
     }
@@ -74,7 +74,9 @@ public class ListDialog extends DialogFragment implements OnClickListener {
                 dialogTitle = getString(R.string.popup_title_select_shape);
                 break;
             case TAG_SUPERVISE:
-                listItem = RecordInputActivity2.superviseList;
+                if (getArguments() != null) {
+                    listItem = getArguments().getStringArrayList("superviseList");
+                }
                 dialogTitle = getString(R.string.popup_title_select_supervise);
                 break;
             default:

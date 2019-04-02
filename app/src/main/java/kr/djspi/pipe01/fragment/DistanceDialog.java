@@ -71,12 +71,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
         titleView.setText(dialogTitle);
 
         ImageView imageView = view.findViewById(R.id.lay_background);
-        // TODO: 2019-03-28 도면 세팅 완료 후 정리하기
-        try {
-            imageView.setImageDrawable(fromRes(resId));
-        } catch (Exception e) {
-            imageView.setImageDrawable(fromRes(bundle.getString("planString")));
-        }
+        imageView.setImageDrawable(fromRes(resId));
         imageView.setScaleType(ScaleType.FIT_CENTER);
 
         view.findViewById(R.id.btn_close).setOnClickListener(this);
