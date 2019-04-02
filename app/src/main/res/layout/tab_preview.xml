@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical"
+    android:scrollbarDefaultDelayBeforeFade="3000"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:ignore="ContentDescription, DuplicateIds">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical"
+        tools:ignore="RtlSymmetry">
+
+        <LinearLayout
+            android:id="@+id/lay_pipe"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_0" />
+
+            <TextView
+                android:id="@+id/text_pipe"
+                style="@style/FormEditText"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_shape"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_1" />
+
+            <TextView
+                android:id="@+id/text_shape"
+                style="@style/FormEditText"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_distance"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_2" />
+
+            <TextView
+                android:id="@+id/text_vertical"
+                style="@style/FormEditText"
+                android:layout_weight="1.3"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.20"
+                android:gravity="center_vertical|end"
+                android:text="m" />
+
+            <TextView
+                android:id="@+id/text_horizontal"
+                style="@style/FormEditText"
+                android:layout_weight="1.3"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.20"
+                android:gravity="center_vertical|end"
+                android:text="m" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_depth"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_input_name"
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_3" />
+
+            <TextView
+                android:id="@+id/text_depth"
+                style="@style/FormEditText"
+                android:layout_weight="2.5"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.50"
+                android:gravity="center_vertical|end"
+                android:text="m" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_spec"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/header"
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_4" />
+
+            <TextView
+                android:id="@+id/text_spec"
+                style="@style/FormEditText"
+                android:layout_weight="2.5"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/unit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.50"
+                android:gravity="center_vertical|end"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_material"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_5" />
+
+            <TextView
+                android:id="@+id/text_material"
+                style="@style/FormEditText"
+                android:gravity="start|center_vertical"
+                android:lines="1"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_supervise"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_6" />
+
+            <TextView
+                android:id="@+id/text_supervise"
+                style="@style/FormEditText"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_supervise_contact"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_7" />
+
+            <TextView
+                android:id="@+id/text_supervise_contact"
+                style="@style/FormEditText"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_memo"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_8" />
+
+            <TextView
+                android:id="@+id/text_memo"
+                style="@style/FormEditText"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_construction"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_9" />
+
+            <TextView
+                android:id="@+id/text_construction"
+                style="@style/FormEditText"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <LinearLayout
+            android:id="@+id/lay_construction_contact"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/FormEditText.Title"
+                android:text="@string/record_input_10" />
+
+            <TextView
+                android:id="@+id/text_construction_contact"
+                style="@style/FormEditText"
+                android:gravity="start|center_vertical"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            android:background="@color/line_d" />
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/button_confirm"
+            style="@style/Spi.Button"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="@string/record_confirm" />
+    </LinearLayout>
+</ScrollView>

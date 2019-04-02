@@ -133,7 +133,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         private void processServerData(@NotNull JsonObject response) {
             JsonObject jsonObject = Json.o(response, "data");
             if (Json.i(jsonObject, "pipe_count") == 0) {
-                startActivity(new Intent(context, RecordInputActivity2.class)
+                startActivity(new Intent(context, RegisterActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("PipeRecordActivity2", parseServerData(response)));
                 progressBar.setVisibility(GONE);
@@ -145,9 +145,9 @@ public class MainActivity extends LocationUpdate implements Serializable {
                             @Override
                             public void onResponse(JsonObject response) {
                                 JsonArray elements = Json.a(response, "data");
-                                startActivity(new Intent(context, RecordViewActivity.class)
+                                startActivity(new Intent(context, ViewActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                        .putExtra("RecordViewActivity", elements.get(0).toString()));
+                                        .putExtra("ViewActivity", elements.get(0).toString()));
                             }
 
                             @Override

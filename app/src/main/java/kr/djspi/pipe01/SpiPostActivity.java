@@ -22,9 +22,9 @@ import kr.djspi.pipe01.nfc.NfcUtil;
 
 import static kr.djspi.pipe01.Const.URL_SPI;
 
-public class RecordWriteActivity extends BaseActivity implements Serializable {
+public class SpiPostActivity extends BaseActivity implements Serializable {
 
-    private static final String TAG = RecordWriteActivity.class.getSimpleName();
+    private static final String TAG = SpiPostActivity.class.getSimpleName();
     private static ArrayList entries;
 
     @Override
@@ -32,7 +32,7 @@ public class RecordWriteActivity extends BaseActivity implements Serializable {
         super.onCreate(savedInstanceState);
         Serializable serializable = getIntent().getSerializableExtra("entry");
         if (serializable instanceof ArrayList) entries = (ArrayList) serializable;
-        setContentView(R.layout.activity_record_write);
+        setContentView(R.layout.activity_spi_post);
     }
 
     @Override

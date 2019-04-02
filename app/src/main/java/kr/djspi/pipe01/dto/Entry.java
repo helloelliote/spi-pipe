@@ -1,5 +1,7 @@
 package kr.djspi.pipe01.dto;
 
+import com.google.gson.JsonObject;
+
 import java.io.Serializable;
 
 import lombok.Data;
@@ -21,4 +23,28 @@ public class Entry implements Serializable {
     private final PipePosition pipe_position;
     private final PipePlan pipe_plan;
     private final PipeSupervise pipe_supervise;
+
+    public JsonObject parseString() {
+        JsonObject object = new JsonObject();
+        object.addProperty("spi_id", spi.getId());
+        object.addProperty("supervise", pipe_supervise.getSupervise());
+        object.addProperty("supervise_contact", pipe.getSupervise_contact());
+        object.addProperty("construction", pipe.getConstruction());
+        object.addProperty("construction_contact", pipe.getConstruction_contact());
+        object.addProperty("spi_type", spi_type.getType());
+        object.addProperty("pipe", pipe_type.getPipe());
+        object.addProperty("shape", pipe_shape.getShape());
+        object.addProperty("header", pipe_type.getHeader());
+        object.addProperty("spec", pipe_shape.getSpec());
+        object.addProperty("unit", pipe_type.getUnit());
+        object.addProperty("material", pipe.getMaterial());
+        object.addProperty("position", pipe_position.getPosition());
+        object.addProperty("horizontal", pipe_position.getHorizontal());
+        object.addProperty("vertical", pipe_position.getVertical());
+        object.addProperty("depth", pipe.getDepth());
+        object.addProperty("spi_memo", spi_memo.getMemo());
+        object.addProperty("file_plane", pipe_plan.getFile_plane());
+        object.addProperty("file_section", pipe_plan.getFile_section());
+        return object;
+    }
 }

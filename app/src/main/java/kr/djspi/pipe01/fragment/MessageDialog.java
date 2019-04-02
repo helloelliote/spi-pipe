@@ -111,17 +111,17 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                     System.exit(1); // 앱 완전종료
                 });
                 break;
-            case 4: // (RecordWriteActivity.class) 쓰기 작업 이후 수정이 불가함을 안내
+            case 4: // (SpiPostActivity.class) 쓰기 작업 이후 수정이 불가함을 안내
                 setVisibilityToGone(view);
                 popupTitle.setText("주의");
                 buttonDismiss.setVisibility(VISIBLE);
                 buttonDismiss.setText(getString(R.string.popup_pre));
                 break;
-            case 5: // (RecordWriteActivity.class) 정보가 정상적으로 기록됨
+            case 5: // (SpiPostActivity.class) 정보가 정상적으로 기록됨
                 setVisibilityToGone(view);
                 isReturnToMain = true;
                 break;
-            case 6: // (RecordWriteActivity.class) 하나 이상의 관로 정보 등록 과정에서 에러 발생 안내
+            case 6: // (SpiPostActivity.class) 하나 이상의 관로 정보 등록 과정에서 에러 발생 안내
                 popupText.setText(getString(R.string.popup_error_set));
                 popupSubText.setText(getTag());
                 break;

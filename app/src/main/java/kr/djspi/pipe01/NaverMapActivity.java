@@ -106,7 +106,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this)
                 .setClient(new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
-        setContentView(R.layout.activity_nmap);
+        setContentView(R.layout.activity_navermap);
         setNaverMap();
     }
 
@@ -223,9 +223,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     InfoWindow window = (InfoWindow) overlay;
                     if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
                         JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
-                        startActivity(new Intent(context, RecordViewActivity.class)
+                        startActivity(new Intent(context, ViewActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                .putExtra("RecordViewActivity", jsonObject.toString()));
+                                .putExtra("PipeView", jsonObject.toString()));
                     }
                     window.close();
                 }
@@ -422,7 +422,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             public View getView(final int position, View view, ViewGroup parent) {
                 final ItemHolder holder;
                 if (view == null) {
-                    view = inflater.inflate(R.layout.listview_nmap_searchplaces, null);
+                    view = inflater.inflate(R.layout.listview_searchplaces, null);
                     holder = new ItemHolder();
                     holder.name = view.findViewById(R.id.name);
                     view.setTag(holder);

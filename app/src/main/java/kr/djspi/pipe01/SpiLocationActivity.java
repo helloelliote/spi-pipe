@@ -64,7 +64,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this)
                 .setClient(new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
-        setContentView(R.layout.activity_spilocation);
+        setContentView(R.layout.activity_spi_location);
         setNaverMap();
     }
 

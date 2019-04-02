@@ -25,7 +25,6 @@
         <item name="android:theme">@style/Spi.Theme</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:elevation">4dp</item>
         <item name="contentInsetStart">0dp</item>
         <item name="contentInsetStartWithNavigation">0dp</item>
         <item name="titleMargin">0dp</item>

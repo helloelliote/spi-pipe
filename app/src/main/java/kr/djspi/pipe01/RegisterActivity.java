@@ -69,9 +69,9 @@ import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.Const.URL_SPI;
 
-public class RecordInputActivity2 extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
+public class RegisterActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
-    private static final String TAG = RecordInputActivity2.class.getSimpleName();
+    private static final String TAG = RegisterActivity.class.getSimpleName();
     public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
     public static FragmentManager fragmentManager;
     private static Spi spi;
@@ -105,7 +105,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
             spiLocation = (SpiLocation) itemMap.get("SpiLocation");
             spiMemo = (SpiMemo) itemMap.get("SpiMemo");
         }
-        setContentView(R.layout.activity_record_input_2);
+        setContentView(R.layout.activity_register);
         superviseList = getSuperviseList();
         fragmentManager = getSupportFragmentManager();
     }
@@ -285,9 +285,11 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
                 pipeType.setId(index + 1);
                 pipe.setType_id(index + 1);
                 String header = pipes[index].getHeader();
+                pipeType.setHeader(header);
                 tHeader.setText(String.format("%s  ", header));
                 fSpec.setHint(String.format("%s 입력", header).replace("관경", "관로관경"));
                 String unit = pipes[index].getUnit();
+                pipeType.setUnit(unit);
                 tUnit.setText(String.format("  %s", unit));
                 if (unit.equals("mm")) fSpec.setInputType(TYPE_CLASS_NUMBER);
                 else fSpec.setInputType(TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -439,17 +441,13 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
 
         @Override
         public void onClick(View v) {
-            if (spiLocation == null) { // 아직 위치 정보가 기록되지 않음
-                spiLocation = new SpiLocation();
-                startActivityForResult(new Intent(context, SpiLocationActivity.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_CODE_MAP);
-            } else if (isAllValid()) try {
+            if (isAllValid()) try {
                 final Entry entry = setEntry();
-                ArrayList<Entry> entries = new ArrayList<>(1);
-                entries.add(entry);
-                startActivity(new Intent(context, RecordWriteActivity.class)
+                ArrayList<Entry> previewEntries = new ArrayList<>(1);
+                previewEntries.add(entry);
+                startActivity(new Intent(context, ViewActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .putExtra("entry", entries));
+                        .putExtra("RegisterPreview", previewEntries));
             } catch (Exception e) {
                 showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.", true);
                 Log.e(TAG, e.getMessage());
@@ -475,6 +473,7 @@ public class RecordInputActivity2 extends BaseActivity implements OnSelectListen
         if (spiMemo == null) spiMemo = new SpiMemo();
         spiMemo.setSpi_id(spiId);
         spiMemo.setMemo(fMemo.getText().toString());
+        spiLocation = new SpiLocation();
         spiLocation.setSpi_id(spiId);
         pipe.setSpi_id(spiId);
         pipe.setDepth(Double.valueOf(fDepth.getText().toString()));

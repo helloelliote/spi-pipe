@@ -22,7 +22,7 @@ import kr.djspi.pipe01.R;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
-import static kr.djspi.pipe01.RecordInputActivity2.showPositionDialog;
+import static kr.djspi.pipe01.RegisterActivity.showPositionDialog;
 import static kr.djspi.pipe01.fragment.PositionDialog.fromRes;
 
 public class DistanceDialog extends DialogFragment implements OnClickListener {
