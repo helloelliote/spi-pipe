@@ -43,6 +43,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     private IndexableListView listView;
     private Parcelable state;
     private OnSelectListener listener;
+    private Context context;
 
     public ListDialog() {
     }
@@ -60,6 +61,8 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = getContext();
 
         switch (listTag) {
             case TAG_PIPE:
@@ -94,7 +97,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 
         listView = view.findViewById(R.id.list_common);
-        listView.setIndexTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/nanumsquareroundr.ttf"));
+        listView.setIndexTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/nanumsquareroundr.ttf"));
         if (listTag.equals(TAG_SUPERVISE)) {
             listView.setAdapter(new ListAdapter(getContext(), listItem, true));
         } else {
@@ -113,7 +116,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_ok:
-                listener.onSelect(listTag, selectIndex, null);
+                listener.onSelect(listTag, selectIndex, (String) null);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:
@@ -144,7 +147,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         private final Context context;
         private final ArrayList<String> listItem;
         private final boolean isListSupervise;
-        private CustomSection customSection;
+        private final CustomSection customSection;
 
         ListAdapter(Context context, ArrayList<String> listItem, boolean isListSupervise) {
             this.context = context;

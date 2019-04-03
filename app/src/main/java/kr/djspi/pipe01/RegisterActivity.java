@@ -74,8 +74,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
      * 단일형의 경우 spiLocation 은 항상 null 로 시작한다.
      */
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    private final InputFilter[] FILTER_DEPTH = {new DecimalFilter(4, 2)};
-    public static final PipeShapeEnum[] SHAPE_ENUMS = PipeShapeEnum.values();
+    private static final PipeShapeEnum[] SHAPE_ENUMS = PipeShapeEnum.values();
+    private final static InputFilter[] FILTER_DEPTH = {new DecimalFilter(4, 2)};
     private static Spi spi;
     private static SpiType spiType;
     private static SpiMemo spiMemo;
@@ -86,10 +86,10 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
     private static SpiLocation spiLocation;
+    private final Bundle superviseListBundle = new Bundle(1);
     private TextView tHeader, tUnit;
-    private Bundle superviseListBundle = new Bundle(1);
     private Context context;
-    public ArrayList<String> superviseList;
+    private ArrayList<String> superviseList;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -271,7 +271,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
-    public void showPositionDialog() {
+    private void showPositionDialog() {
         PositionDialog dialog = new PositionDialog();
         Bundle bundle = new Bundle();
         bundle.putString("typeString", spiType.getType());
@@ -467,7 +467,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             }
         }
 
-        // TODO: 2019-03-26 위치 정보 기록 전에 모두 체크하고 넘기게, 체크 실패 시 다이얼로그 출력
         private boolean isAllValid() {
             boolean allValid = true;
             final FormEditText[] validateFields

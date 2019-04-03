@@ -97,7 +97,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     static BottomSheetBehavior behavior;
     static SetTopSheet.ListViewAdapter placesListAdapter;
     static Overlay.OnClickListener listener;
-    ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
+    final ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
     SearchView searchView;
 
     /**
@@ -247,6 +247,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         if (naverMap.getCameraPosition().zoom <= ZOOM_GET) {
             CameraPosition position = new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT);
             naverMap.setCameraPosition(position);
+            // TODO: 2019-04-03 줌 애니메이션 추가
         }
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
@@ -297,7 +298,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         if (behavior.getState() == STATE_EXPANDED) {
             behavior.setState(STATE_COLLAPSED);
             return;
-        } else if (placesArrayList != null && placesArrayList.size() != 0) {
+        } else if (placesArrayList.size() != 0) {
             placesArrayList.clear();
             placesListAdapter.notifyDataSetChanged();
             return;
@@ -309,11 +310,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     public void onResume() {
         super.onResume();
         nfcUtil.onPause();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override

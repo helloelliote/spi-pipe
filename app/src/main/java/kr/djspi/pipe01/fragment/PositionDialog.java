@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,6 +44,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
     private Bundle bundle;
     private String shapeString;
     private View checkView;
+    private FragmentManager fragmentManager;
     private OnSelectListener listener;
 
     public PositionDialog() {
@@ -59,6 +61,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fragmentManager = getFragmentManager();
         if (getArguments() != null) {
             bundle = getArguments();
             typeString = bundle.getString("typeString");
@@ -155,7 +158,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
         return resources.getDrawable(resources.getIdentifier(resId, "drawable", packageName), null);
     }
 
-    static Drawable fromRes(@DrawableRes int resId) {
+    private static Drawable fromRes(@DrawableRes int resId) {
         return resources.getDrawable(resId, null);
     }
 
@@ -167,11 +170,11 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
                     Toast.makeText(getContext(), "관로의 위치를 선택해주세요", Toast.LENGTH_LONG).show();
                     return;
                 }
-                listener.onSelect(TAG_POSITION, selectIndex, null);
+                listener.onSelect(TAG_POSITION, selectIndex, (String) null);
                 DirectionDialog dialog = new DirectionDialog();
                 bundle.putInt("positionInt", selectIndex);
                 dialog.setArguments(bundle);
-                dialog.show(getFragmentManager(), TAG_DIRECTION);
+                dialog.show(fragmentManager, TAG_DIRECTION);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:

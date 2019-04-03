@@ -22,6 +22,7 @@ import com.helloelliote.geolocation.GeoTrans;
 
 import kr.djspi.pipe01.R;
 
+import static java.util.Objects.requireNonNull;
 import static kr.djspi.pipe01.Const.RESULT_FAIL;
 import static kr.djspi.pipe01.Const.RESULT_PASS;
 import static kr.djspi.pipe01.Const.TAG_SURVEY;
@@ -59,7 +60,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_survey, container, false);
+        View view = inflater.inflate(R.layout.fragment_location_survey, container, false);
 
         TextView titleView = view.findViewById(R.id.popup_title);
         titleView.setText(dialogTitle);
@@ -112,7 +113,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
                 } else selectIndex = -1;
                 break;
             case R.id.btn_dismiss:
-                listener.onSelect(TAG_SURVEY, RESULT_FAIL, null);
+                listener.onSelect(TAG_SURVEY, RESULT_FAIL, (String) null);
                 dismissAllowingStateLoss();
                 break;
             default:
@@ -132,7 +133,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
         boolean isY = false;
 
         try {
-            double value_x = Double.valueOf(input_x.getText().toString());
+            double value_x = Double.valueOf(requireNonNull(input_x.getText()).toString());
             if (value_x > INPUT_LIMIT) {
                 inputLayout_x.setError(getString(R.string.map_coord_error));
             } else {
@@ -145,7 +146,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
         }
 
         try {
-            double value_y = Double.valueOf(input_y.getText().toString());
+            double value_y = Double.valueOf(requireNonNull(input_y.getText()).toString());
             if (value_y > INPUT_LIMIT) {
                 inputLayout_y.setError(getString(R.string.map_coord_error));
             } else {

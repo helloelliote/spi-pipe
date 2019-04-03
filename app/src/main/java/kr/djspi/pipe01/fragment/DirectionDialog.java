@@ -143,7 +143,7 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
                 }
                 break;
             case R.id.btn_cancel:
-                listener.onSelect(TAG_DIRECTION, -2, null);
+                listener.onSelect(TAG_DIRECTION, -2, (String) null);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_close:

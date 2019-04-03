@@ -195,7 +195,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
             case R.id.btn_cancel:
                 fHorizontal.setVisibility(VISIBLE);
                 fVertical.setVisibility(VISIBLE);
-                listener.onSelect(TAG_DISTANCE, -2, null);
+                listener.onSelect(TAG_DISTANCE, -2, (String) null);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_close:

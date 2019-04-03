@@ -6,7 +6,7 @@ import com.sylversky.indexablelistview.section.Section;
 import static com.sylversky.indexablelistview.scroller.StringMatcher.match;
 import static java.lang.String.valueOf;
 
-public class CustomSection extends Section {
+class CustomSection extends Section {
 
     private final String sections = "#ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ";
 

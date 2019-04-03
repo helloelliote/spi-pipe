@@ -59,12 +59,12 @@ public class LocationDialog extends DialogFragment implements OnClickListener {
         switch (v.getId()) {
             case R.id.btn_survey:
                 selectIndex = 1;
-                listener.onSelect(TAG_LOCATION, selectIndex, null);
+                listener.onSelect(TAG_LOCATION, selectIndex, (String) null);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_gps:
                 selectIndex = 2;
-                listener.onSelect(TAG_LOCATION, selectIndex, null);
+                listener.onSelect(TAG_LOCATION, selectIndex, (String) null);
                 dismissAllowingStateLoss();
                 break;
             default:
