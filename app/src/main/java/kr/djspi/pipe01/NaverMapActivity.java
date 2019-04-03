@@ -313,8 +313,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         locationSource = null;
         listener = null;
     }

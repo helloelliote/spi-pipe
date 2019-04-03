@@ -235,8 +235,8 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         originPoint = null;
     }
 }
