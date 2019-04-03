@@ -1,5 +1,6 @@
 package kr.djspi.pipe01;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import kr.djspi.pipe01.Const.NfcRecordEnum;
+import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.fragment.MessageDialog;
 import kr.djspi.pipe01.nfc.NfcUtil;
 
@@ -25,13 +27,18 @@ import static kr.djspi.pipe01.Const.URL_SPI;
 public class SpiPostActivity extends BaseActivity implements Serializable {
 
     private static final String TAG = SpiPostActivity.class.getSimpleName();
-    private static ArrayList entries;
+    private static ArrayList<Entry> entries;
+    private Context context;
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         Serializable serializable = getIntent().getSerializableExtra("entry");
-        if (serializable instanceof ArrayList) entries = (ArrayList) serializable;
+        if (serializable instanceof ArrayList<?>) {
+            entries = (ArrayList<Entry>) serializable;
+        }
         setContentView(R.layout.activity_spi_post);
     }
 
@@ -114,6 +121,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
     @SuppressWarnings("EmptyMethod")
     public void onResume() {
         super.onResume();
+        nfcUtil.onResume();
     }
 
     @Override

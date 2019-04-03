@@ -14,8 +14,6 @@ import android.widget.LinearLayout;
 import com.google.gson.JsonObject;
 import com.helloelliote.json.Json;
 
-import org.jetbrains.annotations.Contract;
-
 import kr.djspi.pipe01.R;
 
 import static android.view.View.VISIBLE;
@@ -24,18 +22,9 @@ import static kr.djspi.pipe01.BaseActivity.packageName;
 public class SectionTab extends Fragment {
 
     private static final String TAG = SectionTab.class.getSimpleName();
-    private static JsonObject jsonObject;
+    private JsonObject jsonObject;
 
     public SectionTab() {
-    }
-
-    private static class LazyHolder {
-        static final SectionTab INSTANCE = new SectionTab();
-    }
-
-    @Contract(pure = true)
-    public static SectionTab getInstance() {
-        return LazyHolder.INSTANCE;
     }
 
     @Override

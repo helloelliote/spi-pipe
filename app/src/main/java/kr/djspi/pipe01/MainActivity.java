@@ -1,5 +1,6 @@
 package kr.djspi.pipe01;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.nfc.Tag;
@@ -37,10 +38,12 @@ import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 public class MainActivity extends LocationUpdate implements Serializable {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.activity_main);
     }
 
@@ -80,8 +83,9 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
     @Override
     public void onResume() {
-        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
         super.onResume();
+        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
+        if (nfcUtil != null) nfcUtil.onResume();
     }
 
     @Override
@@ -135,7 +139,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
             if (Json.i(jsonObject, "pipe_count") == 0) {
                 startActivity(new Intent(context, RegisterActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .putExtra("PipeRecordActivity2", parseServerData(response)));
+                        .putExtra("RegisterActivity", parseServerData(response)));
                 progressBar.setVisibility(GONE);
             } else {
                 Retrofit2x.builder()
@@ -147,7 +151,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                                 JsonArray elements = Json.a(response, "data");
                                 startActivity(new Intent(context, ViewActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                        .putExtra("ViewActivity", elements.get(0).toString()));
+                                        .putExtra("PipeView", elements.get(0).toString()));
                             }
 
                             @Override

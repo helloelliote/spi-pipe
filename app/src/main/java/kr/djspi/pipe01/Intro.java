@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public final class Intro extends AppCompatActivity {
 
-    private static final int delayMillis = 750; // Intro 화면 표시시간
+    private static final int DELAY_MILLIS = 750; // Intro 화면 표시시간
 
     /**
      * (isDelayed) 지정 시간 후 전환되는 스플래시 화면
@@ -18,7 +18,7 @@ public final class Intro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (BuildConfig.BUILD_TYPE.equals("release")) {
-            final String installer = this.getPackageManager().getInstallerPackageName(this.getPackageName());
+            final String installer = getPackageManager().getInstallerPackageName(getPackageName());
             if (!installer.startsWith("com.android.vending")) {
                 finishAffinity();
                 System.runFinalization();
@@ -31,6 +31,6 @@ public final class Intro extends AppCompatActivity {
             getSharedPreferences(getPackageName(), MODE_PRIVATE).edit().clear().apply();
             startActivity(new Intent(getBaseContext(), MainActivity.class));
             finish();
-        }, delayMillis);
+        }, DELAY_MILLIS);
     }
 }

@@ -14,7 +14,6 @@ import lombok.Data;
 public class Entry implements Serializable {
     private final Spi spi;
     private final SpiType spi_type;
-    private final SpiLocation spi_location;
     private final SpiMemo spi_memo;
     //    private final SpiPhoto spi_photo;
     private final Pipe pipe;
@@ -23,8 +22,9 @@ public class Entry implements Serializable {
     private final PipePosition pipe_position;
     private final PipePlan pipe_plan;
     private final PipeSupervise pipe_supervise;
+    private SpiLocation spi_location;
 
-    public JsonObject parseString() {
+    public JsonObject parseToString() {
         JsonObject object = new JsonObject();
         object.addProperty("spi_id", spi.getId());
         object.addProperty("supervise", pipe_supervise.getSupervise());

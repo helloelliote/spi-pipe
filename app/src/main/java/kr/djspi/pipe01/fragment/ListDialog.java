@@ -29,7 +29,6 @@ import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.RegisterActivity.pipes;
-import static kr.djspi.pipe01.RegisterActivity.showPositionDialog;
 
 /**
  * 관로종류 목록과 관리기관 목록을 보여주는데 공용으로 사용하는 Dialog 클래스
@@ -37,13 +36,13 @@ import static kr.djspi.pipe01.RegisterActivity.showPositionDialog;
 public class ListDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = ListDialog.class.getSimpleName();
-    private static String listTag;
-    private static String dialogTitle;
-    private static int selectIndex = -1;
-    private static ArrayList<String> listItem;
-    private static OnSelectListener listener;
+    private int selectIndex = -1;
+    private String listTag;
+    private String dialogTitle;
+    private ArrayList<String> listItem;
     private IndexableListView listView;
     private Parcelable state;
+    private OnSelectListener listener;
 
     public ListDialog() {
     }
@@ -115,7 +114,6 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         switch (v.getId()) {
             case R.id.btn_ok:
                 listener.onSelect(listTag, selectIndex, null);
-                if (listTag.equals(TAG_SHAPE)) showPositionDialog();
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:

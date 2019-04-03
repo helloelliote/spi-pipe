@@ -19,9 +19,9 @@ import static kr.djspi.pipe01.Const.TAG_LOCATION;
 public class LocationDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = LocationDialog.class.getSimpleName();
-    private static String dialogTitle;
-    private static int selectIndex = -1;
-    private static OnSelectListener listener;
+    private int selectIndex = -1;
+    private String dialogTitle;
+    private OnSelectListener listener;
 
     public LocationDialog() {
     }
@@ -76,5 +76,11 @@ public class LocationDialog extends DialogFragment implements OnClickListener {
     public void onDismiss(DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

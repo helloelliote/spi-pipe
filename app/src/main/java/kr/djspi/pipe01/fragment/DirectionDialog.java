@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,7 +27,6 @@ import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
-import static kr.djspi.pipe01.RegisterActivity.showPositionDialog;
 import static kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
 
@@ -34,15 +34,16 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = DirectionDialog.class.getSimpleName();
     private static final String DEF_TYPE = "drawable";
-    private static String dialogTitle;
-    private static String typeString;
-    private static String shapeString;
-    private static String[] resIds;
-    private static int selectIndex = -1;
-    private static int positionInt = -1;
-    private static OnSelectListener listener;
-    private static Bundle bundle;
+    private int selectIndex = -1;
+    private int positionInt = -1;
+    private String dialogTitle;
+    private String typeString;
+    private String shapeString;
+    private String[] resIds;
+    private Bundle bundle;
     private View checkView;
+    private FragmentManager fragmentManager;
+    private OnSelectListener listener;
 
     public DirectionDialog() {
     }
@@ -58,6 +59,7 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fragmentManager = getFragmentManager();
         if (getArguments() != null) {
             bundle = getArguments();
             typeString = bundle.getString("typeString");
@@ -136,13 +138,13 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
                     DistanceDialog dialog = new DistanceDialog();
                     bundle.putString("planString", resIds[selectIndex]);
                     dialog.setArguments(bundle);
-                    dialog.show(getFragmentManager(), TAG_DISTANCE);
+                    dialog.show(fragmentManager, TAG_DISTANCE);
                     dismissAllowingStateLoss();
                 }
                 break;
             case R.id.btn_cancel:
+                listener.onSelect(TAG_DIRECTION, -2, null);
                 dismissAllowingStateLoss();
-                showPositionDialog();
                 break;
             case R.id.btn_close:
                 dismissAllowingStateLoss();
@@ -179,5 +181,11 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
         selectIndex = -1;
         resIds = null;
         super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

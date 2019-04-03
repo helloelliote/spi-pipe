@@ -22,20 +22,22 @@ import com.helloelliote.geolocation.GeoTrans;
 
 import kr.djspi.pipe01.R;
 
+import static kr.djspi.pipe01.Const.RESULT_FAIL;
+import static kr.djspi.pipe01.Const.RESULT_PASS;
 import static kr.djspi.pipe01.Const.TAG_SURVEY;
 
 public class SurveyDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = SurveyDialog.class.getSimpleName();
     private static final double INPUT_LIMIT = 999999.9999; // 최대 입력값
-    private static final InputFilter[] filters = {new DecimalFilter(10, 4)};
-    private static String dialogTitle;
-    private static OnSelectListener listener;
-    private static int selectIndex = -1;
+    public static GeoTrans.Coordinate originPoint;
+    private final InputFilter[] FILTER_SURVEY = {new DecimalFilter(10, 4)};
+    private int selectIndex = -1;
+    private String dialogTitle;
     private RadioGroup radioGroup; // 원점 선택 라디오 버튼 그룹
     private TextInputLayout inputLayout_x, inputLayout_y;
     private TextInputEditText input_x, input_y;
-    public static GeoTrans.Coordinate originPoint;
+    private OnSelectListener listener;
 
     public SurveyDialog() {
     }
@@ -87,8 +89,8 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
         inputLayout_y = view.findViewById(R.id.lay_coordinate_y);
         input_x = inputLayout_x.findViewById(R.id.input_coordinate_x);
         input_y = inputLayout_y.findViewById(R.id.input_coordinate_y);
-        input_x.setFilters(filters);
-        input_y.setFilters(filters);
+        input_x.setFilters(FILTER_SURVEY);
+        input_y.setFilters(FILTER_SURVEY);
 
         view.findViewById(R.id.btn_dismiss).setOnClickListener(this);
         view.findViewById(R.id.btn_ok).setOnClickListener(this);
@@ -103,14 +105,14 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
                 if (isInputValid(input_x, input_y)) {
                     assert input_x.getText() != null;
                     assert input_y.getText() != null;
-                    listener.onSelect(TAG_SURVEY, 200,
+                    listener.onSelect(TAG_SURVEY, RESULT_PASS,
                             input_x.getText().toString(),
                             input_y.getText().toString());
                     dismissAllowingStateLoss();
                 } else selectIndex = -1;
                 break;
             case R.id.btn_dismiss:
-                listener.onSelect(TAG_SURVEY, 400, null);
+                listener.onSelect(TAG_SURVEY, RESULT_FAIL, null);
                 dismissAllowingStateLoss();
                 break;
             default:
@@ -161,5 +163,11 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
     public void onDismiss(DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

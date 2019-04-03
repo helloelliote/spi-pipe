@@ -73,6 +73,7 @@ import static com.naver.maps.map.overlay.OverlayImage.fromResource;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
+import static java.util.Objects.requireNonNull;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
@@ -82,7 +83,9 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     private static final String TAG = NaverMapActivity.class.getSimpleName();
     private static final double ZOOM_DEFAULT = 18.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 6.0; // 최소 줌레벨
+    private static final double ZOOM_GET = 14.0;
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
+    private Context context;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -91,10 +94,10 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     static final int PAD_TOP = 45;
     static final int PAD_RIGHT = 0;
     static final int PAD_BOT = 45;
-    static final ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
     static BottomSheetBehavior behavior;
     static SetTopSheet.ListViewAdapter placesListAdapter;
     static Overlay.OnClickListener listener;
+    ArrayList<HashMap<String, String>> placesArrayList = new ArrayList<>(5);
     SearchView searchView;
 
     /**
@@ -103,6 +106,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this)
                 .setClient(new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
@@ -158,7 +162,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             locationSource.setCompassEnabled(mode == Follow || mode == Face);
         });
         setMapModeSwitch(naverMap);
-        setOverlayListener(naverMap);
+        setOverlayListener();
         new SetTopSheet(naverMap);
         new SetBottomSheet(naverMap);
         getSpiData(naverMap);
@@ -188,7 +192,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         });
     }
 
-    private void setOverlayListener(NaverMap naverMap) {
+    private void setOverlayListener() {
         InfoWindow infoWindow = new InfoWindow(new DefaultTextAdapter(context) {
 
             @NonNull
@@ -208,7 +212,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         infoWindow.setMinZoom(14);
         infoWindow.setAlpha(0.85f);
         try {
-            listener = (Overlay overlay) -> {
+            listener = overlay -> {
                 if (overlay instanceof Marker) {
                     Marker marker = (Marker) overlay;
                     if (marker.getInfoWindow() == null) {
@@ -223,7 +227,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     InfoWindow window = (InfoWindow) overlay;
                     if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
                         JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
-                        startActivity(new Intent(context, ViewActivity.class)
+                        NaverMapActivity.this.startActivity(new Intent(this, ViewActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                 .putExtra("PipeView", jsonObject.toString()));
                     }
@@ -237,14 +241,13 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             return;
         }
         infoWindow.setOnClickListener(listener);
-        naverMap.setOnMapClickListener((PointF point, LatLng coord) -> {
-            infoWindow.close();
-            placesArrayList.clear();
-            runOnUiThread(() -> placesListAdapter.notifyDataSetChanged());
-        });
     }
 
     private void getSpiData(@NotNull NaverMap naverMap) {
+        if (naverMap.getCameraPosition().zoom <= ZOOM_GET) {
+            CameraPosition position = new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT);
+            naverMap.setCameraPosition(position);
+        }
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
         jsonQuery.addProperty("sx", String.valueOf(bounds.getWestLongitude()));
@@ -281,7 +284,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                         int resId = parsePipeType(Json.s(jsonObject, "pipe")).getDrawRes();
                         Marker marker = new Marker(new LatLng(lat, lng), fromResource(resId));
                         marker.setTag(jsonObject);
-                        marker.setMinZoom(14);
+                        marker.setMinZoom(ZOOM_GET);
                         marker.setMaxZoom(ZOOM_MAX);
                         marker.setOnClickListener(listener);
                         marker.setMap(naverMap);
@@ -294,7 +297,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         if (behavior.getState() == STATE_EXPANDED) {
             behavior.setState(STATE_COLLAPSED);
             return;
-        } else if (placesArrayList.size() != 0) {
+        } else if (placesArrayList != null && placesArrayList.size() != 0) {
             placesArrayList.clear();
             placesListAdapter.notifyDataSetChanged();
             return;
@@ -303,9 +306,21 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        nfcUtil.onPause();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         locationSource = null;
+        listener = null;
     }
 
     /**
@@ -321,7 +336,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         SetTopSheet(NaverMap naverMap) {
             ListView listView = findViewById(R.id.nmap_listview);
-            placesListAdapter = new ListViewAdapter(context, naverMap);
+            placesListAdapter = new ListViewAdapter(context, naverMap, placesArrayList);
             listView.setAdapter(placesListAdapter);
 
             setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
@@ -390,8 +405,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             private final LayoutInflater inflater;
             private final NaverMap naverMap;
 
-            ListViewAdapter(Context context, NaverMap naverMap) {
-                this.placesList = NaverMapActivity.placesArrayList;
+            ListViewAdapter(Context context, NaverMap naverMap, ArrayList<HashMap<String, String>> placesArrayList) {
+                this.placesList = placesArrayList;
                 this.naverMap = naverMap;
                 this.inflater = LayoutInflater.from(context);
             }
@@ -433,8 +448,8 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 view.setOnClickListener((View v) -> {
                     // searchView 내용 변경과 동시에 Query 를 다시 시작하려면 true
                     searchView.setQuery(placesList.get(position).get("name"), false);
-                    final double coordinate_x = parseDouble(placesList.get(position).get("x"));
-                    final double coordinate_y = parseDouble(placesList.get(position).get("y"));
+                    final double coordinate_x = parseDouble(requireNonNull(placesList.get(position).get("x")));
+                    final double coordinate_y = parseDouble(requireNonNull(placesList.get(position).get("y")));
                     naverMap.moveCamera(CameraUpdate
                             .scrollTo(new LatLng(coordinate_y, coordinate_x))
                             .animate(CameraAnimation.Fly)

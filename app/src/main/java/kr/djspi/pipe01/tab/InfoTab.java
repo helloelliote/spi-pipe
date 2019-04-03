@@ -14,8 +14,6 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.helloelliote.json.Json;
 
-import org.jetbrains.annotations.Contract;
-
 import kr.djspi.pipe01.R;
 
 import static android.text.Html.fromHtml;
@@ -23,18 +21,9 @@ import static android.text.Html.fromHtml;
 public class InfoTab extends Fragment {
 
     private static final String TAG = InfoTab.class.getSimpleName();
-    private static JsonObject jsonObject;
+    private JsonObject jsonObject;
 
     public InfoTab() {
-    }
-
-    private static class LazyHolder {
-        static final InfoTab INSTANCE = new InfoTab();
-    }
-
-    @Contract(pure = true)
-    public static InfoTab getInstance() {
-        return LazyHolder.INSTANCE;
     }
 
     @Override

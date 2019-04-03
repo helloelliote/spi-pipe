@@ -18,6 +18,7 @@ public final class Const {
     public static final String TAG_DISTANCE = "distance";
     public static final String TAG_LOCATION = "location";
     public static final String TAG_SURVEY = "survey";
+    public static final String TAG_PREVIEW = "preview";
     public static final String TAG_TYPE_PLATE = "표지판";
     public static final String TAG_TYPE_MARKER = "표지기";
     public static final String TAG_TYPE_COLUMN = "표지주";
@@ -27,6 +28,9 @@ public final class Const {
     static final int REQUEST_CODE_MAP = 30001;
     static final int REQUEST_CODE_PHOTO = 10001;
     static final int REQUEST_CODE_GALLERY = 10002;
+
+    public static final int RESULT_PASS = 200;
+    public static final int RESULT_FAIL = 400;
 
     @SuppressWarnings("ALL")
     public enum NfcRecordEnum {

@@ -37,13 +37,13 @@ import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
 public class PositionDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = PositionDialog.class.getSimpleName();
-    private static int selectIndex = -1;
-    private static String typeString;
-    private static String dialogTitle;
-    private static Bundle bundle;
-    private static String shapeString;
-    private static OnSelectListener listener;
+    private int selectIndex = -1;
+    private String typeString;
+    private String dialogTitle;
+    private Bundle bundle;
+    private String shapeString;
     private View checkView;
+    private OnSelectListener listener;
 
     public PositionDialog() {
     }
@@ -229,5 +229,11 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
     public void onDismiss(DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

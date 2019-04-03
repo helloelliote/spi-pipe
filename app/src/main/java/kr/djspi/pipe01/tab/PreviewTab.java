@@ -7,38 +7,33 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.helloelliote.json.Json;
 
-import org.jetbrains.annotations.Contract;
-
 import kr.djspi.pipe01.R;
 
-public class PreviewTab extends Fragment implements View.OnClickListener {
+import static kr.djspi.pipe01.Const.RESULT_FAIL;
+import static kr.djspi.pipe01.Const.RESULT_PASS;
+import static kr.djspi.pipe01.Const.TAG_PREVIEW;
+
+public class PreviewTab extends Fragment implements OnClickListener {
 
     private static final String TAG = PreviewTab.class.getSimpleName();
-    private static JsonObject jsonObject;
+    private JsonObject jsonObject;
+    private OnRecordListener listener;
 
     public PreviewTab() {
-    }
-
-    private static class LazyHolder {
-        static final PreviewTab INSTANCE = new PreviewTab();
-    }
-
-    @Contract(pure = true)
-    public static PreviewTab getInstance() {
-        return LazyHolder.INSTANCE;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnRecordListener) {
-            OnRecordListener listener = (OnRecordListener) context;
+            listener = (OnRecordListener) context;
             jsonObject = listener.getJsonObjectRecord();
         }
     }
@@ -104,10 +99,17 @@ public class PreviewTab extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_confirm:
+                listener.onRecord(TAG_PREVIEW, RESULT_PASS);
                 break;
             default:
+                listener.onRecord(TAG_PREVIEW, RESULT_FAIL);
                 break;
         }
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
 }

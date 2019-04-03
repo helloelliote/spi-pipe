@@ -1,14 +1,15 @@
 package kr.djspi.pipe01;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -23,13 +24,11 @@ import com.andreabaccega.widget.FormEditText;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.helloelliote.filter.DecimalFilter;
 import com.helloelliote.json.Json;
 import com.helloelliote.retrofit.Retrofit2x;
 import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.retrofit.SuperviseGet;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.Serializable;
@@ -55,11 +54,10 @@ import kr.djspi.pipe01.fragment.PositionDialog;
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_NEXT;
-import static android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY;
-import static android.view.inputmethod.InputMethodManager.SHOW_FORCED;
+import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
+import static android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
-import static kr.djspi.pipe01.Const.REQUEST_CODE_MAP;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_PHOTO;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
@@ -71,9 +69,13 @@ import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class RegisterActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
+    /**
+     * 통합형은 위치 정보가 이미 있으므로 입력값 확인 과정 이후 위치정보 설정이 불필요하며,
+     * 단일형의 경우 spiLocation 은 항상 null 로 시작한다.
+     */
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    public static final PipeShapeEnum[] shapes = PipeShapeEnum.values();
-    public static FragmentManager fragmentManager;
+    private final InputFilter[] FILTER_DEPTH = {new DecimalFilter(4, 2)};
+    public static final PipeShapeEnum[] SHAPE_ENUMS = PipeShapeEnum.values();
     private static Spi spi;
     private static SpiType spiType;
     private static SpiMemo spiMemo;
@@ -83,21 +85,23 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static final PipePosition pipePosition = new PipePosition();
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
+    private static SpiLocation spiLocation;
     private TextView tHeader, tUnit;
     private Bundle superviseListBundle = new Bundle(1);
+    private Context context;
     public ArrayList<String> superviseList;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    static SpiLocation spiLocation;
-    static FormEditText fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
+    FormEditText fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
             fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact;
     static File mPhoto;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Serializable serializable = getIntent().getSerializableExtra("PipeRecordActivity2");
+        context = this;
+        Serializable serializable = getIntent().getSerializableExtra("RegisterActivity");
         if (serializable instanceof HashMap) {
             HashMap<?, ?> itemMap = (HashMap) serializable;
             spi = (Spi) itemMap.get("Spi");
@@ -107,7 +111,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
         setContentView(R.layout.activity_register);
         superviseList = getSuperviseList();
-        fragmentManager = getSupportFragmentManager();
     }
 
     @Override
@@ -151,6 +154,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         fVertical.setOnClickListener(this);
 
         fDepth = findViewById(R.id.form_depth);
+        fDepth.setFilters(FILTER_DEPTH);
 
         LinearLayout lSpec = findViewById(R.id.lay_spec);
         fSpec = findViewById(R.id.form_spec);
@@ -188,7 +192,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                     = {fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
                     fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact};
             for (FormEditText field : allFields) {
-                field.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/nanumsquareroundr.ttf"));
+                field.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundr.ttf"));
             }
         }
 
@@ -256,6 +260,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             case R.id.lay_distance:
             case R.id.form_horizontal:
             case R.id.form_vertical:
+                fHorizontal.setText(null);
+                fVertical.setText(null);
                 if (pipeShape.getShape() == null) {
                     new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
                 } else showPositionDialog();
@@ -265,13 +271,13 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
-    public static void showPositionDialog() {
+    public void showPositionDialog() {
         PositionDialog dialog = new PositionDialog();
         Bundle bundle = new Bundle();
         bundle.putString("typeString", spiType.getType());
         bundle.putString("shapeString", pipeShape.getShape());
         dialog.setArguments(bundle);
-        dialog.show(fragmentManager, TAG_POSITION);
+        dialog.show(getSupportFragmentManager(), TAG_POSITION);
     }
 
     @Override
@@ -294,17 +300,21 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 if (unit.equals("mm")) fSpec.setInputType(TYPE_CLASS_NUMBER);
                 else fSpec.setInputType(TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 pipeShape.setShape(null);
-                new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
+                if (fShape.getText().toString().equals("")) {
+                    new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
+                } else return;
                 break;
             case TAG_SHAPE:
-                fShape.setText(shapes[index].name());
+                fShape.setText(SHAPE_ENUMS[index].name());
+                fHorizontal.setText(null);
+                fVertical.setText(null);
+                showPositionDialog();
                 break;
             case TAG_SUPERVISE:
                 fSupervise.setText(superviseList.get(index));
                 pipeSupervise.setId(index + 1);
                 pipe.setSupervise_id(index + 1);
                 fSuperviseContact.requestFocus();
-                imm.toggleSoftInput(SHOW_FORCED, HIDE_IMPLICIT_ONLY);
                 break;
             case TAG_POSITION:
                 pipePosition.setPosition(index);
@@ -356,16 +366,24 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 }
                 break;
             case TAG_DIRECTION:
+                if (index == -2) {
+                    showPositionDialog();
+                    return;
+                }
                 pipePosition.setDirection(PIPE_DIRECTIONS[index]);
                 pipePlan.setFile_plane(text[0] + ".png");
                 break;
             case TAG_DISTANCE:
+                if (index == -2) {
+                    showPositionDialog();
+                    return;
+                }
                 fHorizontal.setText(String.format("%s %s", fHorizontal.getTag().toString(), text[0]));
                 fVertical.setText(String.format("%s %s", fVertical.getTag().toString(), text[1]));
                 pipePosition.setHorizontal(Double.valueOf(text[0]));
                 pipePosition.setVertical(Double.valueOf(text[1]));
                 fDepth.requestFocus();
-                imm.toggleSoftInput(SHOW_FORCED, HIDE_IMPLICIT_ONLY);
+                imm.toggleSoftInput(SHOW_IMPLICIT, HIDE_NOT_ALWAYS);
                 break;
             default:
                 break;
@@ -386,12 +404,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 case REQUEST_CODE_GALLERY:
 //                    onPhotoInput.getGallery(data.getData());
                     break;
-                case REQUEST_CODE_MAP:
-                    double[] locations = data.getDoubleArrayExtra("locations");
-                    spiLocation.setLatitude(locations[0]);
-                    spiLocation.setLongitude(locations[1]);
-                    spiLocation.setCount(0);
-                    break;
                 default:
                     break;
             }
@@ -400,8 +412,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
 
     @Override
     public void onResume() {
-        pipeShape.setShape(null);
         super.onResume();
+        pipeShape.setShape(null);
         restoreState();
     }
 
@@ -443,10 +455,11 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         public void onClick(View v) {
             if (isAllValid()) try {
                 final Entry entry = setEntry();
-                ArrayList<Entry> previewEntries = new ArrayList<>(1);
+                ArrayList<Entry> previewEntries = new ArrayList<>();
                 previewEntries.add(entry);
                 startActivity(new Intent(context, ViewActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("PipeIndex", 0)
                         .putExtra("RegisterPreview", previewEntries));
             } catch (Exception e) {
                 showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.", true);
@@ -466,9 +479,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
-    @NotNull
-    @Contract(" -> new")
-    private static Entry setEntry() throws Exception {
+    private Entry setEntry() throws Exception {
         final int spiId = spi.getId();
         if (spiMemo == null) spiMemo = new SpiMemo();
         spiMemo.setSpi_id(spiId);
@@ -486,8 +497,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         pipe.setConstruction(fConstruction.getText().toString());
         pipe.setConstruction_contact(fConstructionContact.getText().toString());
 
-        return new Entry(
-                spi, spiType, spiLocation, spiMemo,
-                pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
+        Entry entry = new Entry(spi, spiType, spiMemo, pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
+        entry.setSpi_location(spiLocation);
+
+        return entry;
     }
 }

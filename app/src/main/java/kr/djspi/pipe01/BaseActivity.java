@@ -1,6 +1,5 @@
 package kr.djspi.pipe01;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -43,7 +42,6 @@ public class BaseActivity extends AppCompatActivity {
     public static Typeface typeface;
     private DrawerLayout drawer;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
-    Context context;
     NfcUtil nfcUtil;
     ProgressBar progressBar;
     Toolbar toolbar;
@@ -51,11 +49,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
         resources = getResources();
         nfcUtil = new NfcUtil(this, getClass());
-        packageName = context.getPackageName();
-        typeface = Typeface.createFromAsset(context.getAssets(), "fonts/nanumsquareroundr.ttf");
+        packageName = getPackageName();
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundr.ttf");
     }
 
     @Override
@@ -82,12 +79,12 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void setSupportActionBar(Toolbar toolbar) {
         super.setSupportActionBar(toolbar);
-        toolbar.setTitleTextAppearance(context, R.style.TitleHeader);
+        toolbar.setTitleTextAppearance(this, R.style.TitleHeader);
         TextView textViewButton = findViewById(R.id.nmap_find);
         textViewButton.setVisibility(VISIBLE);
         textViewButton.setOnClickListener(v -> {
             if (currentLocation != null) {
-                startActivity(new Intent(context, NaverMapActivity.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                startActivity(new Intent(this, NaverMapActivity.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
             } else {
                 Toast.makeText(this, getString(R.string.toast_error_location), Toast.LENGTH_LONG).show();
             }
@@ -158,7 +155,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (nfcUtil != null) nfcUtil.onResume();
     }
 
     @Override

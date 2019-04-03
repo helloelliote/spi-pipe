@@ -123,6 +123,8 @@
                 android:layout_weight="2.5"
                 android:hint="@string/record_input_3_hint"
                 android:inputType="numberDecimal"
+                app:floatmaxNumber="99.99"
+                app:floatminNumber="0.0"
                 app:testType="floatNumericRange" />
 
             <TextView
@@ -154,7 +156,10 @@
                 style="@style/FormEditText"
                 android:layout_weight="2.5"
                 android:hint="@string/record_input_4_hint"
-                android:inputType="numberDecimal|textNoSuggestions" />
+                android:inputType="number|textNoSuggestions"
+                app:maxNumber="999"
+                app:minNumber="0"
+                app:testType="numericRange" />
 
             <TextView
                 android:id="@+id/unit"

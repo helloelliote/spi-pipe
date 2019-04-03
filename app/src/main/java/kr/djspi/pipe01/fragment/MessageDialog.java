@@ -25,8 +25,8 @@ import static java.util.Objects.requireNonNull;
 
 public class MessageDialog extends DialogFragment implements OnClickListener {
 
-    private static boolean isReturnToMain = false;
-    private static int issueType = 0;
+    private boolean isReturnToMain = false;
+    private int issueType = 0;
     private TextView popupTitle;
     private TextView popupText;
     private TextView popupSubText;

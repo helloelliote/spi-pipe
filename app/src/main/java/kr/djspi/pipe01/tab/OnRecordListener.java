@@ -4,4 +4,6 @@ import com.google.gson.JsonObject;
 
 public interface OnRecordListener {
     JsonObject getJsonObjectRecord();
+
+    void onRecord(String tag, int result);
 }

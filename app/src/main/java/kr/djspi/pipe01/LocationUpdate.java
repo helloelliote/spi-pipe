@@ -53,9 +53,8 @@ public abstract class LocationUpdate extends BaseActivity {
     /**
      * Callback for Location events.
      */
-    private static LocationCallback locationCallback;
-
-    private static LocationManager locationManager;
+    private LocationCallback locationCallback;
+    private LocationManager locationManager;
     FusedLocationSource locationSource;
 
     /**
@@ -137,11 +136,12 @@ public abstract class LocationUpdate extends BaseActivity {
 
     @Override
     public void onResume() {
+        super.onResume();
+        nfcUtil.onPause();
         if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
             showMessageDialog(1, getString(R.string.popup_location_on), false);
         }
         if (requestingLocationUpdates || currentLocation == null) startLocationUpdates();
-        super.onResume();
     }
 
     /**
@@ -155,9 +155,9 @@ public abstract class LocationUpdate extends BaseActivity {
 
     @Override
     public void onPause() {
+        super.onPause();
         // Remove location updates to save battery.
         stopLocationUpdates();
-        super.onPause();
     }
 
     /**

@@ -22,21 +22,18 @@ import kr.djspi.pipe01.R;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
-import static kr.djspi.pipe01.RegisterActivity.showPositionDialog;
 import static kr.djspi.pipe01.fragment.PositionDialog.fromRes;
 
 public class DistanceDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = DistanceDialog.class.getSimpleName();
-    private static String dialogTitle;
-    private static String resId;
-    private static Bundle bundle;
-    private static String typeString;
-    private static String shapeString;
-    private static int positionInt = -1;
-    private static String planString;
-    private static FormEditText fVertical, fHorizontal;
-    private static OnSelectListener listener;
+    private int positionInt = -1;
+    private String dialogTitle;
+    private String resId;
+    private String shapeString;
+    private String planString;
+    private FormEditText fVertical, fHorizontal;
+    private OnSelectListener listener;
 
     public DistanceDialog() {
     }
@@ -53,8 +50,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bundle = getArguments();
-            typeString = bundle.getString("typeString");
+            Bundle bundle = getArguments();
             shapeString = bundle.getString("shapeString");
             positionInt = bundle.getInt("positionInt");
             planString = bundle.getString("planString");
@@ -169,7 +165,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
         }
     }
 
-    private static void setTranslation(boolean noV, boolean noH, float vY, float hX, float hY) {
+    private void setTranslation(boolean noV, boolean noH, float vY, float hX, float hY) {
         if (noV) {
             fVertical.setText("0.0");
             fVertical.setVisibility(GONE);
@@ -199,8 +195,8 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
             case R.id.btn_cancel:
                 fHorizontal.setVisibility(VISIBLE);
                 fVertical.setVisibility(VISIBLE);
+                listener.onSelect(TAG_DISTANCE, -2, null);
                 dismissAllowingStateLoss();
-                showPositionDialog();
                 break;
             case R.id.btn_close:
                 dismissAllowingStateLoss();
@@ -223,5 +219,11 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
     public void onDismiss(DialogInterface dialog) {
         resId = null;
         super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

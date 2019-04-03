@@ -18,11 +18,11 @@ public class PipePosition implements DataItem, Serializable {
      * <p>
      * 관로의 분기방향은 동서남북 방위를 이용해 표현: sw, ne, e
      */
-    private int position;
+    private int position = -1;
     private String direction;
     /**
      * 수직, 수평 거리(단위 m)
      */
-    private double vertical;
-    private double horizontal;
+    private double vertical = -1.0;
+    private double horizontal = -1.0;
 }

@@ -55,9 +55,6 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     private MaterialButton buttonConfirm;
     private NaverMap naverMap;
 
-    /**
-     * @see SpiLocationActivity#setNaverMap() 네이버 지도 구현
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -235,5 +232,11 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
             selectDialog.setCancelable(false);
             selectDialog.show(getSupportFragmentManager(), TAG_LOCATION);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        originPoint = null;
     }
 }

@@ -18,13 +18,13 @@ public class TabAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                return InfoTab.getInstance();
+                return new InfoTab();
             case 1:
-                return SectionTab.getInstance();
+                return new SectionTab();
             case 2:
-                return PlaneTab.getInstance();
+                return new PlaneTab();
             case 3:
-                return PreviewTab.getInstance();
+                return new PreviewTab();
             default:
                 return null;
         }
