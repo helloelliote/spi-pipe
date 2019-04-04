@@ -43,7 +43,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
     private String dialogTitle;
     private Bundle bundle;
     private String shapeString;
-    private View checkView;
+    private ImageView checkView;
     private FragmentManager fragmentManager;
     private OnSelectListener listener;
 

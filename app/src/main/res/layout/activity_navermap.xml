@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
     android:orientation="vertical"
     tools:context=".NaverMapActivity"
     tools:ignore="ContentDescription">
@@ -59,7 +58,6 @@
             android:textSize="15sp" />
 
         <LinearLayout
-            android:id="@+id/map_pipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -78,37 +76,31 @@
                 android:layout_height="23dp">
 
                 <TextView
-                    android:id="@+id/txt_pipe_00"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_01"
                     android:text="@string/pipe_name_00" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_01"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_02"
                     android:text="@string/pipe_name_01" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_02"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_03"
                     android:text="@string/pipe_name_02" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_03"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_04"
                     android:text="@string/pipe_name_03" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_04"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_05"
                     android:text="@string/pipe_name_04" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_05"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_06"
                     android:text="@string/pipe_name_05" />
@@ -120,37 +112,31 @@
                 tools:ignore="DuplicateIds">
 
                 <TextView
-                    android:id="@+id/txt_pipe_06"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_07"
                     android:text="@string/pipe_name_06" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_07"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_08"
                     android:text="@string/pipe_name_07" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_08"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_09"
                     android:text="@string/pipe_name_08" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_09"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_10"
                     android:text="@string/pipe_name_09" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_10"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_11"
                     android:text="@string/pipe_name_10" />
 
                 <TextView
-                    android:id="@+id/txt_pipe_11"
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_12"
                     android:text="@string/pipe_name_11" />

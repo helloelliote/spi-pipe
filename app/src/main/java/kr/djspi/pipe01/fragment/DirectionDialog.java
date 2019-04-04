@@ -41,7 +41,7 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
     private String shapeString;
     private String[] resIds;
     private Bundle bundle;
-    private View checkView;
+    private ImageView checkView;
     private FragmentManager fragmentManager;
     private OnSelectListener listener;
 

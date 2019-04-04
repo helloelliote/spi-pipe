@@ -47,8 +47,7 @@
         <FrameLayout
             android:id="@+id/activity_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white">
+            android:layout_height="match_parent">
 
             <ProgressBar
                 android:id="@+id/progressbar"
@@ -75,7 +74,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
-            android:alpha="0.6"
             android:backgroundTint="@android:color/transparent"
             android:src="@drawable/ic_swipe_left"
             android:tint="@color/colorPrimary"
@@ -91,5 +89,4 @@
             android:padding="10dp"
             android:text="@string/nav_close" />
     </android.support.design.widget.NavigationView>
-
 </android.support.v4.widget.DrawerLayout>

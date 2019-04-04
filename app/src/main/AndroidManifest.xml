@@ -75,7 +75,6 @@
         </activity>
         <activity
             android:name=".NaverMapActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".RegisterActivity"
@@ -83,11 +82,9 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".SpiLocationActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SpiPostActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ViewActivity"

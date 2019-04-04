@@ -67,9 +67,9 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">3</item>
         <item name="android:paddingStart">10dp</item>
-        <item name="android:background">@android:color/transparent</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="testType">nocheck</item>
         <item name="emptyErrorString">"필수입력 항목입니다"</item>
         <item name="android:imeOptions">actionNext</item>
@@ -83,7 +83,6 @@
     <style name="Spi.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:background">@android:color/transparent</item>
         <item name="backgroundTint">@color/colorPrimaryDark</item>
         <item name="cornerRadius">40dp</item>
     </style>

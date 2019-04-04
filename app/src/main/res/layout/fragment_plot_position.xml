@@ -54,8 +54,7 @@
             <ImageView
                 android:id="@+id/lay_background"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/bg_p" />
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:id="@+id/lay_rows"
@@ -65,7 +64,6 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/lay_row_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
@@ -82,11 +80,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
 
@@ -102,11 +100,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
 
@@ -120,11 +118,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
                 </LinearLayout>
@@ -149,11 +147,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
 
@@ -169,11 +167,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
 
@@ -187,11 +185,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
                 </LinearLayout>
@@ -214,11 +212,11 @@
                             android:layout_width="86dp"
                             android:layout_height="86dp" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
 
@@ -234,11 +232,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
 
@@ -252,11 +250,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 
-                        <View
+                        <ImageView
                             android:id="@+id/v_select"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/btn_on"
+                            android:src="@drawable/btn_on"
                             android:visibility="gone" />
                     </FrameLayout>
                 </LinearLayout>

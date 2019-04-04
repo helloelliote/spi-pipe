@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
     android:orientation="vertical"
     android:scrollbarDefaultDelayBeforeFade="3000"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -260,7 +259,6 @@
                 android:id="@+id/form_memo"
                 style="@style/FormEditText"
                 android:hint="@string/record_input_8_hint"
-
                 app:emptyAllowed="true" />
         </LinearLayout>
 
@@ -283,7 +281,6 @@
                 android:id="@+id/form_construction"
                 style="@style/FormEditText"
                 android:hint="@string/record_input_9_hint"
-
                 app:emptyAllowed="true" />
         </LinearLayout>
 
