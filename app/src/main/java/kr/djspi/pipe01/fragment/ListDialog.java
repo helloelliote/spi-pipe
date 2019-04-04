@@ -25,10 +25,10 @@ import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 
 import static android.view.View.TEXT_ALIGNMENT_CENTER;
 import static kr.djspi.pipe01.Const.PIPE_SHAPES;
+import static kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
-import static kr.djspi.pipe01.RegisterActivity.pipes;
 
 /**
  * 관로종류 목록과 관리기관 목록을 보여주는데 공용으로 사용하는 Dialog 클래스
@@ -66,7 +66,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
 
         switch (listTag) {
             case TAG_PIPE:
-                for (PipeTypeEnum pipe : pipes) {
+                for (PipeTypeEnum pipe : PIPE_TYPE_ENUMS) {
                     listItem.add(pipe.getName());
                 }
                 dialogTitle = getString(R.string.popup_title_select_pipe);

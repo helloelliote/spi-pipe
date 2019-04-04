@@ -56,7 +56,10 @@ import static android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_NEXT;
 import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
 import static android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT;
+import static java.lang.Double.valueOf;
+import static java.lang.String.format;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
+import static kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_PHOTO;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
@@ -74,18 +77,17 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
      * 단일형의 경우 spiLocation 은 항상 null 로 시작한다.
      */
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    private static final PipeShapeEnum[] SHAPE_ENUMS = PipeShapeEnum.values();
     private final static InputFilter[] FILTER_DEPTH = {new DecimalFilter(4, 2)};
     private static Spi spi;
     private static SpiType spiType;
     private static SpiMemo spiMemo;
+    private static SpiLocation spiLocation;
     private static final Pipe pipe = new Pipe();
     private static final PipeType pipeType = new PipeType();
     private static final PipeShape pipeShape = new PipeShape();
     private static final PipePosition pipePosition = new PipePosition();
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
-    private static SpiLocation spiLocation;
     private final Bundle superviseListBundle = new Bundle(1);
     private TextView tHeader, tUnit;
     private Context context;
@@ -202,7 +204,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     @Override
     void setToolbarTitle(String title) {
         if (title != null) {
-            toolbar.setTitle(String.format(getString(R.string.app_title_alt), "매설관로", title));
+            toolbar.setTitle(format(getString(R.string.app_title_alt), "매설관로", title));
         }
     }
 
@@ -286,26 +288,27 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         switch (tag) {
             case TAG_PIPE:
+                fPipe.setText(PIPE_TYPE_ENUMS[index].getName());
                 // TODO: 2019-04-01 index 번호 대신 서버에서 오는 정보 사용하도록 개선
-                fPipe.setText(pipes[index].getName());
-                pipeType.setId(index + 1);
+                String header = PIPE_TYPE_ENUMS[index].getHeader();
+                String unit = PIPE_TYPE_ENUMS[index].getUnit();
+                tHeader.setText(format("%s  ", header));
+                fSpec.setHint(format("%s 입력", header).replace("관경", "관로관경"));
+                tUnit.setText(format("  %s", unit));
                 pipe.setType_id(index + 1);
-                String header = pipes[index].getHeader();
+                pipeType.setId(index + 1);
                 pipeType.setHeader(header);
-                tHeader.setText(String.format("%s  ", header));
-                fSpec.setHint(String.format("%s 입력", header).replace("관경", "관로관경"));
-                String unit = pipes[index].getUnit();
                 pipeType.setUnit(unit);
-                tUnit.setText(String.format("  %s", unit));
                 if (unit.equals("mm")) fSpec.setInputType(TYPE_CLASS_NUMBER);
                 else fSpec.setInputType(TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                pipeShape.setShape(null);
+
                 if (fShape.getText().toString().equals("")) {
+                    pipeShape.setShape(null);
                     new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
                 } else return;
                 break;
             case TAG_SHAPE:
-                fShape.setText(SHAPE_ENUMS[index].name());
+                fShape.setText(PipeShapeEnum.values()[index].name());
                 fHorizontal.setText(null);
                 fVertical.setText(null);
                 showPositionDialog();
@@ -366,7 +369,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 }
                 break;
             case TAG_DIRECTION:
-                if (index == -2) {
+                if (index == -2) { // 사용자가 이전 다이얼로그에서 '취소' 선택
                     showPositionDialog();
                     return;
                 }
@@ -374,14 +377,14 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 pipePlan.setFile_plane(text[0] + ".png");
                 break;
             case TAG_DISTANCE:
-                if (index == -2) {
+                if (index == -2) { // 사용자가 이전 다이얼로그에서 '취소' 선택
                     showPositionDialog();
                     return;
                 }
-                fHorizontal.setText(String.format("%s %s", fHorizontal.getTag().toString(), text[0]));
-                fVertical.setText(String.format("%s %s", fVertical.getTag().toString(), text[1]));
-                pipePosition.setHorizontal(Double.valueOf(text[0]));
-                pipePosition.setVertical(Double.valueOf(text[1]));
+                fHorizontal.setText(format("%s %s", fHorizontal.getTag().toString(), text[0]));
+                fVertical.setText(format("%s %s", fVertical.getTag().toString(), text[1]));
+                pipePosition.setHorizontal(valueOf(text[0]));
+                pipePosition.setVertical(valueOf(text[1]));
                 fDepth.requestFocus();
                 imm.toggleSoftInput(SHOW_IMPLICIT, HIDE_NOT_ALWAYS);
                 break;
@@ -460,7 +463,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 startActivity(new Intent(context, ViewActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("PipeIndex", 0)
-                        .putExtra("RegisterPreview", previewEntries));
+                        .putExtra("RegisterPreview", previewEntries)
+                        .putExtra("fHorizontal", fHorizontal.getText().toString())
+                        .putExtra("fVertical", fVertical.getText().toString()));
             } catch (Exception e) {
                 showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.", true);
                 Log.e(TAG, e.getMessage());
@@ -480,13 +485,13 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
 
     private Entry setEntry() throws Exception {
         final int spiId = spi.getId();
-        if (spiMemo == null) spiMemo = new SpiMemo();
-        spiMemo.setSpi_id(spiId);
+        if (spiMemo == null) {
+            spiMemo = new SpiMemo();
+            spiMemo.setSpi_id(spiId);
+        }
         spiMemo.setMemo(fMemo.getText().toString());
-        spiLocation = new SpiLocation();
-        spiLocation.setSpi_id(spiId);
         pipe.setSpi_id(spiId);
-        pipe.setDepth(Double.valueOf(fDepth.getText().toString()));
+        pipe.setDepth(valueOf(fDepth.getText().toString()));
         pipe.setMaterial(fMaterial.getText().toString());
         pipeShape.setShape(fShape.getText().toString());
         pipeShape.setSpec(fSpec.getText().toString());

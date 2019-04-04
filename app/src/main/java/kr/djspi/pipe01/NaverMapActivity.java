@@ -33,7 +33,6 @@ import com.helloelliote.retrofit.SpiGet;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
-import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
@@ -65,6 +64,7 @@ import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.helloelliote.retrofit.ApiKey.API_PIPE_GET;
+import static com.naver.maps.map.CameraAnimation.Fly;
 import static com.naver.maps.map.LocationTrackingMode.Face;
 import static com.naver.maps.map.LocationTrackingMode.Follow;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
@@ -83,13 +83,12 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     private static final String TAG = NaverMapActivity.class.getSimpleName();
     private static final double ZOOM_DEFAULT = 18.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 6.0; // 최소 줌레벨
-    private static final double ZOOM_GET = 14.0;
+    private static final double ZOOM_GET = 12.0;
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
     private Context context;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    static boolean isSearch = false;
     static final int PAD_LEFT = 0;
     static final int PAD_TOP = 45;
     static final int PAD_RIGHT = 0;
@@ -165,7 +164,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         setOverlayListener();
         new SetTopSheet(naverMap);
         new SetBottomSheet(naverMap);
-        getSpiData(naverMap);
+        onRequestPipe(naverMap);
     }
 
     /**
@@ -243,12 +242,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         infoWindow.setOnClickListener(listener);
     }
 
-    private void getSpiData(@NotNull NaverMap naverMap) {
-        if (naverMap.getCameraPosition().zoom <= ZOOM_GET) {
-            CameraPosition position = new CameraPosition(new LatLng(currentLocation), ZOOM_DEFAULT);
-            naverMap.setCameraPosition(position);
-            // TODO: 2019-04-03 줌 애니메이션 추가
-        }
+    private void onRequestPipe(@NotNull NaverMap naverMap) {
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
         jsonQuery.addProperty("sx", String.valueOf(bounds.getWestLongitude()));
@@ -316,6 +310,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     protected void onStop() {
         super.onStop();
         locationSource = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         listener = null;
     }
 
@@ -446,9 +445,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     searchView.setQuery(placesList.get(position).get("name"), false);
                     final double coordinate_x = parseDouble(requireNonNull(placesList.get(position).get("x")));
                     final double coordinate_y = parseDouble(requireNonNull(placesList.get(position).get("y")));
+                    double zoom = naverMap.getCameraPosition().zoom;
+                    zoom = zoom < ZOOM_GET ? ZOOM_GET + 1.0 : zoom;
                     naverMap.moveCamera(CameraUpdate
-                            .scrollTo(new LatLng(coordinate_y, coordinate_x))
-                            .animate(CameraAnimation.Fly)
+                            .scrollAndZoomTo(new LatLng(coordinate_y, coordinate_x), zoom)
+                            .animate(Fly)
                             .finishCallback(() -> {
                                 behavior.setState(STATE_EXPANDED);
                                 searchView.clearFocus();
@@ -464,6 +465,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     private final class SetBottomSheet {
 
         private final PointF POINT_F = new PointF(0.5f, 0.5f);
+        private final Transition TRANSITION_TEXT = new ChangeText().setChangeBehavior(CHANGE_BEHAVIOR_OUT_IN);
 
         SetBottomSheet(NaverMap naverMap) {
             LinearLayout bottomSheetView = findViewById(R.id.nmap_bottom_sheet);
@@ -471,17 +473,19 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             bottomSheetText.setOnClickListener((View view) -> {
                 switch (behavior.getState()) {
                     case STATE_COLLAPSED:
+                        if (naverMap.getCameraPosition().zoom < ZOOM_GET) {
+                            showMessageDialog(0, getString(R.string.popup_error_zoom), true);
+                            return;
+                        }
                         behavior.setState(STATE_EXPANDED);
                         break;
                     case STATE_EXPANDED:
-                        isSearch = false;
                         behavior.setState(STATE_COLLAPSED);
                         break;
                     default:
                         break;
                 }
             });
-            Transition changeText = new ChangeText().setChangeBehavior(CHANGE_BEHAVIOR_OUT_IN);
             String textExpanded = getString(R.string.map_search_input);
             String textCollapsed = getString(R.string.map_search_point);
             final int bottomSheetHeight = bottomSheetView.getHeight();
@@ -490,23 +494,17 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                 @Override
                 public void onStateChanged(@NonNull View view, int newState) {
+                    TransitionManager.beginDelayedTransition(bottomSheetView, TRANSITION_TEXT);
                     switch (newState) {
                         case STATE_EXPANDED:
-                            TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
                             bottomSheetText.setText(textExpanded);
                             naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, bottomSheetHeight);
-                            getSpiData(naverMap);
+                            onRequestPipe(naverMap);
                             break;
                         case STATE_COLLAPSED:
-                            if (isSearch) {
-                                TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
-                                naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT);
-                            } else {
-                                TransitionManager.beginDelayedTransition(bottomSheetView, changeText);
-                                bottomSheetText.setText(textCollapsed);
-                                naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT);
-                                clearMarker();
-                            }
+                            bottomSheetText.setText(textCollapsed);
+                            naverMap.setContentPadding(PAD_LEFT, PAD_TOP, PAD_RIGHT, PAD_BOT);
+                            clearMarker();
                             break;
                         default:
                             break;

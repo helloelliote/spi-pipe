@@ -50,7 +50,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     private static final double ZOOM_DEFAULT = 19.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 12.0; // 최소 줌레벨
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
-    private final LocationDialog selectDialog = new LocationDialog();
+    private LocationDialog selectDialog = new LocationDialog();
     private TextView textView;
     private MaterialButton buttonConfirm;
     private NaverMap naverMap;
@@ -238,5 +238,6 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     protected void onStop() {
         super.onStop();
         originPoint = null;
+        selectDialog = null;
     }
 }

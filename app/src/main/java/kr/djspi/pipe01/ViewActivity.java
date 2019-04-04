@@ -36,7 +36,6 @@ import static java.util.Objects.requireNonNull;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_MAP;
 import static kr.djspi.pipe01.Const.RESULT_FAIL;
 import static kr.djspi.pipe01.Const.RESULT_PASS;
-import static kr.djspi.pipe01.Const.TAG_PREVIEW;
 
 public class ViewActivity extends BaseActivity implements Serializable, OnRecordListener {
 
@@ -58,18 +57,19 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
 
         final Intent intent = getIntent();
         if (intent != null) {
-            pipeIndex = intent.getIntExtra("PipeIndex", 0);
-
             String jsonString = intent.getStringExtra("PipeView");
             if (jsonString != null) {
                 jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
             }
 
             Serializable serializable = intent.getSerializableExtra("RegisterPreview");
+            pipeIndex = intent.getIntExtra("PipeIndex", 0);
+            String fHorizontal = intent.getStringExtra("fHorizontal");
+            String fVertical = intent.getStringExtra("fVertical");
             if (serializable instanceof ArrayList<?>) {
                 previewEntries = (ArrayList<Entry>) serializable;
                 jsonObject = new JsonObject();
-                jsonObject = parseEntry(previewEntries, pipeIndex); // 단일형 index 는 항상 0
+                jsonObject = parseEntry(previewEntries, pipeIndex, fHorizontal, fVertical); // 단일형 index 는 항상 0
             }
         }
         setContentView(R.layout.activity_pipe_view);
@@ -162,7 +162,6 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
 
     @Override
     public void onRecord(String tag, int result) {
-        if (!tag.equals(TAG_PREVIEW)) return;
         switch (result) {
             case RESULT_PASS:
                 startActivityForResult(new Intent(this, SpiLocationActivity.class)
@@ -227,7 +226,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static JsonObject parseEntry(@NotNull ArrayList entries, int index) {
-        return ((Entry) entries.get(index)).parseToString();
+    private static JsonObject parseEntry(@NotNull ArrayList entries, int index, String... strings) {
+        return ((Entry) entries.get(index)).parseToString(strings);
     }
 }

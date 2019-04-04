@@ -93,10 +93,8 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
                     setTranslation(true, false, 0.0f, -50.0f, 0.0f);
                     break;
                 case 2:
-                    if (planString.equals("plan_plate_str_2_out") || planString.equals("plan_marker_str_2_out")) {
-                        fVertical.setText("0.0");
-                        fHorizontal.setText("0.0");
-                        listener.onSelect(TAG_DISTANCE, 0, fHorizontal.getText().toString(), fVertical.getText().toString());
+                    if (planString.equals("plan_plate_str_2_out")) {
+                        listener.onSelect(TAG_DISTANCE, 0, "0.00", "0.00");
                         dismissAllowingStateLoss();
                         break;
                     } else setTranslation(false, true, -50.0f, 0.0f, 0.0f);
@@ -117,10 +115,8 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
                     setTranslation(true, false, 0.0f, -50.0f, 0.0f);
                     break;
                 case 8:
-                    if (planString.equals("plan_plate_str_8_out") || planString.equals("plan_marker_str_8_out")) {
-                        fVertical.setText("0.0");
-                        fHorizontal.setText("0.0");
-                        listener.onSelect(TAG_DISTANCE, 0, fHorizontal.getText().toString(), fVertical.getText().toString());
+                    if (planString.equals("plan_plate_str_8_out")) {
+                        listener.onSelect(TAG_DISTANCE, 0, "0.0", "0.0");
                         dismissAllowingStateLoss();
                         break;
                     } else setTranslation(false, true, 50.0f, 0.0f, 0.0f);

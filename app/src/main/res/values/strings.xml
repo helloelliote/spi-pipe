@@ -73,6 +73,7 @@
 
     <string name="popup_error_spi">SPI정보를 가져오지 못하였습니다. 다시 시도해주세요.</string>
     <string name="popup_error_noplace">위치(주소) 검색결과가 없습니다.</string>
+    <string name="popup_error_zoom">현재 축척에서는 정보조회를\n지원하지 않습니다.</string>
 
     <!--RecordInputActivity-->
     <string name="record_optional">선택입력 사항</string>

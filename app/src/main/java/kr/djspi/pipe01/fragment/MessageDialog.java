@@ -127,7 +127,8 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 break;
             case 7: // (공통) 서버와의 통신 에러
                 popupText.setText(getString(R.string.popup_error_comm));
-                popupSubText.setText(getTag());
+//                popupSubText.setText(getTag());
+                setVisibilityToGone(view);
             default:
                 break;
         }

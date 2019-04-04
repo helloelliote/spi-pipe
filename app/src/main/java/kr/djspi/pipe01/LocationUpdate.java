@@ -49,7 +49,7 @@ public abstract class LocationUpdate extends BaseActivity {
      * Tracks the status of the location updates request. Value changes when the user presses the
      * Start Updates and Stop Updates buttons.
      */
-    private static Boolean requestingLocationUpdates;
+    private Boolean requestingLocationUpdates;
     /**
      * Callback for Location events.
      */
@@ -80,7 +80,7 @@ public abstract class LocationUpdate extends BaseActivity {
      * 앱 사용에 필요한 권한을 Array 로 입력 ('Manifest.permission.필요권한')
      */
     @SuppressLint("MissingPermission")
-    private static void requestAllPermissions(Context context) {
+    private void requestAllPermissions(Context context) {
         String[] permissions = {ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA};
         Permissions.check(context/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
             @Override

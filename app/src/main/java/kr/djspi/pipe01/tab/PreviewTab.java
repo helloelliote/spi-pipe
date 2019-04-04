@@ -55,10 +55,10 @@ public class PreviewTab extends Fragment implements OnClickListener {
         tShape.setText(Json.s(jsonObject, "shape"));
 
         TextView tHorizontal = view.findViewById(R.id.text_horizontal);
-        tHorizontal.setText(Json.s(jsonObject, "horizontal"));
+        tHorizontal.setText(Json.s(jsonObject, "horizontal_form"));
 
         TextView tVertical = view.findViewById(R.id.text_vertical);
-        tVertical.setText(Json.s(jsonObject, "vertical"));
+        tVertical.setText(Json.s(jsonObject, "vertical_form"));
 
         TextView tDepth = view.findViewById(R.id.text_depth);
         tDepth.setText(Json.s(jsonObject, "depth"));

@@ -24,7 +24,7 @@ public class Entry implements Serializable {
     private final PipeSupervise pipe_supervise;
     private SpiLocation spi_location;
 
-    public JsonObject parseToString() {
+    public JsonObject parseToString(String[] strings) {
         JsonObject object = new JsonObject();
         object.addProperty("spi_id", spi.getId());
         object.addProperty("supervise", pipe_supervise.getSupervise());
@@ -41,10 +41,14 @@ public class Entry implements Serializable {
         object.addProperty("position", pipe_position.getPosition());
         object.addProperty("horizontal", pipe_position.getHorizontal());
         object.addProperty("vertical", pipe_position.getVertical());
+        object.addProperty("horizontal_form", strings[0]);
+        object.addProperty("vertical_form", strings[1]);
         object.addProperty("depth", pipe.getDepth());
         object.addProperty("spi_memo", spi_memo.getMemo());
         object.addProperty("file_plane", pipe_plan.getFile_plane());
         object.addProperty("file_section", pipe_plan.getFile_section());
+        object.addProperty("latitude", spi_location.getLatitude());
+        object.addProperty("longitude", spi_location.getLongitude());
         return object;
     }
 }

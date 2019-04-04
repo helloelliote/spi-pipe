@@ -17,10 +17,10 @@ import com.helloelliote.retrofit.SpiPost;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import kr.djspi.pipe01.Const.NfcRecordEnum;
 import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.fragment.MessageDialog;
 import kr.djspi.pipe01.nfc.NfcUtil;
+import kr.djspi.pipe01.nfc.StringParser;
 
 import static kr.djspi.pipe01.Const.URL_SPI;
 
@@ -106,7 +106,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
                      * @see NfcUtil#writeTag(Intent, String[]) 쓰기 작업을 수행, 성공 여부를 리턴
                      */
                     private void processTag(final Intent intent, JsonObject response, int index) {
-                        String[] strings = NfcRecordEnum.parseToStringArray(response, index);
+                        String[] strings = StringParser.parseToStringArray(response, index);
                         if (nfcUtil.writeTag(intent, strings)) {
                             nfcUtil.onPause();
                             showMessageDialog(5, getString(R.string.popup_write_success), true);

@@ -8,8 +8,6 @@ import kr.djspi.pipe01.R;
 import lombok.Data;
 import lombok.Getter;
 
-import static kr.djspi.pipe01.BaseActivity.pipes;
-
 @Data
 public class PipeType implements DataItem, Serializable {
 
@@ -20,7 +18,7 @@ public class PipeType implements DataItem, Serializable {
 
     @Contract(pure = true)
     public static PipeTypeEnum parsePipeType(String name) {
-        for (PipeTypeEnum pipe : pipes) {
+        for (PipeTypeEnum pipe : PipeTypeEnum.values()) {
             if (pipe.name.equals(name)) return pipe;
         }
         return PipeTypeEnum.기타관로;

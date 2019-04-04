@@ -3,8 +3,12 @@ package kr.djspi.pipe01;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkRequest;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -38,13 +42,42 @@ import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 public class MainActivity extends LocationUpdate implements Serializable {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private boolean isNetworkConnected;
     private Context context;
+    ConnectivityManager connectivityManager;
+    ConnectivityManager.NetworkCallback networkCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        setNetworkCallback();
         setContentView(R.layout.activity_main);
+    }
+
+    private void setNetworkCallback() {
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest request = new NetworkRequest.Builder().build();
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            public void onAvailable(Network network) {
+                super.onAvailable(network);
+                isNetworkConnected = true;
+            }
+
+            @Override
+            public void onUnavailable() {
+                super.onUnavailable();
+                isNetworkConnected = false;
+                // TODO: 2019-04-04 별도의 안내 필요?
+            }
+
+            @Override
+            public void onLost(Network network) {
+                super.onLost(network);
+                isNetworkConnected = false;
+            }
+        };
+        connectivityManager.registerNetworkCallback(request, networkCallback);
     }
 
     /**
@@ -59,7 +92,10 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
         LinearLayout mainLayout2 = findViewById(R.id.lay_main2);
         mainLayout2.setOnClickListener(view -> {
-            if (currentLocation == null) {
+            progressBar.setVisibility(VISIBLE);
+            if (!isNetworkConnected) {
+                showMessageDialog(7, "", true);
+            } else if (currentLocation == null) {
                 Toast.makeText(this, getString(R.string.toast_error_location), Toast.LENGTH_LONG).show();
             } else {
                 startActivity(new Intent(this, NaverMapActivity.class)
@@ -76,14 +112,9 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     @Override
-    public void onNewIntent(final Intent intent) {
-        super.onNewIntent(intent);
-        if (intent != null) new ProcessTag(intent);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
+        progressBar.setVisibility(GONE);
         if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
         if (nfcUtil != null) nfcUtil.onResume();
     }
@@ -95,7 +126,22 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        progressBar.setVisibility(GONE);
+        connectivityManager.unregisterNetworkCallback(networkCallback);
+    }
+
+    @Override
     public void onLocationUpdate(Location location) {
+    }
+
+    @Override
+    public void onNewIntent(final Intent intent) {
+        super.onNewIntent(intent);
+        if (intent == null) return;
+        if (isNetworkConnected) new ProcessTag(intent);
+        else new ProcessTagOffline(intent);
     }
 
     private final class ProcessTag {
@@ -175,8 +221,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
             SpiType spiType = new SpiType(type_id, spi_type);
             // SpiLocation.class DTO
             SpiLocation spiLocation = new SpiLocation();
-            if (Json.isNull(data, "spi_location_id")) spiLocation = null;
-            else {
+            if (!Json.isNull(data, "spi_location_id")) {
                 int location_id = Json.i(data, "spi_location_id");
                 double latitude = Json.d(data, "spi_latitude");
                 double longitude = Json.d(data, "spi_longitude");
@@ -189,8 +234,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
             }
             // SpiMemo.class DTO
             SpiMemo spiMemo = new SpiMemo();
-            if (Json.isNull(data, "spi_memo_id")) spiMemo = null;
-            else {
+            if (!Json.isNull(data, "spi_memo_id")) {
                 int memo_id = Json.i(data, "spi_memo_id");
                 String memo = Json.s(data, "spi_memo");
                 spiMemo.setId(memo_id);
@@ -202,6 +246,14 @@ public class MainActivity extends LocationUpdate implements Serializable {
             hashMap.put("SpiLocation", spiLocation);
             hashMap.put("SpiMemo", spiMemo);
             return hashMap;
+        }
+    }
+
+    private final class ProcessTagOffline {
+
+        ProcessTagOffline(Intent intent) {
+            Tag tag = NfcUtil.onNewTagIntent(intent);
+            Log.w(TAG, "Offline");
         }
     }
 }

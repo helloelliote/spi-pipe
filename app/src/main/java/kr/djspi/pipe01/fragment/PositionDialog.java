@@ -31,13 +31,13 @@ import static kr.djspi.pipe01.BaseActivity.resources;
 import static kr.djspi.pipe01.Const.PIPE_SHAPES;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
-import static kr.djspi.pipe01.Const.TAG_TYPE_COLUMN;
-import static kr.djspi.pipe01.Const.TAG_TYPE_MARKER;
-import static kr.djspi.pipe01.Const.TAG_TYPE_PLATE;
 
 public class PositionDialog extends DialogFragment implements OnClickListener {
 
     private static final String TAG = PositionDialog.class.getSimpleName();
+    private static final String TAG_TYPE_PLATE = "표지판";
+    private static final String TAG_TYPE_MARKER = "표지기";
+    private static final String TAG_TYPE_COLUMN = "표지주";
     private int selectIndex = -1;
     private String typeString;
     private String dialogTitle;
