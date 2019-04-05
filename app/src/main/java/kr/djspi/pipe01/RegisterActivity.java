@@ -21,7 +21,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -142,11 +141,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
         setContentView(R.layout.activity_register);
         superviseList = getSuperviseList();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

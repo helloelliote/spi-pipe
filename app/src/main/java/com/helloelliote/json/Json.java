@@ -19,6 +19,10 @@ public final class Json {
         return jsonObject.get(d).getAsDouble();
     }
 
+    public static float f(@NotNull JsonObject jsonObject, String f) {
+        return jsonObject.get(f).getAsFloat();
+    }
+
     public static JsonObject o(@NotNull JsonObject jsonObject, String obj) {
         return jsonObject.get(obj).getAsJsonArray().get(0).getAsJsonObject();
     }

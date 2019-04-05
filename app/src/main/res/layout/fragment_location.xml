@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:background="@drawable/dialog_border"
     android:gravity="center"
     android:orientation="vertical"
     tools:ignore="ContentDescription">
 
     <LinearLayout
-        android:layout_width="325dp"
-        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/popup_color_bg_title"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/popup_title"
@@ -28,15 +30,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="horizontal"
         tools:ignore="DuplicateIds">
 
         <TextView
             android:id="@+id/btn_survey"
             android:layout_width="0dp"
-            android:layout_height="124dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:paddingStart="15dp"
+            android:paddingTop="35dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="35dp"
             android:text="@string/popup_survey"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -49,9 +57,13 @@
         <TextView
             android:id="@+id/btn_gps"
             android:layout_width="0dp"
-            android:layout_height="124dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:paddingStart="15dp"
+            android:paddingTop="35dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="35dp"
             android:text="@string/popup_gps"
             android:textColor="@android:color/black"
             android:textSize="18sp" />

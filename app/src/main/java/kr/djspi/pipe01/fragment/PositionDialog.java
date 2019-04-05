@@ -128,7 +128,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
                 LayoutParams params = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER);
                 params.setMargins(0, 60, 0, 0);
                 view.findViewById(R.id.lay_rows).setLayoutParams(params);
-                backgroundImage.setImageDrawable(fromRes(R.drawable.bg_c_2));
+                backgroundImage.setImageDrawable(fromRes(R.drawable.bg_c));
                 views[1].setImageDrawable(fromRes(R.drawable.btn_11_7));
                 views[2].setImageDrawable(fromRes(R.drawable.btn_11_8));
                 views[3].setImageDrawable(fromRes(R.drawable.btn_11_9));

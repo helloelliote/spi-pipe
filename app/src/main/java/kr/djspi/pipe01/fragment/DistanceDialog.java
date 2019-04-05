@@ -21,6 +21,7 @@ import kr.djspi.pipe01.R;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static kr.djspi.pipe01.BaseActivity.screenScale;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
 import static kr.djspi.pipe01.fragment.PositionDialog.fromRes;
 
@@ -97,7 +98,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
                         listener.onSelect(TAG_DISTANCE, 0, "0.00", "0.00");
                         dismissAllowingStateLoss();
                         break;
-                    } else setTranslation(false, true, -50.0f, 0.0f, 0.0f);
+                    } else setTranslation(false, true, -65.0f, 0.0f, 0.0f);
                     break;
                 case 3:
                     setTranslation(true, false, 0.0f, 50.0f, 0.0f);
@@ -119,7 +120,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
                         listener.onSelect(TAG_DISTANCE, 0, "0.0", "0.0");
                         dismissAllowingStateLoss();
                         break;
-                    } else setTranslation(false, true, 50.0f, 0.0f, 0.0f);
+                    } else setTranslation(false, true, 65.0f, 0.0f, 0.0f);
                     break;
                 case 9:
                     setTranslation(true, false, 0.0f, 50.0f, 0.0f);
@@ -130,16 +131,16 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
         } else {
             switch (positionInt) {
                 case 1:
-                    setTranslation(false, false, -100.0f, -150.0f, -315.0f);
+                    setTranslation(false, false, -90.0f, -150.0f, -300.0f);
                     break;
                 case 2:
-                    setTranslation(false, true, -100.0f, 0.0f, 0.0f);
+                    setTranslation(false, true, -90.0f, 0.0f, 0.0f);
                     break;
                 case 3:
-                    setTranslation(false, false, -100.0f, 155.0f, -315.0f);
+                    setTranslation(false, false, -90.0f, 155.0f, -300.0f);
                     break;
                 case 4:
-                    setTranslation(true, false, 0.0f, -90.0f, 0.0f);
+                    setTranslation(true, false, 0.0f, -100.0f, 0.0f);
                     break;
                 case 5: // Unreachable case
                     break;
@@ -147,13 +148,13 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
                     setTranslation(true, false, 0.0f, 100.0f, 0.0f);
                     break;
                 case 7:
-                    setTranslation(false, false, 90.0f, -150.0f, 315.0f);
+                    setTranslation(false, false, 90.0f, -150.0f, 300.0f);
                     break;
                 case 8:
                     setTranslation(false, true, 95.0f, 0.0f, 0.0f);
                     break;
                 case 9:
-                    setTranslation(false, false, 95.0f, 155.0f, 315.0f);
+                    setTranslation(false, false, 95.0f, 155.0f, 300.0f);
                     break;
                 default:
                     break;
@@ -166,15 +167,17 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
             fVertical.setText("0.0");
             fVertical.setVisibility(GONE);
             fHorizontal.setVisibility(VISIBLE);
-        }
-        if (noH) {
+        } else if (noH) {
             fHorizontal.setText("0.0");
             fHorizontal.setVisibility(GONE);
             fVertical.setVisibility(VISIBLE);
+        } else {
+            fHorizontal.setVisibility(VISIBLE);
+            fVertical.setVisibility(VISIBLE);
         }
-        fHorizontal.setTranslationX(hX);
-        fHorizontal.setTranslationY(hY);
-        fVertical.setTranslationY(vY);
+        fVertical.setTranslationY(vY * screenScale);
+        fHorizontal.setTranslationX(hX * screenScale);
+        fHorizontal.setTranslationY(hY * screenScale);
     }
 
     @Override

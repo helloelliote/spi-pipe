@@ -18,8 +18,7 @@
             android:id="@+id/planeImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter" />
+            android:adjustViewBounds="true" />
 
         <TextView
             android:id="@+id/text_vertical"
@@ -28,8 +27,7 @@
             android:layout_gravity="center"
             android:background="@drawable/edittext_border"
             android:gravity="center"
-            android:maxEms="4"
-            android:minEms="3"
+            android:minEms="4"
             android:padding="3dp"
             android:textAlignment="center"
             android:textColor="@color/colorPrimary"
@@ -43,8 +41,7 @@
             android:layout_gravity="center"
             android:background="@drawable/edittext_border"
             android:gravity="center"
-            android:maxEms="4"
-            android:minEms="3"
+            android:minEms="4"
             android:padding="3dp"
             android:textAlignment="center"
             android:textColor="@color/colorPrimary"

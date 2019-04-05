@@ -71,6 +71,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
                 jsonObject = new JsonObject();
                 jsonObject = parseEntry(previewEntries, pipeIndex, fHorizontal, fVertical); // 단일형 index 는 항상 0
             }
+
         }
         setContentView(R.layout.activity_pipe_view);
     }
@@ -202,6 +203,11 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     protected void onResume() {
         super.onResume();
         nfcUtil.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private class TabSelected implements OnTabSelectedListener {

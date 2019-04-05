@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -20,6 +19,7 @@ import kr.djspi.pipe01.R;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static kr.djspi.pipe01.BaseActivity.packageName;
+import static kr.djspi.pipe01.BaseActivity.screenScale;
 
 public class SectionTab extends Fragment {
 
@@ -53,8 +53,8 @@ public class SectionTab extends Fragment {
             ImageView imageView = view.findViewById(R.id.planeImageView);
             imageView.setImageResource(getResources().getIdentifier(resId, "drawable", packageName));
         } catch (UnsupportedOperationException | NullPointerException e) {
-            LinearLayout lay_empty = view.findViewById(R.id.lay_empty);
-            lay_empty.setVisibility(VISIBLE);
+            view.findViewById(R.id.lay_0).setVisibility(GONE);
+            view.findViewById(R.id.lay_empty).setVisibility(VISIBLE);
         }
 
         tVertical = view.findViewById(R.id.text_vertical);
@@ -109,10 +109,10 @@ public class SectionTab extends Fragment {
         if (noV) {
             tVertical.setVisibility(GONE);
         }
-        tDepth.setTranslationX(dX);
-        tDepth.setTranslationY(77.5f);
-        tVertical.setTranslationY(-475.0f);
-        tSpec.setTranslationY(300.0f);
-        tMaterial.setTranslationY(400.0f);
+        tDepth.setTranslationX(dX * screenScale);
+        tDepth.setTranslationY(77.5f * screenScale);
+        tVertical.setTranslationY(-475.0f * screenScale);
+        tSpec.setTranslationY(300.0f * screenScale);
+        tMaterial.setTranslationY(400.0f * screenScale);
     }
 }
