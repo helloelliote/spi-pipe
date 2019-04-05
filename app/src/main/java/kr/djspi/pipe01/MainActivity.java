@@ -23,6 +23,7 @@ import com.helloelliote.retrofit.SpiGet;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import kr.djspi.pipe01.dto.DataItem;
@@ -37,7 +38,9 @@ import static android.view.View.VISIBLE;
 import static com.helloelliote.retrofit.ApiKey.API_PIPE_GET;
 import static com.helloelliote.retrofit.ApiKey.API_SPI_GET;
 import static kr.djspi.pipe01.Const.URL_SPI;
+import static kr.djspi.pipe01.nfc.NfcUtil.getRecord;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
+import static kr.djspi.pipe01.nfc.StringParser.parseToJsonObject;
 
 public class MainActivity extends LocationUpdate implements Serializable {
 
@@ -68,7 +71,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
             public void onUnavailable() {
                 super.onUnavailable();
                 isNetworkConnected = false;
-                // TODO: 2019-04-04 별도의 안내 필요?
             }
 
             @Override
@@ -88,13 +90,12 @@ public class MainActivity extends LocationUpdate implements Serializable {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
 
-//        LinearLayout mainLayout1 = findViewById(R.id.lay_main1);
-
-        LinearLayout mainLayout2 = findViewById(R.id.lay_main2);
-        mainLayout2.setOnClickListener(view -> {
+        LinearLayout mainLayout1 = findViewById(R.id.lay_main1);
+        mainLayout1.setOnClickListener(view -> {
             progressBar.setVisibility(VISIBLE);
             if (!isNetworkConnected) {
-                showMessageDialog(7, "", true);
+                showMessageDialog(8, "", true);
+                progressBar.setVisibility(GONE);
             } else if (currentLocation == null) {
                 Toast.makeText(this, getString(R.string.toast_error_location), Toast.LENGTH_LONG).show();
             } else {
@@ -103,8 +104,8 @@ public class MainActivity extends LocationUpdate implements Serializable {
             }
         });
 
-        LinearLayout mainLayout3 = findViewById(R.id.lay_main3);
-        mainLayout3.setOnClickListener(view -> {
+        LinearLayout mainLayout2 = findViewById(R.id.lay_main2);
+        mainLayout2.setOnClickListener(view -> {
             Toast toast = Toast.makeText(context, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
@@ -112,7 +113,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         progressBar.setVisibility(GONE);
         if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
@@ -121,7 +122,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
     @Override
     @SuppressWarnings("EmptyMethod")
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
     }
 
@@ -137,11 +138,11 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     @Override
-    public void onNewIntent(final Intent intent) {
+    protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         if (intent == null) return;
         if (isNetworkConnected) new ProcessTag(intent);
-        else new ProcessTagOffline(intent);
+        else new ProcessTagOffline(intent, 0);
     }
 
     private final class ProcessTag {
@@ -174,7 +175,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
                         @Override
                         public void onFailure(@NotNull Throwable throwable) {
-                            showMessageDialog(7, throwable.getMessage(), true);
+                            showMessageDialog(8, throwable.getMessage(), true);
                             progressBar.setVisibility(GONE);
                         }
                     });
@@ -195,6 +196,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                             @Override
                             public void onResponse(JsonObject response) {
                                 JsonArray elements = Json.a(response, "data");
+                                Log.w(TAG, elements.get(0).toString());
                                 startActivity(new Intent(context, ViewActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                         .putExtra("PipeView", elements.get(0).toString()));
@@ -202,7 +204,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
                             @Override
                             public void onFailure(Throwable throwable) {
-                                showMessageDialog(7, throwable.getMessage(), true);
+                                showMessageDialog(8, throwable.getMessage(), true);
                             }
                         });
                 progressBar.setVisibility(GONE);
@@ -251,9 +253,25 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
     private final class ProcessTagOffline {
 
-        ProcessTagOffline(Intent intent) {
-            Tag tag = NfcUtil.onNewTagIntent(intent);
-            Log.w(TAG, "Offline");
+        private int index;
+
+        ProcessTagOffline(Intent intent, int index) {
+            this.index = index;
+            processTagData(intent);
+        }
+
+        private void processTagData(Intent intent) {
+            try {
+                ArrayList<String> stringArrayList = getRecord(intent);
+                stringArrayList.remove(0);
+                JsonObject data = parseToJsonObject(stringArrayList, index);
+                startActivity(new Intent(context, ViewActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("PipeView", data.toString()));
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
+                showMessageDialog(4, getString(R.string.popup_error_offline_read_error), true);
+                e.printStackTrace();
+            }
         }
     }
 }

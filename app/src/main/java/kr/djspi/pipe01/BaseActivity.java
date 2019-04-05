@@ -67,7 +67,7 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * @return Toolbar 를 사용하지 않을 액티비티에서는 오버라이딩해 false 를 리턴
      */
-    boolean useToolbar() {
+    protected boolean useToolbar() {
         return true;
     }
 
@@ -148,12 +148,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
         if (nfcUtil != null) nfcUtil.onPause();
     }

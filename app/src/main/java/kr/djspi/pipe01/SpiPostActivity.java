@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.fragment.MessageDialog;
 import kr.djspi.pipe01.nfc.NfcUtil;
-import kr.djspi.pipe01.nfc.StringParser;
 
 import static kr.djspi.pipe01.Const.URL_SPI;
+import static kr.djspi.pipe01.nfc.StringParser.parseToStringArray;
 
 public class SpiPostActivity extends BaseActivity implements Serializable {
 
@@ -52,14 +52,14 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
             MessageDialog dialog = new MessageDialog();
             dialog.setCancelable(false);
             Bundle bundle = new Bundle(1);
-            bundle.putInt("issueType", 4);
+            bundle.putInt("issueType", 5);
             dialog.setArguments(bundle);
             dialog.show(getSupportFragmentManager(), getString(R.string.popup_read_only));
         });
     }
 
     @Override
-    boolean useToolbar() {
+    protected boolean useToolbar() {
         return true;
     }
 
@@ -75,7 +75,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
      * @see OnRetrofitListener#onResponse(JsonObject) 인텐트를 넘겨받아 처리
      */
     @Override
-    public void onNewIntent(final Intent intent) {
+    protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         setSpiAndPipe(intent);
     }
@@ -94,7 +94,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        showMessageDialog(6, throwable.getMessage(), true);
+                        showMessageDialog(7, throwable.getMessage(), true);
                     }
 
                     /**
@@ -106,10 +106,10 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
                      * @see NfcUtil#writeTag(Intent, String[]) 쓰기 작업을 수행, 성공 여부를 리턴
                      */
                     private void processTag(final Intent intent, JsonObject response, int index) {
-                        String[] strings = StringParser.parseToStringArray(response, index);
+                        String[] strings = parseToStringArray(response, index);
                         if (nfcUtil.writeTag(intent, strings)) {
                             nfcUtil.onPause();
-                            showMessageDialog(5, getString(R.string.popup_write_success), true);
+                            showMessageDialog(6, getString(R.string.popup_write_success), true);
                         } else {
                             Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
                         }
@@ -119,14 +119,14 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
 
     @Override
     @SuppressWarnings("EmptyMethod")
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         nfcUtil.onResume();
     }
 
     @Override
     @SuppressWarnings("EmptyMethod")
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
     }
 }

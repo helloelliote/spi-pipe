@@ -270,7 +270,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                     @Override
                     public void onFailure(@NotNull Throwable throwable) {
-                        showMessageDialog(7, throwable.getMessage(), true);
+                        showMessageDialog(8, throwable.getMessage(), true);
                     }
 
                     private void setMarker(@NotNull JsonObject jsonObject) {
@@ -301,7 +301,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         nfcUtil.onPause();
     }
@@ -389,7 +389,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            showMessageDialog(7, throwable.getMessage(), true);
+                            showMessageDialog(8, throwable.getMessage(), true);
                         }
                     });
         }

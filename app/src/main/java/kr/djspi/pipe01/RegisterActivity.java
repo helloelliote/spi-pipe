@@ -1,12 +1,21 @@
 package kr.djspi.pipe01;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.media.ExifInterface;
+import android.support.v4.content.FileProvider;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -16,6 +25,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +41,13 @@ import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.retrofit.SuperviseGet;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import kr.djspi.pipe01.dto.Entry;
@@ -46,11 +61,21 @@ import kr.djspi.pipe01.dto.PipeType;
 import kr.djspi.pipe01.dto.Spi;
 import kr.djspi.pipe01.dto.SpiLocation;
 import kr.djspi.pipe01.dto.SpiMemo;
+import kr.djspi.pipe01.dto.SpiPhoto;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
 import kr.djspi.pipe01.fragment.PositionDialog;
 
+import static android.content.Intent.ACTION_PICK;
+import static android.graphics.Bitmap.CompressFormat.JPEG;
+import static android.os.Environment.getExternalStorageDirectory;
+import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.support.media.ExifInterface.ORIENTATION_NORMAL;
+import static android.support.media.ExifInterface.ORIENTATION_ROTATE_180;
+import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
+import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
+import static android.support.media.ExifInterface.TAG_ORIENTATION;
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_NEXT;
@@ -69,6 +94,7 @@ import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 import static kr.djspi.pipe01.Const.URL_SPI;
+import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
 
 public class RegisterActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
 
@@ -82,6 +108,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static SpiType spiType;
     private static SpiMemo spiMemo;
     private static SpiLocation spiLocation;
+    private static SpiPhoto spiPhoto;
     private static final Pipe pipe = new Pipe();
     private static final PipeType pipeType = new PipeType();
     private static final PipeShape pipeShape = new PipeShape();
@@ -90,6 +117,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
     private final Bundle superviseListBundle = new Bundle(1);
     private TextView tHeader, tUnit;
+    private ImageView photoView;
     private Context context;
     private ArrayList<String> superviseList;
     /**
@@ -110,6 +138,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             spiType = (SpiType) itemMap.get("SpiType");
             spiLocation = (SpiLocation) itemMap.get("SpiLocation");
             spiMemo = (SpiMemo) itemMap.get("SpiMemo");
+            spiPhoto = new SpiPhoto();
         }
         setContentView(R.layout.activity_register);
         superviseList = getSuperviseList();
@@ -197,6 +226,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 field.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundr.ttf"));
             }
         }
+
+//        photoView = findViewById(R.)
+        // TODO: 2019-04-05 사진 추가
 
         findViewById(R.id.button_confirm).setOnClickListener(new OnNextButtonClick());
     }
@@ -414,14 +446,14 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         pipeShape.setShape(null);
         restoreState();
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
         saveState();
     }
@@ -449,6 +481,134 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             fMaterial.setText(preferences.getString("material", ""));
             fConstruction.setText(preferences.getString("construction", ""));
             fConstructionContact.setText(preferences.getString("constructionContact", ""));
+        }
+    }
+
+    @SuppressWarnings("ALL")
+    private class OnPhotoInput {
+
+        private static final int MAX_PHOTO_SIZE = 1024;
+        private String filePathAbs;
+        private Uri fileUri;
+
+        private void setPhoto() {
+            String state = Environment.getExternalStorageState();
+            if (state.equals(Environment.MEDIA_MOUNTED)) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    File filePath = getFilePath();
+                    if (filePath != null) {
+                        fileUri = FileProvider.getUriForFile(context, getPackageName(), filePath);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                        startActivityForResult(intent, REQUEST_CODE_PHOTO);
+                    }
+                }
+            }
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        private File getFilePath() {
+            File dir = new File(getExternalStorageDirectory() + "/SPI/");
+            if (!dir.exists()) dir.mkdirs();
+            String fileDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            File filePath = new File(
+                    getExternalStorageDirectory().getAbsoluteFile()
+                            + "/SPI/"
+                            + fileDate
+                            + ".jpg");
+            filePathAbs = filePath.getAbsolutePath();
+            return filePath;
+        }
+
+        private void setGallery() {
+            Intent intent = new Intent(ACTION_PICK);
+            intent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*");
+            startActivityForResult(intent, REQUEST_CODE_GALLERY);
+        }
+
+        private void getPhoto() {
+            try {
+                Bitmap sourcePhoto = BitmapFactory.decodeFile(filePathAbs);
+                Bitmap editPhoto = getEditPhoto(sourcePhoto, filePathAbs);
+                OutputStream outputStream = null;
+                photoView.setImageBitmap(editPhoto);
+//                mTxtInputPhoto.setText("");
+                mPhoto = new File(context.getFilesDir().getAbsolutePath() + "temp.jpg");
+                if (mPhoto.createNewFile()) {
+                    outputStream = new FileOutputStream(mPhoto);
+                    editPhoto.compress(JPEG, 100, outputStream);
+                }
+                if (outputStream != null) outputStream.close();
+                if (mPhoto.isFile()) {
+//                SPIDataItem item = new SPIDataItem();
+//                item.setVal(mPhoto.getPath());
+//                spiData.setItem(KEY_PHOTO.getKey(), item);
+//                mTxtPhoto.setText(mPhoto.getName());
+                }
+                sourcePhoto.recycle();
+                editPhoto.recycle();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private Bitmap getEditPhoto(Bitmap source, String path) throws IOException {
+            ExifInterface exif = new ExifInterface(path);
+            int exifOrientation = exif.getAttributeInt(TAG_ORIENTATION, ORIENTATION_NORMAL);
+            int exifDegree;
+            switch (exifOrientation) {
+                case ORIENTATION_ROTATE_90:
+                    exifDegree = 90;
+                    break;
+                case ORIENTATION_ROTATE_180:
+                    exifDegree = 180;
+                    break;
+                case ORIENTATION_ROTATE_270:
+                    exifDegree = 270;
+                    break;
+                default:
+                    exifDegree = 0;
+                    break;
+            }
+            Matrix matrix = new Matrix();
+            matrix.postRotate(exifDegree);
+
+            int width = source.getWidth();
+            int height = source.getHeight();
+
+            Bitmap rotatePhoto = Bitmap.createBitmap(source, 0, 0, width, height, matrix, true);
+
+            final float scaleRatio = (float) width / (float) height;
+            if (scaleRatio > 1) {
+                width = MAX_PHOTO_SIZE;
+                height = (int) (width / scaleRatio);
+            } else {
+                height = MAX_PHOTO_SIZE;
+                width = (int) (height * scaleRatio);
+            }
+
+            Bitmap scalePhoto = Bitmap.createScaledBitmap(rotatePhoto, width, height, true);
+            rotatePhoto.recycle();
+            return scalePhoto;
+        }
+
+        private void deletePhoto() {
+            // TODO: 2018-11-19 mTxtInputPhoto 다시 힌트메시지와 함께 나타나게 하기
+//            SPIDataItem item = new SPIDataItem();
+//            item.setVal("");
+//            spiData.setItem(KEY_PHOTO.getKey(), item);
+//            mTxtPhoto.setText("");
+//            mLayPhoto.setVisibility(GONE);
+//            onPhotoInput = null;
+        }
+
+        private void showPhoto() {
+            // TODO: 이미지 선택시 전체화면으로 보여주기 구현
+//        mParentView.showPopup(new p_Common_Photo(mActivity, mParentView), mPhoto, new onPopupActionListener() {
+//            @Override
+//            public void onPopupAction(int action, Object ret) {
+//            }
+//        }, null);
         }
     }
 
@@ -500,6 +660,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         pipe.setSupervise_contact(fSuperviseContact.getText().toString());
         pipe.setConstruction(fConstruction.getText().toString());
         pipe.setConstruction_contact(fConstructionContact.getText().toString());
+        pipePlan.setFile_section(format("plan_%s_%s", parseSpiType(spiType.getType()), pipePosition.getPosition()));
 
         Entry entry = new Entry(spi, spiType, spiMemo, pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
         entry.setSpi_location(spiLocation);

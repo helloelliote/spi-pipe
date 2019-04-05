@@ -1,7 +1,6 @@
 package kr.djspi.pipe01.tab;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -104,11 +103,11 @@ public class InfoTab extends Fragment {
             )));
         }
 
-        if (!jsonObject.get("spi_memo").isJsonNull()) {
-            TextView txtMemo = view.findViewById(R.id.txt_memo);
-            txtMemo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-            txtMemo.setText(Json.s(jsonObject, "spi_memo"));
-        }
+//        if (!jsonObject.get("spi_memo").isJsonNull()) {
+//            TextView txtMemo = view.findViewById(R.id.txt_memo);
+//            txtMemo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+//            txtMemo.setText(Json.s(jsonObject, "spi_memo"));
+//        }
 
         return view;
     }

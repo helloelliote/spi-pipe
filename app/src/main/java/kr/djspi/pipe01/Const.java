@@ -26,4 +26,6 @@ public final class Const {
 
     public static final int RESULT_PASS = 200;
     public static final int RESULT_FAIL = 400;
+
+    public static final String nfcRecord = "949 표지주 상수관로 엘보형 알루미늄 관경 145 mm 위치:3 수직m:1.44 수평m:2.55 심도m:1.45 관리:대진기술정보(주) 053-424-9545";
 }

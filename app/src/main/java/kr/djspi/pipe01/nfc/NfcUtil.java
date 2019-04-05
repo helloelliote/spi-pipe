@@ -189,7 +189,7 @@ public final class NfcUtil {
     }
 
     /**
-     * SPI 태그에 기록된 정보를 불러옴
+     * 태그에 기록된 정보를 Record 단위로 불러오며, Record index 와 ArrayList 의 index 는 1:1 대응된다.
      * (정보가 기록되지 않음) null 을 리턴
      *
      * @return 기록된 정보를 담은 ArrayList<String>

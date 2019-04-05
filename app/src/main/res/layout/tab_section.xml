@@ -21,93 +21,61 @@
             android:adjustViewBounds="true"
             android:scaleType="fitCenter" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@+id/planeImageView"
-            android:includeFontPadding="false"
-            android:orientation="vertical"
-            android:textSize="13.33sp"
-            app:layout_constraintBottom_toBottomOf="@+id/planeImageView"
-            app:layout_constraintEnd_toEndOf="@+id/planeImageView"
-            app:layout_constraintStart_toStartOf="@+id/planeImageView"
-            app:layout_constraintTop_toTopOf="@+id/planeImageView">
-
-            <TextView
-                android:id="@+id/txt_distance_fb"
-                android:layout_width="83.33dp"
-                android:layout_height="33.33dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="55dp"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/txt_distance_l"
-                android:layout_width="83.33dp"
-                android:layout_height="33.33dp"
-                android:layout_gravity="bottom"
-                android:layout_marginTop="55dp"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/txt_distance_r"
-                android:layout_width="83.33dp"
-                android:layout_height="33.33dp"
-                android:layout_gravity="bottom|end"
-                android:layout_marginTop="55dp"
-                android:gravity="center" />
-        </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/lay_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/planeImageView"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/text_vertical"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
+            android:layout_gravity="center"
+            android:background="@drawable/edittext_border"
+            android:gravity="center"
+            android:maxEms="4"
+            android:minEms="3"
+            android:padding="3dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@+id/planeImageView"
-            android:includeFontPadding="false"
-            android:orientation="vertical"
-            android:textSize="13.33sp"
-            app:layout_constraintBottom_toBottomOf="@+id/planeImageView"
-            app:layout_constraintEnd_toEndOf="@+id/planeImageView"
-            app:layout_constraintStart_toStartOf="@+id/planeImageView"
-            app:layout_constraintTop_toTopOf="@+id/planeImageView">
+        <TextView
+            android:id="@+id/text_depth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/edittext_border"
+            android:gravity="center"
+            android:maxEms="4"
+            android:minEms="3"
+            android:padding="3dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txt_distance_fb"
-                android:layout_width="83.33dp"
-                android:layout_height="33.33dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="55dp"
-                android:gravity="center" />
+        <TextView
+            android:id="@+id/text_spec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:minEms="4"
+            android:padding="3dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txt_distance_l"
-                android:layout_width="83.33dp"
-                android:layout_height="33.33dp"
-                android:layout_gravity="top"
-                android:layout_marginTop="55dp"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/txt_distance_r"
-                android:layout_width="83.33dp"
-                android:layout_height="33.33dp"
-                android:layout_gravity="top|end"
-                android:layout_marginTop="55dp"
-                android:gravity="center" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/text_material"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:minEms="4"
+            android:padding="3dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
     </FrameLayout>
 
     <LinearLayout
@@ -119,7 +87,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/lay_1">
+        app:layout_constraintTop_toBottomOf="@+id/lay_0">
 
         <TextView
             android:layout_width="wrap_content"

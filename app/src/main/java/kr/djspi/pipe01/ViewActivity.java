@@ -199,7 +199,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         nfcUtil.onPause();
     }
@@ -227,6 +227,6 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
 
     @SuppressWarnings("SameParameterValue")
     private static JsonObject parseEntry(@NotNull ArrayList entries, int index, String... strings) {
-        return ((Entry) entries.get(index)).parseToString(strings);
+        return ((Entry) entries.get(index)).parseToSingleJsonObject(strings);
     }
 }

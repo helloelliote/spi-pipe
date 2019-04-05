@@ -53,7 +53,7 @@ public class PlaneTab extends Fragment {
             resId = Json.s(jsonObject, "file_plane").replace(".png", "_distance");
             ImageView imageView = view.findViewById(R.id.planeImageView);
             imageView.setImageResource(getResources().getIdentifier(resId, "drawable", packageName));
-        } catch (UnsupportedOperationException e) {
+        } catch (UnsupportedOperationException | NullPointerException e) {
             LinearLayout lay_empty = view.findViewById(R.id.lay_empty);
             lay_empty.setVisibility(VISIBLE);
         }

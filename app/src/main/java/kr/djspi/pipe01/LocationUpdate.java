@@ -135,7 +135,7 @@ public abstract class LocationUpdate extends BaseActivity {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         nfcUtil.onPause();
         if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
@@ -154,7 +154,7 @@ public abstract class LocationUpdate extends BaseActivity {
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
         // Remove location updates to save battery.
         stopLocationUpdates();

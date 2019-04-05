@@ -15,16 +15,16 @@ public class Entry implements Serializable {
     private final Spi spi;
     private final SpiType spi_type;
     private final SpiMemo spi_memo;
-    //    private final SpiPhoto spi_photo;
     private final Pipe pipe;
     private final PipeType pipe_type;
     private final PipeShape pipe_shape;
     private final PipePosition pipe_position;
     private final PipePlan pipe_plan;
     private final PipeSupervise pipe_supervise;
+    private SpiPhoto spi_photo;
     private SpiLocation spi_location;
 
-    public JsonObject parseToString(String[] strings) {
+    public JsonObject parseToSingleJsonObject(String[] strings) {
         JsonObject object = new JsonObject();
         object.addProperty("spi_id", spi.getId());
         object.addProperty("supervise", pipe_supervise.getSupervise());
