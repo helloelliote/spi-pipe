@@ -25,7 +25,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:lineSpacingExtra="6dp"
         android:paddingStart="60dp"
         android:paddingEnd="60dp"
         android:textColor="@android:color/black"

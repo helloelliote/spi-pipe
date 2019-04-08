@@ -92,7 +92,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
         LinearLayout mainLayout1 = findViewById(R.id.lay_main1);
         mainLayout1.setOnClickListener(view -> {
-            progressBar.setVisibility(VISIBLE);
             if (!isNetworkConnected) {
                 showMessageDialog(8, "", true);
                 progressBar.setVisibility(GONE);

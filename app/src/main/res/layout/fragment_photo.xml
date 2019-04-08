@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
+    android:layout_width="250dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/dialog_border"
@@ -22,9 +22,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/btn_close"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/btn_close_black" />
     </LinearLayout>
 
     <LinearLayout
@@ -35,15 +40,17 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/btn_survey"
-            android:layout_width="150dp"
+            android:id="@+id/btn_camera"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_photo"
+            android:drawablePadding="10dp"
+            android:gravity="center"
             android:paddingStart="15dp"
-            android:paddingTop="35dp"
+            android:paddingTop="15dp"
             android:paddingEnd="15dp"
-            android:paddingBottom="35dp"
-            android:text="@string/popup_survey"
-            android:textAlignment="center"
+            android:paddingBottom="15dp"
+            android:text="@string/popup_camera"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
@@ -53,14 +60,16 @@
             android:background="@color/popup_color_bg_title" />
 
         <TextView
-            android:id="@+id/btn_gps"
-            android:layout_width="150dp"
+            android:id="@+id/btn_gallery"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_gallery"
+            android:drawablePadding="10dp"
             android:paddingStart="15dp"
-            android:paddingTop="35dp"
+            android:paddingTop="15dp"
             android:paddingEnd="15dp"
-            android:paddingBottom="35dp"
-            android:text="@string/popup_gps"
+            android:paddingBottom="15dp"
+            android:text="@string/popup_gallery"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="18sp" />

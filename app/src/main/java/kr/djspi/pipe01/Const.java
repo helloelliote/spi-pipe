@@ -16,6 +16,7 @@ public final class Const {
     public static final String TAG_LOCATION = "location";
     public static final String TAG_SURVEY = "survey";
     public static final String TAG_PREVIEW = "preview";
+    public static final String TAG_PHOTO = "photo";
     public static final String[] PIPE_SHAPES = {"직진형", "T분기형", "엘보형", "관말형"};
     public static final String[] PIPE_DIRECTIONS = {null, "", "out", "", "outl", null, "outr", "", "in", ""};
     public static final PipeTypeEnum[] PIPE_TYPE_ENUMS = PipeTypeEnum.values();

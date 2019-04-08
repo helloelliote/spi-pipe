@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,6 +63,7 @@ import kr.djspi.pipe01.dto.SpiPhoto;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
+import kr.djspi.pipe01.fragment.PhotoDialog;
 import kr.djspi.pipe01.fragment.PositionDialog;
 
 import static android.content.Intent.ACTION_PICK;
@@ -88,6 +88,7 @@ import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
 import static kr.djspi.pipe01.Const.REQUEST_CODE_PHOTO;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
+import static kr.djspi.pipe01.Const.TAG_PHOTO;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
@@ -123,7 +124,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
     FormEditText fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
-            fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact;
+            fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact, fPhoto;
+    ImageView fPhotoDesc;
     static File mPhoto;
 
     @Override
@@ -217,12 +219,17 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                     = {fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
                     fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact};
             for (FormEditText field : allFields) {
-                field.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundr.ttf"));
+//                field.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundr.ttf"));
             }
         }
 
 //        photoView = findViewById(R.)
         // TODO: 2019-04-05 사진 추가
+        findViewById(R.id.lay_photo).setOnClickListener(this);
+        fPhoto = findViewById(R.id.form_photo);
+        fPhoto.setOnClickListener(this);
+        fPhotoDesc = findViewById(R.id.form_photo_desc);
+
 
         findViewById(R.id.button_confirm).setOnClickListener(new OnNextButtonClick());
     }
@@ -238,7 +245,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         if (superviseList == null) {
             superviseList = new ArrayList<>();
             JsonObject jsonQuery = new JsonObject();
-            jsonQuery.addProperty("com/helloelliote/json", "");
+            jsonQuery.addProperty("json", "");
             Retrofit2x.builder()
                     .setService(new SuperviseGet(URL_SPI))
                     .setQuery(jsonQuery).build()
@@ -293,6 +300,10 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 if (pipeShape.getShape() == null) {
                     new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
                 } else showPositionDialog();
+                break;
+            case R.id.lay_photo:
+            case R.id.form_photo:
+                new PhotoDialog().show(getSupportFragmentManager(), TAG_PHOTO);
                 break;
             default:
                 break;
@@ -414,6 +425,16 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 fDepth.requestFocus();
                 imm.toggleSoftInput(SHOW_IMPLICIT, HIDE_NOT_ALWAYS);
                 break;
+            case TAG_PHOTO:
+                switch (index) {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        break;
+                }
+                break;
             default:
                 break;
         }
@@ -478,7 +499,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
-    @SuppressWarnings("ALL")
+    //    @SuppressWarnings("ALL")
     private class OnPhotoInput {
 
         private static final int MAX_PHOTO_SIZE = 1024;

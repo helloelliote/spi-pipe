@@ -76,7 +76,7 @@
     <string name="popup_error_noplace">위치(주소) 검색결과가 없습니다.</string>
     <string name="popup_error_zoom">현재 축척에서는 정보조회를\n지원하지 않습니다.</string>
 
-    <!--RecordInputActivity-->
+    <!--RegisterActivity-->
     <string name="record_optional">선택입력 사항</string>
     <string name="record_optional_50">선택입력 사항 (50자 이하)</string>
     <string name="record_location">SPI 위치설정</string>
@@ -112,18 +112,21 @@
     <string name="record_input_10">시공업체\n연\u0020\u0020락\u0020\u0020처</string>
     <string name="record_input_10_hint">시공업체 연락처 입력(선택사항)</string>
     <string name="record_input_photo">현장사진</string>
-    <string name="record_input_photo_hint">사진 첨부(선택사항)</string>
+    <string name="record_input_photo_hint">첨부(선택사항)</string>
 
-    <!--RecordInputActivity: Dialog-->
+    <!--RegisterActivity: Dialog-->
     <string name="popup_title_select_pipe">매설관로 종류선택</string>
     <string name="popup_title_select_shape">매설관로 형태선택</string>
     <string name="popup_title_select_position">매설관로 위치선택</string>
     <string name="popup_title_select_direction">매설관로 방향선택</string>
     <string name="popup_title_input_distance">매설관로 거리입력</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>
+    <string name="popup_title_select_photo">사진 첨부</string>
     <string name="popup_error_select_position">매설관로의 위치를 선택해주세요.</string>
     <string name="popup_error_select_direction">매설관로의 방향을 선택해주세요.</string>
     <string name="popup_error_input_distance">매설관로의 이격거리(m)를 입력해주세요.</string>
+    <string name="popup_camera">사진 촬영</string>
+    <string name="popup_gallery">갤러리</string>
 
     <string name="shape_name_00">직진형</string>
     <string name="shape_name_01">T분기형</string>

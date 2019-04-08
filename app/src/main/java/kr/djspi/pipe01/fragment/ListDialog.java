@@ -2,7 +2,6 @@ package kr.djspi.pipe01.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -97,7 +96,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 
         listView = view.findViewById(R.id.list_common);
-        listView.setIndexTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/nanumsquareroundr.ttf"));
+//        listView.setIndexTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/nanumsquareroundr.ttf"));
         if (listTag.equals(TAG_SUPERVISE)) {
             listView.setAdapter(new ListAdapter(getContext(), listItem, true));
         } else {
