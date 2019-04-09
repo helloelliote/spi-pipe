@@ -41,6 +41,7 @@ import static com.naver.maps.map.LocationTrackingMode.None;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
+import static kr.djspi.pipe01.Const.RESULT_FAIL;
 import static kr.djspi.pipe01.Const.TAG_LOCATION;
 import static kr.djspi.pipe01.Const.TAG_SURVEY;
 import static kr.djspi.pipe01.fragment.SurveyDialog.originPoint;
@@ -50,6 +51,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     private static final double ZOOM_DEFAULT = 19.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 12.0; // 최소 줌레벨
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
+    private boolean isSelected = true;
     private LocationDialog selectDialog = new LocationDialog();
     private TextView textView;
     private MaterialButton buttonConfirm;
@@ -181,22 +183,26 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
 
     @Override
     public void onSelect(String tag, int index, @Nullable String... text) {
-        if (index == -1) return;
         switch (tag) {
             case TAG_LOCATION:
-                if (index == 1) {
+                if (index == RESULT_FAIL) {
+                    isSelected = false;
+                    onBackPressed();
+                    return;
+                } else if (index == 1) {
                     SurveyDialog surveyDialog = new SurveyDialog();
                     surveyDialog.setCancelable(false);
                     surveyDialog.show(getSupportFragmentManager(), TAG_SURVEY);
+                    onPause();
                 } else {
                     textView.setVisibility(VISIBLE);
                     buttonConfirm.setVisibility(VISIBLE);
                 }
                 break;
             case TAG_SURVEY:
-                if (index == 400) {
-                    selectDialog.setCancelable(false);
-                    selectDialog.show(getSupportFragmentManager(), TAG_LOCATION);
+                if (index == RESULT_FAIL) {
+                    isSelected = false;
+                    onBackPressed();
                     return;
                 }
                 assert text != null;
@@ -225,13 +231,10 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
 
     @Override
     public void onBackPressed() {
-        if (selectDialog.isAdded()) return;
+        if (selectDialog.isAdded() && isSelected) return;
         textView.setVisibility(INVISIBLE);
         buttonConfirm.setVisibility(INVISIBLE);
-        runOnUiThread(() -> {
-            selectDialog.setCancelable(false);
-            selectDialog.show(getSupportFragmentManager(), TAG_LOCATION);
-        });
+        super.onBackPressed();
     }
 
     @Override

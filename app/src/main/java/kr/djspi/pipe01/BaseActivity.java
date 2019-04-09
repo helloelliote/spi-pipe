@@ -122,7 +122,7 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(ACTION_DIAL, Uri.parse("tel:" + phoneStr))));
 
         TextView guide = headerView.findViewById(R.id.guide);
-        guide.setText(fromHtml(getString(R.string.nav_guide)));
+        guide.setText(getString(R.string.nav_guide));
         navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(START));
         navigationView.findViewById(R.id.nav_swipe_close).setOnClickListener(v -> drawer.closeDrawer(START));
     }

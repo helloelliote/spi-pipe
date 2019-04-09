@@ -1,6 +1,8 @@
 package kr.djspi.pipe01.tab;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,8 +10,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.helloelliote.json.Json;
 
@@ -21,6 +25,7 @@ public class InfoTab extends Fragment {
 
     private static final String TAG = InfoTab.class.getSimpleName();
     private JsonObject jsonObject;
+    private Uri imageFileUri;
 
     public InfoTab() {
     }
@@ -31,6 +36,7 @@ public class InfoTab extends Fragment {
         if (context instanceof OnRecordListener) {
             OnRecordListener listener = (OnRecordListener) context;
             jsonObject = listener.getJsonObjectRecord();
+            imageFileUri = listener.getPhotoUri();
         }
     }
 
@@ -103,11 +109,16 @@ public class InfoTab extends Fragment {
             )));
         }
 
-//        if (!jsonObject.get("spi_memo").isJsonNull()) {
-//            TextView txtMemo = view.findViewById(R.id.txt_memo);
-//            txtMemo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-//            txtMemo.setText(Json.s(jsonObject, "spi_memo"));
-//        }
+        if (!jsonObject.get("spi_memo").isJsonNull()) {
+            TextView txtMemo = view.findViewById(R.id.txt_memo);
+            txtMemo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+            txtMemo.setText(Json.s(jsonObject, "spi_memo"));
+        }
+
+        if (imageFileUri != null) {
+            ImageView imageView = view.findViewById(R.id.img_photo);
+            Glide.with(view).load(imageFileUri).fitCenter().into(imageView);
+        }
 
         return view;
     }

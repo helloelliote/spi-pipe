@@ -1,6 +1,7 @@
 package kr.djspi.pipe01.tab;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ public class PreviewTab extends Fragment implements OnClickListener {
 
     private static final String TAG = PreviewTab.class.getSimpleName();
     private JsonObject jsonObject;
+    private Uri imageFileUri;
     private OnRecordListener listener;
 
     public PreviewTab() {
@@ -35,6 +37,7 @@ public class PreviewTab extends Fragment implements OnClickListener {
         if (context instanceof OnRecordListener) {
             listener = (OnRecordListener) context;
             jsonObject = listener.getJsonObjectRecord();
+            imageFileUri = listener.getPhotoUri();
         }
     }
 
@@ -63,14 +66,14 @@ public class PreviewTab extends Fragment implements OnClickListener {
         TextView tDepth = view.findViewById(R.id.text_depth);
         tDepth.setText(Json.s(jsonObject, "depth"));
 
-        TextView header = view.findViewById(R.id.header);
-        header.setText(Json.s(jsonObject, "header"));
+        TextView tHeader = view.findViewById(R.id.header);
+        tHeader.setText(Json.s(jsonObject, "header"));
 
         TextView tSpec = view.findViewById(R.id.text_spec);
         tSpec.setText(Json.s(jsonObject, "spec"));
 
-        TextView unit = view.findViewById(R.id.unit);
-        unit.setText(Json.s(jsonObject, "unit"));
+        TextView tUnit = view.findViewById(R.id.unit);
+        tUnit.setText(Json.s(jsonObject, "unit"));
 
         TextView tMaterial = view.findViewById(R.id.text_material);
         tMaterial.setText(Json.s(jsonObject, "material"));
@@ -89,6 +92,11 @@ public class PreviewTab extends Fragment implements OnClickListener {
 
         TextView tConstructionContact = view.findViewById(R.id.text_construction_contact);
         tConstructionContact.setText(Json.s(jsonObject, "construction_contact"));
+
+        TextView tPhoto = view.findViewById(R.id.text_photo);
+        if (imageFileUri != null) {
+            tPhoto.setText(getString(R.string.record_photo_ok));
+        } else tPhoto.setText(null);
 
         view.findViewById(R.id.button_confirm).setOnClickListener(this);
 

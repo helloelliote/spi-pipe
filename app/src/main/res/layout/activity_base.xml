@@ -58,13 +58,13 @@
                 android:clickable="false"
                 android:indeterminateOnly="true"
                 android:indeterminateTint="@color/blue_bright"
-                android:visibility="gone" />
+                android:visibility="invisible" />
         </FrameLayout>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="330dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header">
@@ -74,6 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
+            android:alpha="0.7"
             android:backgroundTint="@android:color/transparent"
             android:src="@drawable/ic_swipe_left"
             android:tint="@color/colorPrimary"

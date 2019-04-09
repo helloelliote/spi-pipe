@@ -1,7 +1,6 @@
 package kr.djspi.pipe01.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import kr.djspi.pipe01.R;
 
+import static kr.djspi.pipe01.Const.RESULT_FAIL;
 import static kr.djspi.pipe01.Const.TAG_LOCATION;
 
 public class LocationDialog extends DialogFragment implements OnClickListener {
@@ -32,6 +32,7 @@ public class LocationDialog extends DialogFragment implements OnClickListener {
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
         }
+        selectIndex = -1;
     }
 
     @Override
@@ -50,6 +51,7 @@ public class LocationDialog extends DialogFragment implements OnClickListener {
 
         view.findViewById(R.id.btn_survey).setOnClickListener(this);
         view.findViewById(R.id.btn_gps).setOnClickListener(this);
+        view.findViewById(R.id.btn_dismiss).setOnClickListener(this);
 
         return view;
     }
@@ -67,15 +69,13 @@ public class LocationDialog extends DialogFragment implements OnClickListener {
                 listener.onSelect(TAG_LOCATION, selectIndex, (String) null);
                 dismissAllowingStateLoss();
                 break;
+            case R.id.btn_dismiss:
+                listener.onSelect(TAG_LOCATION, RESULT_FAIL, (String) null);
+                dismissAllowingStateLoss();
+                break;
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        selectIndex = -1;
-        super.onDismiss(dialog);
     }
 
     @Override

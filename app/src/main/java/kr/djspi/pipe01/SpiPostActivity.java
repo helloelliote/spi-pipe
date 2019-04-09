@@ -2,6 +2,7 @@ package kr.djspi.pipe01;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -28,6 +29,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
 
     private static final String TAG = SpiPostActivity.class.getSimpleName();
     private static ArrayList<Entry> entries;
+    private Uri imageFileUri;
     private Context context;
 
     @Override
@@ -38,6 +40,10 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
         Serializable serializable = getIntent().getSerializableExtra("entry");
         if (serializable instanceof ArrayList<?>) {
             entries = (ArrayList<Entry>) serializable;
+        }
+        imageFileUri = getIntent().getParcelableExtra("photoUri");
+        if (imageFileUri != null) {
+
         }
         setContentView(R.layout.activity_spi_post);
     }

@@ -33,7 +33,7 @@ import kr.djspi.pipe01.dto.SpiMemo;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.nfc.NfcUtil;
 
-import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.helloelliote.retrofit.ApiKey.API_PIPE_GET;
 import static com.helloelliote.retrofit.ApiKey.API_SPI_GET;
@@ -92,9 +92,10 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
         LinearLayout mainLayout1 = findViewById(R.id.lay_main1);
         mainLayout1.setOnClickListener(view -> {
+            progressBar.setVisibility(VISIBLE);
             if (!isNetworkConnected) {
                 showMessageDialog(8, "", true);
-                progressBar.setVisibility(GONE);
+                progressBar.setVisibility(INVISIBLE);
             } else if (currentLocation == null) {
                 Toast.makeText(this, getString(R.string.toast_error_location), Toast.LENGTH_LONG).show();
             } else {
@@ -114,7 +115,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
     @Override
     protected void onResume() {
         super.onResume();
-        progressBar.setVisibility(GONE);
+        if (progressBar.getVisibility() == VISIBLE) progressBar.setVisibility(INVISIBLE);
         if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
         if (nfcUtil != null) nfcUtil.onResume();
     }
@@ -128,7 +129,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        progressBar.setVisibility(GONE);
+        progressBar.setVisibility(INVISIBLE);
         connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
@@ -140,8 +141,10 @@ public class MainActivity extends LocationUpdate implements Serializable {
     protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         if (intent == null) return;
-        if (isNetworkConnected) new ProcessTag(intent);
-        else new ProcessTagOffline(intent, 0);
+        progressBar.setVisibility(VISIBLE);
+        if (isNetworkConnected) {
+            new ProcessTag(intent);
+        } else new ProcessTagOffline(intent, 0);
     }
 
     private final class ProcessTag {
@@ -150,7 +153,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
         private final JsonObject jsonQuery = new JsonObject();
 
         ProcessTag(Intent intent) {
-            progressBar.setVisibility(VISIBLE);
             Tag tag = NfcUtil.onNewTagIntent(intent);
             serial = NfcUtil.bytesToHex(tag.getId());
             jsonQuery.addProperty("spi_serial", serial);
@@ -168,14 +170,14 @@ public class MainActivity extends LocationUpdate implements Serializable {
                                 processServerData(response);
                             } else {
                                 showMessageDialog(3, getString(R.string.popup_error_not_spi), false);
-                                progressBar.setVisibility(GONE);
+                                progressBar.setVisibility(INVISIBLE);
                             }
                         }
 
                         @Override
                         public void onFailure(@NotNull Throwable throwable) {
                             showMessageDialog(8, throwable.getMessage(), true);
-                            progressBar.setVisibility(GONE);
+                            progressBar.setVisibility(INVISIBLE);
                         }
                     });
         }
@@ -186,7 +188,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                 startActivity(new Intent(context, RegisterActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("RegisterActivity", parseServerData(response)));
-                progressBar.setVisibility(GONE);
+                progressBar.setVisibility(INVISIBLE);
             } else {
                 Retrofit2x.builder()
                         .setService(new SpiGet(URL_SPI, API_PIPE_GET))
@@ -206,7 +208,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                                 showMessageDialog(8, throwable.getMessage(), true);
                             }
                         });
-                progressBar.setVisibility(GONE);
+                progressBar.setVisibility(INVISIBLE);
             }
         }
 

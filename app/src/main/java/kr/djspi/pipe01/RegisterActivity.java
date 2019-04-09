@@ -1,19 +1,15 @@
 package kr.djspi.pipe01;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images.ImageColumns;
 import android.support.annotation.Nullable;
-import android.support.media.ExifInterface;
 import android.support.v4.content.FileProvider;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
@@ -29,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andreabaccega.widget.FormEditText;
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -39,14 +36,13 @@ import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.retrofit.SuperviseGet;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.dto.Pipe;
@@ -61,31 +57,29 @@ import kr.djspi.pipe01.dto.SpiLocation;
 import kr.djspi.pipe01.dto.SpiMemo;
 import kr.djspi.pipe01.dto.SpiPhoto;
 import kr.djspi.pipe01.dto.SpiType;
+import kr.djspi.pipe01.fragment.ImageDialog;
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
 import kr.djspi.pipe01.fragment.PhotoDialog;
 import kr.djspi.pipe01.fragment.PositionDialog;
 
 import static android.content.Intent.ACTION_PICK;
-import static android.graphics.Bitmap.CompressFormat.JPEG;
-import static android.os.Environment.getExternalStorageDirectory;
+import static android.os.Environment.DIRECTORY_DCIM;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-import static android.support.media.ExifInterface.ORIENTATION_NORMAL;
-import static android.support.media.ExifInterface.ORIENTATION_ROTATE_180;
-import static android.support.media.ExifInterface.ORIENTATION_ROTATE_270;
-import static android.support.media.ExifInterface.ORIENTATION_ROTATE_90;
-import static android.support.media.ExifInterface.TAG_ORIENTATION;
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_NEXT;
 import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
 import static android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT;
 import static java.lang.Double.valueOf;
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS;
-import static kr.djspi.pipe01.Const.REQUEST_CODE_GALLERY;
-import static kr.djspi.pipe01.Const.REQUEST_CODE_PHOTO;
+import static kr.djspi.pipe01.Const.REQUEST_CAPTURE_IMAGE;
+import static kr.djspi.pipe01.Const.REQUEST_GALLERY;
 import static kr.djspi.pipe01.Const.TAG_DIRECTION;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
 import static kr.djspi.pipe01.Const.TAG_PHOTO;
@@ -108,7 +102,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static SpiType spiType;
     private static SpiMemo spiMemo;
     private static SpiLocation spiLocation;
-    private static SpiPhoto spiPhoto;
+    private static SpiPhoto spiPhoto = new SpiPhoto();
     private static final Pipe pipe = new Pipe();
     private static final PipeType pipeType = new PipeType();
     private static final PipeShape pipeShape = new PipeShape();
@@ -116,17 +110,19 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
     private final Bundle superviseListBundle = new Bundle(1);
+    private String imageFileName;
     private TextView tHeader, tUnit;
-    private ImageView photoView;
+    private LinearLayout lPhotoDesc;
     private Context context;
     private ArrayList<String> superviseList;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
+    static Uri imageFileUri;
     FormEditText fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
-            fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact, fPhoto;
-    ImageView fPhotoDesc;
-    static File mPhoto;
+            fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact,
+            fPhoto, fPhotoName;
+    ImageView imageThumb, buttonEdit, buttonDelete;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -139,7 +135,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             spiType = (SpiType) itemMap.get("SpiType");
             spiLocation = (SpiLocation) itemMap.get("SpiLocation");
             spiMemo = (SpiMemo) itemMap.get("SpiMemo");
-            spiPhoto = new SpiPhoto();
         }
         setContentView(R.layout.activity_register);
         superviseList = getSuperviseList();
@@ -214,22 +209,20 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         fConstructionContact = findViewById(R.id.form_construction_contact);
         fConstructionContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            final FormEditText[] allFields
-                    = {fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
-                    fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact};
-            for (FormEditText field : allFields) {
-//                field.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/nanumsquareroundr.ttf"));
-            }
-        }
-
-//        photoView = findViewById(R.)
-        // TODO: 2019-04-05 사진 추가
         findViewById(R.id.lay_photo).setOnClickListener(this);
         fPhoto = findViewById(R.id.form_photo);
         fPhoto.setOnClickListener(this);
-        fPhotoDesc = findViewById(R.id.form_photo_desc);
-
+        lPhotoDesc = findViewById(R.id.lay_photo_desc);
+        lPhotoDesc.setOnClickListener(this);
+        lPhotoDesc.setVisibility(GONE);
+        imageThumb = lPhotoDesc.findViewById(R.id.form_photo_thumbnail);
+        imageThumb.setOnClickListener(this);
+        fPhotoName = lPhotoDesc.findViewById(R.id.form_photo_name);
+        fPhotoName.setFocusable(false);
+//        buttonEdit = lPhotoDesc.findViewById(R.id.btn_edit);
+//        buttonEdit.setOnClickListener(this);
+        buttonDelete = lPhotoDesc.findViewById(R.id.btn_delete);
+        buttonDelete.setOnClickListener(this);
 
         findViewById(R.id.button_confirm).setOnClickListener(new OnNextButtonClick());
     }
@@ -303,7 +296,28 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 break;
             case R.id.lay_photo:
             case R.id.form_photo:
+                lPhotoDesc.setVisibility(VISIBLE);
                 new PhotoDialog().show(getSupportFragmentManager(), TAG_PHOTO);
+                break;
+            case R.id.form_photo_thumbnail:
+                if (imageFileUri != null) {
+                    ImageDialog previewDialog = new ImageDialog();
+                    Bundle bundle = new Bundle(1);
+                    bundle.putParcelable("imageFileUri", imageFileUri);
+                    previewDialog.setArguments(bundle);
+                    previewDialog.show(getSupportFragmentManager(), "");
+                }
+                break;
+//            case R.id.btn_edit:
+//                if (fPhotoName.getText().toString().equals("")) return;
+//                fPhotoName.requestFocus();
+//                break;
+            case R.id.btn_delete:
+                imageFileUri = null;
+                imageThumb.setImageDrawable(null);
+                fPhotoName.setFocusable(false);
+                fPhotoName.setText(null);
+                fPhoto.setText(null);
                 break;
             default:
                 break;
@@ -331,14 +345,17 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 String unit = PIPE_TYPE_ENUMS[index].getUnit();
                 tHeader.setText(format("%s  ", header));
                 fSpec.setHint(format("%s 입력", header).replace("관경", "관로관경"));
+                fSpec.setText(null);
                 tUnit.setText(format("  %s", unit));
                 pipe.setType_id(index + 1);
                 pipeType.setId(index + 1);
                 pipeType.setHeader(header);
                 pipeType.setUnit(unit);
                 if (unit.equals("mm")) fSpec.setInputType(TYPE_CLASS_NUMBER);
-                else fSpec.setInputType(TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-
+                else {
+                    fSpec.setInputType(TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+                    fSpec.setError(null);
+                }
                 if (fShape.getText().toString().equals("")) {
                     pipeShape.setShape(null);
                     new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
@@ -428,8 +445,26 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             case TAG_PHOTO:
                 switch (index) {
                     case 1:
+                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                            File photoFile;
+                            try {
+                                photoFile = createImageFile();
+                            } catch (IOException e) {
+                                Toast.makeText(this, getString(R.string.record_photo_error), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            if (photoFile != null) {
+                                imageFileUri = FileProvider.getUriForFile(this, packageName, photoFile);
+                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+                                startActivityForResult(cameraIntent, REQUEST_CAPTURE_IMAGE);
+                            }
+                        }
                         break;
                     case 2:
+                        Intent galleryIntent = new Intent(ACTION_PICK);
+                        galleryIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*");
+                        startActivityForResult(galleryIntent, REQUEST_GALLERY);
                         break;
                     default:
                         break;
@@ -444,20 +479,45 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (mPhoto != null && mPhoto.isFile()) {
-                if (mPhoto.delete()) mPhoto = null;
-            }
             switch (requestCode) {
-                case REQUEST_CODE_PHOTO:
-//                    onPhotoInput.getPhoto();
+                case REQUEST_CAPTURE_IMAGE:
+                    Glide.with(this).load(imageFilePath).thumbnail(0.25f).into(imageThumb);
+                    fPhoto.setText(getString(R.string.record_photo_ok));
+                    imageFileName = new File(imageFilePath).getName().substring(0, 19) + ".jpg";
+                    fPhotoName.setText(imageFileName);
                     break;
-                case REQUEST_CODE_GALLERY:
-//                    onPhotoInput.getGallery(data.getData());
+                case REQUEST_GALLERY:
+                    imageFileUri = data.getData();
+                    Glide.with(this).load(imageFileUri).thumbnail(0.25f).into(imageThumb);
+                    fPhoto.setText(getString(R.string.record_photo_ok));
+                    if (requireNonNull(imageFileUri.getScheme()).equals("file")) {
+                        imageFileName = imageFileUri.getLastPathSegment();
+                    } else {
+                        try (Cursor cursor = getContentResolver().query(imageFileUri, new String[]{
+                                ImageColumns.DISPLAY_NAME}, null, null, null)) {
+                            if (cursor != null && cursor.moveToFirst()) {
+                                imageFileName = cursor.getString(cursor.getColumnIndex(ImageColumns.DISPLAY_NAME));
+                            }
+                        }
+                    }
+                    fPhotoName.setText(imageFileName);
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    private String imageFilePath;
+
+    private File createImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp;
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        imageFilePath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
@@ -499,139 +559,11 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
-    //    @SuppressWarnings("ALL")
-    private class OnPhotoInput {
-
-        private static final int MAX_PHOTO_SIZE = 1024;
-        private String filePathAbs;
-        private Uri fileUri;
-
-        private void setPhoto() {
-            String state = Environment.getExternalStorageState();
-            if (state.equals(Environment.MEDIA_MOUNTED)) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    File filePath = getFilePath();
-                    if (filePath != null) {
-                        fileUri = FileProvider.getUriForFile(context, getPackageName(), filePath);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                        startActivityForResult(intent, REQUEST_CODE_PHOTO);
-                    }
-                }
-            }
-        }
-
-        @SuppressLint("SimpleDateFormat")
-        private File getFilePath() {
-            File dir = new File(getExternalStorageDirectory() + "/SPI/");
-            if (!dir.exists()) dir.mkdirs();
-            String fileDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File filePath = new File(
-                    getExternalStorageDirectory().getAbsoluteFile()
-                            + "/SPI/"
-                            + fileDate
-                            + ".jpg");
-            filePathAbs = filePath.getAbsolutePath();
-            return filePath;
-        }
-
-        private void setGallery() {
-            Intent intent = new Intent(ACTION_PICK);
-            intent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*");
-            startActivityForResult(intent, REQUEST_CODE_GALLERY);
-        }
-
-        private void getPhoto() {
-            try {
-                Bitmap sourcePhoto = BitmapFactory.decodeFile(filePathAbs);
-                Bitmap editPhoto = getEditPhoto(sourcePhoto, filePathAbs);
-                OutputStream outputStream = null;
-                photoView.setImageBitmap(editPhoto);
-//                mTxtInputPhoto.setText("");
-                mPhoto = new File(context.getFilesDir().getAbsolutePath() + "temp.jpg");
-                if (mPhoto.createNewFile()) {
-                    outputStream = new FileOutputStream(mPhoto);
-                    editPhoto.compress(JPEG, 100, outputStream);
-                }
-                if (outputStream != null) outputStream.close();
-                if (mPhoto.isFile()) {
-//                SPIDataItem item = new SPIDataItem();
-//                item.setVal(mPhoto.getPath());
-//                spiData.setItem(KEY_PHOTO.getKey(), item);
-//                mTxtPhoto.setText(mPhoto.getName());
-                }
-                sourcePhoto.recycle();
-                editPhoto.recycle();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private Bitmap getEditPhoto(Bitmap source, String path) throws IOException {
-            ExifInterface exif = new ExifInterface(path);
-            int exifOrientation = exif.getAttributeInt(TAG_ORIENTATION, ORIENTATION_NORMAL);
-            int exifDegree;
-            switch (exifOrientation) {
-                case ORIENTATION_ROTATE_90:
-                    exifDegree = 90;
-                    break;
-                case ORIENTATION_ROTATE_180:
-                    exifDegree = 180;
-                    break;
-                case ORIENTATION_ROTATE_270:
-                    exifDegree = 270;
-                    break;
-                default:
-                    exifDegree = 0;
-                    break;
-            }
-            Matrix matrix = new Matrix();
-            matrix.postRotate(exifDegree);
-
-            int width = source.getWidth();
-            int height = source.getHeight();
-
-            Bitmap rotatePhoto = Bitmap.createBitmap(source, 0, 0, width, height, matrix, true);
-
-            final float scaleRatio = (float) width / (float) height;
-            if (scaleRatio > 1) {
-                width = MAX_PHOTO_SIZE;
-                height = (int) (width / scaleRatio);
-            } else {
-                height = MAX_PHOTO_SIZE;
-                width = (int) (height * scaleRatio);
-            }
-
-            Bitmap scalePhoto = Bitmap.createScaledBitmap(rotatePhoto, width, height, true);
-            rotatePhoto.recycle();
-            return scalePhoto;
-        }
-
-        private void deletePhoto() {
-            // TODO: 2018-11-19 mTxtInputPhoto 다시 힌트메시지와 함께 나타나게 하기
-//            SPIDataItem item = new SPIDataItem();
-//            item.setVal("");
-//            spiData.setItem(KEY_PHOTO.getKey(), item);
-//            mTxtPhoto.setText("");
-//            mLayPhoto.setVisibility(GONE);
-//            onPhotoInput = null;
-        }
-
-        private void showPhoto() {
-            // TODO: 이미지 선택시 전체화면으로 보여주기 구현
-//        mParentView.showPopup(new p_Common_Photo(mActivity, mParentView), mPhoto, new onPopupActionListener() {
-//            @Override
-//            public void onPopupAction(int action, Object ret) {
-//            }
-//        }, null);
-        }
-    }
-
     private class OnNextButtonClick implements OnClickListener {
 
         @Override
         public void onClick(View v) {
-            if (isAllValid()) try {
+            if (isAllValid() && isSpecValid() && isPhotoNameValid()) try {
                 final Entry entry = setEntry();
                 ArrayList<Entry> previewEntries = new ArrayList<>();
                 previewEntries.add(entry);
@@ -640,7 +572,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                         .putExtra("PipeIndex", 0)
                         .putExtra("RegisterPreview", previewEntries)
                         .putExtra("fHorizontal", fHorizontal.getText().toString())
-                        .putExtra("fVertical", fVertical.getText().toString()));
+                        .putExtra("fVertical", fVertical.getText().toString())
+                        .putExtra("imageFileUri", imageFileUri));
             } catch (Exception e) {
                 showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.", true);
                 Log.e(TAG, e.getMessage());
@@ -656,6 +589,24 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             }
             return allValid;
         }
+
+        private boolean isSpecValid() {
+            boolean isSpecValid = true;
+            if (fSpec.getInputType() == TYPE_CLASS_NUMBER) {
+                isSpecValid = Double.valueOf(fSpec.getText().toString()) < 1000.0;
+                if (!isSpecValid) fSpec.setError("이 범위(0.0 - 1000.0)안에 해당하는 숫자만 입력가능합니다.");
+            }
+            return isSpecValid;
+        }
+
+        private boolean isPhotoNameValid() {
+            boolean isPhotoNameValid = true;
+            if (spiPhoto != null && imageFileUri != null) {
+                isPhotoNameValid = !fPhotoName.getText().toString().trim().equals("");
+                if (!isPhotoNameValid) fPhotoName.setError("사진 이름을 입력하세요.");
+            }
+            return isPhotoNameValid;
+        }
     }
 
     private Entry setEntry() throws Exception {
@@ -665,6 +616,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             spiMemo.setSpi_id(spiId);
         }
         spiMemo.setMemo(fMemo.getText().toString());
+        spiPhoto.setSpi_id(spiId);
         pipe.setSpi_id(spiId);
         pipe.setDepth(valueOf(fDepth.getText().toString()));
         pipe.setMaterial(fMaterial.getText().toString());
@@ -677,7 +629,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         pipe.setConstruction_contact(fConstructionContact.getText().toString());
         pipePlan.setFile_section(format("plan_%s_%s", parseSpiType(spiType.getType()), pipePosition.getPosition()));
 
-        Entry entry = new Entry(spi, spiType, spiMemo, pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
+        Entry entry = new Entry(spi, spiType, spiMemo, spiPhoto, pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
         entry.setSpi_location(spiLocation);
 
         return entry;

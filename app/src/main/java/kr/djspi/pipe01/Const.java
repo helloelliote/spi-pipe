@@ -21,9 +21,9 @@ public final class Const {
     public static final String[] PIPE_DIRECTIONS = {null, "", "out", "", "outl", null, "outr", "", "in", ""};
     public static final PipeTypeEnum[] PIPE_TYPE_ENUMS = PipeTypeEnum.values();
 
-    static final int REQUEST_CODE_MAP = 30001;
-    static final int REQUEST_CODE_PHOTO = 10001;
-    static final int REQUEST_CODE_GALLERY = 10002;
+    static final int REQUEST_MAP = 30001;
+    static final int REQUEST_CAPTURE_IMAGE = 10001;
+    static final int REQUEST_GALLERY = 10002;
 
     public static final int RESULT_PASS = 200;
     public static final int RESULT_FAIL = 400;

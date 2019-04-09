@@ -66,7 +66,7 @@
             android:layout_margin="15dp"
             android:drawableTop="@drawable/no_img_gray"
             android:drawablePadding="5dp"
-            android:text="@string/common_load_image_fail"
+            android:text="@string/error_load_image_fail"
             android:textColor="@color/gray"
             android:textSize="15sp" />
 

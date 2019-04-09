@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:textColor="@color/blue_bright"
@@ -33,18 +34,19 @@
 
         <ImageView
             android:id="@+id/img_photo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
             tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:id="@+id/lay_empty"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
@@ -53,20 +55,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
                 android:drawableTop="@drawable/no_img_gray"
                 android:drawablePadding="5dp"
-                android:text="@string/common_load_image_fail"
+                android:text="@string/error_load_image_fail"
                 android:textColor="@color/gray"
                 android:textSize="15sp" />
 
             <android.support.design.button.MaterialButton
                 android:id="@+id/btn_photo"
                 style="@style/Spi.Button"
-                android:layout_width="83.67dp"
-                android:layout_height="33dp"
+                android:layout_width="110dp"
+                android:layout_height="60dp"
                 android:layout_gravity="bottom|center"
-                android:visibility="invisible" />
+                android:layout_margin="5dp"
+                android:text="@string/error_load_image_retry" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

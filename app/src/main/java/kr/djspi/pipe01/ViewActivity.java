@@ -2,6 +2,7 @@ package kr.djspi.pipe01;
 
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,7 +34,7 @@ import static android.text.Html.fromHtml;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static java.util.Objects.requireNonNull;
-import static kr.djspi.pipe01.Const.REQUEST_CODE_MAP;
+import static kr.djspi.pipe01.Const.REQUEST_MAP;
 import static kr.djspi.pipe01.Const.RESULT_FAIL;
 import static kr.djspi.pipe01.Const.RESULT_PASS;
 
@@ -43,6 +44,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     private int pipeIndex;
     private JsonObject jsonObject;
     private ArrayList<Entry> previewEntries;
+    private Uri imageFileUri;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -64,6 +66,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
 
             Serializable serializable = intent.getSerializableExtra("RegisterPreview");
             pipeIndex = intent.getIntExtra("PipeIndex", 0);
+            imageFileUri = intent.getParcelableExtra("imageFileUri");
             String fHorizontal = intent.getStringExtra("fHorizontal");
             String fVertical = intent.getStringExtra("fVertical");
             if (serializable instanceof ArrayList<?>) {
@@ -71,7 +74,6 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
                 jsonObject = new JsonObject();
                 jsonObject = parseEntry(previewEntries, pipeIndex, fHorizontal, fVertical); // 단일형 index 는 항상 0
             }
-
         }
         setContentView(R.layout.activity_pipe_view);
     }
@@ -162,11 +164,16 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     }
 
     @Override
+    public Uri getPhotoUri() {
+        return imageFileUri;
+    }
+
+    @Override
     public void onRecord(String tag, int result) {
         switch (result) {
             case RESULT_PASS:
                 startActivityForResult(new Intent(this, SpiLocationActivity.class)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_CODE_MAP);
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP);
                 break;
             case RESULT_FAIL:
                 break;
@@ -180,7 +187,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_CODE_MAP:
+                case REQUEST_MAP:
                     double[] locations = data.getDoubleArrayExtra("locations");
                     Entry currentEntry = previewEntries.get(pipeIndex);
                     SpiLocation location = currentEntry.getSpi_location();
@@ -191,7 +198,8 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
                     previewEntries.set(pipeIndex, currentEntry);
                     startActivity(new Intent(this, SpiPostActivity.class)
                             .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                            .putExtra("entry", previewEntries));
+                            .putExtra("entry", previewEntries)
+                            .putExtra("imageFileUri", imageFileUri));
                     break;
                 default:
                     break;
@@ -208,6 +216,11 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static JsonObject parseEntry(@NotNull ArrayList entries, int index, String... strings) {
+        return ((Entry) entries.get(index)).parseToSingleJsonObject(strings);
     }
 
     private class TabSelected implements OnTabSelectedListener {
@@ -229,10 +242,5 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
         public void onTabReselected(Tab tab) {
 
         }
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static JsonObject parseEntry(@NotNull ArrayList entries, int index, String... strings) {
-        return ((Entry) entries.get(index)).parseToSingleJsonObject(strings);
     }
 }

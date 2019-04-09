@@ -1,9 +1,11 @@
 package kr.djspi.pipe01.dto;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 @Data
-public class SpiPhoto implements DataItem {
+public class SpiPhoto implements DataItem, Serializable {
 
     private int id = -1;
     private int spi_id;

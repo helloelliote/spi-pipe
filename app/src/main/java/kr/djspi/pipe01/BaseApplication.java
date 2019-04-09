@@ -6,7 +6,7 @@ import com.squareup.leakcanary.LeakCanary;
 
 public class BaseApplication extends Application {
 
-    private static final boolean USE_LEAK_CANARY = false;
+    private static final boolean USE_LEAK_CANARY = true;
 
     @Override
     public void onCreate() {

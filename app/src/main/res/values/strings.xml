@@ -20,7 +20,6 @@
     <string name="nav_email"><![CDATA[대진기술정보(주) <font color="#0077C8">%1$s</font>]]></string>
     <string name="nav_dj_email">djgis@chol.com</string>
     <string name="nav_dj_phone">+82–53–424–9547</string>
-    <string name="nav_guide"></string>
 
     <!--MainActivity-->
     <string name="lay_main1_title"></string>
@@ -83,7 +82,9 @@
     <string name="record_confirm">관로정보 입력완료</string>
     <string name="record_cancel">취소</string>
     <string name="record_error">필수입력 항목입니다.</string>
+    <string name="record_photo_ok">사진이 첨부되었습니다.</string>
     <string name="popup_hint">터치하여 선택하세요.</string>
+    <string name="record_photo_error">카메라를 시작할 수 없습니다.</string>
 
     <string name="record_input_0">관로종류</string>
     <string name="record_input_0_hint">매설관로의 종류 입력</string>
@@ -179,5 +180,45 @@
     <string name="nfc_info_serial"><![CDATA[SPI 시리얼번호는 <font color="#0077C8">%1$s</font>입니다.]]></string>
     <string name="nfc_info_id"><![CDATA[SPI 아이디는 <font color="#0077C8">%1$s</font> 입니다.]]></string>
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
-    <string name="common_load_image_fail">이미지를 불러오지 못하였습니다.</string>
+    <string name="error_load_image_fail">이미지를 불러오지 못하였습니다.</string>
+    <string name="error_load_image_retry">새로고침</string>
+
+    <string name="nav_guide">
+        1. 앱의 용도\n
+        본 SPI 앱은 지하매설관로에 대한 정보를 지능형 매설관로 인식표지(SPI)에 기록, 저장하고 저장된 정보를 읽기 위한 애플리케이션입니다.\n
+        \n
+        2. 앱 개발의 법적 근거\n
+        도로법, 동법시행령, 동법시행규칙 별표4에 규정된 매설물 인식표지 제작 규정 및 방법에 의하여 세계 최초로 개발된 제품입니다.\n
+        \n
+        3. 앱 사용의 조건\n
+        1) 안드로이드 스마트폰의 NFC 기능을 읽기/쓰기 나 기본모드로 설정하여야 합니다.\n
+        NFC 기능을 끄거나 카드 모드로 설정하시면 정보의 읽기/쓰기가 불가능합니다.\n
+        앱을 실행시키면 자동으로 기능을 체크하여 활성화하도록 요구합니다.\n
+        2) 스마트폰의 GPS 기능을 활성화(높은 정확도)하셔야 합니다.\n
+        GPS 기능은 현장의 SPI 설치 지점을 확정하고 현재 위치 주변의 SPI 정보를 제공하기 위하여 필요합니다.\n
+        앱을 실행시키면 자동으로 기능을 체크하여 활성화하도록 요구합니다.\n
+        \n
+        4. 앱의 주요 기능\n
+        1) SPI에 매설관로에 대한 정보를 기록 저장합니다.\n
+        2) SPI에 저장된 매설관로의 정보를 읽어 사용자에게 제공합니다.\n
+        3) 현재 위치 주변의 SPI, 매설관로 위치 및 정보를 제공합니다.\n
+        4) 특정 위치로 지도를 이동시킨 후 정보조회를 선택하시면 주변에 대한 매설관로 정보를 조회가 가능합니다.\n
+        \n
+        5. 앱의 특수기능\n
+        1) SPI 앱이 없는 스마트폰도 NFC를 설정하시고 태깅하시면 SPI 앱이 자동으로 설치됩니다\n
+        2) 매설관로 정보가 저장된 SPI를 태깅 시는 앱이 자동으로 실행됩니다.\n
+        3) 매설관로 정보가 없는 SPI를 태깅 시에도 앱은 자동으로 실행되어 정보 입력을 대기합니다.\n
+        4) 정품 SPI가 아닌 NFC태그는 정보입력이 불가능 합니다. 정품을 구매하여 사용 하십시오\n
+        5) 재난이나 사고로 공중망(통신)이 두절되어도 SPI에 저장된 정보는 파악이 가능 합니다.\n
+        \n
+        6. 사용상 주의사항\n
+        1) 스마트폰은 각 기종별로 NFC안테나의 위치가 상이합니다. 폰 뒷면의 안테나 부분을 미리 파악하시고 사용하십시오.\n
+        2) SPI에 정보를 한번 저장 하시면 지우거나 새로 기록하실 수 없도록 되어 있으며 영원히 지워지지 않습니다. 정확하게 내용을 확인하시고 저장 하십시오.\n
+        3) 매설관로에 대한 필수사항은 SPI에 직접 저장되나 선택사항은 서버에 저장됩니다.\n
+        4) 선택사항에 대하여는 내용을 입력하지 않아도 됩니다.\n
+        5) 측량된 SPI위치를 입력시에는 원점을 반드시 선택하시고 TM직각좌표를 입력하신 후 지도상에 나타나는 위치를 확인 후 저장 하십시오.\n
+        \n
+        7. 개발자 및 공급자 정보\n
+        1) SPI 제품 및 개발자 : 대진기술정보(주) 053-424-9547\n
+        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3880\n</string>
 </resources>
