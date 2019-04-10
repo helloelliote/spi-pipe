@@ -1,7 +1,6 @@
 package kr.djspi.pipe01;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -12,23 +11,24 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.helloelliote.retrofit.Retrofit2x;
 import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
-import com.helloelliote.retrofit.SpiPost;
+import com.helloelliote.retrofit.SpiPostMultipart;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import kr.djspi.pipe01.dto.Entry;
+import kr.djspi.pipe01.dto.SpiPhotoObject;
 import kr.djspi.pipe01.fragment.MessageDialog;
 import kr.djspi.pipe01.nfc.NfcUtil;
 
-import static kr.djspi.pipe01.Const.URL_SPI;
+import static kr.djspi.pipe01.Const.URL_TEST;
 import static kr.djspi.pipe01.nfc.StringParser.parseToStringArray;
 
 public class SpiPostActivity extends BaseActivity implements Serializable {
 
     private static final String TAG = SpiPostActivity.class.getSimpleName();
     private static ArrayList<Entry> entries;
-    private Uri imageFileUri;
+    private SpiPhotoObject photoObj;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -38,10 +38,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
         if (serializable instanceof ArrayList<?>) {
             entries = (ArrayList<Entry>) serializable;
         }
-        imageFileUri = getIntent().getParcelableExtra("photoUri");
-        if (imageFileUri != null) {
-
-        }
+        photoObj = (SpiPhotoObject) getIntent().getSerializableExtra("SpiPhotoObject");
         setContentView(R.layout.activity_spi_post);
     }
 
@@ -85,8 +82,8 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
 
     private void setSpiAndPipe(Intent intent) {
         Retrofit2x.builder()
-                .setService(new SpiPost(URL_SPI))
-                .setQuery(new Gson().toJson(entries))
+                .setService(new SpiPostMultipart(URL_TEST))
+                .setQueries(new Gson().toJson(entries), photoObj.getFile())
                 .build()
                 .run(new OnRetrofitListener() {
                     @Override

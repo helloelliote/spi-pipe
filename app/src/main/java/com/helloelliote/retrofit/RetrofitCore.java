@@ -8,11 +8,15 @@ import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Contract;
 
+import java.io.File;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static kr.djspi.pipe01.Const.URL_SPI;
 
 public final class RetrofitCore {
 
@@ -21,6 +25,7 @@ public final class RetrofitCore {
     private static ServiceStrategy service;
     static JsonObject jsonQuery;
     static String stringQuery;
+    static File fileQuery;
 
     private RetrofitCore() {
     }
@@ -67,6 +72,20 @@ public final class RetrofitCore {
     final boolean setQuery(final String stringQuery) {
         RetrofitCore.stringQuery = null;
         RetrofitCore.stringQuery = stringQuery;
+        return stringQuery != null;
+    }
+
+    final boolean setQueries(final String stringQuery, final File file) {
+        if (file == null) {
+            setQuery(stringQuery);
+            RetrofitCore.service = new SpiPost(URL_SPI);
+            return stringQuery != null;
+        } else {
+            RetrofitCore.stringQuery = null;
+            RetrofitCore.stringQuery = stringQuery;
+            RetrofitCore.fileQuery = null;
+            RetrofitCore.fileQuery = file;
+        }
         return stringQuery != null;
     }
 

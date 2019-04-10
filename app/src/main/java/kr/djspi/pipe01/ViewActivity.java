@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.dto.SpiLocation;
+import kr.djspi.pipe01.dto.SpiPhotoObject;
 import kr.djspi.pipe01.tab.OnRecordListener;
 import kr.djspi.pipe01.tab.TabAdapter;
 
@@ -44,7 +45,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     private int pipeIndex;
     private JsonObject jsonObject;
     private ArrayList<Entry> previewEntries;
-    private Uri imageFileUri;
+    private SpiPhotoObject photoObj;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -66,7 +67,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
 
             Serializable serializable = intent.getSerializableExtra("RegisterPreview");
             pipeIndex = intent.getIntExtra("PipeIndex", 0);
-            imageFileUri = intent.getParcelableExtra("imageFileUri");
+            photoObj = (SpiPhotoObject) intent.getSerializableExtra("SpiPhotoObject");
             String fHorizontal = intent.getStringExtra("fHorizontal");
             String fVertical = intent.getStringExtra("fVertical");
             if (serializable instanceof ArrayList<?>) {
@@ -165,7 +166,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
 
     @Override
     public Uri getPhotoUri() {
-        return imageFileUri;
+        return photoObj.getUri();
     }
 
     @Override
@@ -199,7 +200,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
                     startActivity(new Intent(this, SpiPostActivity.class)
                             .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                             .putExtra("entry", previewEntries)
-                            .putExtra("imageFileUri", imageFileUri));
+                            .putExtra("SpiPhotoObject", photoObj));
                     break;
                 default:
                     break;

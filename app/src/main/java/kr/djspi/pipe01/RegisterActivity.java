@@ -2,10 +2,8 @@ package kr.djspi.pipe01;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
@@ -28,6 +26,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.helloelliote.filter.DecimalFilter;
+import com.helloelliote.image.ImageUtil;
 import com.helloelliote.json.Json;
 import com.helloelliote.retrofit.Retrofit2x;
 import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
@@ -36,11 +35,10 @@ import com.helloelliote.retrofit.SuperviseGet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.Objects;
 
 import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.dto.Pipe;
@@ -54,6 +52,7 @@ import kr.djspi.pipe01.dto.Spi;
 import kr.djspi.pipe01.dto.SpiLocation;
 import kr.djspi.pipe01.dto.SpiMemo;
 import kr.djspi.pipe01.dto.SpiPhoto;
+import kr.djspi.pipe01.dto.SpiPhotoObject;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.fragment.ImageDialog;
 import kr.djspi.pipe01.fragment.ListDialog;
@@ -61,9 +60,7 @@ import kr.djspi.pipe01.fragment.OnSelectListener;
 import kr.djspi.pipe01.fragment.PhotoDialog;
 import kr.djspi.pipe01.fragment.PositionDialog;
 
-import static android.os.Environment.DIRECTORY_DCIM;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-import static android.provider.MediaStore.MediaColumns.DISPLAY_NAME;
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
 import static android.view.View.GONE;
@@ -73,7 +70,6 @@ import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
 import static android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT;
 import static java.lang.Double.valueOf;
 import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
 import static kr.djspi.pipe01.Const.PIPE_DIRECTIONS;
 import static kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS;
 import static kr.djspi.pipe01.Const.REQUEST_CAPTURE_IMAGE;
@@ -107,12 +103,11 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static final PipePosition pipePosition = new PipePosition();
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
+    private static SpiPhotoObject photoObj;
     private final Bundle superviseListBundle = new Bundle(1);
     private ArrayList<String> superviseList;
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
-    private String imageFilePath;
-    private String imageFileName;
     private ImageView imageThumb;
     private ImageView buttonEdit;
     /**
@@ -121,7 +116,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     FormEditText fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
             fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact,
             fPhoto, fPhotoName;
-    Uri imageFileUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -298,10 +292,10 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 new PhotoDialog().show(getSupportFragmentManager(), TAG_PHOTO);
                 break;
             case R.id.form_photo_thumbnail:
-                if (imageFileUri != null) {
+                if (photoObj.getUri() != null) {
                     ImageDialog previewDialog = new ImageDialog();
                     Bundle bundle = new Bundle(1);
-                    bundle.putParcelable("imageFileUri", imageFileUri);
+                    bundle.putSerializable("imageFileUri", photoObj.getUri());
                     previewDialog.setArguments(bundle);
                     previewDialog.show(getSupportFragmentManager(), "");
                 }
@@ -311,7 +305,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
 //                fPhotoName.requestFocus();
 //                break;
             case R.id.btn_delete:
-                imageFileUri = null;
+                photoObj.setUri(null);
                 imageThumb.setImageDrawable(null);
                 fPhotoName.setFocusable(false);
                 fPhotoName.setText(null);
@@ -434,16 +428,15 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             case TAG_PHOTO:
                 switch (index) {
                     case 1:
+                        photoObj = new SpiPhotoObject();
                         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
                             File photoFile;
                             try {
-                                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                                String imageFileName = String.format("IMG_%s_", timeStamp);
-                                File storageDir = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM), "Camera");
-                                photoFile = File.createTempFile(imageFileName, ".jpg", storageDir);
-                                imageFilePath = photoFile.getAbsolutePath();
-                                imageFileUri = FileProvider.getUriForFile(this, packageName, photoFile);
+                                photoFile = ImageUtil.prepareFile();
+                                URI imageFileUri = FileProvider.getUriForFile(this, packageName, photoFile);
+                                photoObj.setUri(imageFileUri);
+                                photoObj.setFile(photoFile);
                                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
                             } catch (IOException e) {
                                 Toast.makeText(this, getString(R.string.record_photo_error), Toast.LENGTH_SHORT).show();
@@ -453,6 +446,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                         startActivityForResult(cameraIntent, REQUEST_CAPTURE_IMAGE);
                         break;
                     case 2:
+                        photoObj = new SpiPhotoObject();
                         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
                         galleryIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*");
                         startActivityForResult(galleryIntent, REQUEST_GALLERY);
@@ -479,28 +473,22 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            String imageFileName;
             switch (requestCode) {
                 case REQUEST_CAPTURE_IMAGE:
-                    Glide.with(this).load(imageFilePath).thumbnail(0.25f).into(imageThumb);
-                    fPhoto.setText(getString(R.string.record_photo_ok));
-                    imageFileName = new File(imageFilePath).getName();
+                    Glide.with(this).load(photoObj.getUri()).thumbnail(0.25f).into(imageThumb);
+                    imageFileName = photoObj.getFile().getName();
                     fPhotoName.setText(imageFileName);
+                    fPhoto.setText(getString(R.string.record_photo_ok));
                     break;
                 case REQUEST_GALLERY:
-                    imageFileUri = data.getData();
+                    Uri imageFileUri = Objects.requireNonNull(data.getData());
                     Glide.with(this).load(imageFileUri).thumbnail(0.25f).into(imageThumb);
-                    fPhoto.setText(getString(R.string.record_photo_ok));
-                    if (requireNonNull(imageFileUri.getScheme()).equals("file")) {
-                        imageFileName = imageFileUri.getLastPathSegment();
-                    } else {
-                        try (Cursor cursor = getContentResolver().query(imageFileUri,
-                                new String[]{DISPLAY_NAME}, null, null, null)) {
-                            if (cursor != null && cursor.moveToFirst()) {
-                                imageFileName = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
-                            }
-                        }
-                    }
+                    imageFileName = ImageUtil.uriToFileName(this, imageFileUri);
                     fPhotoName.setText(imageFileName);
+                    fPhoto.setText(getString(R.string.record_photo_ok));
+                    photoObj.setUri(imageFileUri);
+                    photoObj.setFile(ImageUtil.uriToFile(this, imageFileUri));
                     break;
                 default:
                     break;
@@ -587,7 +575,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                         .putExtra("RegisterPreview", previewEntries)
                         .putExtra("fHorizontal", fHorizontal.getText().toString())
                         .putExtra("fVertical", fVertical.getText().toString())
-                        .putExtra("imageFileUri", imageFileUri));
+                        .putExtra("SpiPhotoObject", photoObj));
             } catch (Exception e) {
                 showMessageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.", true);
                 Log.e(TAG, e.getMessage());
