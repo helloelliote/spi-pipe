@@ -5,9 +5,9 @@ import android.net.Uri;
 import com.google.gson.JsonObject;
 
 public interface OnRecordListener {
-    JsonObject getJsonObjectRecord();
+    JsonObject getJsonObject();
 
-    Uri getPhotoUri();
+    Uri getUri();
 
     void onRecord(String tag, int result);
 }

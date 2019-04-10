@@ -1,7 +1,7 @@
 package kr.djspi.pipe01.nfc;
 
 import com.google.gson.JsonObject;
-import com.helloelliote.json.Json;
+import com.helloelliote.util.json.Json;
 
 import org.jetbrains.annotations.NotNull;
 

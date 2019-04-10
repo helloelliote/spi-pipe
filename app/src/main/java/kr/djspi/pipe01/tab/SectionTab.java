@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
-import com.helloelliote.json.Json;
+import com.helloelliote.util.json.Json;
 
 import kr.djspi.pipe01.R;
 
@@ -35,7 +35,7 @@ public class SectionTab extends Fragment {
         super.onAttach(context);
         if (context instanceof OnRecordListener) {
             OnRecordListener listener = (OnRecordListener) context;
-            jsonObject = listener.getJsonObjectRecord();
+            jsonObject = listener.getJsonObject();
         }
     }
 

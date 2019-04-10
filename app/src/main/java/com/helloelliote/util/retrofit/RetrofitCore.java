@@ -1,4 +1,4 @@
-package com.helloelliote.retrofit;
+package com.helloelliote.util.retrofit;
 
 import android.support.annotation.NonNull;
 
@@ -15,8 +15,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static kr.djspi.pipe01.Const.URL_SPI;
 
 public final class RetrofitCore {
 
@@ -64,28 +62,18 @@ public final class RetrofitCore {
         return jsonQuery != null;
     }
 
-    /**
-     * 사용자 입력값(String) 지정
-     *
-     * @param stringQuery 사용자 입력값
-     */
-    final boolean setQuery(final String stringQuery) {
+    final boolean setQuery(final String stringQuery, final File file) {
+//        if (file == null) {
+//            RetrofitCore.service = new SpiPost(URL_SPI);
+//            RetrofitCore.stringQuery = null;
+//            RetrofitCore.stringQuery = stringQuery;
+//            return stringQuery != null;
+//        } else {
         RetrofitCore.stringQuery = null;
         RetrofitCore.stringQuery = stringQuery;
-        return stringQuery != null;
-    }
-
-    final boolean setQueries(final String stringQuery, final File file) {
-        if (file == null) {
-            setQuery(stringQuery);
-            RetrofitCore.service = new SpiPost(URL_SPI);
-            return stringQuery != null;
-        } else {
-            RetrofitCore.stringQuery = null;
-            RetrofitCore.stringQuery = stringQuery;
-            RetrofitCore.fileQuery = null;
-            RetrofitCore.fileQuery = file;
-        }
+        RetrofitCore.fileQuery = null;
+        RetrofitCore.fileQuery = file;
+//        }
         return stringQuery != null;
     }
 
@@ -101,9 +89,13 @@ public final class RetrofitCore {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.isSuccessful()) listener.onResponse(response.body());
-                else onFailure(call, new Throwable(response.message()));
-                call.cancel();
+                if (response.isSuccessful()) {
+                    listener.onResponse(response.body());
+                    jsonQuery = null;
+                    stringQuery = null;
+                    fileQuery = null;
+                    call.cancel();
+                } else onFailure(call, new Throwable(response.message()));
             }
 
             @Override

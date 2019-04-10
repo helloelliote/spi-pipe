@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
-import com.helloelliote.json.Json;
+import com.helloelliote.util.json.Json;
 
 import kr.djspi.pipe01.R;
 
@@ -36,8 +36,8 @@ public class PreviewTab extends Fragment implements OnClickListener {
         super.onAttach(context);
         if (context instanceof OnRecordListener) {
             listener = (OnRecordListener) context;
-            jsonObject = listener.getJsonObjectRecord();
-            imageFileUri = listener.getPhotoUri();
+            jsonObject = listener.getJsonObject();
+            imageFileUri = listener.getUri();
         }
     }
 

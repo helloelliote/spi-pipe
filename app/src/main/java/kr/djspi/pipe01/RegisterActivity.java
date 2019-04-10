@@ -25,17 +25,16 @@ import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.helloelliote.filter.DecimalFilter;
-import com.helloelliote.image.ImageUtil;
-import com.helloelliote.json.Json;
-import com.helloelliote.retrofit.Retrofit2x;
-import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
-import com.helloelliote.retrofit.SuperviseGet;
+import com.helloelliote.util.filter.DecimalFilter;
+import com.helloelliote.util.image.ImageUtil;
+import com.helloelliote.util.json.Json;
+import com.helloelliote.util.retrofit.Retrofit2x;
+import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.util.retrofit.SuperviseGet;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -95,16 +94,17 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static Spi spi;
     private static SpiType spiType;
     private static SpiMemo spiMemo;
+    private static SpiPhoto spiPhoto;
+    // TODO: 2019-04-11 통합형에서의 Spi* 클래스들의 정리 필요
     private static SpiLocation spiLocation;
-    private static SpiPhoto spiPhoto = new SpiPhoto();
     private static final Pipe pipe = new Pipe();
     private static final PipeType pipeType = new PipeType();
     private static final PipeShape pipeShape = new PipeShape();
     private static final PipePosition pipePosition = new PipePosition();
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
-    private static SpiPhotoObject photoObj;
     private final Bundle superviseListBundle = new Bundle(1);
+    private SpiPhotoObject photoObj;
     private ArrayList<String> superviseList;
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
@@ -127,6 +127,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             spiType = (SpiType) itemMap.get("SpiType");
             spiLocation = (SpiLocation) itemMap.get("SpiLocation");
             spiMemo = (SpiMemo) itemMap.get("SpiMemo");
+            spiPhoto = (SpiPhoto) itemMap.get("SpiPhoto");
         }
         setContentView(R.layout.activity_register);
         superviseList = getSuperviseList();
@@ -292,23 +293,29 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 new PhotoDialog().show(getSupportFragmentManager(), TAG_PHOTO);
                 break;
             case R.id.form_photo_thumbnail:
-                if (photoObj.getUri() != null) {
-                    ImageDialog previewDialog = new ImageDialog();
-                    Bundle bundle = new Bundle(1);
-                    bundle.putSerializable("imageFileUri", photoObj.getUri());
-                    previewDialog.setArguments(bundle);
-                    previewDialog.show(getSupportFragmentManager(), "");
-                }
+                if (photoObj == null) return;
+                ImageDialog imageDialog = new ImageDialog();
+                Bundle bundle = new Bundle(1);
+                bundle.putSerializable("SpiPhotoObject", photoObj);
+                imageDialog.setArguments(bundle);
+                imageDialog.show(getSupportFragmentManager(), TAG_PHOTO);
                 break;
 //            case R.id.btn_edit:
 //                if (fPhotoName.getText().toString().equals("")) return;
 //                fPhotoName.requestFocus();
 //                break;
             case R.id.btn_delete:
+                if (photoObj == null) return;
                 photoObj.setUri(null);
+                photoObj.setFile(null);
+                if (tempFile != null && tempFile.delete()) {
+                    tempFile = null;
+                }
+                tempUri = null;
                 imageThumb.setImageDrawable(null);
                 fPhotoName.setFocusable(false);
-                fPhotoName.setText(null);
+                fPhotoName.setText(getString(R.string.record_input_photo_delete));
+                fPhotoName.setTextColor(getResources().getColor(R.color.colorAccent));
                 fPhoto.setText(null);
                 break;
             default:
@@ -428,16 +435,12 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             case TAG_PHOTO:
                 switch (index) {
                     case 1:
-                        photoObj = new SpiPhotoObject();
                         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                            File photoFile;
                             try {
-                                photoFile = ImageUtil.prepareFile();
-                                URI imageFileUri = FileProvider.getUriForFile(this, packageName, photoFile);
-                                photoObj.setUri(imageFileUri);
-                                photoObj.setFile(photoFile);
-                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+                                tempFile = ImageUtil.prepareFile();
+                                tempUri = FileProvider.getUriForFile(this, packageName, tempFile);
+                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
                             } catch (IOException e) {
                                 Toast.makeText(this, getString(R.string.record_photo_error), Toast.LENGTH_SHORT).show();
                                 return;
@@ -446,7 +449,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                         startActivityForResult(cameraIntent, REQUEST_CAPTURE_IMAGE);
                         break;
                     case 2:
-                        photoObj = new SpiPhotoObject();
                         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
                         galleryIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*");
                         startActivityForResult(galleryIntent, REQUEST_GALLERY);
@@ -469,6 +471,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         dialog.show(getSupportFragmentManager(), TAG_POSITION);
     }
 
+    private File tempFile;
+    private Uri tempUri;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -476,19 +481,42 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             String imageFileName;
             switch (requestCode) {
                 case REQUEST_CAPTURE_IMAGE:
-                    Glide.with(this).load(photoObj.getUri()).thumbnail(0.25f).into(imageThumb);
-                    imageFileName = photoObj.getFile().getName();
+                    photoObj = new SpiPhotoObject();
+                    Glide.with(this).load(tempUri).thumbnail(0.25f).into(imageThumb);
+                    imageFileName = tempFile.getName();
                     fPhotoName.setText(imageFileName);
+                    fPhotoName.setTextColor(getResources().getColor(R.color.colorPrimary));
                     fPhoto.setText(getString(R.string.record_photo_ok));
+                    photoObj.setUri(tempUri);
+                    photoObj.setFile(tempFile);
+                    tempUri = null;
+                    tempFile = null;
                     break;
                 case REQUEST_GALLERY:
+                    photoObj = new SpiPhotoObject();
                     Uri imageFileUri = Objects.requireNonNull(data.getData());
                     Glide.with(this).load(imageFileUri).thumbnail(0.25f).into(imageThumb);
                     imageFileName = ImageUtil.uriToFileName(this, imageFileUri);
                     fPhotoName.setText(imageFileName);
+                    fPhotoName.setTextColor(getResources().getColor(R.color.colorPrimary));
                     fPhoto.setText(getString(R.string.record_photo_ok));
                     photoObj.setUri(imageFileUri);
                     photoObj.setFile(ImageUtil.uriToFile(this, imageFileUri));
+                    break;
+                default:
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            switch (requestCode) {
+                case REQUEST_CAPTURE_IMAGE:
+                    try {
+                        if (tempFile.delete()) tempFile = null;
+                    } catch (SecurityException e) {
+                        Toast.makeText(this, getString(R.string.record_delete_error), Toast.LENGTH_SHORT).show();
+                    }
+                    tempUri = null;
+                    break;
+                case REQUEST_GALLERY:
                     break;
                 default:
                     break;
@@ -542,7 +570,10 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             spiMemo.setSpi_id(spiId);
         }
         spiMemo.setMemo(fMemo.getText().toString());
-        spiPhoto.setSpi_id(spiId);
+        if (spiPhoto == null) {
+            spiPhoto = new SpiPhoto();
+            spiPhoto.setSpi_id(spiId);
+        }
         pipe.setSpi_id(spiId);
         pipe.setDepth(valueOf(fDepth.getText().toString()));
         pipe.setMaterial(fMaterial.getText().toString());
@@ -571,8 +602,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 previewEntries.add(entry);
                 startActivity(new Intent(getApplicationContext(), ViewActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .putExtra("PipeIndex", 0)
                         .putExtra("RegisterPreview", previewEntries)
+                        .putExtra("PipeIndex", 0)
                         .putExtra("fHorizontal", fHorizontal.getText().toString())
                         .putExtra("fVertical", fVertical.getText().toString())
                         .putExtra("SpiPhotoObject", photoObj));
@@ -600,14 +631,5 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             }
             return isSpecValid;
         }
-//
-//        private boolean isPhotoNameValid() {
-//            boolean isPhotoNameValid = true;
-//            if (spiPhoto != null && imageFileUri != null) {
-//                isPhotoNameValid = !fPhotoName.getText().toString().trim().equals("");
-//                if (!isPhotoNameValid) fPhotoName.setError("사진 이름을 입력하세요.");
-//            }
-//            return isPhotoNameValid;
-//        }
     }
 }

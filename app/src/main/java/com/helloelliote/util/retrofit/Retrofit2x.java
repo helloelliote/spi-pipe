@@ -1,4 +1,4 @@
-package com.helloelliote.retrofit;
+package com.helloelliote.util.retrofit;
 
 import android.support.annotation.NonNull;
 
@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -27,9 +28,7 @@ public final class Retrofit2x {
     public interface SetService {
         SetQuery setQuery(@NonNull JsonObject jsonQuery);
 
-        SetQuery setQuery(@NonNull String stringQuery);
-
-        SetQuery setQueries(@NonNull String stringQuery, @NonNull File file);
+        SetQuery setQuery(@NonNull String stringQuery, @Nullable File file);
     }
 
     public interface SetQuery {
@@ -58,24 +57,17 @@ public final class Retrofit2x {
         }
 
         @Override
-        @Contract("_ -> this")
-        public SetQuery setQuery(@NonNull String stringQuery) {
-            this.stringQuery = stringQuery;
-            return this;
-        }
-
-        @Override
         @Contract(pure = true)
-        public SetQuery setQueries(@NonNull String stringQuery, @NonNull File file) {
+        public SetQuery setQuery(@NonNull String stringQuery, @Nullable File fileQuery) {
             this.stringQuery = stringQuery;
-            this.fileQuery = file;
+            this.fileQuery = fileQuery;
             return this;
         }
 
         @Override
         public RetrofitCore build() {
             RetrofitCore core = RetrofitCore.get();
-            if (core.setService(service) && core.setQuery(jsonQuery) || core.setQueries(stringQuery, fileQuery)) {
+            if (core.setService(service) && core.setQuery(jsonQuery) || core.setQuery(stringQuery, fileQuery)) {
                 return core;
             } else throw new NullPointerException();
         }

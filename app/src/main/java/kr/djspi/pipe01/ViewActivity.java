@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.helloelliote.json.Json;
+import com.helloelliote.util.json.Json;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,17 +65,23 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
                 jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
             }
 
-            Serializable serializable = intent.getSerializableExtra("RegisterPreview");
-            pipeIndex = intent.getIntExtra("PipeIndex", 0);
-            photoObj = (SpiPhotoObject) intent.getSerializableExtra("SpiPhotoObject");
+            Serializable arraySerializable = intent.getSerializableExtra("RegisterPreview");
             String fHorizontal = intent.getStringExtra("fHorizontal");
             String fVertical = intent.getStringExtra("fVertical");
-            if (serializable instanceof ArrayList<?>) {
-                previewEntries = (ArrayList<Entry>) serializable;
+            if (arraySerializable instanceof ArrayList<?>) {
+                previewEntries = (ArrayList<Entry>) arraySerializable;
                 jsonObject = new JsonObject();
                 jsonObject = parseEntry(previewEntries, pipeIndex, fHorizontal, fVertical); // 단일형 index 는 항상 0
             }
+
+            pipeIndex = intent.getIntExtra("PipeIndex", 0);
+
+            Serializable classSerializable = intent.getSerializableExtra("SpiPhotoObject");
+            if (classSerializable instanceof SpiPhotoObject) {
+                photoObj = (SpiPhotoObject) classSerializable;
+            }
         }
+
         setContentView(R.layout.activity_pipe_view);
     }
 
@@ -160,12 +166,13 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     }
 
     @Override
-    public JsonObject getJsonObjectRecord() {
+    public JsonObject getJsonObject() {
         return jsonObject;
     }
 
     @Override
-    public Uri getPhotoUri() {
+    public Uri getUri() {
+        if (photoObj == null) return null;
         return photoObj.getUri();
     }
 

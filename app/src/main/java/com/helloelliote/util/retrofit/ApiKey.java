@@ -1,4 +1,4 @@
-package com.helloelliote.retrofit;
+package com.helloelliote.util.retrofit;
 
 @SuppressWarnings("WeakerAccess")
 public final class ApiKey {

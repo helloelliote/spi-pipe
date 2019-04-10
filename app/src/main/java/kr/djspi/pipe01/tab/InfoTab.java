@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
-import com.helloelliote.json.Json;
+import com.helloelliote.util.json.Json;
 
 import kr.djspi.pipe01.R;
 
@@ -35,8 +35,8 @@ public class InfoTab extends Fragment {
         super.onAttach(context);
         if (context instanceof OnRecordListener) {
             OnRecordListener listener = (OnRecordListener) context;
-            jsonObject = listener.getJsonObjectRecord();
-            imageFileUri = listener.getPhotoUri();
+            jsonObject = listener.getJsonObject();
+            imageFileUri = listener.getUri();
         }
     }
 
@@ -109,15 +109,22 @@ public class InfoTab extends Fragment {
             )));
         }
 
-        if (!jsonObject.get("spi_memo").isJsonNull()) {
-            TextView txtMemo = view.findViewById(R.id.txt_memo);
-            txtMemo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-            txtMemo.setText(Json.s(jsonObject, "spi_memo"));
-        }
+        try {
+            if (!jsonObject.get("spi_memo").isJsonNull()) {
+                TextView txtMemo = view.findViewById(R.id.txt_memo);
+                txtMemo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+                txtMemo.setText(Json.s(jsonObject, "spi_memo"));
+            }
 
-        if (imageFileUri != null) {
-            ImageView imageView = view.findViewById(R.id.img_photo);
-            Glide.with(view).load(imageFileUri).fitCenter().into(imageView);
+            if (imageFileUri != null) {
+                ImageView imageView = view.findViewById(R.id.img_photo);
+                Glide.with(view).load(imageFileUri).fitCenter().into(imageView);
+            } else if (!jsonObject.get("spi_photo_url").isJsonNull()) {
+                ImageView imageView = view.findViewById(R.id.img_photo);
+                Glide.with(view).load(Json.s(jsonObject, "spi_photo_url")).fitCenter().into(imageView);
+            }
+        } catch (NullPointerException ignore) {
+
         }
 
         return view;

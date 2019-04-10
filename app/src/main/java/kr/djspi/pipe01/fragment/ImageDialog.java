@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import kr.djspi.pipe01.R;
+import kr.djspi.pipe01.dto.SpiPhotoObject;
 
 public class ImageDialog extends DialogFragment {
 
@@ -26,7 +27,8 @@ public class ImageDialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            imageUri = getArguments().getParcelable("imageFileUri");
+            Bundle bundle = getArguments();
+            imageUri = ((SpiPhotoObject) bundle.getSerializable("SpiPhotoObject")).getUri();
         }
     }
 

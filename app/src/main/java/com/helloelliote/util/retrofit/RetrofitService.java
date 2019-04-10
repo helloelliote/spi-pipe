@@ -1,4 +1,4 @@
-package com.helloelliote.retrofit;
+package com.helloelliote.util.retrofit;
 
 import com.google.gson.JsonObject;
 

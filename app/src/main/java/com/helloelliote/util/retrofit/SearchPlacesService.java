@@ -1,10 +1,10 @@
-package com.helloelliote.retrofit;
+package com.helloelliote.util.retrofit;
 
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 
-import static com.helloelliote.retrofit.RetrofitCore.BUILDER;
+import static com.helloelliote.util.retrofit.RetrofitCore.BUILDER;
 
 /**
  * 웹서비스를 클래스 형태로 추가하고, ServiceStrategy 인터페이스를 통해 참조시킨다

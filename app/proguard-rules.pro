@@ -80,6 +80,7 @@
     public static *** e(...);
 }
 
+# Ignores: data transfer object class must be preserved
 -keep class kr.djspi.pipe01.dto.** { *; }
 
 -keep public class * implements com.bumptech.glide.module.GlideModule

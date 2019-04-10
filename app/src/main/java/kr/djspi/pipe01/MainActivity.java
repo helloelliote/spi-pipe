@@ -15,10 +15,10 @@ import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.helloelliote.json.Json;
-import com.helloelliote.retrofit.Retrofit2x;
-import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
-import com.helloelliote.retrofit.SpiGet;
+import com.helloelliote.util.json.Json;
+import com.helloelliote.util.retrofit.Retrofit2x;
+import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.util.retrofit.SpiGet;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,13 +30,14 @@ import kr.djspi.pipe01.dto.DataItem;
 import kr.djspi.pipe01.dto.Spi;
 import kr.djspi.pipe01.dto.SpiLocation;
 import kr.djspi.pipe01.dto.SpiMemo;
+import kr.djspi.pipe01.dto.SpiPhoto;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.nfc.NfcUtil;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.helloelliote.retrofit.ApiKey.API_PIPE_GET;
-import static com.helloelliote.retrofit.ApiKey.API_SPI_GET;
+import static com.helloelliote.util.retrofit.ApiKey.API_PIPE_GET;
+import static com.helloelliote.util.retrofit.ApiKey.API_SPI_GET;
 import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.nfc.NfcUtil.getRecord;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
@@ -198,6 +199,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                             public void onResponse(JsonObject response) {
                                 JsonArray elements = Json.a(response, "data");
                                 Log.w(TAG, elements.get(0).toString());
+                                // TODO: 2019-04-11 Json 데이터 필드명 순서?
                                 startActivity(new Intent(context, ViewActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                         .putExtra("PipeView", elements.get(0).toString()));
@@ -244,10 +246,20 @@ public class MainActivity extends LocationUpdate implements Serializable {
                 spiMemo.setSpi_id(spi_id);
                 spiMemo.setMemo(memo);
             }
+            // SpiPhoto.class DTO
+            SpiPhoto spiPhoto = new SpiPhoto();
+            if (!Json.isNull(data, "spi_photo_id")) {
+                int photo_id = Json.i(data, "spi_photo_id");
+                String url = Json.s(data, "spi_photo_url");
+                spiPhoto.setId(photo_id);
+                spiPhoto.setSpi_id(spi_id);
+                spiPhoto.setUrl(url);
+            }
             hashMap.put("Spi", spi);
             hashMap.put("SpiType", spiType);
             hashMap.put("SpiLocation", spiLocation);
             hashMap.put("SpiMemo", spiMemo);
+            hashMap.put("SpiPhoto", spiPhoto);
             return hashMap;
         }
     }
@@ -271,7 +283,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                         .putExtra("PipeView", data.toString()));
             } catch (NullPointerException | IndexOutOfBoundsException e) {
                 showMessageDialog(4, getString(R.string.popup_error_offline_read_error), true);
-                e.printStackTrace();
+                Log.w(TAG, e.toString());
             }
         }
     }

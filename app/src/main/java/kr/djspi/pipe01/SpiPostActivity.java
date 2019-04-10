@@ -9,9 +9,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.helloelliote.retrofit.Retrofit2x;
-import com.helloelliote.retrofit.RetrofitCore.OnRetrofitListener;
-import com.helloelliote.retrofit.SpiPostMultipart;
+import com.helloelliote.util.retrofit.Retrofit2x;
+import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.util.retrofit.SpiPostMultipart;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,11 +34,17 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
     @SuppressWarnings("unchecked")
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Serializable serializable = getIntent().getSerializableExtra("entry");
-        if (serializable instanceof ArrayList<?>) {
-            entries = (ArrayList<Entry>) serializable;
+
+        Serializable arraySerializable = getIntent().getSerializableExtra("entry");
+        if (arraySerializable instanceof ArrayList<?>) {
+            entries = (ArrayList<Entry>) arraySerializable;
         }
-        photoObj = (SpiPhotoObject) getIntent().getSerializableExtra("SpiPhotoObject");
+
+        Serializable classSerializable = getIntent().getSerializableExtra("SpiPhotoObject");
+        if (classSerializable instanceof SpiPhotoObject) {
+            photoObj = (SpiPhotoObject) classSerializable;
+        }
+
         setContentView(R.layout.activity_spi_post);
     }
 
@@ -83,7 +89,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
     private void setSpiAndPipe(Intent intent) {
         Retrofit2x.builder()
                 .setService(new SpiPostMultipart(URL_TEST))
-                .setQueries(new Gson().toJson(entries), photoObj.getFile())
+                .setQuery(new Gson().toJson(entries), photoObj.getFile())
                 .build()
                 .run(new OnRetrofitListener() {
                     @Override

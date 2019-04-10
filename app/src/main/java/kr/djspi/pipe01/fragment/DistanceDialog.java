@@ -15,7 +15,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
 import com.andreabaccega.widget.FormEditText;
-import com.helloelliote.filter.DecimalFilter;
+import com.helloelliote.util.filter.DecimalFilter;
 
 import kr.djspi.pipe01.R;
 

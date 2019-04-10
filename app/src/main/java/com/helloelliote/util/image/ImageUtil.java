@@ -1,4 +1,4 @@
-package com.helloelliote.image;
+package com.helloelliote.util.image;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -20,7 +20,7 @@ import static android.provider.MediaStore.MediaColumns.DATA;
 import static android.provider.MediaStore.MediaColumns.DISPLAY_NAME;
 import static java.util.Objects.requireNonNull;
 
-public class ImageUtil {
+public final class ImageUtil {
 
     private static final String[] PROJECTION_DATA = {DATA};
     private static final String[] PROJECTION_NAME = {DISPLAY_NAME};

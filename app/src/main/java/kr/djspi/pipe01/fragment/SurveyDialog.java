@@ -17,8 +17,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.helloelliote.filter.DecimalFilter;
-import com.helloelliote.geolocation.GeoTrans;
+import com.helloelliote.util.filter.DecimalFilter;
+import com.helloelliote.util.geolocation.GeoTrans;
 
 import kr.djspi.pipe01.R;
 

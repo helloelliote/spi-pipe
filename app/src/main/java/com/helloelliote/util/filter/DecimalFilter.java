@@ -1,4 +1,4 @@
-package com.helloelliote.filter;
+package com.helloelliote.util.filter;
 
 import android.text.InputFilter;
 import android.text.Spanned;
