@@ -63,17 +63,10 @@ public final class RetrofitCore {
     }
 
     final boolean setQuery(final String stringQuery, final File file) {
-//        if (file == null) {
-//            RetrofitCore.service = new SpiPost(URL_SPI);
-//            RetrofitCore.stringQuery = null;
-//            RetrofitCore.stringQuery = stringQuery;
-//            return stringQuery != null;
-//        } else {
         RetrofitCore.stringQuery = null;
         RetrofitCore.stringQuery = stringQuery;
         RetrofitCore.fileQuery = null;
         RetrofitCore.fileQuery = file;
-//        }
         return stringQuery != null;
     }
 

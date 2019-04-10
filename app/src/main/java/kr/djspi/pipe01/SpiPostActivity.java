@@ -11,8 +11,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.helloelliote.util.retrofit.Retrofit2x;
 import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
-import com.helloelliote.util.retrofit.SpiPostMultipart;
+import com.helloelliote.util.retrofit.SpiPost;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -21,14 +22,14 @@ import kr.djspi.pipe01.dto.SpiPhotoObject;
 import kr.djspi.pipe01.fragment.MessageDialog;
 import kr.djspi.pipe01.nfc.NfcUtil;
 
-import static kr.djspi.pipe01.Const.URL_TEST;
+import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.nfc.StringParser.parseToStringArray;
 
 public class SpiPostActivity extends BaseActivity implements Serializable {
 
     private static final String TAG = SpiPostActivity.class.getSimpleName();
     private static ArrayList<Entry> entries;
-    private SpiPhotoObject photoObj;
+    private File uploadFile;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -42,7 +43,8 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
 
         Serializable classSerializable = getIntent().getSerializableExtra("SpiPhotoObject");
         if (classSerializable instanceof SpiPhotoObject) {
-            photoObj = (SpiPhotoObject) classSerializable;
+            SpiPhotoObject photoObj = (SpiPhotoObject) classSerializable;
+            uploadFile = photoObj.getFile();
         }
 
         setContentView(R.layout.activity_spi_post);
@@ -88,8 +90,8 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
 
     private void setSpiAndPipe(Intent intent) {
         Retrofit2x.builder()
-                .setService(new SpiPostMultipart(URL_TEST))
-                .setQuery(new Gson().toJson(entries), photoObj.getFile())
+                .setService(new SpiPost(URL_SPI))
+                .setQuery(new Gson().toJson(entries), uploadFile)
                 .build()
                 .run(new OnRetrofitListener() {
                     @Override

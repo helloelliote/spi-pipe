@@ -42,13 +42,8 @@ interface RetrofitService {
     );
 
     @POST("api")
-    Call<JsonObject> postSpi(
-            @Query("json") String jsonString
-    );
-
-    @POST("api")
     @Multipart
-    Call<JsonObject> postSpiMultipart(
+    Call<JsonObject> postSpi(
             @Part("json") RequestBody jsonString,
             @Part MultipartBody.Part file
     );

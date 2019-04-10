@@ -69,6 +69,7 @@ public class PlaneTab extends Fragment {
     }
 
     private void setPosition() {
+        // TODO: 2019-04-11 직상일때 0.00 칸 중간에 나오는 문제
         final int positionInt = Json.i(jsonObject, "position");
         if (Json.s(jsonObject, "shape").equals("직진형")) {
             switch (positionInt) {
