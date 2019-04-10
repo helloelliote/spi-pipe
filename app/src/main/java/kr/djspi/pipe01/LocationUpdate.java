@@ -55,7 +55,7 @@ public abstract class LocationUpdate extends BaseActivity {
      */
     private LocationCallback locationCallback;
     private LocationManager locationManager;
-    FusedLocationSource locationSource;
+    protected FusedLocationSource locationSource;
 
     /**
      * Time when the location was updated represented as a String.

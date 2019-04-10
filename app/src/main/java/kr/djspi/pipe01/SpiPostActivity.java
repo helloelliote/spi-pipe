@@ -1,6 +1,5 @@
 package kr.djspi.pipe01;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,13 +29,11 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
     private static final String TAG = SpiPostActivity.class.getSimpleName();
     private static ArrayList<Entry> entries;
     private Uri imageFileUri;
-    private Context context;
 
     @Override
     @SuppressWarnings("unchecked")
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
         Serializable serializable = getIntent().getSerializableExtra("entry");
         if (serializable instanceof ArrayList<?>) {
             entries = (ArrayList<Entry>) serializable;
@@ -117,7 +114,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable {
                             nfcUtil.onPause();
                             showMessageDialog(6, getString(R.string.popup_write_success), true);
                         } else {
-                            Toast.makeText(context, R.string.toast_error, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), R.string.toast_error, Toast.LENGTH_LONG).show();
                         }
                     }
                 });

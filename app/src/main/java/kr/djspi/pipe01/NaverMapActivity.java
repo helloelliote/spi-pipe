@@ -85,7 +85,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     private static final double ZOOM_MIN = 6.0; // 최소 줌레벨
     private static final double ZOOM_GET = 12.0;
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
-    private Context context;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -105,7 +104,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this)
                 .setClient(new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
@@ -192,7 +190,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     }
 
     private void setOverlayListener() {
-        InfoWindow infoWindow = new InfoWindow(new DefaultTextAdapter(context) {
+        InfoWindow infoWindow = new InfoWindow(new DefaultTextAdapter(getApplicationContext()) {
 
             @NonNull
             @Override
@@ -226,7 +224,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     InfoWindow window = (InfoWindow) overlay;
                     if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
                         JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
-                        NaverMapActivity.this.startActivity(new Intent(this, ViewActivity.class)
+                        startActivity(new Intent(this, ViewActivity.class)
                                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                 .putExtra("PipeView", jsonObject.toString()));
                     }
@@ -309,7 +307,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     @Override
     protected void onStop() {
         super.onStop();
-        locationSource = null;
     }
 
     @Override
@@ -331,7 +328,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
         SetTopSheet(NaverMap naverMap) {
             ListView listView = findViewById(R.id.nmap_listview);
-            placesListAdapter = new ListViewAdapter(context, naverMap, placesArrayList);
+            placesListAdapter = new ListViewAdapter(getApplicationContext(), naverMap, placesArrayList);
             listView.setAdapter(placesListAdapter);
 
             setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);

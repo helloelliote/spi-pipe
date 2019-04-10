@@ -223,7 +223,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
         return ((Entry) entries.get(index)).parseToSingleJsonObject(strings);
     }
 
-    private class TabSelected implements OnTabSelectedListener {
+    private final class TabSelected implements OnTabSelectedListener {
 
         @Override
         public void onTabSelected(@NonNull Tab tab) {

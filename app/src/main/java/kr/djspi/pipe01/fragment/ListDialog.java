@@ -42,7 +42,6 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     private IndexableListView listView;
     private Parcelable state;
     private OnSelectListener listener;
-    private Context context;
 
     public ListDialog() {
     }
@@ -60,8 +59,6 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        context = getContext();
 
         switch (listTag) {
             case TAG_PIPE:
@@ -141,7 +138,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     /**
      * @see <a href="IndexableListView"></a>https://github.com/sylversky/IndexableListView.git</a>
      */
-    private class ListAdapter extends BaseAdapter implements Indexer {
+    private final class ListAdapter extends BaseAdapter implements Indexer {
 
         private final Context context;
         private final ArrayList<String> listItem;

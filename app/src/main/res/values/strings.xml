@@ -84,7 +84,7 @@
     <string name="record_error">필수입력 항목입니다.</string>
     <string name="record_photo_ok">사진이 첨부되었습니다.</string>
     <string name="popup_hint">터치하여 선택하세요.</string>
-    <string name="record_photo_error">카메라를 시작할 수 없습니다.</string>
+    <string name="record_photo_error">카메라를 준비할 수 없습니다.</string>
 
     <string name="record_input_0">관로종류</string>
     <string name="record_input_0_hint">매설관로의 종류 입력</string>

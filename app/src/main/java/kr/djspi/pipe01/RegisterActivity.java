@@ -1,6 +1,5 @@
 package kr.djspi.pipe01;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -8,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -63,9 +61,9 @@ import kr.djspi.pipe01.fragment.OnSelectListener;
 import kr.djspi.pipe01.fragment.PhotoDialog;
 import kr.djspi.pipe01.fragment.PositionDialog;
 
-import static android.content.Intent.ACTION_PICK;
 import static android.os.Environment.DIRECTORY_DCIM;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.provider.MediaStore.MediaColumns.DISPLAY_NAME;
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
 import static android.view.View.GONE;
@@ -110,24 +108,24 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
     private final Bundle superviseListBundle = new Bundle(1);
-    private String imageFileName;
+    private ArrayList<String> superviseList;
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
-    private Context context;
-    private ArrayList<String> superviseList;
+    private String imageFilePath;
+    private String imageFileName;
+    private ImageView imageThumb;
+    private ImageView buttonEdit;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
-    static Uri imageFileUri;
     FormEditText fPipe, fShape, fVertical, fHorizontal, fDepth, fSpec, fMaterial,
             fSupervise, fSuperviseContact, fMemo, fConstruction, fConstructionContact,
             fPhoto, fPhotoName;
-    ImageView imageThumb, buttonEdit, buttonDelete;
+    Uri imageFileUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
         Serializable serializable = getIntent().getSerializableExtra("RegisterActivity");
         if (serializable instanceof HashMap) {
             HashMap<?, ?> itemMap = (HashMap) serializable;
@@ -221,7 +219,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         fPhotoName.setFocusable(false);
 //        buttonEdit = lPhotoDesc.findViewById(R.id.btn_edit);
 //        buttonEdit.setOnClickListener(this);
-        buttonDelete = lPhotoDesc.findViewById(R.id.btn_delete);
+        ImageView buttonDelete = lPhotoDesc.findViewById(R.id.btn_delete);
         buttonDelete.setOnClickListener(this);
 
         findViewById(R.id.button_confirm).setOnClickListener(new OnNextButtonClick());
@@ -254,7 +252,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            Toast.makeText(context, "관리기관: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "관리기관: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
             return superviseList;
@@ -322,15 +320,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             default:
                 break;
         }
-    }
-
-    private void showPositionDialog() {
-        PositionDialog dialog = new PositionDialog();
-        Bundle bundle = new Bundle();
-        bundle.putString("typeString", spiType.getType());
-        bundle.putString("shapeString", pipeShape.getShape());
-        dialog.setArguments(bundle);
-        dialog.show(getSupportFragmentManager(), TAG_POSITION);
     }
 
     @Override
@@ -449,20 +438,22 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
                             File photoFile;
                             try {
-                                photoFile = createImageFile();
+                                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+                                String imageFileName = String.format("IMG_%s_", timeStamp);
+                                File storageDir = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM), "Camera");
+                                photoFile = File.createTempFile(imageFileName, ".jpg", storageDir);
+                                imageFilePath = photoFile.getAbsolutePath();
+                                imageFileUri = FileProvider.getUriForFile(this, packageName, photoFile);
+                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
                             } catch (IOException e) {
                                 Toast.makeText(this, getString(R.string.record_photo_error), Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            if (photoFile != null) {
-                                imageFileUri = FileProvider.getUriForFile(this, packageName, photoFile);
-                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
-                                startActivityForResult(cameraIntent, REQUEST_CAPTURE_IMAGE);
-                            }
                         }
+                        startActivityForResult(cameraIntent, REQUEST_CAPTURE_IMAGE);
                         break;
                     case 2:
-                        Intent galleryIntent = new Intent(ACTION_PICK);
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
                         galleryIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*");
                         startActivityForResult(galleryIntent, REQUEST_GALLERY);
                         break;
@@ -475,6 +466,15 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
+    private void showPositionDialog() {
+        PositionDialog dialog = new PositionDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("typeString", spiType.getType());
+        bundle.putString("shapeString", pipeShape.getShape());
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), TAG_POSITION);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -483,7 +483,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 case REQUEST_CAPTURE_IMAGE:
                     Glide.with(this).load(imageFilePath).thumbnail(0.25f).into(imageThumb);
                     fPhoto.setText(getString(R.string.record_photo_ok));
-                    imageFileName = new File(imageFilePath).getName().substring(0, 19) + ".jpg";
+                    imageFileName = new File(imageFilePath).getName();
                     fPhotoName.setText(imageFileName);
                     break;
                 case REQUEST_GALLERY:
@@ -493,10 +493,10 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                     if (requireNonNull(imageFileUri.getScheme()).equals("file")) {
                         imageFileName = imageFileUri.getLastPathSegment();
                     } else {
-                        try (Cursor cursor = getContentResolver().query(imageFileUri, new String[]{
-                                ImageColumns.DISPLAY_NAME}, null, null, null)) {
+                        try (Cursor cursor = getContentResolver().query(imageFileUri,
+                                new String[]{DISPLAY_NAME}, null, null, null)) {
                             if (cursor != null && cursor.moveToFirst()) {
-                                imageFileName = cursor.getString(cursor.getColumnIndex(ImageColumns.DISPLAY_NAME));
+                                imageFileName = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
                             }
                         }
                     }
@@ -508,35 +508,23 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
-    private String imageFilePath;
-
-    private File createImageFile() throws IOException {
-        String timeStamp =
-                new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp;
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM), "Camera");
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        imageFilePath = image.getAbsolutePath();
-        return image;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         pipeShape.setShape(null);
-        restoreState();
+        restoreInstanceState();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        saveState();
+        saveInstanceState();
     }
 
     /**
      * 마지막 사용자 입력값 저장
      */
-    private void saveState() {
+    private void saveInstanceState() {
         SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("superviseContact", fSuperviseContact.getText().toString())
@@ -549,7 +537,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     /**
      * 마지막 사용자 입력값 불러오기
      */
-    private void restoreState() {
+    private void restoreInstanceState() {
         SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         if (preferences != null) {
             fSuperviseContact.setText(preferences.getString("superviseContact", ""));
@@ -559,15 +547,41 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
-    private class OnNextButtonClick implements OnClickListener {
+    private Entry setEntry() throws Exception {
+        final int spiId = spi.getId();
+        if (spiMemo == null) {
+            spiMemo = new SpiMemo();
+            spiMemo.setSpi_id(spiId);
+        }
+        spiMemo.setMemo(fMemo.getText().toString());
+        spiPhoto.setSpi_id(spiId);
+        pipe.setSpi_id(spiId);
+        pipe.setDepth(valueOf(fDepth.getText().toString()));
+        pipe.setMaterial(fMaterial.getText().toString());
+        pipeShape.setShape(fShape.getText().toString());
+        pipeShape.setSpec(fSpec.getText().toString());
+        pipeType.setPipe(fPipe.getText().toString());
+        pipeSupervise.setSupervise(fSupervise.getText().toString());
+        pipe.setSupervise_contact(fSuperviseContact.getText().toString());
+        pipe.setConstruction(fConstruction.getText().toString());
+        pipe.setConstruction_contact(fConstructionContact.getText().toString());
+        pipePlan.setFile_section(format("plan_%s_%s", parseSpiType(spiType.getType()), pipePosition.getPosition()));
+
+        Entry entry = new Entry(spi, spiType, spiMemo, spiPhoto, pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
+        entry.setSpi_location(spiLocation);
+
+        return entry;
+    }
+
+    private final class OnNextButtonClick implements OnClickListener {
 
         @Override
         public void onClick(View v) {
-            if (isAllValid() && isSpecValid() && isPhotoNameValid()) try {
+            if (isAllValid() && isSpecValid()) try {
                 final Entry entry = setEntry();
                 ArrayList<Entry> previewEntries = new ArrayList<>();
                 previewEntries.add(entry);
-                startActivity(new Intent(context, ViewActivity.class)
+                startActivity(new Intent(getApplicationContext(), ViewActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("PipeIndex", 0)
                         .putExtra("RegisterPreview", previewEntries)
@@ -598,40 +612,14 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             }
             return isSpecValid;
         }
-
-        private boolean isPhotoNameValid() {
-            boolean isPhotoNameValid = true;
-            if (spiPhoto != null && imageFileUri != null) {
-                isPhotoNameValid = !fPhotoName.getText().toString().trim().equals("");
-                if (!isPhotoNameValid) fPhotoName.setError("사진 이름을 입력하세요.");
-            }
-            return isPhotoNameValid;
-        }
-    }
-
-    private Entry setEntry() throws Exception {
-        final int spiId = spi.getId();
-        if (spiMemo == null) {
-            spiMemo = new SpiMemo();
-            spiMemo.setSpi_id(spiId);
-        }
-        spiMemo.setMemo(fMemo.getText().toString());
-        spiPhoto.setSpi_id(spiId);
-        pipe.setSpi_id(spiId);
-        pipe.setDepth(valueOf(fDepth.getText().toString()));
-        pipe.setMaterial(fMaterial.getText().toString());
-        pipeShape.setShape(fShape.getText().toString());
-        pipeShape.setSpec(fSpec.getText().toString());
-        pipeType.setPipe(fPipe.getText().toString());
-        pipeSupervise.setSupervise(fSupervise.getText().toString());
-        pipe.setSupervise_contact(fSuperviseContact.getText().toString());
-        pipe.setConstruction(fConstruction.getText().toString());
-        pipe.setConstruction_contact(fConstructionContact.getText().toString());
-        pipePlan.setFile_section(format("plan_%s_%s", parseSpiType(spiType.getType()), pipePosition.getPosition()));
-
-        Entry entry = new Entry(spi, spiType, spiMemo, spiPhoto, pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
-        entry.setSpi_location(spiLocation);
-
-        return entry;
+//
+//        private boolean isPhotoNameValid() {
+//            boolean isPhotoNameValid = true;
+//            if (spiPhoto != null && imageFileUri != null) {
+//                isPhotoNameValid = !fPhotoName.getText().toString().trim().equals("");
+//                if (!isPhotoNameValid) fPhotoName.setError("사진 이름을 입력하세요.");
+//            }
+//            return isPhotoNameValid;
+//        }
     }
 }

@@ -212,7 +212,8 @@
                 android:id="@+id/form_supervise"
                 style="@style/FormEditText"
                 android:focusable="false"
-                android:hint="@string/record_input_6_hint" />
+                android:hint="@string/record_input_6_hint"
+                android:imeOptions="actionNext" />
         </LinearLayout>
 
         <View
