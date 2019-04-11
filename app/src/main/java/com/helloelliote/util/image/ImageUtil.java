@@ -2,6 +2,8 @@ package com.helloelliote.util.image;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -10,11 +12,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.graphics.Bitmap.createScaledBitmap;
+import static android.graphics.BitmapFactory.decodeFile;
 import static android.os.Environment.DIRECTORY_DCIM;
 import static android.provider.MediaStore.MediaColumns.DATA;
 import static android.provider.MediaStore.MediaColumns.DISPLAY_NAME;
@@ -56,5 +61,31 @@ public final class ImageUtil {
         String imageFileName = String.format("IMG_%s_", timeStamp);
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM), "Camera");
         return File.createTempFile(imageFileName, ".jpg", storageDir);
+    }
+
+    @Contract("_, _ -> param1")
+    @SuppressWarnings("SameParameterValue")
+    public static File subSample4x(@NotNull File file, final int maxResolution) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+        Bitmap source = decodeFile(file.getPath(), options);
+        float width = source.getWidth();
+        float height = source.getHeight();
+        if (width < (float) maxResolution && height < (float) maxResolution) return file;
+        float bitmapRatio = width / height;
+        int newWidth = maxResolution;
+        int newHeight = maxResolution;
+        if (1.0f > bitmapRatio) {
+            newWidth = (int) ((float) maxResolution * bitmapRatio);
+        } else {
+            newHeight = (int) ((float) maxResolution / bitmapRatio);
+        }
+        Bitmap resize = createScaledBitmap(source, newWidth, newHeight, true);
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            resize.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            return file;
+        } catch (IOException ignore) {
+            return file;
+        }
     }
 }

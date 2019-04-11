@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 import kr.djspi.pipe01.dto.Entry;
 import kr.djspi.pipe01.dto.Pipe;
@@ -488,13 +487,16 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                     fPhotoName.setTextColor(getResources().getColor(R.color.colorPrimary));
                     fPhoto.setText(getString(R.string.record_photo_ok));
                     photoObj.setUri(tempUri);
-                    photoObj.setFile(tempFile);
+                    photoObj.setFile(ImageUtil.subSample4x(tempFile, 1024));
+                    // TODO: 2019-04-12 갤러리 사진의 경우 원본이 바뀌면 안되므로 새 파일로 내부에서 처리하게 변경, 현재는 기존 파일을 덮어쓴다.
+                    // TODO: 2019-04-12 단, 새로운 파일을 저장하는 것이 아닌, 메모리 내에서만 파일을 다룰 수 있게 한다.
                     tempUri = null;
                     tempFile = null;
                     break;
                 case REQUEST_GALLERY:
                     photoObj = new SpiPhotoObject();
-                    Uri imageFileUri = Objects.requireNonNull(data.getData());
+                    Uri imageFileUri = data.getData();
+                    assert imageFileUri != null;
                     Glide.with(this).load(imageFileUri).thumbnail(0.25f).into(imageThumb);
                     imageFileName = ImageUtil.uriToFileName(this, imageFileUri);
                     fPhotoName.setText(imageFileName);
