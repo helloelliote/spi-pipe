@@ -178,6 +178,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                         @Override
                         public void onFailure(@NotNull Throwable throwable) {
                             showMessageDialog(8, throwable.getMessage(), true);
+                            throwable.printStackTrace();
                             progressBar.setVisibility(INVISIBLE);
                         }
                     });
@@ -198,7 +199,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
                             @Override
                             public void onResponse(JsonObject response) {
                                 JsonArray elements = Json.a(response, "data");
-                                Log.w(TAG, elements.get(0).toString());
                                 // TODO: 2019-04-11 Json 데이터 필드명 순서?
                                 startActivity(new Intent(context, ViewActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -215,7 +215,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         }
 
         private HashMap<String, DataItem> parseServerData(@NotNull JsonObject response) {
-            HashMap<String, DataItem> hashMap = new HashMap<>(4);
+            HashMap<String, DataItem> hashMap = new HashMap<>();
             JsonObject data = Json.o(response, "data");
             // Spi.class DTO
             int spi_id = Json.i(data, "spi_id");

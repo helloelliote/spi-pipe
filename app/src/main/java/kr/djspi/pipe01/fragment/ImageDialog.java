@@ -37,7 +37,11 @@ public class ImageDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_photo_view, container, false);
 
         ImageView imageView = view.findViewById(R.id.image_view);
-        Glide.with(view).load(imageUri).into(imageView);
+        Glide.with(view).load(imageUri)
+                .fitCenter()
+                .dontAnimate()
+                .into(imageView)
+                .clearOnDetach();
         imageView.setOnClickListener(v -> dismissAllowingStateLoss());
 
         return view;

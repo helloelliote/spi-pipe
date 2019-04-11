@@ -55,7 +55,6 @@ public class PlaneTab extends Fragment {
             imageView.setImageResource(getResources().getIdentifier(resId, "drawable", packageName));
         } catch (UnsupportedOperationException | NullPointerException e) {
             view.findViewById(R.id.lay_0).setVisibility(GONE);
-            view.findViewById(R.id.lay_empty).setVisibility(VISIBLE);
         }
 
         tHorizontal = view.findViewById(R.id.text_horizontal);

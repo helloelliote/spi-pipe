@@ -568,23 +568,27 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         if (spiMemo == null) {
             spiMemo = new SpiMemo();
             spiMemo.setSpi_id(spiId);
-        }
+        } else spiMemo.setSpi_id(spiId);
         spiMemo.setMemo(fMemo.getText().toString());
         if (spiPhoto == null) {
             spiPhoto = new SpiPhoto();
             spiPhoto.setSpi_id(spiId);
-        }
+        } else spiPhoto.setSpi_id(spiId);
+        if (spiLocation == null) {
+            spiLocation = new SpiLocation();
+            spiLocation.setSpi_id(spiId);
+        } else spiLocation.setSpi_id(spiId);
         pipe.setSpi_id(spiId);
         pipe.setDepth(valueOf(fDepth.getText().toString()));
         pipe.setMaterial(fMaterial.getText().toString());
-        pipeShape.setShape(fShape.getText().toString());
-        pipeShape.setSpec(fSpec.getText().toString());
-        pipeType.setPipe(fPipe.getText().toString());
-        pipeSupervise.setSupervise(fSupervise.getText().toString());
         pipe.setSupervise_contact(fSuperviseContact.getText().toString());
         pipe.setConstruction(fConstruction.getText().toString());
         pipe.setConstruction_contact(fConstructionContact.getText().toString());
-        pipePlan.setFile_section(format("plan_%s_%s", parseSpiType(spiType.getType()), pipePosition.getPosition()));
+        pipeType.setPipe(fPipe.getText().toString());
+        pipeShape.setShape(fShape.getText().toString());
+        pipeShape.setSpec(fSpec.getText().toString());
+        pipePlan.setFile_section(format("plan_%s_%s.png", parseSpiType(spiType.getType()), pipePosition.getPosition()));
+        pipeSupervise.setSupervise(fSupervise.getText().toString());
 
         Entry entry = new Entry(spi, spiType, spiMemo, spiPhoto, pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
         entry.setSpi_location(spiLocation);

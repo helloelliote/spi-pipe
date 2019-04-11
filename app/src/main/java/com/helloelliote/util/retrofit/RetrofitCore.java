@@ -8,8 +8,7 @@ import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Contract;
 
-import java.io.File;
-
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,11 +18,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class RetrofitCore {
 
     private static final Gson gson = new GsonBuilder().setLenient().create();
-    static final Retrofit.Builder BUILDER = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
+    static final Retrofit.Builder BUILDER
+            = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson));
     private static ServiceStrategy service;
     static JsonObject jsonQuery;
     static String stringQuery;
-    static File fileQuery;
+    static MultipartBody.Part multipartBody;
 
     private RetrofitCore() {
     }
@@ -59,15 +59,15 @@ public final class RetrofitCore {
     final boolean setQuery(final JsonObject jsonQuery) {
         RetrofitCore.jsonQuery = null;
         RetrofitCore.jsonQuery = jsonQuery;
-        return jsonQuery != null;
+        return RetrofitCore.jsonQuery != null;
     }
 
-    final boolean setQuery(final String stringQuery, final File file) {
+    final boolean setQuery(final String stringQuery, final MultipartBody.Part multipartBody) {
         RetrofitCore.stringQuery = null;
         RetrofitCore.stringQuery = stringQuery;
-        RetrofitCore.fileQuery = null;
-        RetrofitCore.fileQuery = file;
-        return stringQuery != null;
+        RetrofitCore.multipartBody = null;
+        RetrofitCore.multipartBody = multipartBody;
+        return RetrofitCore.stringQuery != null;
     }
 
     /**
@@ -84,17 +84,20 @@ public final class RetrofitCore {
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     listener.onResponse(response.body());
-                    jsonQuery = null;
-                    stringQuery = null;
-                    fileQuery = null;
-                    call.cancel();
+                    clear();
                 } else onFailure(call, new Throwable(response.message()));
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 listener.onFailure(t);
-                call.cancel();
+                clear();
+            }
+
+            private void clear() {
+                jsonQuery = null;
+                stringQuery = null;
+                multipartBody = null;
             }
         });
     }

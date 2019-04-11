@@ -159,6 +159,7 @@
     하시고 알림음이 들릴때까지 천천히, 조금씩 움직여주세요.]]></string>
     <string name="popup_read_only">SPI에 정보를 저장하면 새로 쓰거나 지울 수 없습니다. 저장할 내용을 충분히 확인하신 후 기록하십시오.</string>
     <string name="popup_write_success">정보를 정상적으로 기록하였습니다</string>
+    <string name="progressbar_progress">서버에 정보를 등록 중입니다…</string>
 
     <!--ViewActivity-->
     <string name="pipe_info">관로정보</string>

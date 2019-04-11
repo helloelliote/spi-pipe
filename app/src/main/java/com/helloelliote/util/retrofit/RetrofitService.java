@@ -41,10 +41,10 @@ interface RetrofitService {
             @Query("json") String jsonString
     );
 
-    @POST("api")
     @Multipart
+    @POST("api")
     Call<JsonObject> postSpi(
-            @Part("json") RequestBody jsonString,
-            @Part MultipartBody.Part file
+            @Part("json") RequestBody jsonRequestBody,
+            @Part MultipartBody.Part fileMultipartBody
     );
 }

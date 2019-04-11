@@ -17,7 +17,6 @@ import com.helloelliote.util.json.Json;
 import kr.djspi.pipe01.R;
 
 import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static kr.djspi.pipe01.BaseActivity.packageName;
 import static kr.djspi.pipe01.BaseActivity.screenScale;
 
@@ -54,7 +53,6 @@ public class SectionTab extends Fragment {
             imageView.setImageResource(getResources().getIdentifier(resId, "drawable", packageName));
         } catch (UnsupportedOperationException | NullPointerException e) {
             view.findViewById(R.id.lay_0).setVisibility(GONE);
-            view.findViewById(R.id.lay_empty).setVisibility(VISIBLE);
         }
 
         tVertical = view.findViewById(R.id.text_vertical);

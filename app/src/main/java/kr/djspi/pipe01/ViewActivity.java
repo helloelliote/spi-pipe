@@ -68,13 +68,12 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
             Serializable arraySerializable = intent.getSerializableExtra("RegisterPreview");
             String fHorizontal = intent.getStringExtra("fHorizontal");
             String fVertical = intent.getStringExtra("fVertical");
+            pipeIndex = intent.getIntExtra("PipeIndex", 0);
             if (arraySerializable instanceof ArrayList<?>) {
                 previewEntries = (ArrayList<Entry>) arraySerializable;
                 jsonObject = new JsonObject();
                 jsonObject = parseEntry(previewEntries, pipeIndex, fHorizontal, fVertical); // 단일형 index 는 항상 0
             }
-
-            pipeIndex = intent.getIntExtra("PipeIndex", 0);
 
             Serializable classSerializable = intent.getSerializableExtra("SpiPhotoObject");
             if (classSerializable instanceof SpiPhotoObject) {

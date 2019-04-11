@@ -118,13 +118,24 @@ public class InfoTab extends Fragment {
 
             if (imageFileUri != null) {
                 ImageView imageView = view.findViewById(R.id.img_photo);
-                Glide.with(view).load(imageFileUri).fitCenter().into(imageView);
+                Glide.with(view).load(imageFileUri)
+//                        .fallback(R.drawable.ic_photo_none)
+//                        .placeholder(R.drawable.ic_photo_download)
+                        .fitCenter()
+                        .error(R.drawable.ic_photo_error)
+                        .dontAnimate()
+                        .into(imageView);
             } else if (!jsonObject.get("spi_photo_url").isJsonNull()) {
                 ImageView imageView = view.findViewById(R.id.img_photo);
-                Glide.with(view).load(Json.s(jsonObject, "spi_photo_url")).fitCenter().into(imageView);
+                Glide.with(view).load(Json.s(jsonObject, "spi_photo_url"))
+//                        .fallback(R.drawable.ic_photo_none)
+//                        .placeholder(R.drawable.ic_photo_download)
+                        .fitCenter()
+                        .error(R.drawable.ic_photo_error)
+                        .dontAnimate()
+                        .into(imageView);
             }
         } catch (NullPointerException ignore) {
-
         }
 
         return view;

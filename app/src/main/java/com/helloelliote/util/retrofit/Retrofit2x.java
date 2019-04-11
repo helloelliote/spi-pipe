@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
+import okhttp3.MultipartBody;
 
 public final class Retrofit2x {
 
@@ -28,7 +28,7 @@ public final class Retrofit2x {
     public interface SetService {
         SetQuery setQuery(@NonNull JsonObject jsonQuery);
 
-        SetQuery setQuery(@NonNull String stringQuery, @Nullable File file);
+        SetQuery setQuery(@NonNull String stringQuery, @Nullable MultipartBody.Part multipartBody);
     }
 
     public interface SetQuery {
@@ -40,7 +40,7 @@ public final class Retrofit2x {
         private ServiceStrategy service;
         private JsonObject jsonQuery;
         private String stringQuery;
-        private File fileQuery;
+        private MultipartBody.Part multipartBody;
 
         @Override
         @Contract("_ -> this")
@@ -57,17 +57,17 @@ public final class Retrofit2x {
         }
 
         @Override
-        @Contract(pure = true)
-        public SetQuery setQuery(@NonNull String stringQuery, @Nullable File fileQuery) {
+        @Contract("_, _ -> this")
+        public SetQuery setQuery(@NonNull String stringQuery, @Nullable MultipartBody.Part multipartBody) {
             this.stringQuery = stringQuery;
-            this.fileQuery = fileQuery;
+            this.multipartBody = multipartBody;
             return this;
         }
 
         @Override
         public RetrofitCore build() {
             RetrofitCore core = RetrofitCore.get();
-            if (core.setService(service) && core.setQuery(jsonQuery) || core.setQuery(stringQuery, fileQuery)) {
+            if (core.setService(service) && core.setQuery(jsonQuery) || core.setQuery(stringQuery, multipartBody)) {
                 return core;
             } else throw new NullPointerException();
         }

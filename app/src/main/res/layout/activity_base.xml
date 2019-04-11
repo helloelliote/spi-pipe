@@ -76,6 +76,7 @@
             android:layout_gravity="center_vertical|end"
             android:alpha="0.7"
             android:backgroundTint="@android:color/transparent"
+            android:padding="5dp"
             android:src="@drawable/ic_swipe_left"
             android:tint="@color/colorPrimary"
             tools:ignore="ContentDescription" />

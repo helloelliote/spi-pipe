@@ -75,33 +75,31 @@
             android:textStyle="bold" />
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/lay_empty"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="20dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/lay_0">
+    <!--<LinearLayout-->
+    <!--android:id="@+id/lay_empty"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_margin="20dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical"-->
+    <!--android:visibility="gone"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/lay_0">-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:drawableTop="@drawable/no_img_gray"
-            android:drawablePadding="5dp"
-            android:text="@string/error_load_image_fail"
-            android:textColor="@color/gray"
-            android:textSize="15sp" />
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="15dp"-->
+    <!--android:text="@string/error_load_image_fail"-->
+    <!--android:textColor="@color/gray"-->
+    <!--android:textSize="15sp" />-->
 
-        <android.support.design.button.MaterialButton
-            android:id="@+id/btn_photo"
-            style="@style/Spi.Button"
-            android:layout_width="83.67dp"
-            android:layout_height="33dp"
-            android:layout_gravity="bottom|center"
-            android:visibility="invisible" />
-    </LinearLayout>
+    <!--<android.support.design.button.MaterialButton-->
+    <!--android:id="@+id/btn_photo"-->
+    <!--style="@style/Spi.Button"-->
+    <!--android:layout_width="83.67dp"-->
+    <!--android:layout_height="33dp"-->
+    <!--android:layout_gravity="bottom|center"-->
+    <!--android:visibility="invisible" />-->
+    <!--</LinearLayout>-->
 </android.support.constraint.ConstraintLayout>
