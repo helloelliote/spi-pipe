@@ -59,6 +59,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         setContentView(R.layout.activity_main);
     }
 
+    // TODO: 2019-04-12 서버 상태에 따라서도 나눌 수 있는지 연구
     private void setNetworkCallback() {
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest request = new NetworkRequest.Builder().build();

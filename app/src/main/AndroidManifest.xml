@@ -27,7 +27,8 @@
         android:supportsRtl="true"
         android:theme="@style/Spi.Theme"
         android:usesCleartextTraffic="true"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute"
+        tools:replace="android:allowBackup">
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}"

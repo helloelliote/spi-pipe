@@ -37,6 +37,7 @@ import static android.nfc.NdefRecord.TNF_WELL_KNOWN;
 import static com.nxp.nfclib.CardType.NTag213;
 import static com.nxp.nfclib.CardType.NTag216;
 import static kr.djspi.pipe01.BuildConfig.APPLICATION_ID;
+import static kr.djspi.pipe01.BuildConfig.NFC_APP_KEY;
 import static kr.djspi.pipe01.BuildConfig.NFC_LICENSE_KEY;
 import static kr.djspi.pipe01.BuildConfig.a;
 import static kr.djspi.pipe01.BuildConfig.k;
@@ -79,7 +80,7 @@ public final class NfcUtil {
     private void initializeLibrary(Activity activity) {
         try {
             nxpNfcLib = NxpNfcLib.getInstance();
-            nxpNfcLib.registerActivity(activity, NFC_LICENSE_KEY);
+            nxpNfcLib.registerActivity(activity, NFC_APP_KEY, NFC_LICENSE_KEY);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }

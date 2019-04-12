@@ -47,4 +47,9 @@ interface RetrofitService {
             @Part("json") RequestBody jsonRequestBody,
             @Part MultipartBody.Part fileMultipartBody
     );
+
+    @POST("api")
+    Call<JsonObject> initSpi(
+            @Query("json") String jsonString
+    );
 }
