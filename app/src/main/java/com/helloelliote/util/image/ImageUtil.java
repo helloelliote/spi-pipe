@@ -68,22 +68,28 @@ public final class ImageUtil {
     public static File subSample4x(@NotNull File file, final int maxResolution) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
-        Bitmap source = decodeFile(file.getPath(), options);
-        float width = source.getWidth();
-        float height = source.getHeight();
-        if (width < (float) maxResolution && height < (float) maxResolution) return file;
-        float bitmapRatio = width / height;
-        int newWidth = maxResolution;
-        int newHeight = maxResolution;
-        if (1.0f > bitmapRatio) {
-            newWidth = (int) ((float) maxResolution * bitmapRatio);
-        } else {
-            newHeight = (int) ((float) maxResolution / bitmapRatio);
-        }
-        Bitmap resize = createScaledBitmap(source, newWidth, newHeight, true);
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            resize.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            return file;
+        Bitmap sourceBitmap = decodeFile(file.getPath(), null);
+        Bitmap copyBitmap = sourceBitmap.copy(sourceBitmap.getConfig(), true);
+        float width = copyBitmap.getWidth();
+        float height = copyBitmap.getHeight();
+        File newFile = new File(file.getParent(), file.getName().replace(".jpg", "R.jpg"));
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            if (width < (float) maxResolution && height < (float) maxResolution) {
+                copyBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                return newFile;
+            } else {
+                float bitmapRatio = width / height;
+                int newWidth = maxResolution;
+                int newHeight = maxResolution;
+                if (1.0f > bitmapRatio) {
+                    newWidth = (int) ((float) maxResolution * bitmapRatio);
+                } else {
+                    newHeight = (int) ((float) maxResolution / bitmapRatio);
+                }
+                Bitmap resizeBitmap = createScaledBitmap(copyBitmap, newWidth, newHeight, true);
+                resizeBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                return newFile;
+            }
         } catch (IOException ignore) {
             return file;
         }

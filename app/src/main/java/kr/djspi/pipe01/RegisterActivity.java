@@ -104,6 +104,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
     private final Bundle superviseListBundle = new Bundle(1);
     private SpiPhotoObject photoObj;
+    private File tempFile;
+    private Uri tempUri;
     private ArrayList<String> superviseList;
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
@@ -306,11 +308,14 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             case R.id.btn_delete:
                 if (photoObj == null) return;
                 photoObj.setUri(null);
+                if (photoObj.getFile() != null) {
+                    photoObj.getFile().delete();
+                }
                 photoObj.setFile(null);
+                tempUri = null;
                 if (tempFile != null && tempFile.delete()) {
                     tempFile = null;
                 }
-                tempUri = null;
                 imageThumb.setImageDrawable(null);
                 fPhotoName.setFocusable(false);
                 fPhotoName.setText(getString(R.string.record_input_photo_delete));
@@ -470,40 +475,36 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         dialog.show(getSupportFragmentManager(), TAG_POSITION);
     }
 
-    private File tempFile;
-    private Uri tempUri;
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            String imageFileName;
+            File resizeFile;
             switch (requestCode) {
                 case REQUEST_CAPTURE_IMAGE:
                     photoObj = new SpiPhotoObject();
-                    Glide.with(this).load(tempUri).thumbnail(0.25f).into(imageThumb);
-                    imageFileName = tempFile.getName();
-                    fPhotoName.setText(imageFileName);
+                    Glide.with(this).load(tempUri).into(imageThumb);
+                    resizeFile = ImageUtil.subSample4x(tempFile, 1024);
+                    photoObj.setFile(resizeFile);
+                    photoObj.setUri(tempUri);
+                    fPhotoName.setText(resizeFile.getName());
                     fPhotoName.setTextColor(getResources().getColor(R.color.colorPrimary));
                     fPhoto.setText(getString(R.string.record_photo_ok));
-                    photoObj.setUri(tempUri);
-                    photoObj.setFile(ImageUtil.subSample4x(tempFile, 1024));
-                    // TODO: 2019-04-12 갤러리 사진의 경우 원본이 바뀌면 안되므로 새 파일로 내부에서 처리하게 변경, 현재는 기존 파일을 덮어쓴다.
-                    // TODO: 2019-04-12 단, 새로운 파일을 저장하는 것이 아닌, 메모리 내에서만 파일을 다룰 수 있게 한다.
                     tempUri = null;
                     tempFile = null;
                     break;
                 case REQUEST_GALLERY:
                     photoObj = new SpiPhotoObject();
-                    Uri imageFileUri = data.getData();
-                    assert imageFileUri != null;
-                    Glide.with(this).load(imageFileUri).thumbnail(0.25f).into(imageThumb);
-                    imageFileName = ImageUtil.uriToFileName(this, imageFileUri);
-                    fPhotoName.setText(imageFileName);
+                    Uri uri = data.getData();
+                    assert uri != null;
+                    Glide.with(this).load(uri).into(imageThumb);
+                    File file = ImageUtil.uriToFile(this, uri);
+                    resizeFile = ImageUtil.subSample4x(file, 1024);
+                    photoObj.setFile(resizeFile);
+                    photoObj.setUri(uri);
+                    fPhotoName.setText(resizeFile.getName());
                     fPhotoName.setTextColor(getResources().getColor(R.color.colorPrimary));
                     fPhoto.setText(getString(R.string.record_photo_ok));
-                    photoObj.setUri(imageFileUri);
-                    photoObj.setFile(ImageUtil.uriToFile(this, imageFileUri));
                     break;
                 default:
                     break;

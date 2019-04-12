@@ -120,6 +120,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
 
     private void setSpiAndPipe(Intent intent) {
         progressText.setVisibility(VISIBLE);
+        onInitiate(0);
         Retrofit2x.builder()
                 .setService(new SpiPost(URL_SPI))
                 .setQuery(new Gson().toJson(entries), getMultipart(file, "image"))
@@ -127,7 +128,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
-                        onFinish();
+                        onFinish(100);
                         progressText.setVisibility(INVISIBLE);
                         // TODO: 2019-03-25 순차적 데이터 입력에 대한 처리 개발
                         processTag(intent, response, 0);
@@ -151,7 +152,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
                      */
                     private void processTag(final Intent intent, JsonObject response, int index) {
                         String[] strings = parseToStringArray(response, index);
-                        if (nfcUtil.writeTag(intent, strings)) {
+                        if (nfcUtil.writeTag(intent, strings) && file.delete()) {
                             nfcUtil.onPause();
                             showMessageDialog(6, getString(R.string.popup_write_success), false);
                         } else {
@@ -177,7 +178,12 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        progressBar.setProgress(0);
+        onInitiate(0);
+    }
+
+    @Override
+    public void onInitiate(int percentage) {
+        progressBar.setProgress(percentage);
         progressDrawable.setTint(YELLOW);
     }
 
@@ -192,8 +198,8 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     }
 
     @Override
-    public void onFinish() {
-        progressBar.setProgress(100);
+    public void onFinish(int percentage) {
+        progressBar.setProgress(percentage);
         progressDrawable.setTint(GREEN);
     }
 }

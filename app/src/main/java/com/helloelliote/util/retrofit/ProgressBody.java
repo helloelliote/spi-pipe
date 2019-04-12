@@ -59,11 +59,13 @@ public final class ProgressBody extends RequestBody {
     }
 
     public interface UploadCallback {
+        void onInitiate(int percentage);
+
         void onProgress(int percentage);
 
         void onError();
 
-        void onFinish();
+        void onFinish(int percentage);
     }
 
     private class ProgressUpdater implements Runnable {
