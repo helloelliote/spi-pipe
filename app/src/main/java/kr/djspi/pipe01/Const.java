@@ -4,7 +4,7 @@ import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 
 public final class Const {
 
-    public static final String URL_SPI = "http://35.187.193.145/";
+    static final String URL_SPI = "http://35.200.109.228/";
     static final String URL_TEST = "http://192.168.0.33/";
 
     public static final String TAG_PIPE = "pipe";
