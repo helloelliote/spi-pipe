@@ -60,7 +60,9 @@ public class InfoTab extends Fragment {
             case 7:
             case 8:
             case 9:
-                hDirection = String.format("보도 방향 %s m", Json.s(jsonObject, "vertical"));
+                hDirection = Json.s(jsonObject, "spi_type").equals("표지주") ?
+                        String.format("차도반대측 방향 %s m", Json.s(jsonObject, "vertical")) :
+                        String.format("보도 방향 %s m", Json.s(jsonObject, "vertical"));
                 break;
             default:
                 hDirection = "";

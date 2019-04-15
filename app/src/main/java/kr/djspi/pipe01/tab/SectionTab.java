@@ -75,28 +75,23 @@ public class SectionTab extends Fragment {
 
     private void setPosition() {
         final int positionInt = Json.i(jsonObject, "position");
-        final String typeString = Json.s(jsonObject, "spi_type");
         switch (positionInt) {
             case 1:
             case 2:
-            case 4:
+            case 3:
                 setTranslation(false, -355.0f);
                 break;
-            case 3:
-                setTranslation(false, typeString.equals("표지주") ? 355.0f : -355.0f);
-                break;
+            case 4:
             case 5:
-                setTranslation(true, 0.0f);
-                tSpec.setTranslationX(150.0f);
-                tMaterial.setTranslationX(150.0f);
-                break;
             case 6:
+                tSpec.setTranslationX(175.0f);
+                tMaterial.setTranslationX(175.0f);
+                setTranslation(true, 0.0f);
+                break;
+            case 7:
             case 8:
             case 9:
                 setTranslation(false, 355.0f);
-                break;
-            case 7:
-                setTranslation(false, typeString.equals("표지주") ? -355.0f : 355.0f);
                 break;
             default:
                 break;
