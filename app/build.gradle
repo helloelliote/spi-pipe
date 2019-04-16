@@ -7,7 +7,7 @@ android {
         applicationId "kr.djspi.pipe01"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode gitVersionCode
+        versionCode gitVersionCode + 1
         versionName gitVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         aaptOptions.cruncherEnabled = false
@@ -24,7 +24,7 @@ android {
             variant.buildConfigField "String", "NFC_LICENSE_KEY", "\"0HaywLgnV0q1OycMY9Fa0uWzODl+QHLkeXXROOx3ztU1AbbFTZcz3RTFiQ0HXUYFU4fKpmPt1oyuMbrZH0Jz+w==\""
             variant.buildConfigField "byte[]", "k", "{(byte) 0x32, (byte) 0x30, (byte) 0x31, (byte) 0x34}"
             variant.buildConfigField "byte[]", "a", "{(byte) 0x73, (byte) 0x77}"
-            outputFileName = "${variant.name}-${variant.versionName}.apk"
+            outputFileName = "${android.defaultConfig.applicationId}-${variant.name}-${variant.versionName}.apk"
         }
     }
 

@@ -72,7 +72,7 @@ public final class ImageUtil {
         Bitmap copyBitmap = sourceBitmap.copy(sourceBitmap.getConfig(), true);
         float width = copyBitmap.getWidth();
         float height = copyBitmap.getHeight();
-        File newFile = new File(file.getParent(), file.getName().replace(".jpg", "R.jpg"));
+        File newFile = new File(file.getParent(), file.getName().replace(".jpg", "R.jpg").replace(".png", "R.png"));
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             if (width < (float) maxResolution && height < (float) maxResolution) {
                 copyBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
@@ -90,7 +90,8 @@ public final class ImageUtil {
                 resizeBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                 return newFile;
             }
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            e.printStackTrace();
             return file;
         }
     }

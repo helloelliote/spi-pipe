@@ -152,9 +152,9 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
                      */
                     private void processTag(final Intent intent, JsonObject response, int index) {
                         String[] strings = parseToStringArray(response, index);
-                        if (nfcUtil.writeTag(intent, strings) && file.delete()) {
+                        if (nfcUtil.writeTag(intent, strings)) {
                             nfcUtil.onPause();
-                            file.delete();
+                            if (file != null && file.exists()) file.delete();
                             showMessageDialog(6, getString(R.string.popup_write_success), false);
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.toast_error, Toast.LENGTH_LONG).show();
