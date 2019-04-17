@@ -114,8 +114,15 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     @Contract("null, _ -> null; !null, _ -> !null")
     private MultipartBody.Part getMultipart(File file, String fileType) {
         if (file == null) return null;
-        return MultipartBody.Part.createFormData(
-                "file", file.getName(), new ProgressBody(file, fileType, this));
+        MultipartBody.Part part;
+        try {
+            part = MultipartBody.Part.createFormData(
+                    "file", file.getName(), new ProgressBody(file, fileType, this));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return part;
     }
 
     private void setSpiAndPipe(Intent intent) {

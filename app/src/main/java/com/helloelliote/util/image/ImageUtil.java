@@ -29,6 +29,8 @@ public final class ImageUtil {
 
     private static final String[] PROJECTION_DATA = {DATA};
     private static final String[] PROJECTION_NAME = {DISPLAY_NAME};
+    private static final String DATE_PATTERN = "yyyyMMdd_HHmmss_SSS";
+    private static final String REGEX_IMAGE_EXT = "((\\.(?i)(jpg|jpeg|tif|tiff|webp|png|gif|bmp))$)";
 
     private static String uriToFilePath(@NotNull Context context, Uri uri) {
         Cursor cursor = context.getContentResolver().query(uri, PROJECTION_DATA, null, null, null);
@@ -57,7 +59,7 @@ public final class ImageUtil {
     }
 
     public static File prepareFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String timeStamp = new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(new Date());
         String imageFileName = String.format("IMG_%s_", timeStamp);
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM), "Camera");
         return File.createTempFile(imageFileName, ".jpg", storageDir);
@@ -72,7 +74,8 @@ public final class ImageUtil {
         Bitmap copyBitmap = sourceBitmap.copy(sourceBitmap.getConfig(), true);
         float width = copyBitmap.getWidth();
         float height = copyBitmap.getHeight();
-        File newFile = new File(file.getParent(), file.getName().replace(".jpg", "R.jpg").replace(".png", "R.png"));
+        String timeStamp = new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(new Date());
+        File newFile = new File(file.getParent(), String.format("IMG_%s.jpg", timeStamp));
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             if (width < (float) maxResolution && height < (float) maxResolution) {
                 copyBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
@@ -94,5 +97,14 @@ public final class ImageUtil {
             e.printStackTrace();
             return file;
         }
+    }
+
+    private static String createFileName(@NotNull String fileName) {
+        String newFileName = fileName.replaceAll(REGEX_IMAGE_EXT, "_R.jpg");
+        while (newFileName.indexOf(".") != newFileName.lastIndexOf(".")) {
+            newFileName = newFileName.replaceFirst("(\\.(?i))", "");
+        }
+        newFileName = newFileName.replaceAll("(₩(?i))", "");
+        return newFileName;
     }
 }

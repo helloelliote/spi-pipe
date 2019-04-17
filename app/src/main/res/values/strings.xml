@@ -154,10 +154,11 @@
     <string name="map_coord_error">잘못된 좌표값입니다</string>
 
     <!--SpiPostActivity-->
-    <string name="write_instruction"><![CDATA[스마트폰의 NFC기능이 카드모드로 되어있으면 정보를 읽기/쓰기가 불가능합니다.
-    <font color="#0077C8">기본모드(읽기/쓰기)로 설정후 SPI 표지기의 상면을 스마트폰 뒷면의 NFC 안테나 위치에 접촉</font>
-    하시고 알림음이 들릴때까지 천천히, 조금씩 움직여주세요.]]></string>
-    <string name="popup_read_only">SPI에 정보를 저장하면 새로 쓰거나 지울 수 없습니다. 저장할 내용을 충분히 확인하신 후 기록하십시오.</string>
+    <string name="write_instruction"><![CDATA[SPI의 상면을 스마트폰 뒷면의 NFC 안테나 위치에 접촉
+    하시고 <font color="#1c73e8">"정보를 정상적으로 기록하였습니다"</font> 라는 팝업창이 나타날 때까지 기다려 주십시오.]]></string>
+    <string name="popup_read_only"><![CDATA[SPI에 정보를 저장하면 새로 쓰거나 지울 수 없습니다. 저장할 내용을 충분히 확인하신 후 기록하십시오.
+    <br><br>서버와 SPI에 정보를 저장하기 위하여는 약간의 시간이 소요됩니다.
+    <font color="#f24e4e"> "정보를 정상적으로 기록하였습니다"</font> 라는 팝업창이 표시되기 전에 <font color="#1c73e8">SPI를 스마트폰과 분리하지 마십시오.</font>]]></string>
     <string name="popup_write_success">정보를 정상적으로 기록하였습니다</string>
     <string name="progressbar_progress">서버에 정보를 등록 중입니다…</string>
 

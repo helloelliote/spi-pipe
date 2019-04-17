@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -117,6 +118,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
             case 5: // (SpiPostActivity.class) 쓰기 작업 이후 수정이 불가함을 안내
                 setVisibilityToGone(view);
                 popupTitle.setText("주의");
+                popupText.setText(Html.fromHtml(getString(R.string.popup_read_only)));
                 buttonDismiss.setVisibility(VISIBLE);
                 buttonDismiss.setText(getString(R.string.popup_pre));
                 break;
