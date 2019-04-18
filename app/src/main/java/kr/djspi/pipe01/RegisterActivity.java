@@ -571,16 +571,22 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         if (spiMemo == null) {
             spiMemo = new SpiMemo();
             spiMemo.setSpi_id(spiId);
-        } else spiMemo.setSpi_id(spiId);
+        } else {
+            spiMemo.setSpi_id(spiId);
+        }
         spiMemo.setMemo(fMemo.getText().toString());
         if (spiPhoto == null) {
             spiPhoto = new SpiPhoto();
             spiPhoto.setSpi_id(spiId);
-        } else spiPhoto.setSpi_id(spiId);
+        } else {
+            spiPhoto.setSpi_id(spiId);
+        }
         if (spiLocation == null) {
             spiLocation = new SpiLocation();
             spiLocation.setSpi_id(spiId);
-        } else spiLocation.setSpi_id(spiId);
+        } else {
+            spiLocation.setSpi_id(spiId);
+        }
         pipe.setSpi_id(spiId);
         pipe.setDepth(valueOf(fDepth.getText().toString()));
         pipe.setMaterial(fMaterial.getText().toString());

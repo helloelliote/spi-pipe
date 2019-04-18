@@ -46,13 +46,13 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 
@@ -70,7 +70,7 @@ dependencies {
     }
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.guava:guava:27.1-android'
-    implementation 'com.naver.maps:map-sdk:3.2.1'
+    implementation 'com.naver.maps:map-sdk:3.3.0'
     implementation 'com.llollox:androidtoggleswitch:2.0.1'
     implementation 'com.andkulikov:transitionseverywhere:1.8.1'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
