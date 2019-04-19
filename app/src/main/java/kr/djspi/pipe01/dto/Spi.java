@@ -10,7 +10,7 @@ public class Spi implements DataItem, Serializable {
     /**
      * 고유 id 값과 serial 은 태깅과 동시에 바로 생성해야 한다.
      */
-    private final int id;
+    private int id;
     private final String serial;
     private final int type_id;
     private boolean hidden = false;

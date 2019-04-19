@@ -546,6 +546,11 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         saveInstanceState();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        return;
+    }
+
     /**
      * 마지막 사용자 입력값 저장
      */

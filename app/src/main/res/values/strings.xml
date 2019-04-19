@@ -160,6 +160,7 @@
     <br><br>서버와 SPI에 정보를 저장하기 위하여는 약간의 시간이 소요됩니다.
     <font color="#f24e4e"> "정보를 정상적으로 기록하였습니다"</font> 라는 팝업창이 표시되기 전에 <font color="#1c73e8">SPI를 스마트폰과 분리하지 마십시오.</font>]]></string>
     <string name="popup_write_success">정보를 정상적으로 기록하였습니다</string>
+    <string name="popup_write_retry"><![CDATA[<font color="#f24e4e">SPI를 다시 한번 천천히 태깅해주세요.</font>]]></string>
     <string name="progressbar_progress">서버에 정보를 등록 중입니다…</string>
 
     <!--ViewActivity-->

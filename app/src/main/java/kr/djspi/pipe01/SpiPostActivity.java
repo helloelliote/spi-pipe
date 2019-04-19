@@ -8,13 +8,13 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.helloelliote.util.retrofit.ProgressBody;
 import com.helloelliote.util.retrofit.Retrofit2x;
 import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.util.retrofit.SpiDel;
 import com.helloelliote.util.retrofit.SpiPost;
 
 import org.jetbrains.annotations.Contract;
@@ -47,7 +47,10 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     private File file;
     private ProgressBar progressBar;
     private Drawable progressDrawable;
+    private TextView textView;
     private TextView progressText;
+    private boolean isSuccess = false;
+    private MultipartBody.Part part;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -70,7 +73,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        TextView textView = findViewById(R.id.txt_write);
+        textView = findViewById(R.id.txt_write);
         textView.setText(Html.fromHtml(getString(R.string.write_instruction)));
 
         progressBar = findViewById(R.id.progressBar);
@@ -106,15 +109,16 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
      */
     @Override
     protected void onNewIntent(final Intent intent) {
-        super.onNewIntent(intent);
-        setSpiAndPipe(intent);
+//        super.onNewIntent(intent);
+        if (!isSuccess) {
+            setSpiAndPipe(intent);
+        }
     }
 
     @SuppressWarnings("SameParameterValue")
     @Contract("null, _ -> null; !null, _ -> !null")
     private MultipartBody.Part getMultipart(File file, String fileType) {
         if (file == null) return null;
-        MultipartBody.Part part;
         try {
             part = MultipartBody.Part.createFormData(
                     "file", file.getName(), new ProgressBody(file, fileType, this));
@@ -130,8 +134,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
         onInitiate(0);
         Retrofit2x.builder()
                 .setService(new SpiPost(URL_SPI))
-                .setQuery(new Gson().toJson(entries), getMultipart(file, "image"))
-                .build()
+                .setQuery(new Gson().toJson(entries), getMultipart(file, "image")).build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
@@ -148,26 +151,58 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
                         showMessageDialog(7, throwable.getMessage(), true);
                         throwable.printStackTrace();
                     }
+                });
+    }
 
-                    /**
-                     * 태그에 쓰기 작업을 지시, 결과를 출력
-                     * (성공) MainActivity 로 돌아감 + 성공 메시지 표시
-                     * (실패) 재시도 요청 토스트 메시지 표시
-                     *
-                     * @param intent 전달된 태그 인텐트
-                     * @see NfcUtil#writeTag(Intent, String[]) 쓰기 작업을 수행, 성공 여부를 리턴
-                     */
-                    private void processTag(final Intent intent, JsonObject response, int index) {
-                        String[] strings = parseToStringArray(response, index);
-                        if (nfcUtil.writeTag(intent, strings)) {
-                            nfcUtil.onPause();
-                            if (file != null && file.exists()) file.delete();
-                            showMessageDialog(6, getString(R.string.popup_write_success), false);
-                        } else {
-                            Toast.makeText(getApplicationContext(), R.string.toast_error, Toast.LENGTH_LONG).show();
-                        }
+    /**
+     * 태그에 쓰기 작업을 지시, 결과를 출력
+     * (성공) MainActivity 로 돌아감 + 성공 메시지 표시
+     * (실패) 재시도 요청 토스트 메시지 표시
+     *
+     * @param intent 전달된 태그 인텐트
+     * @see NfcUtil#writeTag(Intent, String[]) 쓰기 작업을 수행, 성공 여부를 리턴
+     */
+    private void processTag(final Intent intent, JsonObject response, int index) {
+        String[] strings = parseToStringArray(response, index);
+        if (nfcUtil.writeTag(intent, strings)) {
+            isSuccess = true;
+            nfcUtil.onPause();
+            if (file != null && file.exists()) file.delete();
+            showMessageDialog(6, getString(R.string.popup_write_success), false);
+        } else {
+            deleteSpi(index);
+        }
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private void deleteSpi(int pipeIndex) {
+        progressText.setVisibility(VISIBLE);
+        onInitiate(0);
+        isSuccess = false;
+        Entry currentEntry = entries.get(pipeIndex);
+        JsonObject jsonQuery = new JsonObject();
+        jsonQuery.addProperty("id", currentEntry.getSpi().getId());
+        currentEntry.getSpi().setId(-1);
+        currentEntry.getPipe().setSpi_id(-1);
+        currentEntry.getSpi_location().setSpi_id(-1);
+        currentEntry.getSpi_memo().setSpi_id(-1);
+        currentEntry.getSpi_photo().setSpi_id(-1);
+        entries.set(pipeIndex, currentEntry);
+        Retrofit2x.builder()
+                .setService(new SpiDel(URL_SPI))
+                .setQuery(jsonQuery).build()
+                .run(new OnRetrofitListener() {
+                    @Override
+                    public void onResponse(JsonObject response) {
+                        textView.setText(Html.fromHtml(getString(R.string.popup_write_retry)));
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+
                     }
                 });
+        textView.setText(Html.fromHtml(getString(R.string.popup_write_retry)));
     }
 
     @Override

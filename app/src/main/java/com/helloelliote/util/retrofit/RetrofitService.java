@@ -52,4 +52,10 @@ interface RetrofitService {
     Call<JsonObject> initSpi(
             @Query("json") String jsonString
     );
+
+    @Headers("Content-Type: application/json")
+    @POST("api")
+    Call<JsonObject> deleteSpi(
+            @Query("json") String jsonString
+    );
 }

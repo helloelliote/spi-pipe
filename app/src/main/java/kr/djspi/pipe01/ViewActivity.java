@@ -225,6 +225,11 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
         super.onDestroy();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        return;
+    }
+
     @SuppressWarnings("SameParameterValue")
     private static JsonObject parseEntry(@NotNull ArrayList entries, int index, String... strings) {
         return ((Entry) entries.get(index)).parseToSingleJsonObject(strings);

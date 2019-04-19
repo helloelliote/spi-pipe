@@ -60,6 +60,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     // TODO: 2019-04-12 서버 상태에 따라서도 나눌 수 있는지 연구
+    // TODO: 2019-04-19 일부 기종에서 유심칩 O, 데이터 네트워크 & 와이파이 X 일때 오프라인 모드 진입 실패
     private void setNetworkCallback() {
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest request = new NetworkRequest.Builder().build();
@@ -221,7 +222,8 @@ public class MainActivity extends LocationUpdate implements Serializable {
             // Spi.class DTO
             int spi_id = Json.i(data, "spi_id");
             int type_id = Json.i(data, "spi_type_id");
-            Spi spi = new Spi(spi_id, serial, type_id);
+            Spi spi = new Spi(serial, type_id);
+            spi.setId(spi_id);
             // SpiType.class DTO
             String spi_type = Json.s(data, "spi_type");
             SpiType spiType = new SpiType(type_id, spi_type);

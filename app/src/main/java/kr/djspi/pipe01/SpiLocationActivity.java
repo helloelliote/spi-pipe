@@ -243,4 +243,9 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         originPoint = null;
         selectDialog = null;
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        return;
+    }
 }
