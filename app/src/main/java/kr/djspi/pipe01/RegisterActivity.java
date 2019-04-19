@@ -107,6 +107,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private File tempFile;
     private Uri tempUri;
     private ArrayList<String> superviseList;
+    private HashMap<String, Integer> superviseMap;
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
     private ImageView imageThumb;
@@ -229,8 +230,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     }
 
     private ArrayList<String> getSuperviseList() {
-        if (superviseList == null) {
+        if (superviseList == null || superviseMap == null) {
             superviseList = new ArrayList<>();
+            superviseMap = new HashMap<>();
             JsonObject jsonQuery = new JsonObject();
             jsonQuery.addProperty("json", "");
             Retrofit2x.builder()
@@ -241,7 +243,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                         public void onResponse(JsonObject response) {
                             final JsonArray jsonArray = Json.a(response, "data");
                             for (JsonElement element : jsonArray) {
-                                superviseList.add(Json.s(element.getAsJsonObject(), "supervise"));
+                                JsonObject object = element.getAsJsonObject();
+                                superviseMap.put(Json.s(object, "supervise"), Json.i(object, "id"));
+                                superviseList.add(Json.s(object, "supervise"));
                                 superviseListBundle.putStringArrayList("superviseList", superviseList);
                             }
                         }
@@ -269,7 +273,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 break;
             case R.id.lay_supervise:
             case R.id.form_supervise:
-                if (superviseList.isEmpty()) {
+                if (superviseList.isEmpty() || superviseMap.isEmpty()) {
                     fSupervise.setOnClickListener(null);
                     fSupervise.setEnabled(true);
                     fSupervise.setHint("직접 입력해주세요.");
@@ -362,9 +366,11 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 showPositionDialog();
                 break;
             case TAG_SUPERVISE:
-                fSupervise.setText(superviseList.get(index));
-                pipeSupervise.setId(index + 1);
-                pipe.setSupervise_id(index + 1);
+                if (text == null) return;
+                fSupervise.setText(text[0]);
+                int superviseId = superviseMap.get(text[0]);
+                pipeSupervise.setId(superviseId);
+                pipe.setSupervise_id(superviseId);
                 fSuperviseContact.requestFocus();
                 break;
             case TAG_POSITION:

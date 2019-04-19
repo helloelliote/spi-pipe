@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sylversky.indexablelistview.scroller.Indexer;
 import com.sylversky.indexablelistview.widget.IndexableListView;
@@ -40,6 +41,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     private String dialogTitle;
     private ArrayList<String> listItem;
     private IndexableListView listView;
+    private String componentName;
     private Parcelable state;
     private OnSelectListener listener;
 
@@ -100,7 +102,10 @@ public class ListDialog extends DialogFragment implements OnClickListener {
             listView.setAdapter(new ListAdapter(getContext(), listItem, false));
             listView.setFastScrollEnabled(false);
         }
-        listView.setOnItemClickListener((parent, view1, position, id) -> selectIndex = position);
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            componentName = listItem.get(position);
+            selectIndex = position;
+        });
         if (state != null) {
             listView.requestFocus();
             listView.onRestoreInstanceState(state);
@@ -112,7 +117,11 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_ok:
-                listener.onSelect(listTag, selectIndex, (String) null);
+                if (selectIndex == -1) {
+                    Toast.makeText(getContext(), "항목을 선택해주세요", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                listener.onSelect(listTag, selectIndex, componentName);
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:
