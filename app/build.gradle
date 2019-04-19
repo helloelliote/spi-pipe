@@ -34,7 +34,7 @@ android {
             shrinkResources true
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "boolean", "setReadOnly", "true"
+            buildConfigField "boolean", "setReadOnly", "false"
         }
         debug {
             debuggable true
