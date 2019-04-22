@@ -11,10 +11,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.helloelliote.util.geolocation.GeoPoint;
 import com.helloelliote.util.geolocation.GeoTrans;
+import com.helloelliote.util.json.Json;
+import com.helloelliote.util.retrofit.Retrofit2x;
+import com.helloelliote.util.retrofit.RetrofitCore;
+import com.helloelliote.util.retrofit.SpiGet;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
@@ -24,6 +32,9 @@ import com.naver.maps.map.NaverMap.MapType;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Marker;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -36,26 +47,33 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.helloelliote.util.geolocation.GeoTrans.Coordinate.GEO;
+import static com.helloelliote.util.retrofit.ApiKey.API_PIPE_GET;
 import static com.naver.maps.map.CameraUpdate.REASON_GESTURE;
 import static com.naver.maps.map.LocationTrackingMode.None;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
+import static com.naver.maps.map.overlay.OverlayImage.fromResource;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 import static kr.djspi.pipe01.Const.RESULT_FAIL;
 import static kr.djspi.pipe01.Const.TAG_LOCATION;
 import static kr.djspi.pipe01.Const.TAG_SURVEY;
+import static kr.djspi.pipe01.Const.URL_SPI;
+import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
 import static kr.djspi.pipe01.fragment.SurveyDialog.originPoint;
 
 public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCallback, OnClickListener, OnSelectListener, Serializable {
 
-    private static final double ZOOM_DEFAULT = 19.0; // 기본 줌레벨
+    private static final double ZOOM_DEFAULT = 20.0; // 기본 줌레벨
     private static final double ZOOM_MIN = 12.0; // 최소 줌레벨
+    private static final double ZOOM_GET = 12.0;
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
     private boolean isSelected = true;
     private LocationDialog selectDialog = new LocationDialog();
     private TextView textView;
     private MaterialButton buttonConfirm;
     private NaverMap naverMap;
+    private Thread thread;
+    private Runnable runnable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,6 +147,12 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
             selectDialog.setCancelable(false);
             selectDialog.show(getSupportFragmentManager(), TAG_LOCATION);
         });
+
+        runnable = () -> onRequestPipe(naverMap);
+        if (thread == null) {
+            thread = new Thread(runnable);
+            thread.start();
+        }
     }
 
     /**
@@ -153,6 +177,46 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                     break;
             }
         });
+    }
+
+    private void onRequestPipe(@NotNull NaverMap naverMap) {
+        JsonObject jsonQuery = new JsonObject();
+        final LatLngBounds bounds = naverMap.getContentBounds();
+        jsonQuery.addProperty("sx", String.valueOf(bounds.getWestLongitude()));
+        jsonQuery.addProperty("sy", String.valueOf(bounds.getSouthLatitude()));
+        jsonQuery.addProperty("nx", String.valueOf(bounds.getEastLongitude()));
+        jsonQuery.addProperty("ny", String.valueOf(bounds.getNorthLatitude()));
+
+        Retrofit2x.builder()
+                .setService(new SpiGet(URL_SPI, API_PIPE_GET))
+                .setQuery(jsonQuery).build()
+                .run(new RetrofitCore.OnRetrofitListener() {
+                    @Override
+                    public void onResponse(JsonObject response) {
+                        if (Json.i(response, "total_count") != 0) {
+                            JsonArray jsonArray = Json.a(response, "data");
+                            for (JsonElement element : jsonArray) {
+                                JsonObject jsonObject = element.getAsJsonObject();
+                                setMarker(jsonObject);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull Throwable throwable) {
+//                        showMessageDialog(8, throwable.getMessage(), true);
+                    }
+
+                    private void setMarker(@NotNull JsonObject jsonObject) {
+                        double lat = Json.d(jsonObject, "spi_latitude");
+                        double lng = Json.d(jsonObject, "spi_longitude");
+                        int resId = parsePipeType(Json.s(jsonObject, "pipe")).getDrawRes();
+                        Marker marker = new Marker(new LatLng(lat, lng), fromResource(resId));
+                        marker.setMinZoom(ZOOM_GET);
+                        marker.setMaxZoom(ZOOM_MAX);
+                        marker.setMap(naverMap);
+                    }
+                });
     }
 
     @Override
