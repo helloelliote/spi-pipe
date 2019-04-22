@@ -37,11 +37,15 @@ public enum StringParser {
 
     public static String[] parseToStringArray(@NotNull JsonObject jsonObject, int index) {
         final StringParser[] parsers = StringParser.values();
-        final int length = parsers.length;
-        JsonObject dataObject = Json.o(jsonObject, "data", index);
+        JsonObject dataObject;
+        try {
+            dataObject = Json.o(jsonObject, "data", index);
+        } catch (NullPointerException e) {
+            dataObject = jsonObject;
+        }
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            builder.append(parsers[i].label).append(Json.s(dataObject, parsers[i].name)).append(" ");
+        for (StringParser parser : parsers) {
+            builder.append(parser.label).append(Json.s(dataObject, parser.name)).append(" ");
         }
         String[] strings = new String[1];
         strings[index] = builder.toString().trim();

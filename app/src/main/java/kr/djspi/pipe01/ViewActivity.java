@@ -18,8 +18,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.helloelliote.util.json.Json;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -38,6 +36,7 @@ import static java.util.Objects.requireNonNull;
 import static kr.djspi.pipe01.Const.REQUEST_MAP;
 import static kr.djspi.pipe01.Const.RESULT_FAIL;
 import static kr.djspi.pipe01.Const.RESULT_PASS;
+import static kr.djspi.pipe01.dto.Entry.parseEntry;
 
 public class ViewActivity extends BaseActivity implements Serializable, OnRecordListener {
 
@@ -228,11 +227,6 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     @Override
     protected void onNewIntent(Intent intent) {
         return;
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static JsonObject parseEntry(@NotNull ArrayList entries, int index, String... strings) {
-        return ((Entry) entries.get(index)).parseToSingleJsonObject(strings);
     }
 
     private final class TabSelected implements OnTabSelectedListener {

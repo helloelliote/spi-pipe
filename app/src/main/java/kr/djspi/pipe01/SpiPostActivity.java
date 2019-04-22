@@ -35,6 +35,7 @@ import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.R.color.colorAccent;
 import static kr.djspi.pipe01.R.color.green;
 import static kr.djspi.pipe01.R.color.yellow;
+import static kr.djspi.pipe01.dto.Entry.parseEntry;
 import static kr.djspi.pipe01.nfc.StringParser.parseToStringArray;
 
 public class SpiPostActivity extends BaseActivity implements Serializable, ProgressBody.UploadCallback {
@@ -44,12 +45,12 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     private static final int YELLOW = resources.getColor(yellow);
     private static final int GREEN = resources.getColor(green);
     private static ArrayList<Entry> entries;
+    private JsonObject jsonObject;
     private File file;
     private ProgressBar progressBar;
     private Drawable progressDrawable;
     private TextView textView;
     private TextView progressText;
-    private boolean isSuccess = false;
     private MultipartBody.Part part;
 
     @Override
@@ -60,12 +61,15 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
         Serializable arraySerializable = getIntent().getSerializableExtra("entry");
         if (arraySerializable instanceof ArrayList<?>) {
             entries = (ArrayList<Entry>) arraySerializable;
+            jsonObject = parseEntry(entries, 0, "", "");
         }
 
         Serializable classSerializable = getIntent().getSerializableExtra("SpiPhotoObject");
         if (classSerializable instanceof SpiPhotoObject) {
             file = ((SpiPhotoObject) classSerializable).getFile();
         }
+
+        part = getMultipart(file, "image");
 
         setContentView(R.layout.activity_spi_post);
     }
@@ -109,10 +113,11 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
      */
     @Override
     protected void onNewIntent(final Intent intent) {
-//        super.onNewIntent(intent);
-        if (!isSuccess) {
-            setSpiAndPipe(intent);
-        }
+        super.onNewIntent(intent);
+        if (intent == null) return;
+        if (processTag(intent, jsonObject, 0)) {
+            setSpiAndPipe();
+        } else showMessageDialog(0, getString(R.string.popup_write_retry), false);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -129,19 +134,21 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
         return part;
     }
 
-    private void setSpiAndPipe(Intent intent) {
+    private void setSpiAndPipe() {
         progressText.setVisibility(VISIBLE);
         onInitiate(0);
         Retrofit2x.builder()
                 .setService(new SpiPost(URL_SPI))
-                .setQuery(new Gson().toJson(entries), getMultipart(file, "image")).build()
+                .setQuery(new Gson().toJson(entries), part)
+                .build()
                 .run(new OnRetrofitListener() {
                     @Override
                     public void onResponse(JsonObject response) {
                         onFinish(100);
                         progressText.setVisibility(INVISIBLE);
-                        // TODO: 2019-03-25 순차적 데이터 입력에 대한 처리 개발
-                        processTag(intent, response, 0);
+//                        processTag(intent, response, 0);
+                        showMessageDialog(6, getString(R.string.popup_write_success), false);
+                        if (file != null && file.exists()) file.delete();
                     }
 
                     @Override
@@ -162,23 +169,21 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
      * @param intent 전달된 태그 인텐트
      * @see NfcUtil#writeTag(Intent, String[]) 쓰기 작업을 수행, 성공 여부를 리턴
      */
-    private void processTag(final Intent intent, JsonObject response, int index) {
+    private boolean processTag(final Intent intent, JsonObject response, int index) {
+        boolean isWriteSuccess = false;
         String[] strings = parseToStringArray(response, index);
         if (nfcUtil.writeTag(intent, strings)) {
-            isSuccess = true;
-            nfcUtil.onPause();
-            if (file != null && file.exists()) file.delete();
-            showMessageDialog(6, getString(R.string.popup_write_success), false);
-        } else {
-            deleteSpi(index);
+            isWriteSuccess = true;
+//            nfcUtil.onPause();
         }
+//            deleteSpi(index);
+        return isWriteSuccess;
     }
 
     @SuppressWarnings("SameParameterValue")
     private void deleteSpi(int pipeIndex) {
         progressText.setVisibility(VISIBLE);
         onInitiate(0);
-        isSuccess = false;
         Entry currentEntry = entries.get(pipeIndex);
         JsonObject jsonQuery = new JsonObject();
         jsonQuery.addProperty("id", currentEntry.getSpi().getId());
@@ -202,7 +207,6 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
 
                     }
                 });
-        textView.setText(Html.fromHtml(getString(R.string.popup_write_retry)));
     }
 
     @Override

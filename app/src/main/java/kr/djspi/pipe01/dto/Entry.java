@@ -2,7 +2,10 @@ package kr.djspi.pipe01.dto;
 
 import com.google.gson.JsonObject;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import lombok.Data;
 
@@ -24,7 +27,12 @@ public class Entry implements Serializable {
     private final PipeSupervise pipe_supervise;
     private SpiLocation spi_location;
 
-    public JsonObject parseToSingleJsonObject(String[] strings) {
+    @SuppressWarnings("SameParameterValue")
+    public static JsonObject parseEntry(@NotNull ArrayList entries, int index, String... strings) {
+        return ((Entry) entries.get(index)).parseToSingleJsonObject(strings);
+    }
+
+    private JsonObject parseToSingleJsonObject(@NotNull String[] strings) {
         JsonObject object = new JsonObject();
         object.addProperty("spi_id", spi.getId());
         object.addProperty("supervise", pipe_supervise.getSupervise());
@@ -39,6 +47,7 @@ public class Entry implements Serializable {
         object.addProperty("unit", pipe_type.getUnit());
         object.addProperty("material", pipe.getMaterial());
         object.addProperty("position", pipe_position.getPosition());
+        object.addProperty("direction", pipe_position.getDirection());
         object.addProperty("horizontal", pipe_position.getHorizontal());
         object.addProperty("vertical", pipe_position.getVertical());
         object.addProperty("horizontal_form", strings[0]);

@@ -264,12 +264,14 @@ public final class NfcUtil {
     public void onResume() {
         if (nfcAdapter != null) {
             nfcAdapter.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists);
+//            nxpNfcLib.startForeGroundDispatch();
         }
     }
 
     public void onPause() {
         if (nfcAdapter != null) {
             nfcAdapter.disableForegroundDispatch(activity);
+//            nxpNfcLib.stopForeGroundDispatch();
         }
     }
 }
