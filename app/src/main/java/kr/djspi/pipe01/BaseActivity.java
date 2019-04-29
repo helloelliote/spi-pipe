@@ -146,12 +146,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    @SuppressWarnings("EmptyMethod")
-    protected void onNewIntent(final Intent intent) {
-        super.onNewIntent(intent);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
     }

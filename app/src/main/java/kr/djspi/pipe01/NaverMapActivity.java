@@ -1,10 +1,12 @@
 package kr.djspi.pipe01;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.location.Location;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
@@ -302,7 +304,25 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     @Override
     protected void onResume() {
         super.onResume();
-        nfcUtil.onPause();
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        PendingIntent pendingIntent = PendingIntent
+                .getActivity(this, 0, new Intent(this, getClass())
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        nfcAdapter.disableForegroundDispatch(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+            // drop NFC events
+        }
     }
 
     @Override
@@ -313,7 +333,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        listener = null;
     }
 
     /**

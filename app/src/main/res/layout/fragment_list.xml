@@ -76,7 +76,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/popup_ok"
+            android:text="@string/popup_next"
             android:textColor="@color/blue_bright"
             android:textSize="18sp" />
     </LinearLayout>
