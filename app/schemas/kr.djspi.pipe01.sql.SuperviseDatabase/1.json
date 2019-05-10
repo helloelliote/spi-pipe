@@ -1,0 +1,50 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "93b3fba94fbafcb0bb95629de89d6fcf",
+    "entities": [
+      {
+        "tableName": "Supervise",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `supervise` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "supervise",
+            "columnName": "supervise",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Supervise_id_supervise",
+            "unique": true,
+            "columnNames": [
+              "id",
+              "supervise"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_Supervise_id_supervise` ON `${TABLE_NAME}` (`id`, `supervise`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"93b3fba94fbafcb0bb95629de89d6fcf\")"
+    ]
+  }
+}

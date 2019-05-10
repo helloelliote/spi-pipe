@@ -21,23 +21,40 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.room.Room;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.helloelliote.util.json.Json;
+import com.helloelliote.util.retrofit.Retrofit2x;
+import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
+import com.helloelliote.util.retrofit.SuperviseGet;
 import com.naver.maps.map.NaverMapSdk;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import kr.djspi.pipe01.fragment.MessageDialog;
 import kr.djspi.pipe01.nfc.NfcUtil;
+import kr.djspi.pipe01.sql.Supervise;
+import kr.djspi.pipe01.sql.SuperviseDatabase;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String DATE_PATTERN = "yyyy.MM.dd";
     public static Resources resources;
     public static String packageName;
     public static float screenScale;
+    public SuperviseDatabase superviseDb;
     private DrawerLayout drawer;
     static Location currentLocation; // 앱 실행과 동시에 백그라운드에서 현재 위치를 탐색
     NfcUtil nfcUtil;
@@ -53,6 +70,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         screenScale = (float) displayMetrics.widthPixels / 1440.0f;
+        if (superviseDb == null) {
+            superviseDb = Room.databaseBuilder(getApplicationContext(), SuperviseDatabase.class, "db_supervise").build();
+        }
     }
 
     @Override
@@ -150,9 +170,17 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_homepage:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.nav_dj_homepage))));
                 break;
+            case R.id.nav_supervise:
+                updateLocalSuperviseDatabase();
+                updateRefreshDate(menuItem);
+                break;
+//            case R.id.nav_pipe:
+//                updateLocalPipeTypeDatabase();
+//                break;
             case R.id.nav_clear_cache:
                 NaverMapSdk.getInstance(this).flushCache(() ->
                         Toast.makeText(BaseActivity.this, "캐시를 초기화하였습니다.", Toast.LENGTH_SHORT).show());
+                updateRefreshDate(menuItem);
                 break;
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class)
@@ -164,6 +192,45 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void updateLocalPipeTypeDatabase() {
+
+    }
+
+    private void updateLocalSuperviseDatabase() {
+        JsonObject jsonQuery = new JsonObject();
+        jsonQuery.addProperty("json", "");
+        Retrofit2x.builder()
+                .setService(new SuperviseGet(URL_SPI))
+                .setQuery(jsonQuery).build()
+                .run(new OnRetrofitListener() {
+
+                    @Override
+                    public void onResponse(JsonObject response) {
+                        new Thread(() -> {
+                            final JsonArray jsonArray = Json.a(response, "data");
+                            for (JsonElement element : jsonArray) {
+                                JsonObject object = element.getAsJsonObject();
+                                superviseDb.dao().update(new Supervise(Json.i(object, "id"), Json.s(object, "supervise")));
+                            }
+                        }).start();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                    }
+                });
+        Toast.makeText(this, "데이터베이스를 갱신하였습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    // TODO: 2019-05-11 설정 내부로 옮기고 날짜 저장 및 유지
+    private void updateRefreshDate(MenuItem menuItem) {
+        runOnUiThread(() -> {
+            CharSequence title = menuItem.getTitle();
+            String timeStamp = new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(new Date());
+            menuItem.setTitle(String.format("%s (%s)", title, timeStamp));
+        });
     }
 
     /**

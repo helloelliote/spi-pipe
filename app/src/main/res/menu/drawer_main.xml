@@ -9,11 +9,22 @@
                 android:id="@+id/nav_guide"
                 android:title="@string/nav_guide" />
             <item
-                android:id="@+id/nav_clear_cache"
-                android:title="@string/nav_clear_cache" />
-            <item
                 android:id="@+id/nav_homepage"
                 android:title="@string/nav_homepage" />
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_database">
+        <menu>
+            <item
+                android:id="@+id/nav_supervise"
+                android:title="@string/nav_supervise" />
+            <!--<item-->
+            <!--android:id="@+id/nav_pipe"-->
+            <!--android:title="@string/nav_pipe" />-->
+            <item
+                android:id="@+id/nav_clear_cache"
+                android:title="@string/nav_clear_cache" />
         </menu>
     </item>
 

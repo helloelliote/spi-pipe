@@ -22,6 +22,9 @@
     <string name="nav_dj_homepage">http://djspi.kr</string>
     <string name="nav_app">어플리케이션</string>
     <string name="nav_guide">어플리케이션 정보</string>
+    <string name="nav_database">데이터베이스 (갱신일)</string>
+    <string name="nav_supervise">관리기관 목록 갱신</string>
+    <string name="nav_pipe">관로종류 목록 갱신</string>
     <string name="nav_clear_cache">지도 캐시 초기화</string>
     <string name="nav_homepage">홈페이지</string>
     <string name="nav_settings">환경설정</string>

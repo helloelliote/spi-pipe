@@ -112,6 +112,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
             Toast toast = Toast.makeText(context, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
+            showDatabase();
         });
     }
 
@@ -134,6 +135,16 @@ public class MainActivity extends LocationUpdate implements Serializable {
         super.onDestroy();
         progressBar.setVisibility(INVISIBLE);
         connectivityManager.unregisterNetworkCallback(networkCallback);
+    }
+
+    private void showDatabase() {
+        new Thread(() -> {
+            int id = superviseDb.dao().loadBySupervise("청송군").getId();
+            System.out.println(id);
+//            for (Supervise supervise : superviseList) {
+//                System.out.println(supervise.getId() + " " + supervise.getSupervise());
+//            }
+        }).start();
     }
 
     @Override

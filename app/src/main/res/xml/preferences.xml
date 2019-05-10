@@ -22,6 +22,7 @@
 
         <Preference
             app:key="pipe_type"
+            app:summary="설정되지 않음"
             app:title="관로종류"
             app:useSimpleSummaryProvider="true" />
 
@@ -32,6 +33,7 @@
 
         <Preference
             app:key="supervise"
+            app:summary="설정되지 않음"
             app:title="관리기관"
             app:useSimpleSummaryProvider="true" />
 
