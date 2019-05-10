@@ -96,7 +96,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static SpiType spiType;
     private static SpiMemo spiMemo;
     private static SpiPhoto spiPhoto;
-    // TODO: 2019-04-11 통합형에서의 Spi* 클래스들의 정리 필요
     private static SpiLocation spiLocation;
     private static final Pipe pipe = new Pipe();
     private static final PipeType pipeType = new PipeType();
@@ -113,7 +112,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
     private ImageView imageThumb;
-    private ImageView buttonEdit;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -216,8 +214,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         imageThumb.setOnClickListener(this);
         fPhotoName = lPhotoDesc.findViewById(R.id.form_photo_name);
         fPhotoName.setFocusable(false);
-//        buttonEdit = lPhotoDesc.findViewById(R.id.btn_edit);
-//        buttonEdit.setOnClickListener(this);
         ImageView buttonDelete = lPhotoDesc.findViewById(R.id.btn_delete);
         buttonDelete.setOnClickListener(this);
 
@@ -307,10 +303,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 imageDialog.setArguments(bundle);
                 imageDialog.show(getSupportFragmentManager(), TAG_PHOTO);
                 break;
-//            case R.id.btn_edit:
-//                if (fPhotoName.getText().toString().equals("")) return;
-//                fPhotoName.requestFocus();
-//                break;
             case R.id.btn_delete:
                 if (photoObj == null) return;
                 photoObj.setUri(null);
@@ -540,7 +532,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         super.onResume();
         pipeShape.setShape(null);
         restoreInstanceState();
-        super.onResume();
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         PendingIntent pendingIntent = PendingIntent
                 .getActivity(this, 0, new Intent(this, getClass())

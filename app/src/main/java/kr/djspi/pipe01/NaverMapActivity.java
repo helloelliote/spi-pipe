@@ -243,7 +243,6 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     }
 
     private void onRequestPipe(@NotNull NaverMap naverMap) {
-        // TODO: 2019-04-19 현재 화면 영역의 SPI를 불러올때 화면 밖 영역의 SPI 마커는 모두 삭제
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
         jsonQuery.addProperty("sx", String.valueOf(bounds.getWestLongitude()));
