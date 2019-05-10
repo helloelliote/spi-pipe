@@ -8,10 +8,6 @@ import android.graphics.PointF;
 import android.location.Location;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +20,11 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -61,10 +62,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
-import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
 import static com.helloelliote.util.retrofit.ApiKey.API_PIPE_GET;
 import static com.naver.maps.map.CameraAnimation.Fly;
 import static com.naver.maps.map.LocationTrackingMode.Face;
@@ -116,7 +117,12 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
+        setToolbar(null);
+    }
+
+    @Override
+    void setToolbar(String title) {
+        toolbar.findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
     }
 
     /**
@@ -319,6 +325,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(null);
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             // drop NFC events
         }
@@ -448,7 +455,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
             public View getView(final int position, View view, ViewGroup parent) {
                 final ItemHolder holder;
                 if (view == null) {
-                    view = inflater.inflate(R.layout.listview_searchplaces, null);
+                    view = inflater.inflate(R.layout.list_searchplaces, null);
                     holder = new ItemHolder();
                     holder.name = view.findViewById(R.id.name);
                     view.setTag(holder);

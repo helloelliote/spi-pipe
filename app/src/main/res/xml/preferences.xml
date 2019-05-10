@@ -1,0 +1,64 @@
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="category_switch"
+        app:title="작업환경">
+
+        <SwitchPreferenceCompat
+            app:key="switch_preset"
+            app:summaryOff="입력값을 적용하지 않습니다."
+            app:summaryOn="설정된 입력값을 적용합니다."
+            app:title="관로정보 일괄적용" />
+
+        <Preference
+            app:key="help"
+            app:title="도움말 보기" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:dependency="switch_preset"
+        app:key="category_default"
+        app:title="관로정보">
+
+        <Preference
+            app:key="pipe_type"
+            app:title="관로종류"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="material"
+            app:title="관로재질"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:key="supervise"
+            app:title="관리기관"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="supervise_contact"
+            app:title="관리기관 전화번호"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="construction"
+            app:title="시공업체"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="construction_contact"
+            app:title="시공업체 연락처"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="category_location"
+        app:title="위치정보">
+
+        <SwitchPreferenceCompat
+            app:key="switch_location"
+            app:summaryOff="(기본) 지도에서 입력합니다."
+            app:summaryOn="측량좌표를 직접 입력합니다."
+            app:title="SPI 설치위치 입력" />
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

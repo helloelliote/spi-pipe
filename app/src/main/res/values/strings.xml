@@ -16,10 +16,16 @@
     <!--NavigationView-->
     <string name="nav_title">SPI(Smart Pipe Indicator)</string>
     <string name="nav_version_name">버전 %1$s (%2$s)</string>
-    <string name="nav_phone"><![CDATA[<font color="#0077C8"><a href="tel:%1$s">%1$s</a></font>]]></string>
-    <string name="nav_email"><![CDATA[대진기술정보(주) <font color="#0077C8">%1$s</font>]]></string>
+    <string name="nav_email">대진기술정보(주) %1$s</string>
     <string name="nav_dj_email">djgis@chol.com</string>
     <string name="nav_dj_phone">+82–53–424–9547</string>
+    <string name="nav_dj_homepage">http://djspi.kr</string>
+    <string name="nav_app">어플리케이션</string>
+    <string name="nav_guide">어플리케이션 정보</string>
+    <string name="nav_clear_cache">지도 캐시 초기화</string>
+    <string name="nav_homepage">홈페이지</string>
+    <string name="nav_settings">환경설정</string>
+    <string name="nav_preference">설정</string>
 
     <!--MainActivity-->
     <string name="lay_main1_title"></string>
@@ -187,7 +193,10 @@
     <string name="error_load_image_fail">이미지를 불러오지 못하였습니다.</string>
     <string name="error_load_image_retry">새로고침</string>
 
-    <string name="nav_guide">
+    <!--Preferences -->
+    <string name="message_preset_help">반복되는 관로정보를 미리 지정하여, 관로정보를 등록하는 과정에서 불러와 사용할 수 있는 편의기능입니다.
+        \n\n별도로 지정하지 않은 정보는 관로정보를 등록하는 과정에서 개별적으로 입력할 수 있습니다.</string>
+    <string name="nav_guide_content">
         1. 앱의 용도\n
         본 SPI 앱은 지하매설관로에 대한 정보를 지능형 매설관로 인식표지(SPI)에 기록, 저장하고 저장된 정보를 읽기 위한 애플리케이션입니다.\n
         \n

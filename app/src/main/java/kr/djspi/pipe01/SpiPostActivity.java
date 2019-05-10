@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Html;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -101,8 +102,8 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     }
 
     @Override
-    protected void setToolbarTitle(String string) {
-        super.setToolbarTitle(string);
+    protected void setToolbar(String string) {
+        super.setToolbar(string);
     }
 
     /**

@@ -7,8 +7,6 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -21,6 +19,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.preference.PreferenceManager;
 
 import com.andreabaccega.widget.FormEditText;
 import com.bumptech.glide.Glide;
@@ -112,6 +114,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
     private ImageView imageThumb;
+    private SharedPreferences defPreferences;
+    private boolean usePreset;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -132,13 +136,15 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             spiPhoto = (SpiPhoto) itemMap.get("SpiPhoto");
         }
         setContentView(R.layout.activity_register);
+        defPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        usePreset = defPreferences.getBoolean("switch_preset", false);
         superviseList = getSuperviseList();
     }
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        setToolbarTitle(spiType.getType());
+        setToolbar(spiType.getType());
 
         findViewById(R.id.lay_pipe).setOnClickListener(this);
         fPipe = findViewById(R.id.form_pipe);
@@ -221,7 +227,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     }
 
     @Override
-    void setToolbarTitle(String title) {
+    void setToolbar(String title) {
         if (title != null) {
             toolbar.setTitle(format(getString(R.string.app_title_alt), "매설관로", title));
         }
@@ -331,27 +337,11 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         switch (tag) {
             case TAG_PIPE:
-                fPipe.setText(PIPE_TYPE_ENUMS[index].getName());
-                // TODO: 2019-04-01 index 번호 대신 서버에서 오는 정보 사용하도록 개선
-                String header = PIPE_TYPE_ENUMS[index].getHeader();
-                String unit = PIPE_TYPE_ENUMS[index].getUnit();
-                tHeader.setText(format("%s  ", header));
-                fSpec.setHint(format("%s 입력", header).replace("관경", "관로관경"));
-                fSpec.setText(null);
-                tUnit.setText(format("  %s", unit));
-                pipe.setType_id(index + 1);
-                pipeType.setId(index + 1);
-                pipeType.setHeader(header);
-                pipeType.setUnit(unit);
-                if (unit.equals("mm")) fSpec.setInputType(TYPE_CLASS_NUMBER);
-                else {
-                    fSpec.setInputType(TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                    fSpec.setError(null);
-                }
+                onPipeTypeSelect(index);
                 if (fShape.getText().toString().equals("")) {
                     pipeShape.setShape(null);
                     new ListDialog().show(getSupportFragmentManager(), TAG_SHAPE);
-                } else return;
+                }
                 break;
             case TAG_SHAPE:
                 fShape.setText(PipeShapeEnum.values()[index].name());
@@ -466,6 +456,25 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
+    private void onPipeTypeSelect(int index) {
+        fPipe.setText(PIPE_TYPE_ENUMS[index].getName());
+        String header = PIPE_TYPE_ENUMS[index].getHeader();
+        String unit = PIPE_TYPE_ENUMS[index].getUnit();
+        tHeader.setText(format("%s  ", header));
+        fSpec.setHint(format("%s 입력", header).replace("관경", "관로관경"));
+        fSpec.setText(null);
+        tUnit.setText(format("  %s", unit));
+        pipe.setType_id(index + 1);
+        pipeType.setId(index + 1);
+        pipeType.setHeader(header);
+        pipeType.setUnit(unit);
+        if (unit.equals("mm")) fSpec.setInputType(TYPE_CLASS_NUMBER);
+        else {
+            fSpec.setInputType(TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+            fSpec.setError(null);
+        }
+    }
+
     private void showPositionDialog() {
         PositionDialog dialog = new PositionDialog();
         Bundle bundle = new Bundle();
@@ -542,13 +551,14 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     @Override
     protected void onPause() {
         super.onPause();
-        saveInstanceState();
+//        saveInstanceState();
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         nfcAdapter.disableForegroundDispatch(this);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(null);
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             // drop NFC events
         }
@@ -571,12 +581,25 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
      * 마지막 사용자 입력값 불러오기
      */
     private void restoreInstanceState() {
-        SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-        if (preferences != null) {
-            fSuperviseContact.setText(preferences.getString("superviseContact", ""));
-            fMaterial.setText(preferences.getString("material", ""));
-            fConstruction.setText(preferences.getString("construction", ""));
-            fConstructionContact.setText(preferences.getString("constructionContact", ""));
+//        SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+//        if (preferences != null) {
+//            fSuperviseContact.setText(preferences.getString("superviseContact", null));
+//            fMaterial.setText(preferences.getString("material", null));
+//            fConstruction.setText(preferences.getString("construction", null));
+//            fConstructionContact.setText(preferences.getString("constructionContact", null));
+//        }
+        if (usePreset) {
+            String stringType = defPreferences.getString("pipe_type", null);
+            if (stringType != null) {
+                int index = Integer.parseInt(stringType);
+                if (index >= 0) onPipeTypeSelect(Integer.parseInt(stringType));
+            }
+            fMaterial.setText(defPreferences.getString("material", null));
+//            String supervise = defPreferences.getString("supervise", null);
+//            fSupervise.setText(supervise);
+            fSuperviseContact.setText(defPreferences.getString("supervise_contact", null));
+            fConstruction.setText(defPreferences.getString("construction", null));
+            fConstructionContact.setText(defPreferences.getString("construction_contact", null));
         }
     }
 

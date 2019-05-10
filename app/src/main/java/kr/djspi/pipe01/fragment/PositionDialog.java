@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +12,11 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import org.jetbrains.annotations.NotNull;
 

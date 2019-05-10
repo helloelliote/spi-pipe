@@ -325,7 +325,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_confirm"
         style="@style/Spi.Button"
         android:layout_width="200dp"

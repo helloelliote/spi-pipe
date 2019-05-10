@@ -30,7 +30,7 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:allowBackup">
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -86,6 +86,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingsActivity"
             android:screenOrientation="portrait" />
     </application>
 </manifest>

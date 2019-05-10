@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,8 +12,14 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
 import com.sylversky.indexablelistview.scroller.Indexer;
 import com.sylversky.indexablelistview.widget.IndexableListView;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +53,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         listTag = getTag();
         listItem = new ArrayList<>();
@@ -139,7 +143,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NotNull DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
     }
@@ -195,6 +199,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         }
 
         @Override
+        @Nullable
         public Object[] getSections() {
             if (isListSupervise) return customSection.getArraySections();
             else return null;

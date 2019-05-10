@@ -3,11 +3,6 @@ package kr.djspi.pipe01.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +12,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.helloelliote.util.filter.DecimalFilter;
 import com.helloelliote.util.geolocation.GeoTrans;
 

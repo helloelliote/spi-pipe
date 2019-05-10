@@ -1,4 +1,4 @@
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/Spi.Toolbar"
             app:title="@string/app_title">
@@ -42,7 +42,7 @@
                 app:textToggleRight="@string/map_mode_hybrid"
                 app:toggleWidth="45dp"
                 app:uncheckedBackgroundColor="@android:color/white" />
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
             android:id="@+id/activity_content"
@@ -62,26 +62,29 @@
         </FrameLayout>
     </LinearLayout>
 
-    <android.support.design.widget.NavigationView
+    <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_header">
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/navigation_header"
+        app:itemTextColor="@android:color/black"
+        app:menu="@menu/drawer_main">
 
-        <ImageButton
-            android:id="@+id/nav_swipe_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:alpha="0.7"
-            android:backgroundTint="@android:color/transparent"
-            android:padding="5dp"
-            android:src="@drawable/ic_swipe_left"
-            android:tint="@color/colorPrimary"
-            tools:ignore="ContentDescription" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/nav_swipe_close"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical|end"-->
+            <!--android:alpha="0.7"-->
+            <!--android:backgroundTint="@android:color/transparent"-->
+            <!--android:padding="5dp"-->
+            <!--android:src="@drawable/ic_swipe_left"-->
+            <!--android:tint="@color/colorPrimary"-->
+            <!--tools:ignore="ContentDescription" />-->
 
-        <android.support.design.button.MaterialButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/nav_close"
             style="@style/Spi.Button"
             android:layout_width="wrap_content"
@@ -90,5 +93,5 @@
             android:layout_margin="20dp"
             android:padding="10dp"
             android:text="@string/nav_close" />
-    </android.support.design.widget.NavigationView>
-</android.support.v4.widget.DrawerLayout>
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>

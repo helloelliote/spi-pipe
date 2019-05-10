@@ -2,16 +2,18 @@ package kr.djspi.pipe01;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.design.button.MaterialButton;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.preference.PreferenceManager;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -41,12 +43,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.Locale;
 
-import kr.djspi.pipe01.fragment.LocationDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
 import kr.djspi.pipe01.fragment.SurveyDialog;
 
 import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.helloelliote.util.geolocation.GeoTrans.Coordinate.GEO;
 import static com.helloelliote.util.retrofit.ApiKey.API_PIPE_GET;
@@ -57,7 +57,6 @@ import static com.naver.maps.map.overlay.OverlayImage.fromResource;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
 import static kr.djspi.pipe01.Const.RESULT_FAIL;
-import static kr.djspi.pipe01.Const.TAG_LOCATION;
 import static kr.djspi.pipe01.Const.TAG_SURVEY;
 import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
@@ -70,12 +69,9 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     private static final double ZOOM_GET = 12.0;
     private static final double ZOOM_MAX = NaverMap.MAXIMUM_ZOOM; // 최대 줌레벨(21)
     private boolean isSelected = true;
-    private LocationDialog selectDialog = new LocationDialog();
     private TextView textView;
-    private MaterialButton buttonConfirm;
     private NaverMap naverMap;
-    private Thread thread;
-    private Runnable runnable;
+    private SurveyDialog surveyDialog = new SurveyDialog();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,18 +86,17 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
         textView = findViewById(R.id.record_gps);
         textView.setOnClickListener(this);
-        buttonConfirm = findViewById(R.id.btn_confirm);
-        buttonConfirm.setOnClickListener(this);
+        findViewById(R.id.btn_confirm).setOnClickListener(this);
 
-        setToolbarTitle(getString(R.string.record_location_title));
+        setToolbar(getString(R.string.record_location_title));
     }
 
     @Override
-    void setToolbarTitle(String string) {
+    void setToolbar(String string) {
         toolbar.setTitle(string);
+        toolbar.findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
     }
 
     /**
@@ -145,16 +140,17 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         });
         setMapModeSwitch(naverMap);
 
-        runOnUiThread(() -> {
-            selectDialog.setCancelable(false);
-            selectDialog.show(getSupportFragmentManager(), TAG_LOCATION);
-        });
-
-        runnable = () -> onRequestPipe(naverMap);
-        if (thread == null) {
-            thread = new Thread(runnable);
-            thread.start();
+        SharedPreferences defPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final boolean useSurvey = defPreferences.getBoolean("switch_location", false);
+        if (useSurvey) {
+            runOnUiThread(() -> {
+                textView.setVisibility(View.INVISIBLE);
+                surveyDialog.setCancelable(false);
+                surveyDialog.show(getSupportFragmentManager(), TAG_SURVEY);
+            });
         }
+
+        new Thread(() -> onRequestPipe(naverMap)).start();
     }
 
     /**
@@ -250,21 +246,6 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     @Override
     public void onSelect(String tag, int index, @Nullable String... text) {
         switch (tag) {
-            case TAG_LOCATION:
-                if (index == RESULT_FAIL) {
-                    isSelected = false;
-                    onBackPressed();
-                    return;
-                } else if (index == 1) {
-                    SurveyDialog surveyDialog = new SurveyDialog();
-                    surveyDialog.setCancelable(false);
-                    surveyDialog.show(getSupportFragmentManager(), TAG_SURVEY);
-                    onPause();
-                } else {
-                    textView.setVisibility(VISIBLE);
-                    buttonConfirm.setVisibility(VISIBLE);
-                }
-                break;
             case TAG_SURVEY:
                 if (index == RESULT_FAIL) {
                     isSelected = false;
@@ -275,7 +256,6 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                 LatLng surveyLatLng = convertTmToLatLng(Double.valueOf(text[0]), Double.valueOf(text[1]));
                 CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(surveyLatLng, ZOOM_DEFAULT).animate(CameraAnimation.Fly);
                 naverMap.moveCamera(cameraUpdate);
-                buttonConfirm.setVisibility(VISIBLE);
                 break;
             default:
                 break;
@@ -297,9 +277,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
 
     @Override
     public void onBackPressed() {
-        if (selectDialog.isAdded() && isSelected) return;
-        textView.setVisibility(INVISIBLE);
-        buttonConfirm.setVisibility(INVISIBLE);
+        if (surveyDialog.isAdded() && isSelected) return;
         super.onBackPressed();
     }
 
@@ -307,7 +285,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
     protected void onStop() {
         super.onStop();
         originPoint = null;
-        selectDialog = null;
+        surveyDialog = null;
     }
 
     @Override
@@ -329,6 +307,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(null);
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             // drop NFC events
         }

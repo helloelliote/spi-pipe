@@ -5,34 +5,35 @@ import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
+import com.naver.maps.map.NaverMapSdk;
+
 import org.jetbrains.annotations.NotNull;
 
 import kr.djspi.pipe01.fragment.MessageDialog;
 import kr.djspi.pipe01.nfc.NfcUtil;
 
-import static android.content.Intent.ACTION_DIAL;
-import static android.content.Intent.ACTION_SENDTO;
-import static android.text.Html.fromHtml;
-import static android.view.Gravity.START;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static kr.djspi.pipe01.BuildConfig.BUILD_TYPE;
-import static kr.djspi.pipe01.BuildConfig.VERSION_NAME;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static Resources resources;
     public static String packageName;
@@ -90,7 +91,7 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    void setToolbarTitle(String title) {
+    void setToolbar(String title) {
     }
 
     /**
@@ -100,31 +101,69 @@ public class BaseActivity extends AppCompatActivity {
         drawer = view.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
+        toggle.setDrawerIndicatorEnabled(false);
+        toggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
+        toggle.setToolbarNavigationClickListener(v -> drawer.openDrawer(GravityCompat.START));
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = view.findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(this);
 
         TextView versionName = headerView.findViewById(R.id.versionName);
-        versionName.setText(getString(R.string.nav_version_name, VERSION_NAME, BUILD_TYPE));
+        versionName.setText(getString(R.string.nav_version_name, BuildConfig.VERSION_NAME, BuildConfig.BUILD_TYPE));
 
         TextView email = headerView.findViewById(R.id.email);
         String emailStr = getString(R.string.nav_dj_email);
-        email.setText(fromHtml(getString(R.string.nav_email, emailStr)));
+        email.setText(getString(R.string.nav_email, emailStr));
         email.setOnClickListener(v ->
-                startActivity(new Intent(ACTION_SENDTO, Uri.fromParts("mailto", emailStr, null))));
+                startActivity(new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", emailStr, null))));
 
         TextView phone = headerView.findViewById(R.id.phone);
         String phoneStr = getString(R.string.nav_dj_phone);
-        phone.setText(fromHtml(getString(R.string.nav_phone, phoneStr)));
+        phone.setText(phoneStr);
         phone.setOnClickListener(v ->
-                startActivity(new Intent(ACTION_DIAL, Uri.parse("tel:" + phoneStr))));
+                startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneStr))));
 
-        TextView guide = headerView.findViewById(R.id.guide);
-        guide.setText(getString(R.string.nav_guide));
-        navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(START));
-        navigationView.findViewById(R.id.nav_swipe_close).setOnClickListener(v -> drawer.closeDrawer(START));
+        navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(GravityCompat.START));
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        // Handle navigation view item clicks here.
+        int menuId = menuItem.getItemId();
+
+        switch (menuId) {
+            case R.id.nav_guide:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog alertDialog = builder
+                        .setTitle("SPI 정보")
+                        .setMessage(getString(R.string.nav_guide_content))
+                        .setPositiveButton("닫기", (dialog, which) -> dialog.dismiss()).create();
+                alertDialog.show();
+                TextView textView = alertDialog.findViewById(android.R.id.message);
+                if (textView != null) {
+                    textView.setTextSize(14.0f);
+                }
+                break;
+            case R.id.nav_homepage:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.nav_dj_homepage))));
+                break;
+            case R.id.nav_clear_cache:
+                NaverMapSdk.getInstance(this).flushCache(() ->
+                        Toast.makeText(BaseActivity.this, "캐시를 초기화하였습니다.", Toast.LENGTH_SHORT).show());
+                break;
+            case R.id.nav_settings:
+                startActivity(new Intent(this, SettingsActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                break;
+            default:
+                break;
+        }
+
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     /**

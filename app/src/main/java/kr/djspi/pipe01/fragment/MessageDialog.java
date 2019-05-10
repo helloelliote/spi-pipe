@@ -3,15 +3,16 @@ package kr.djspi.pipe01.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import kr.djspi.pipe01.MainActivity;
 import kr.djspi.pipe01.R;
@@ -109,7 +110,6 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 buttonOk.setOnClickListener(v -> {
                     dismiss();
                     android.os.Process.killProcess(android.os.Process.myPid());
-                    System.exit(1); // 앱 완전종료
                 });
                 break;
             case 4: // (MainActivity.class) 태그 정보 조회 실패

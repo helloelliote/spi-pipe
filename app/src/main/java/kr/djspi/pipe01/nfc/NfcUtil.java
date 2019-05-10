@@ -13,8 +13,9 @@ import android.nfc.tech.MifareUltralight;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NfcA;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.nxp.nfclib.NxpNfcLib;
 import com.nxp.nfclib.exceptions.NxpNfcLibException;

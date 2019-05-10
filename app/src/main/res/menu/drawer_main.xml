@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="@string/nav_app">
+        <menu>
+            <item
+                android:id="@+id/nav_guide"
+                android:title="@string/nav_guide" />
+            <item
+                android:id="@+id/nav_clear_cache"
+                android:title="@string/nav_clear_cache" />
+            <item
+                android:id="@+id/nav_homepage"
+                android:title="@string/nav_homepage" />
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_settings">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:title="@string/nav_preference" />
+        </menu>
+    </item>
+</menu>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -28,7 +28,6 @@
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/map_fragment" />
@@ -43,7 +42,7 @@
         app:layout_constraintStart_toStartOf="@id/map_fragment"
         app:layout_constraintTop_toTopOf="@id/map_fragment" />
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_confirm"
         style="@style/Spi.Button"
         android:layout_width="160dp"
@@ -52,8 +51,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginBottom="10dp"
         android:text="@string/record_confirm_location"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/map_fragment"
         app:layout_constraintEnd_toEndOf="@id/map_fragment"
         app:layout_constraintStart_toStartOf="@id/map_fragment" />
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

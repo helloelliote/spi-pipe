@@ -1,6 +1,6 @@
 package com.helloelliote.util.geolocation;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import lombok.Getter;
 

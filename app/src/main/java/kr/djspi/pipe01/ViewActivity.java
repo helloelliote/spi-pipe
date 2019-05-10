@@ -6,16 +6,17 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.TabLayout.OnTabSelectedListener;
-import android.support.design.widget.TabLayout.Tab;
-import android.support.design.widget.TabLayout.TabLayoutOnPageChangeListener;
-import android.support.v4.view.ViewPager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
+import com.google.android.material.tabs.TabLayout.Tab;
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.helloelliote.util.json.Json;
@@ -107,7 +108,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
         drawable.setSize(8, 1);
         linearLayout.setDividerDrawable(drawable);
 
-        setToolbarTitle("");
+        setToolbar("");
 
         setSpiIdInfo();
         setSuperviseInfo();
@@ -115,7 +116,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     }
 
     @Override
-    void setToolbarTitle(String string) {
+    void setToolbar(String string) {
         if (string != null) {
             toolbar.setTitle(String.format(getString(R.string.app_title_alt), Json.s(jsonObject, "pipe"), ""));
         }
@@ -194,23 +195,19 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_MAP:
-                    double[] locations = data.getDoubleArrayExtra("locations");
-                    Entry currentEntry = previewEntries.get(pipeIndex);
-                    SpiLocation location = currentEntry.getSpi_location();
-                    location.setLatitude(locations[0]);
-                    location.setLongitude(locations[1]);
-                    location.setCount(0);
-                    currentEntry.setSpi_location(location);
-                    previewEntries.set(pipeIndex, currentEntry);
-                    startActivity(new Intent(this, SpiPostActivity.class)
-                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                            .putExtra("entry", previewEntries)
-                            .putExtra("SpiPhotoObject", photoObj));
-                    break;
-                default:
-                    break;
+            if (requestCode == REQUEST_MAP) {
+                double[] locations = data.getDoubleArrayExtra("locations");
+                Entry currentEntry = previewEntries.get(pipeIndex);
+                SpiLocation location = currentEntry.getSpi_location();
+                location.setLatitude(locations[0]);
+                location.setLongitude(locations[1]);
+                location.setCount(0);
+                currentEntry.setSpi_location(location);
+                previewEntries.set(pipeIndex, currentEntry);
+                startActivity(new Intent(this, SpiPostActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("entry", previewEntries)
+                        .putExtra("SpiPhotoObject", photoObj));
             }
         }
     }
@@ -234,6 +231,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(null);
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             // drop NFC events
         }

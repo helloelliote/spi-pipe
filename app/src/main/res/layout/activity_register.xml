@@ -383,7 +383,7 @@
             android:layout_height="0.4dp"
             android:background="@color/line_d" />
 
-        <android.support.design.button.MaterialButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/button_confirm"
             style="@style/Spi.Button"
             android:layout_width="200dp"
