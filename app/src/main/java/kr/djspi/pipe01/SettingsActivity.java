@@ -20,11 +20,12 @@ import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 
 public class SettingsActivity extends AppCompatActivity implements OnSelectListener {
 
-    private static SettingsFragment settingsFragment = new SettingsFragment();
+    private SettingsFragment settingsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settingsFragment = new SettingsFragment();
         setContentView(R.layout.activity_settings);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -62,10 +63,11 @@ public class SettingsActivity extends AppCompatActivity implements OnSelectListe
         if (index == -1) return;
         switch (tag) {
             case TAG_PIPE:
-                settingsFragment.pipeTypePref.setSummary(PIPE_TYPE_ENUMS[index].getName());
+                runOnUiThread(() -> settingsFragment.getPipeTypePref().setSummary(PIPE_TYPE_ENUMS[index].getName()));
                 break;
             case TAG_SUPERVISE:
-                // TODO: 2019-05-10 관로종류 및 관리기관 정보 넘겨주기
+                if (text == null) return;
+                runOnUiThread(() -> settingsFragment.getSupervisePref().setSummary(text[0]));
                 break;
             default:
                 break;
@@ -74,12 +76,12 @@ public class SettingsActivity extends AppCompatActivity implements OnSelectListe
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
 
-        Preference pipeTypePref;
-        Preference supervisePref;
+        private Preference pipeTypePref;
+        private Preference supervisePref;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            setPreferencesFromResource(R.xml.preferences, rootKey);
+            setPreferencesFromResource(R.xml.preference_settings, rootKey);
 
             Preference helpPref = findPreference("help");
             if (helpPref != null) {
@@ -96,21 +98,30 @@ public class SettingsActivity extends AppCompatActivity implements OnSelectListe
 
             pipeTypePref = findPreference("pipe_type");
             if (pipeTypePref != null) {
+                pipeTypePref.setPersistent(true);
                 pipeTypePref.setOnPreferenceClickListener(preference -> {
                     new ListDialog().show(getChildFragmentManager(), TAG_PIPE);
                     return false;
                 });
             }
+            // TODO: 2019-05-12 설정값이 저장되지 않음
 
             supervisePref = findPreference("supervise");
             if (supervisePref != null) {
+                supervisePref.setPersistent(true);
                 supervisePref.setOnPreferenceClickListener(preference -> {
-                    ListDialog listDialog = new ListDialog();
-//                    listDialog.setArguments(superviseListBundle);
-                    listDialog.show(getChildFragmentManager(), TAG_SUPERVISE);
+                    new ListDialog().show(getChildFragmentManager(), TAG_SUPERVISE);
                     return false;
                 });
             }
+        }
+
+        Preference getPipeTypePref() {
+            return pipeTypePref;
+        }
+
+        Preference getSupervisePref() {
+            return supervisePref;
         }
     }
 }

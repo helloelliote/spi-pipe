@@ -112,7 +112,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
             Toast toast = Toast.makeText(context, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
-            showDatabase();
         });
     }
 
@@ -135,16 +134,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
         super.onDestroy();
         progressBar.setVisibility(INVISIBLE);
         connectivityManager.unregisterNetworkCallback(networkCallback);
-    }
-
-    private void showDatabase() {
-        new Thread(() -> {
-            int id = superviseDb.dao().loadBySupervise("청송군").getId();
-            System.out.println(id);
-//            for (Supervise supervise : superviseList) {
-//                System.out.println(supervise.getId() + " " + supervise.getSupervise());
-//            }
-        }).start();
     }
 
     @Override
@@ -212,7 +201,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
                             @Override
                             public void onResponse(JsonObject response) {
                                 JsonArray elements = Json.a(response, "data");
-                                // TODO: 2019-04-11 Json 데이터 필드명 순서?
                                 startActivity(new Intent(context, ViewActivity.class)
                                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                                         .putExtra("PipeView", elements.get(0).toString()));

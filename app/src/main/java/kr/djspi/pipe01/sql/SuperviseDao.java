@@ -2,6 +2,7 @@ package kr.djspi.pipe01.sql;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -10,21 +11,24 @@ import java.util.List;
 @Dao
 public interface SuperviseDao {
 
-    @Query("SELECT * FROM Supervise")
+    @Query("SELECT * FROM Supervise ORDER BY supervise ASC")
     List<Supervise> getAll();
 
-    @Query("SELECT * FROM Supervise WHERE id IN (:userId) LIMIT 1")
-    Supervise loadById(int userId);
+    @Query("SELECT supervise FROM Supervise WHERE id IN (:userId) LIMIT 1")
+    String selectById(int userId);
 
-    @Query("SELECT * FROM Supervise WHERE supervise IN (:supervise) LIMIT 1")
-    Supervise loadBySupervise(String supervise);
+    @Query("SELECT id FROM Supervise WHERE supervise IN (:supervise) LIMIT 1")
+    int selectBySupervise(String supervise);
+
+    @Query("SELECT supervise FROM Supervise LIMIT 1 OFFSET (:row)")
+    String selectByRow(int row);
 
     @Update
     void update(Supervise supervise);
 
-    @Insert
-    void insertAll(Supervise... superviseEntities);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(Supervise... entity);
 
-    @Insert
-    void insert(Supervise superviseEntities);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(Supervise entity);
 }

@@ -19,9 +19,6 @@
             <item
                 android:id="@+id/nav_supervise"
                 android:title="@string/nav_supervise" />
-            <!--<item-->
-            <!--android:id="@+id/nav_pipe"-->
-            <!--android:title="@string/nav_pipe" />-->
             <item
                 android:id="@+id/nav_clear_cache"
                 android:title="@string/nav_clear_cache" />

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "93b3fba94fbafcb0bb95629de89d6fcf",
+    "identityHash": "d4b94880aa69eb35edce491df199fdc9",
     "entities": [
       {
         "tableName": "Supervise",
@@ -29,13 +29,12 @@
         },
         "indices": [
           {
-            "name": "index_Supervise_id_supervise",
+            "name": "index_Supervise_id",
             "unique": true,
             "columnNames": [
-              "id",
-              "supervise"
+              "id"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_Supervise_id_supervise` ON `${TABLE_NAME}` (`id`, `supervise`)"
+            "createSql": "CREATE UNIQUE INDEX `index_Supervise_id` ON `${TABLE_NAME}` (`id`)"
           }
         ],
         "foreignKeys": []
@@ -44,7 +43,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"93b3fba94fbafcb0bb95629de89d6fcf\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d4b94880aa69eb35edce491df199fdc9\")"
     ]
   }
 }

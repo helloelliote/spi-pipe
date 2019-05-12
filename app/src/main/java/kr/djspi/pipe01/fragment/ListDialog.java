@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.room.Room;
 
 import com.sylversky.indexablelistview.scroller.Indexer;
 import com.sylversky.indexablelistview.widget.IndexableListView;
@@ -23,9 +24,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import kr.djspi.pipe01.R;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
+import kr.djspi.pipe01.sql.Supervise;
+import kr.djspi.pipe01.sql.SuperviseDatabase;
 
 import static android.view.View.TEXT_ALIGNMENT_CENTER;
 import static kr.djspi.pipe01.Const.PIPE_SHAPES;
@@ -48,6 +52,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     private String componentName;
     private Parcelable state;
     private OnSelectListener listener;
+    private SuperviseDatabase superviseDb;
 
     public ListDialog() {
     }
@@ -78,9 +83,16 @@ public class ListDialog extends DialogFragment implements OnClickListener {
                 dialogTitle = getString(R.string.popup_title_select_shape);
                 break;
             case TAG_SUPERVISE:
-                if (getArguments() != null) {
-                    listItem = getArguments().getStringArrayList("superviseList");
-                }
+                new Thread(() -> {
+                    if (superviseDb == null) {
+                        superviseDb = Room.databaseBuilder(getContext(), SuperviseDatabase.class, "db_supervise").build();
+                    }
+                    List<Supervise> dbList = superviseDb.dao().getAll();
+                    for (Supervise db : dbList) {
+                        listItem.add(db.getSupervise());
+                    }
+                    superviseDb.close();
+                }).start();
                 dialogTitle = getString(R.string.popup_title_select_supervise);
                 break;
             default:

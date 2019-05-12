@@ -26,15 +26,8 @@ import androidx.preference.PreferenceManager;
 
 import com.andreabaccega.widget.FormEditText;
 import com.bumptech.glide.Glide;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.helloelliote.util.filter.DecimalFilter;
 import com.helloelliote.util.image.ImageUtil;
-import com.helloelliote.util.json.Json;
-import com.helloelliote.util.retrofit.Retrofit2x;
-import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
-import com.helloelliote.util.retrofit.SuperviseGet;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +76,6 @@ import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_POSITION;
 import static kr.djspi.pipe01.Const.TAG_SHAPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
-import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType;
 
 public class RegisterActivity extends BaseActivity implements OnSelectListener, OnClickListener, Serializable {
@@ -105,12 +97,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private static final PipePosition pipePosition = new PipePosition();
     private static final PipePlan pipePlan = new PipePlan();
     private static final PipeSupervise pipeSupervise = new PipeSupervise();
-    private final Bundle superviseListBundle = new Bundle(1);
     private SpiPhotoObject photoObj;
     private File tempFile;
     private Uri tempUri;
-    private ArrayList<String> superviseList;
-    private HashMap<String, Integer> superviseMap;
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
     private ImageView imageThumb;
@@ -138,7 +127,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         setContentView(R.layout.activity_register);
         defPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         usePreset = defPreferences.getBoolean("switch_preset", false);
-        superviseList = getSuperviseList();
     }
 
     @Override
@@ -193,12 +181,10 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         fMaterial = findViewById(R.id.form_material);
         fMaterial.setOnEditorActionListener((v, actionId, event) -> {
             boolean isHandled = false;
-            if (actionId == IME_ACTION_NEXT && fSupervise.getText().toString().equals("") && !superviseList.isEmpty()) {
+            if (actionId == IME_ACTION_NEXT && fSupervise.getText().toString().equals("")) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 imm.toggleSoftInputFromWindow(v.getWindowToken(), 0, 0);
-                ListDialog listDialog = new ListDialog();
-                listDialog.setArguments(superviseListBundle);
-                listDialog.show(getSupportFragmentManager(), TAG_SUPERVISE);
+                new ListDialog().show(getSupportFragmentManager(), TAG_SUPERVISE);
                 isHandled = true;
             }
             return isHandled;
@@ -233,36 +219,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         }
     }
 
-    private ArrayList<String> getSuperviseList() {
-        if (superviseList == null || superviseMap == null) {
-            superviseList = new ArrayList<>();
-            superviseMap = new HashMap<>();
-            JsonObject jsonQuery = new JsonObject();
-            jsonQuery.addProperty("json", "");
-            Retrofit2x.builder()
-                    .setService(new SuperviseGet(URL_SPI))
-                    .setQuery(jsonQuery).build()
-                    .run(new OnRetrofitListener() {
-                        @Override
-                        public void onResponse(JsonObject response) {
-                            final JsonArray jsonArray = Json.a(response, "data");
-                            for (JsonElement element : jsonArray) {
-                                JsonObject object = element.getAsJsonObject();
-                                superviseMap.put(Json.s(object, "supervise"), Json.i(object, "id"));
-                                superviseList.add(Json.s(object, "supervise"));
-                                superviseListBundle.putStringArrayList("superviseList", superviseList);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            Toast.makeText(getApplicationContext(), "관리기관: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            return superviseList;
-        } else return superviseList;
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -277,15 +233,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 break;
             case R.id.lay_supervise:
             case R.id.form_supervise:
-                if (superviseList.isEmpty() || superviseMap.isEmpty()) {
-                    fSupervise.setOnClickListener(null);
-                    fSupervise.setEnabled(true);
-                    fSupervise.setHint("직접 입력해주세요.");
-                    return;
-                }
-                ListDialog listDialog = new ListDialog();
-                listDialog.setArguments(superviseListBundle);
-                listDialog.show(getSupportFragmentManager(), TAG_SUPERVISE);
+                new ListDialog().show(getSupportFragmentManager(), TAG_SUPERVISE);
                 break;
             case R.id.lay_distance:
             case R.id.form_horizontal:
@@ -351,11 +299,15 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                 break;
             case TAG_SUPERVISE:
                 if (text == null) return;
-                fSupervise.setText(text[0]);
-                int superviseId = superviseMap.get(text[0]);
-                pipeSupervise.setId(superviseId);
-                pipe.setSupervise_id(superviseId);
-                fSuperviseContact.requestFocus();
+                new Thread(() -> {
+                    int superviseId = superviseDb.dao().selectBySupervise(text[0]);
+                    pipeSupervise.setId(superviseId);
+                    pipe.setSupervise_id(superviseId);
+                }).start();
+                runOnUiThread(() -> {
+                    fSupervise.setText(text[0]);
+                    fSuperviseContact.requestFocus();
+                });
                 break;
             case TAG_POSITION:
                 pipePosition.setPosition(index);
@@ -581,25 +533,35 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
      * 마지막 사용자 입력값 불러오기
      */
     private void restoreInstanceState() {
-//        SharedPreferences preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-//        if (preferences != null) {
-//            fSuperviseContact.setText(preferences.getString("superviseContact", null));
-//            fMaterial.setText(preferences.getString("material", null));
-//            fConstruction.setText(preferences.getString("construction", null));
-//            fConstructionContact.setText(preferences.getString("constructionContact", null));
+//        SharedPreferences preference_settings = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+//        if (preference_settings != null) {
+//            fSuperviseContact.setText(preference_settings.getString("superviseContact", null));
+//            fMaterial.setText(preference_settings.getString("material", null));
+//            fConstruction.setText(preference_settings.getString("construction", null));
+//            fConstructionContact.setText(preference_settings.getString("constructionContact", null));
 //        }
         if (usePreset) {
-            String stringType = defPreferences.getString("pipe_type", null);
-            if (stringType != null) {
-                int index = Integer.parseInt(stringType);
-                if (index >= 0) onPipeTypeSelect(Integer.parseInt(stringType));
-            }
-            fMaterial.setText(defPreferences.getString("material", null));
-//            String supervise = defPreferences.getString("supervise", null);
-//            fSupervise.setText(supervise);
-            fSuperviseContact.setText(defPreferences.getString("supervise_contact", null));
-            fConstruction.setText(defPreferences.getString("construction", null));
-            fConstructionContact.setText(defPreferences.getString("construction_contact", null));
+            runOnUiThread(() -> {
+                String stringType = defPreferences.getString("pipe_type", null);
+                System.out.println(stringType);
+                if (stringType != null) {
+                    int index = Integer.parseInt(stringType);
+                    if (index >= 0) onPipeTypeSelect(Integer.parseInt(stringType));
+                }
+                fMaterial.setText(defPreferences.getString("material", null));
+                String supervise = defPreferences.getString("supervise", null);
+                if (supervise != null) {
+                    new Thread(() -> {
+                        int superviseId = superviseDb.dao().selectBySupervise(supervise);
+                        pipeSupervise.setId(superviseId);
+                        pipe.setSupervise_id(superviseId);
+                    }).start();
+                    fSupervise.setText(supervise);
+                }
+                fSuperviseContact.setText(defPreferences.getString("supervise_contact", null));
+                fConstruction.setText(defPreferences.getString("construction", null));
+                fConstructionContact.setText(defPreferences.getString("construction_contact", null));
+            });
         }
     }
 

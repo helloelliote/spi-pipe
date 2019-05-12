@@ -72,26 +72,14 @@
         app:itemTextColor="@android:color/black"
         app:menu="@menu/drawer_main">
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/nav_swipe_close"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_vertical|end"-->
-            <!--android:alpha="0.7"-->
-            <!--android:backgroundTint="@android:color/transparent"-->
-            <!--android:padding="5dp"-->
-            <!--android:src="@drawable/ic_swipe_left"-->
-            <!--android:tint="@color/colorPrimary"-->
-            <!--tools:ignore="ContentDescription" />-->
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/nav_close"
             style="@style/Spi.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="20dp"
-            android:padding="10dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="15dp"
+            android:padding="5dp"
             android:text="@string/nav_close" />
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
