@@ -7,9 +7,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,7 +31,7 @@ public final class ImageUtil {
     private static final String DATE_PATTERN = "yyyyMMdd_HHmmss_SSS";
     private static final String REGEX_IMAGE_EXT = "((\\.(?i)(jpg|jpeg|tif|tiff|webp|png|gif|bmp))$)";
 
-    private static String uriToFilePath(@NotNull Context context, Uri uri) {
+    private static String uriToFilePath(@NonNull Context context, Uri uri) {
         Cursor cursor = context.getContentResolver().query(uri, PROJECTION_DATA, null, null, null);
         requireNonNull(cursor).moveToNext();
         String path = cursor.getString(cursor.getColumnIndex(DATA));
@@ -41,7 +40,7 @@ public final class ImageUtil {
     }
 
     @Nullable
-    public static String uriToFileName(@NotNull Context context, @NotNull Uri uri) {
+    public static String uriToFileName(@NonNull Context context, @NonNull Uri uri) {
         if (!requireNonNull(uri.getScheme()).equals("file"))
             try (Cursor cursor = context.getContentResolver().query(uri, PROJECTION_NAME, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
@@ -52,8 +51,7 @@ public final class ImageUtil {
         return null;
     }
 
-    @NotNull
-    @Contract("_, _ -> new")
+    @NonNull
     public static File uriToFile(Context context, Uri uri) {
         return new File(uriToFilePath(context, uri));
     }
@@ -65,9 +63,8 @@ public final class ImageUtil {
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
-    @Contract("_, _ -> param1")
     @SuppressWarnings("SameParameterValue")
-    public static File subSample4x(@NotNull File file, final int maxResolution) {
+    public static File subSample4x(@NonNull File file, final int maxResolution) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
         Bitmap sourceBitmap = decodeFile(file.getPath(), null);
@@ -99,7 +96,7 @@ public final class ImageUtil {
         }
     }
 
-    private static String createFileName(@NotNull String fileName) {
+    private static String createFileName(@NonNull String fileName) {
         String newFileName = fileName.replaceAll(REGEX_IMAGE_EXT, "_R.jpg");
         while (newFileName.indexOf(".") != newFileName.lastIndexOf(".")) {
             newFileName = newFileName.replaceFirst("(\\.(?i))", "");

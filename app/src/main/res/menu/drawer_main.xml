@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:title="@string/nav_app">
+    <item
+        android:id="@+id/title_app"
+        android:title="@string/nav_app">
         <menu>
             <item
                 android:id="@+id/nav_guide"
@@ -14,18 +16,9 @@
         </menu>
     </item>
 
-    <item android:title="@string/nav_database">
-        <menu>
-            <item
-                android:id="@+id/nav_supervise"
-                android:title="@string/nav_supervise" />
-            <item
-                android:id="@+id/nav_clear_cache"
-                android:title="@string/nav_clear_cache" />
-        </menu>
-    </item>
-
-    <item android:title="@string/nav_settings">
+    <item
+        android:id="@+id/title_setting"
+        android:title="@string/nav_settings">
         <menu>
             <item
                 android:id="@+id/nav_settings"

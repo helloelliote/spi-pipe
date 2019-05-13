@@ -125,7 +125,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
     private void setSpiIdInfo() {
         TextView id = findViewById(R.id.txt_id);
         try {
-            String idInt = Json.s(jsonObject, "spi_id");
+            String idInt = Json.s(jsonObject, "id");
             id.setText(fromHtml(getString(R.string.nfc_info_id, idInt)));
         } catch (RuntimeException e) {
             id.setVisibility(GONE);
@@ -235,11 +235,6 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             // drop NFC events
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     private final class TabSelected implements OnTabSelectedListener {

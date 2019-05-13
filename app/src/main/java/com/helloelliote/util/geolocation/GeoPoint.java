@@ -10,17 +10,10 @@ public class GeoPoint {
     double y;
     double z;
 
-    /**
-     *
-     */
     GeoPoint() {
         super();
     }
 
-    /**
-     * @param x
-     * @param y
-     */
     public GeoPoint(double x, double y) {
         super();
         this.x = x;
@@ -28,11 +21,6 @@ public class GeoPoint {
         this.z = 0;
     }
 
-    /**
-     * @param x
-     * @param y
-     * @param y
-     */
     public GeoPoint(double x, double y, double z) {
         super();
         this.x = x;

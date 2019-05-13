@@ -6,8 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import org.jetbrains.annotations.Contract;
-
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,7 +33,6 @@ public final class RetrofitCore {
         static final RetrofitCore INSTANCE = new RetrofitCore();
     }
 
-    @Contract(pure = true)
     public static RetrofitCore get() {
         return LazyHolder.INSTANCE;
     }

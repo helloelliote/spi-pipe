@@ -103,8 +103,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     private TextView tHeader, tUnit;
     private LinearLayout lPhotoDesc;
     private ImageView imageThumb;
-    private SharedPreferences defPreferences;
-    private boolean usePreset;
+    private SharedPreferences sharedPreferences;
     /**
      * 아래의 변수들은 내부 클래스에서도 참조하는 변수로, private 선언하지 않는다.
      */
@@ -125,8 +124,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             spiPhoto = (SpiPhoto) itemMap.get("SpiPhoto");
         }
         setContentView(R.layout.activity_register);
-        defPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        usePreset = defPreferences.getBoolean("switch_preset", false);
+        restoreInstanceState();
     }
 
     @Override
@@ -491,8 +489,6 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     @Override
     protected void onResume() {
         super.onResume();
-        pipeShape.setShape(null);
-        restoreInstanceState();
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         PendingIntent pendingIntent = PendingIntent
                 .getActivity(this, 0, new Intent(this, getClass())
@@ -533,23 +529,16 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
      * 마지막 사용자 입력값 불러오기
      */
     private void restoreInstanceState() {
-//        SharedPreferences preference_settings = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-//        if (preference_settings != null) {
-//            fSuperviseContact.setText(preference_settings.getString("superviseContact", null));
-//            fMaterial.setText(preference_settings.getString("material", null));
-//            fConstruction.setText(preference_settings.getString("construction", null));
-//            fConstructionContact.setText(preference_settings.getString("constructionContact", null));
-//        }
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean usePreset = sharedPreferences.getBoolean("switch_preset", false);
         if (usePreset) {
             runOnUiThread(() -> {
-                String stringType = defPreferences.getString("pipe_type", null);
-                System.out.println(stringType);
-                if (stringType != null) {
-                    int index = Integer.parseInt(stringType);
-                    if (index >= 0) onPipeTypeSelect(Integer.parseInt(stringType));
+                int pipeType = sharedPreferences.getInt("pipe_type_id", -1);
+                if (pipeType >= 0) {
+                    onPipeTypeSelect(pipeType);
                 }
-                fMaterial.setText(defPreferences.getString("material", null));
-                String supervise = defPreferences.getString("supervise", null);
+                fMaterial.setText(sharedPreferences.getString("material", null));
+                String supervise = sharedPreferences.getString("supervise", null);
                 if (supervise != null) {
                     new Thread(() -> {
                         int superviseId = superviseDb.dao().selectBySupervise(supervise);
@@ -558,9 +547,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                     }).start();
                     fSupervise.setText(supervise);
                 }
-                fSuperviseContact.setText(defPreferences.getString("supervise_contact", null));
-                fConstruction.setText(defPreferences.getString("construction", null));
-                fConstructionContact.setText(defPreferences.getString("construction_contact", null));
+                fSuperviseContact.setText(sharedPreferences.getString("supervise_contact", null));
+                fConstruction.setText(sharedPreferences.getString("construction", null));
+                fConstructionContact.setText(sharedPreferences.getString("construction_contact", null));
             });
         }
     }

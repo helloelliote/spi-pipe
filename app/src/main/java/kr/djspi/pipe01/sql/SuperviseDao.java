@@ -4,7 +4,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import java.util.List;
 
@@ -19,12 +18,6 @@ public interface SuperviseDao {
 
     @Query("SELECT id FROM Supervise WHERE supervise IN (:supervise) LIMIT 1")
     int selectBySupervise(String supervise);
-
-    @Query("SELECT supervise FROM Supervise LIMIT 1 OFFSET (:row)")
-    String selectByRow(int row);
-
-    @Update
-    void update(Supervise supervise);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Supervise... entity);

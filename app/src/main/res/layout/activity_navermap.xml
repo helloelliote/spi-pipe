@@ -14,7 +14,7 @@
         android:layout_height="match_parent" />
 
     <SearchView
-        android:id="@+id/nmap_searchview"
+        android:id="@+id/nmap_searchView"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:alpha="0.9"
@@ -30,7 +30,7 @@
         android:searchIcon="@null" />
 
     <ListView
-        android:id="@+id/nmap_listview"
+        android:id="@+id/nmap_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp" />

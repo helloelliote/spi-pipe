@@ -9,7 +9,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     private final int mNumOfTabs;
 
     public TabAdapter(FragmentManager fragmentManager, int NumOfTabs) {
-        super(fragmentManager);
+        super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.mNumOfTabs = NumOfTabs;
     }
 

@@ -6,7 +6,6 @@
     <string name="app_title_alt">SPI %1$s %2$s</string>
     <string name="btn_find_spi">주변관로\n정보조회</string>
     <string name="nav_close">닫\u0020\u0020\u0020기</string>
-    <string name="nav_flush_cache">캐시 초기화</string>
     <string name="nav_drawer_open">Open</string>
     <string name="nav_drawer_close">Close</string>
     <string name="toast_error_location">위치 정보를 불러오지 못했습니다.\n잠시후에 다시 시도해주세요.</string>
@@ -22,17 +21,11 @@
     <string name="nav_dj_homepage">http://djspi.kr</string>
     <string name="nav_app">어플리케이션</string>
     <string name="nav_guide">어플리케이션 정보</string>
-    <string name="nav_database">데이터베이스</string>
-    <string name="nav_supervise">관리기관 목록 갱신</string>
-    <string name="nav_pipe">관로종류 목록 갱신</string>
-    <string name="nav_clear_cache">지도 캐시 초기화</string>
     <string name="nav_homepage">홈페이지</string>
     <string name="nav_settings">환경설정</string>
     <string name="nav_preference">설정</string>
 
     <!--MainActivity-->
-    <string name="lay_main1_title"></string>
-    <string name="lay_main1_sub"></string>
     <string name="lay_main2_title">지도보기</string>
     <string name="lay_main2_sub">내 주변의 관로정보를 확인합니다.</string>
     <string name="lay_main3_title">SPI 조회ㆍ등록</string>
@@ -43,7 +36,6 @@
     <string name="toast_error">입력값을 확인해주세요</string>
 
     <!--MessageDialog-->
-    <string name="popup_warning">주 의</string>
     <string name="popup_ok">확 인</string>
     <string name="popup_cancel">취 소</string>
     <string name="popup_next">다 음</string>
@@ -89,7 +81,6 @@
     <string name="record_optional_50">선택입력 사항 (50자 이하)</string>
     <string name="record_location">SPI 위치설정</string>
     <string name="record_confirm">관로정보 입력완료</string>
-    <string name="record_cancel">취소</string>
     <string name="record_error">필수입력 항목입니다.</string>
     <string name="record_photo_ok">사진이 첨부되었습니다.</string>
     <string name="record_photo_error">카메라를 준비할 수 없습니다.</string>
@@ -189,9 +180,7 @@
     <string name="nfc_info_company"><![CDATA[본 관로는 <font color="#0077C8">%1$s</font>에서 관리하고 있습니다.]]></string>
     <string name="nfc_info_company_contact"><![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
     <string name="nfc_info_construction"><![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
-    <string name="nfc_info_construction_contact"><![CDATA[(<font color="#0077C8"><a href="tel:%1$s">%1$s</a></font>)]]></string>
-    <string name="nfc_info_serial"><![CDATA[SPI 시리얼번호는 <font color="#0077C8">%1$s</font>입니다.]]></string>
-    <string name="nfc_info_id"><![CDATA[SPI 아이디는 <font color="#0077C8">%1$s</font> 입니다.]]></string>
+    <string name="nfc_info_id"><![CDATA[관로 ID는 <font color="#0077C8">%1$s</font> 입니다.]]></string>
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
     <string name="error_load_image_fail">이미지를 불러오지 못하였습니다.</string>
     <string name="error_load_image_retry">새로고침</string>

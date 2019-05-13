@@ -14,13 +14,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import androidx.room.Room;
 
 import com.sylversky.indexablelistview.scroller.Indexer;
 import com.sylversky.indexablelistview.widget.IndexableListView;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,9 +25,9 @@ import java.util.List;
 import kr.djspi.pipe01.R;
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum;
 import kr.djspi.pipe01.sql.Supervise;
-import kr.djspi.pipe01.sql.SuperviseDatabase;
 
 import static android.view.View.TEXT_ALIGNMENT_CENTER;
+import static kr.djspi.pipe01.BaseActivity.superviseDb;
 import static kr.djspi.pipe01.Const.PIPE_SHAPES;
 import static kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
@@ -52,13 +48,12 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     private String componentName;
     private Parcelable state;
     private OnSelectListener listener;
-    private SuperviseDatabase superviseDb;
 
     public ListDialog() {
     }
 
     @Override
-    public void onAttach(@NotNull Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         listTag = getTag();
         listItem = new ArrayList<>();
@@ -84,14 +79,10 @@ public class ListDialog extends DialogFragment implements OnClickListener {
                 break;
             case TAG_SUPERVISE:
                 new Thread(() -> {
-                    if (superviseDb == null) {
-                        superviseDb = Room.databaseBuilder(getContext(), SuperviseDatabase.class, "db_supervise").build();
-                    }
                     List<Supervise> dbList = superviseDb.dao().getAll();
                     for (Supervise db : dbList) {
                         listItem.add(db.getSupervise());
                     }
-                    superviseDb.close();
                 }).start();
                 dialogTitle = getString(R.string.popup_title_select_supervise);
                 break;
@@ -111,7 +102,6 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         view.findViewById(R.id.btn_close).setOnClickListener(this);
 
         listView = view.findViewById(R.id.list_common);
-//        listView.setIndexTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/nanumsquareroundr.ttf"));
         if (listTag.equals(TAG_SUPERVISE)) {
             listView.setAdapter(new ListAdapter(getContext(), listItem, true));
         } else {
@@ -155,7 +145,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onDismiss(@NotNull DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
     }
@@ -211,7 +201,6 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         }
 
         @Override
-        @Nullable
         public Object[] getSections() {
             if (isListSupervise) return customSection.getArraySections();
             else return null;

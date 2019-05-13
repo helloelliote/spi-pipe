@@ -2,7 +2,6 @@ package kr.djspi.pipe01;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
@@ -55,7 +54,7 @@ public abstract class LocationUpdate extends BaseActivity {
      */
     private LocationCallback locationCallback;
     private LocationManager locationManager;
-    protected FusedLocationSource locationSource;
+    FusedLocationSource locationSource;
 
     /**
      * Time when the location was updated represented as a String.
@@ -105,12 +104,9 @@ public abstract class LocationUpdate extends BaseActivity {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 currentLocation = locationResult.getLastLocation();
-                onLocationUpdate(currentLocation);
             }
         };
     }
-
-    protected abstract void onLocationUpdate(Location location);
 
     /**
      * Sets up the location request.

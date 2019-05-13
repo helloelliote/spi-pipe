@@ -1,6 +1,6 @@
 package kr.djspi.pipe01.dto;
 
-import org.jetbrains.annotations.Nullable;
+import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 

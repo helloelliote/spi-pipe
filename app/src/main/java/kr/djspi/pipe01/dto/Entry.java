@@ -1,8 +1,8 @@
 package kr.djspi.pipe01.dto;
 
-import com.google.gson.JsonObject;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.gson.JsonObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,11 +28,11 @@ public class Entry implements Serializable {
     private SpiLocation spi_location;
 
     @SuppressWarnings("SameParameterValue")
-    public static JsonObject parseEntry(@NotNull ArrayList entries, int index, String... strings) {
+    public static JsonObject parseEntry(@NonNull ArrayList entries, int index, String... strings) {
         return ((Entry) entries.get(index)).parseToSingleJsonObject(strings);
     }
 
-    private JsonObject parseToSingleJsonObject(@NotNull String[] strings) {
+    private JsonObject parseToSingleJsonObject(@NonNull String[] strings) {
         JsonObject object = new JsonObject();
         object.addProperty("spi_id", spi.getId());
         object.addProperty("supervise", pipe_supervise.getSupervise());

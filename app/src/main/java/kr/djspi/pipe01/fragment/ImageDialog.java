@@ -29,7 +29,10 @@ public class ImageDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Bundle bundle = getArguments();
-            imageUri = ((SpiPhotoObject) bundle.getSerializable("SpiPhotoObject")).getUri();
+            SpiPhotoObject object = (SpiPhotoObject) bundle.getSerializable("SpiPhotoObject");
+            if (object != null) {
+                imageUri = object.getUri();
+            }
         }
     }
 
@@ -49,7 +52,7 @@ public class ImageDialog extends DialogFragment {
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         imageUri = null;
     }

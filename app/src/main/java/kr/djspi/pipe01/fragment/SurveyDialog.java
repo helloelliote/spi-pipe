@@ -45,7 +45,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
@@ -66,7 +66,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
         TextView titleView = view.findViewById(R.id.popup_title);
         titleView.setText(dialogTitle);
 
-        radioGroup = view.findViewById(R.id.nmap_radiogroup);
+        radioGroup = view.findViewById(R.id.nmap_radioGroup);
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             RadioButton checkedRadioButton = radioGroup.findViewById(checkedId);
             selectIndex = radioGroup.indexOfChild(checkedRadioButton);
@@ -125,8 +125,6 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
     /**
      * 사용자의 입력값이 유효한 값인지 검사: Null 체크, 유효범위 체크
      *
-     * @param input_x
-     * @param input_y
      * @return boolean isX, boolean isY 입력값 X AND Y 가 유효하면 true 리턴
      */
     private boolean isInputValid(TextInputEditText input_x, TextInputEditText input_y) {
@@ -162,7 +160,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
     }

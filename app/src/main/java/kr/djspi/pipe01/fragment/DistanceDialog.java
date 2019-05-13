@@ -41,7 +41,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
@@ -216,7 +216,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         resId = null;
         super.onDismiss(dialog);
     }

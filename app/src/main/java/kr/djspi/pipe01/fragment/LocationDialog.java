@@ -28,7 +28,7 @@ public class LocationDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;

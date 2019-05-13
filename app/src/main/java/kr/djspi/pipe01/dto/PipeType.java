@@ -1,7 +1,5 @@
 package kr.djspi.pipe01.dto;
 
-import org.jetbrains.annotations.Contract;
-
 import java.io.Serializable;
 
 import kr.djspi.pipe01.R;
@@ -16,7 +14,6 @@ public class PipeType implements DataItem, Serializable {
     private String pipe;
     private String unit;
 
-    @Contract(pure = true)
     public static PipeTypeEnum parsePipeType(String name) {
         for (PipeTypeEnum pipe : PipeTypeEnum.values()) {
             if (pipe.name.equals(name)) return pipe;

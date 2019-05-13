@@ -3,7 +3,6 @@ package kr.djspi.pipe01;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.view.View;
@@ -38,8 +37,6 @@ import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.Marker;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -56,7 +53,7 @@ import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
 import static com.naver.maps.map.overlay.OverlayImage.fromResource;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
-import static kr.djspi.pipe01.Const.RESULT_FAIL;
+import static kr.djspi.pipe01.Const.RESULT_PASS;
 import static kr.djspi.pipe01.Const.TAG_SURVEY;
 import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
@@ -177,7 +174,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         });
     }
 
-    private void onRequestPipe(@NotNull NaverMap naverMap) {
+    private void onRequestPipe(@NonNull NaverMap naverMap) {
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
         jsonQuery.addProperty("sx", String.valueOf(bounds.getWestLongitude()));
@@ -201,11 +198,11 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                     }
 
                     @Override
-                    public void onFailure(@NotNull Throwable throwable) {
+                    public void onFailure(Throwable throwable) {
 //                        showMessageDialog(8, throwable.getMessage(), true);
                     }
 
-                    private void setMarker(@NotNull JsonObject jsonObject) {
+                    private void setMarker(@NonNull JsonObject jsonObject) {
                         double lat = Json.d(jsonObject, "spi_latitude");
                         double lng = Json.d(jsonObject, "spi_longitude");
                         int resId = parsePipeType(Json.s(jsonObject, "pipe")).getDrawRes();
@@ -215,10 +212,6 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
                         marker.setMap(naverMap);
                     }
                 });
-    }
-
-    @Override
-    public void onLocationUpdate(Location location) {
     }
 
     @Override
@@ -245,29 +238,21 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
 
     @Override
     public void onSelect(String tag, int index, @Nullable String... text) {
-        switch (tag) {
-            case TAG_SURVEY:
-                if (index == RESULT_FAIL) {
-                    isSelected = false;
-                    onBackPressed();
-                    return;
-                }
+        if (tag.equals(TAG_SURVEY)) {
+            if (index == RESULT_PASS) {
                 assert text != null;
                 LatLng surveyLatLng = convertTmToLatLng(Double.valueOf(text[0]), Double.valueOf(text[1]));
                 CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(surveyLatLng, ZOOM_DEFAULT).animate(CameraAnimation.Fly);
                 naverMap.moveCamera(cameraUpdate);
-                break;
-            default:
-                break;
+            } else {
+                isSelected = false;
+                onBackPressed();
+            }
         }
     }
 
     /**
      * Tm 좌표계를 LatLng 경위도 좌표계로 변환한다. 반드시 변환 과정에서 X, Y 좌표를 반전시켜 리턴한다.
-     *
-     * @param Tm1
-     * @param Tm2
-     * @return
      */
     @NonNull
     private LatLng convertTmToLatLng(double Tm1, double Tm2) {

@@ -15,10 +15,7 @@ import com.google.gson.JsonObject;
 import com.helloelliote.util.retrofit.ProgressBody;
 import com.helloelliote.util.retrofit.Retrofit2x;
 import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
-import com.helloelliote.util.retrofit.SpiDel;
 import com.helloelliote.util.retrofit.SpiPost;
-
-import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 import java.io.Serializable;
@@ -50,7 +47,6 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     private File file;
     private ProgressBar progressBar;
     private Drawable progressDrawable;
-    private TextView textView;
     private TextView progressText;
     private MultipartBody.Part part;
 
@@ -78,7 +74,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        textView = findViewById(R.id.txt_write);
+        TextView textView = findViewById(R.id.txt_write);
         textView.setText(Html.fromHtml(getString(R.string.write_instruction)));
 
         progressBar = findViewById(R.id.progressBar);
@@ -122,7 +118,6 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
     }
 
     @SuppressWarnings("SameParameterValue")
-    @Contract("null, _ -> null; !null, _ -> !null")
     private MultipartBody.Part getMultipart(File file, String fileType) {
         if (file == null) return null;
         try {
@@ -177,37 +172,7 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
             isWriteSuccess = true;
 //            nfcUtil.onPause();
         }
-//            deleteSpi(index);
         return isWriteSuccess;
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private void deleteSpi(int pipeIndex) {
-        progressText.setVisibility(VISIBLE);
-        onInitiate(0);
-        Entry currentEntry = entries.get(pipeIndex);
-        JsonObject jsonQuery = new JsonObject();
-        jsonQuery.addProperty("id", currentEntry.getSpi().getId());
-        currentEntry.getSpi().setId(-1);
-        currentEntry.getPipe().setSpi_id(-1);
-        currentEntry.getSpi_location().setSpi_id(-1);
-        currentEntry.getSpi_memo().setSpi_id(-1);
-        currentEntry.getSpi_photo().setSpi_id(-1);
-        entries.set(pipeIndex, currentEntry);
-        Retrofit2x.builder()
-                .setService(new SpiDel(URL_SPI))
-                .setQuery(jsonQuery).build()
-                .run(new OnRetrofitListener() {
-                    @Override
-                    public void onResponse(JsonObject response) {
-                        textView.setText(Html.fromHtml(getString(R.string.popup_write_retry)));
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-
-                    }
-                });
     }
 
     @Override

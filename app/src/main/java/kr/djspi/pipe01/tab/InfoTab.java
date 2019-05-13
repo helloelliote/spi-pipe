@@ -32,7 +32,7 @@ public class InfoTab extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnRecordListener) {
             OnRecordListener listener = (OnRecordListener) context;

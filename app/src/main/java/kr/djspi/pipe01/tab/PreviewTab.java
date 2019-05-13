@@ -33,7 +33,7 @@ public class PreviewTab extends Fragment implements OnClickListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnRecordListener) {
             listener = (OnRecordListener) context;
@@ -106,13 +106,10 @@ public class PreviewTab extends Fragment implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_confirm:
-                listener.onRecord(TAG_PREVIEW, RESULT_PASS);
-                break;
-            default:
-                listener.onRecord(TAG_PREVIEW, RESULT_FAIL);
-                break;
+        if (v.getId() == R.id.button_confirm) {
+            listener.onRecord(TAG_PREVIEW, RESULT_PASS);
+        } else {
+            listener.onRecord(TAG_PREVIEW, RESULT_FAIL);
         }
     }
 

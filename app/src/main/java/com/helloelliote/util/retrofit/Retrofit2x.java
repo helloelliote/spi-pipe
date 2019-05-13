@@ -1,12 +1,9 @@
 package com.helloelliote.util.retrofit;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.gson.JsonObject;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import okhttp3.MultipartBody;
 
@@ -15,8 +12,7 @@ public final class Retrofit2x {
     private Retrofit2x() {
     }
 
-    @NotNull
-    @Contract(" -> new")
+    @NonNull
     public static SetBuilder builder() {
         return new BuildSteps();
     }
@@ -43,21 +39,18 @@ public final class Retrofit2x {
         private MultipartBody.Part multipartBody;
 
         @Override
-        @Contract("_ -> this")
         public SetService setService(@NonNull ServiceStrategy service) {
             this.service = service;
             return this;
         }
 
         @Override
-        @Contract("_ -> this")
         public SetQuery setQuery(@NonNull JsonObject jsonQuery) {
             this.jsonQuery = jsonQuery;
             return this;
         }
 
         @Override
-        @Contract("_, _ -> this")
         public SetQuery setQuery(@NonNull String stringQuery, @Nullable MultipartBody.Part multipartBody) {
             this.stringQuery = stringQuery;
             this.multipartBody = multipartBody;

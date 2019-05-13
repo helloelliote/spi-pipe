@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.location.Location;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -52,9 +51,6 @@ import com.naver.maps.map.overlay.Overlay;
 import com.transitionseverywhere.ChangeText;
 import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionManager;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -206,7 +202,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 if (infoWindow.getMarker() != null && infoWindow.getMarker().getTag() != null) {
                     JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
                     String pipe = Json.s(jsonObject, "pipe");
-                    String id = Json.s(jsonObject, "spi_id");
+                    String id = Json.s(jsonObject, "id");
                     return String.format("%s (%s)", pipe, id);
                 }
                 return "ERROR";
@@ -248,7 +244,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         infoWindow.setOnClickListener(listener);
     }
 
-    private void onRequestPipe(@NotNull NaverMap naverMap) {
+    private void onRequestPipe(@NonNull NaverMap naverMap) {
         JsonObject jsonQuery = new JsonObject();
         final LatLngBounds bounds = naverMap.getContentBounds();
         jsonQuery.addProperty("sx", String.valueOf(bounds.getWestLongitude()));
@@ -275,11 +271,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     }
 
                     @Override
-                    public void onFailure(@NotNull Throwable throwable) {
+                    public void onFailure(Throwable throwable) {
                         showMessageDialog(8, throwable.getMessage(), true);
                     }
 
-                    private void setMarker(@NotNull JsonObject jsonObject) {
+                    private void setMarker(@NonNull JsonObject jsonObject) {
                         double lat = Json.d(jsonObject, "spi_latitude");
                         double lng = Json.d(jsonObject, "spi_longitude");
                         int resId = parsePipeType(Json.s(jsonObject, "pipe")).getDrawRes();
@@ -331,34 +327,15 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    /**
-     * LocationUpdate 위치를 이동할 때마다 목표 측량점까지의 거리와 직선 경로선을 다시 계산
-     *
-     * @param location 사용자가 이동한 새 위치
-     */
-    @Override
-    public void onLocationUpdate(Location location) {
-    }
-
     private final class SetTopSheet {
 
         SetTopSheet(NaverMap naverMap) {
-            ListView listView = findViewById(R.id.nmap_listview);
+            ListView listView = findViewById(R.id.nmap_listView);
             placesListAdapter = new ListViewAdapter(getApplicationContext(), naverMap, placesArrayList);
             listView.setAdapter(placesListAdapter);
 
             setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
-            searchView = findViewById(R.id.nmap_searchview);
+            searchView = findViewById(R.id.nmap_searchView);
             searchView.setSubmitButtonEnabled(true);
             searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
@@ -438,13 +415,11 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                 return placesList.size();
             }
 
-            @Contract(pure = true)
             @Override
             public Object getItem(int position) {
                 return placesList.get(position);
             }
 
-            @Contract(value = "_ -> param1", pure = true)
             @Override
             public long getItemId(int position) {
                 return position;
@@ -507,6 +482,14 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                         break;
                     default:
                         break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
                 }
             });
             String textExpanded = getString(R.string.map_search_input);
@@ -530,6 +513,14 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                             clearMarker();
                             break;
                         default:
+                            break;
+                        case BottomSheetBehavior.STATE_DRAGGING:
+                            break;
+                        case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                            break;
+                        case BottomSheetBehavior.STATE_HIDDEN:
+                            break;
+                        case BottomSheetBehavior.STATE_SETTLING:
                             break;
                     }
                 }

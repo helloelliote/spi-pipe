@@ -51,7 +51,7 @@
         drawable in the src attribute causes its image to change when its parent
         is checked or unchecked.
 
-        To use the standard radio or checkmark image, set the src to
+        To use the standard radio or check mark image, set the src to
         ?android:listChoiceIndicatorMultiple or ?android:listChoiceIndicatorSingle. These
         are system theme attributes that reference a state list drawable.
     -->

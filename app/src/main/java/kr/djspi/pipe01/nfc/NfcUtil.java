@@ -15,6 +15,7 @@ import android.nfc.tech.NfcA;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.nxp.nfclib.NxpNfcLib;
@@ -23,9 +24,6 @@ import com.nxp.nfclib.ndef.NdefMessageWrapper;
 import com.nxp.nfclib.ndef.NdefRecordWrapper;
 import com.nxp.nfclib.ntag.INTag213215216;
 import com.nxp.nfclib.ntag.NTagFactory;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -86,7 +84,7 @@ public final class NfcUtil {
         }
     }
 
-    public static Tag onNewTagIntent(@NotNull Intent intent) {
+    public static Tag onNewTagIntent(@NonNull Intent intent) {
         return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
     }
 
@@ -196,7 +194,7 @@ public final class NfcUtil {
      * @return 기록된 정보를 담은 ArrayList<String>
      * @throws NullPointerException (태그 없음) 정보를 가져오는 과정에서 null 참조
      */
-    public static ArrayList<String> getRecord(@NotNull Intent intent) throws NullPointerException {
+    public static ArrayList<String> getRecord(@NonNull Intent intent) throws NullPointerException {
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         List<ParsedRecord> records = NdefMessageParser.parse((NdefMessage) rawMsgs[0]);
         ArrayList<String> recordList = new ArrayList<>();
@@ -208,13 +206,7 @@ public final class NfcUtil {
         return recordList;
     }
 
-    /**
-     * 전달 받은 Tag 에서 데이터를 가져와 리턴
-     *
-     * @param tag
-     * @return
-     */
-    @NotNull
+    @NonNull
     public String readTag(Tag tag) {
         StringBuilder ret = new StringBuilder();
         try {
@@ -240,9 +232,8 @@ public final class NfcUtil {
         return ret.toString();
     }
 
-    @NotNull
-    @Contract("_ -> new")
-    public static String bytesToHex(@NotNull byte[] bytes) {
+    @NonNull
+    public static String bytesToHex(@NonNull byte[] bytes) {
         final int length = bytes.length;
         char[] hexChars = new char[length * 2];
         for (int i = 0; i < length; i++) {

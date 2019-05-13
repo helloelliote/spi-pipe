@@ -1,9 +1,9 @@
 package kr.djspi.pipe01.nfc;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.JsonObject;
 import com.helloelliote.util.json.Json;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -27,15 +27,15 @@ public enum StringParser {
     SUPERVISE("supervise", "관리:"),
     CONTACT("supervise_contact", "");
 
-    private String name;
-    private String label;
+    private final String name;
+    private final String label;
 
     StringParser(String name, String label) {
         this.name = name;
         this.label = label;
     }
 
-    public static String[] parseToStringArray(@NotNull JsonObject jsonObject, int index) {
+    public static String[] parseToStringArray(@NonNull JsonObject jsonObject, int index) {
         final StringParser[] parsers = StringParser.values();
         JsonObject dataObject;
         try {
@@ -52,7 +52,7 @@ public enum StringParser {
         return strings;
     }
 
-    public static JsonObject parseToJsonObject(@NotNull ArrayList<String> stringArrayList, int index) {
+    public static JsonObject parseToJsonObject(@NonNull ArrayList<String> stringArrayList, int index) {
         final StringParser[] parsers = StringParser.values();
         final int length = parsers.length;
         String dataString = stringArrayList.get(index)
@@ -71,7 +71,7 @@ public enum StringParser {
         return jsonObject;
     }
 
-    @NotNull
+    @NonNull
     private static String parsePlanePlan(JsonObject jsonObject) {
         return String.format("plan_%s_%s_%s_%s_distance",
                 parseSpiType(Json.s(jsonObject, TYPE.name)),
@@ -80,7 +80,7 @@ public enum StringParser {
                 Json.s(jsonObject, DIRECTION.name));
     }
 
-    @NotNull
+    @NonNull
     private static String parseSectionPlan(JsonObject jsonObject) {
         return String.format("plan_%s_%s",
                 parseSpiType(Json.s(jsonObject, TYPE.name)),

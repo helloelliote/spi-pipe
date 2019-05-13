@@ -3,7 +3,7 @@ package com.helloelliote.util.retrofit;
 import android.os.Handler;
 import android.os.Looper;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,9 +16,9 @@ import okio.BufferedSink;
 public final class ProgressBody extends RequestBody {
 
     private static final int DEFAULT_BUFFER_SIZE = 2048;
-    private File file;
-    private String contentType;
-    private UploadCallback callback;
+    private final File file;
+    private final String contentType;
+    private final UploadCallback callback;
 
     public ProgressBody(final File file, String contentType, final UploadCallback callback) {
         this.file = file;
@@ -27,7 +27,7 @@ public final class ProgressBody extends RequestBody {
     }
 
     @Override
-    public long contentLength() throws IOException {
+    public long contentLength() {
         return file.length();
     }
 
@@ -37,7 +37,7 @@ public final class ProgressBody extends RequestBody {
     }
 
     @Override
-    public void writeTo(@NotNull BufferedSink sink) throws IOException {
+    public void writeTo(@NonNull BufferedSink sink) throws IOException {
         final long totalSize = file.length();
         final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         try (FileInputStream inputStream = new FileInputStream(file)) {
@@ -69,8 +69,9 @@ public final class ProgressBody extends RequestBody {
     }
 
     private class ProgressUpdater implements Runnable {
-        private long uploadSize;
-        private long totalSize;
+
+        private final long uploadSize;
+        private final long totalSize;
 
         ProgressUpdater(long uploadSize, long totalSize) {
             this.uploadSize = uploadSize;

@@ -1,38 +1,31 @@
 package com.helloelliote.util.geolocation;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import lombok.Getter;
 
 public class GeoTrans {
 
-    @Contract(pure = true)
     private static double D2R(double degree) {
         return degree * Math.PI / 180.0;
     }
 
-    @Contract(pure = true)
     private static double R2D(double radian) {
         return radian * 180.0 / Math.PI;
     }
 
-    @Contract(pure = true)
     private static double e0fn(double x) {
         return 1.0 - 0.25 * x * (1.0 + x / 16.0 * (3.0 + 1.25 * x));
     }
 
-    @Contract(pure = true)
     private static double e1fn(double x) {
         return 0.375 * x * (1.0 + 0.25 * x * (1.0 + 0.46875 * x));
     }
 
-    @Contract(pure = true)
     private static double e2fn(double x) {
         return 0.05859375 * x * x * (1.0 + 0.75 * x);
     }
 
-    @Contract(pure = true)
     private static double e3fn(double x) {
         return x * x * x * (35.0 / 3072.0);
     }
@@ -109,7 +102,7 @@ public class GeoTrans {
     }
 
 
-    private static void tm2geo(@NotNull Coordinate srcType, @NotNull GeoPoint in_pt, GeoPoint out_pt) {
+    private static void tm2geo(@NonNull Coordinate srcType, @NonNull GeoPoint in_pt, GeoPoint out_pt) {
         GeoPoint tmpPt = new GeoPoint(in_pt.getX(), in_pt.getY());
         int max_iter = 6;
 
@@ -175,7 +168,7 @@ public class GeoTrans {
         transform(srcType, Coordinate.GEO, out_pt);
     }
 
-    private static double getDistancebyGeo(@NotNull GeoPoint pt1, @NotNull GeoPoint pt2) {
+    private static double getDistancebyGeo(@NonNull GeoPoint pt1, @NonNull GeoPoint pt2) {
         double lat1 = D2R(pt1.y);
         double lon1 = D2R(pt1.x);
         double lat2 = D2R(pt2.y);
@@ -241,7 +234,6 @@ public class GeoTrans {
     private static final double AD_C = 1.0026000;
     /* Toms region 1 constant */
 
-    @Contract(pure = true)
     private static boolean isGRS80Type(Coordinate type) {
         return (type == Coordinate.GRS80 || type == Coordinate.GRS80_EAST || type == Coordinate.GRS80_EASTSEA || type == Coordinate.GRS80_MIDDLE_WITH_JEJUDO || type == Coordinate.GRS80_WEST);
     }
@@ -268,7 +260,7 @@ public class GeoTrans {
         }
     }
 
-    private static boolean geodetic_to_geocentric(Coordinate type, @NotNull GeoPoint p) {
+    private static boolean geodetic_to_geocentric(Coordinate type, @NonNull GeoPoint p) {
 
         /*
          * The function Convert_Geodetic_To_Geocentric converts geodetic coordinates
@@ -332,7 +324,7 @@ public class GeoTrans {
      * The method used here is derived from 'An Improved Algorithm for
      * Geocentric to Geodetic Coordinate Conversion', by Ralph Toms, Feb 1996
      */
-    private static void geocentric_to_geodetic(Coordinate type, @NotNull GeoPoint p) {
+    private static void geocentric_to_geodetic(Coordinate type, @NonNull GeoPoint p) {
         double X = p.x;
         double Y = p.y;
         double Z = p.z;
@@ -412,7 +404,7 @@ public class GeoTrans {
     // geocentic_to_wgs84(defn, p )
     //  defn = coordinate system definition,
     //  p = point to transform in geocentric coordinates (x,y,z)
-    private static void geocentric_to_wgs84(@NotNull GeoPoint p) {
+    private static void geocentric_to_wgs84(@NonNull GeoPoint p) {
 
         //if( defn.datum_type == PJD_3PARAM )
         {
@@ -428,7 +420,7 @@ public class GeoTrans {
     // geocentic_from_wgs84()
     //  coordinate system definition,
     //  point to transform in geocentric coordinates (x,y,z)
-    private static void geocentric_from_wgs84(@NotNull GeoPoint p) {
+    private static void geocentric_from_wgs84(@NonNull GeoPoint p) {
 
         //if( defn.datum_type == PJD_3PARAM )
         {
@@ -496,9 +488,8 @@ public class GeoTrans {
             this.dst_m = arMajor * GeoTrans.mlfn(GeoTrans.e0fn(this.es), GeoTrans.e1fn(this.es), GeoTrans.e2fn(this.es), GeoTrans.e3fn(this.es), arLatCenter);
         }
 
-        @NotNull
+        @NonNull
         @Override
-        @Contract(pure = true)
         public String toString() {
             return "Coordinate{" + "EPSLN=" + EPSLN + ", arMajor=" + arMajor + ", arMinor=" + arMinor + ", arScaleFactor=" + arScaleFactor + ", arLonCenter=" + arLonCenter + ", arLatCenter=" + arLatCenter + ", arFalseNorthing=" + arFalseNorthing + ", arFalseEasting=" + arFalseEasting + ", es=" + es + ", esp=" + esp + ", Ind=" + Ind + ", src_m=" + src_m + ", dst_m=" + dst_m + ", datumX=" + datumX + ", datumY=" + datumY + ", datumZ=" + datumZ + '}';
         }

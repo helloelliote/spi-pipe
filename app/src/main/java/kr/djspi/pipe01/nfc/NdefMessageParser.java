@@ -3,7 +3,7 @@ package kr.djspi.pipe01.nfc;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +14,11 @@ class NdefMessageParser {
     private NdefMessageParser() {
     }
 
-    static List<ParsedRecord> parse(@NotNull NdefMessage message) {
+    static List<ParsedRecord> parse(@NonNull NdefMessage message) {
         return getRecords(message.getRecords());
     }
 
-    private static List<ParsedRecord> getRecords(@NotNull NdefRecord[] records) {
+    private static List<ParsedRecord> getRecords(@NonNull NdefRecord[] records) {
         List<ParsedRecord> elements = new ArrayList<>();
         for (NdefRecord record : records) {
             if (TextRecord.isText(record)) {

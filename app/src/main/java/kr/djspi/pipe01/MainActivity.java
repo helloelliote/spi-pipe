@@ -2,7 +2,6 @@ package kr.djspi.pipe01;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkRequest;
@@ -13,14 +12,14 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.helloelliote.util.json.Json;
 import com.helloelliote.util.retrofit.Retrofit2x;
 import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.util.retrofit.SpiGet;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,8 +47,8 @@ public class MainActivity extends LocationUpdate implements Serializable {
     private static final String TAG = MainActivity.class.getSimpleName();
     private boolean isNetworkConnected;
     private Context context;
-    ConnectivityManager connectivityManager;
-    ConnectivityManager.NetworkCallback networkCallback;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,10 +136,6 @@ public class MainActivity extends LocationUpdate implements Serializable {
     }
 
     @Override
-    public void onLocationUpdate(Location location) {
-    }
-
-    @Override
     protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         if (intent == null) return;
@@ -178,7 +173,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                         }
 
                         @Override
-                        public void onFailure(@NotNull Throwable throwable) {
+                        public void onFailure(Throwable throwable) {
                             showMessageDialog(8, throwable.getMessage(), true);
                             throwable.printStackTrace();
                             progressBar.setVisibility(INVISIBLE);
@@ -186,7 +181,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
                     });
         }
 
-        private void processServerData(@NotNull JsonObject response) {
+        private void processServerData(@NonNull JsonObject response) {
             JsonObject jsonObject = Json.o(response, "data");
             if (Json.i(jsonObject, "pipe_count") == 0) {
                 startActivity(new Intent(context, RegisterActivity.class)
@@ -215,7 +210,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
             }
         }
 
-        private HashMap<String, DataItem> parseServerData(@NotNull JsonObject response) {
+        private HashMap<String, DataItem> parseServerData(@NonNull JsonObject response) {
             HashMap<String, DataItem> hashMap = new HashMap<>();
             JsonObject data = Json.o(response, "data");
             // Spi.class DTO
@@ -268,7 +263,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
 
     private final class ProcessTagOffline {
 
-        private int index;
+        private final int index;
 
         ProcessTagOffline(Intent intent, int index) {
             this.index = index;

@@ -18,8 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
-import org.jetbrains.annotations.NotNull;
-
 import kr.djspi.pipe01.R;
 
 import static android.view.Gravity.CENTER;
@@ -52,7 +50,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
@@ -99,7 +97,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
         return view;
     }
 
-    private void setLayoutVisibility(@NotNull View view) {
+    private void setLayoutVisibility(@NonNull View view) {
         ImageView backgroundImage = view.findViewById(R.id.lay_background);
         final String defType = "id";
         ImageView[] views = new ImageView[10];
@@ -223,14 +221,14 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
         }
     }
 
-    private void setFocus(@NotNull View view) {
+    private void setFocus(@NonNull View view) {
         checkView.setVisibility(INVISIBLE);
         view.findViewById(R.id.v_select).setVisibility(VISIBLE);
         this.checkView = view.findViewById(R.id.v_select);
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
     }

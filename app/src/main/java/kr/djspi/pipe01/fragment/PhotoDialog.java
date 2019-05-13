@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import kr.djspi.pipe01.R;
@@ -28,7 +27,7 @@ public class PhotoDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnSelectListener) {
             listener = (OnSelectListener) context;
@@ -36,7 +35,7 @@ public class PhotoDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dialogTitle = getString(R.string.popup_title_select_photo);
     }
@@ -76,7 +75,7 @@ public class PhotoDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         selectIndex = -1;
         super.onDismiss(dialog);
     }

@@ -2,10 +2,9 @@ package kr.djspi.pipe01.nfc;
 
 import android.nfc.NdefRecord;
 
-import com.google.common.base.Preconditions;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import com.google.common.base.Preconditions;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -25,9 +24,8 @@ public class TextRecord implements ParsedRecord {
     }
 
     // deal with text fields which span multiple NdefRecords
-    @NotNull
-    @Contract("_ -> new")
-    static TextRecord parse(@NotNull NdefRecord record) {
+    @NonNull
+    static TextRecord parse(@NonNull NdefRecord record) {
         Preconditions.checkArgument(record.getTnf() == NdefRecord.TNF_WELL_KNOWN);
         Preconditions.checkArgument(Arrays.equals(record.getType(), NdefRecord.RTD_TEXT));
         try {

@@ -160,7 +160,7 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onDismiss(DialogInterface dialogInterface) {
+    public void onDismiss(@NonNull DialogInterface dialogInterface) {
         if (isReturnToMain) {
             Intent intent = new Intent(getContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
