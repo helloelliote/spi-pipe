@@ -2,6 +2,7 @@ package kr.djspi.pipe01.tab;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,18 +16,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.google.gson.JsonObject;
 import com.helloelliote.util.json.Json;
 
 import kr.djspi.pipe01.R;
+import kr.djspi.pipe01.dto.SpiPhotoObject;
+import kr.djspi.pipe01.fragment.ImageDialog;
 
 import static android.text.Html.fromHtml;
+import static kr.djspi.pipe01.Const.TAG_PHOTO;
 
 public class InfoTab extends Fragment {
 
     private static final String TAG = InfoTab.class.getSimpleName();
     private JsonObject jsonObject;
-    private Uri imageFileUri;
+    private Uri imageUri;
 
     public InfoTab() {
     }
@@ -37,7 +42,7 @@ public class InfoTab extends Fragment {
         if (context instanceof OnRecordListener) {
             OnRecordListener listener = (OnRecordListener) context;
             jsonObject = listener.getJsonObject();
-            imageFileUri = listener.getUri();
+            imageUri = listener.getUri();
         }
     }
 
@@ -118,25 +123,34 @@ public class InfoTab extends Fragment {
                 txtMemo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
                 txtMemo.setText(Json.s(jsonObject, "spi_memo"));
             }
+        } catch (NullPointerException ignore) {
+        }
 
-            if (imageFileUri != null) {
-                ImageView imageView = view.findViewById(R.id.img_photo);
-                Glide.with(view).load(imageFileUri)
-//                        .fallback(R.drawable.ic_photo_none)
-//                        .placeholder(R.drawable.ic_photo_download)
-                        .fitCenter()
+        try {
+            ImageView imageView = view.findViewById(R.id.img_photo);
+            RequestBuilder<Drawable> requestBuilder = null;
+            SpiPhotoObject photoObj = new SpiPhotoObject();
+            if (imageUri != null) {
+                requestBuilder = Glide.with(view).load(imageUri);
+                photoObj.setUri(imageUri);
+            } else {
+                if (!jsonObject.get("spi_photo_url").isJsonNull()) {
+                    requestBuilder = Glide.with(view).load(Json.s(jsonObject, "spi_photo_url"));
+                    photoObj.setUrl(Json.s(jsonObject, "spi_photo_url"));
+                }
+            }
+            if (requestBuilder != null) {
+                requestBuilder.fitCenter()
                         .error(R.drawable.ic_photo_error)
                         .dontAnimate()
                         .into(imageView);
-            } else if (!jsonObject.get("spi_photo_url").isJsonNull()) {
-                ImageView imageView = view.findViewById(R.id.img_photo);
-                Glide.with(view).load(Json.s(jsonObject, "spi_photo_url"))
-//                        .fallback(R.drawable.ic_photo_none)
-//                        .placeholder(R.drawable.ic_photo_download)
-                        .fitCenter()
-                        .error(R.drawable.ic_photo_error)
-                        .dontAnimate()
-                        .into(imageView);
+                imageView.setOnClickListener(v -> {
+                    ImageDialog imageDialog = new ImageDialog();
+                    Bundle bundle = new Bundle(1);
+                    bundle.putSerializable("SpiPhotoObject", photoObj);
+                    imageDialog.setArguments(bundle);
+                    imageDialog.show(getFragmentManager(), TAG_PHOTO);
+                });
             }
         } catch (NullPointerException ignore) {
         }

@@ -8,15 +8,25 @@ import java.io.Serializable;
 public class SpiPhotoObject implements DataItem, Serializable {
 
     private String uri;
+    private String url;
     private File file;
 
     public Uri getUri() {
-        return Uri.parse(uri);
+        if (uri == null) return null;
+        else return Uri.parse(uri);
     }
 
     public void setUri(Uri uri) {
         if (uri == null) this.uri = null;
         else this.uri = uri.toString();
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public File getFile() {

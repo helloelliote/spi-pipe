@@ -59,4 +59,14 @@
             app:summaryOn="측량좌표를 직접 입력합니다."
             app:title="SPI 설치위치 입력" />
     </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="category_update"
+        app:title="데이터베이스">
+
+        <Preference
+            app:key="update_supervise"
+            app:title="관리기관 목록 업데이트"
+            app:summary="터치하여 업데이트하세요."/>
+    </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

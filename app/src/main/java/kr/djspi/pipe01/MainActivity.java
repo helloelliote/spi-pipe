@@ -2,6 +2,7 @@ package kr.djspi.pipe01;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkRequest;
@@ -13,13 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.helloelliote.util.json.Json;
 import com.helloelliote.util.retrofit.Retrofit2x;
 import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.util.retrofit.SpiGet;
+import com.helloelliote.util.retrofit.SuperviseGet;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,6 +36,8 @@ import kr.djspi.pipe01.dto.SpiMemo;
 import kr.djspi.pipe01.dto.SpiPhoto;
 import kr.djspi.pipe01.dto.SpiType;
 import kr.djspi.pipe01.nfc.NfcUtil;
+import kr.djspi.pipe01.sql.Supervise;
+import kr.djspi.pipe01.sql.SuperviseDao;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -55,6 +61,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         super.onCreate(savedInstanceState);
         context = this;
         setNetworkCallback();
+        new Thread(this::checkLocalSuperviseDatabase).start();
         setContentView(R.layout.activity_main);
     }
 
@@ -143,6 +150,43 @@ public class MainActivity extends LocationUpdate implements Serializable {
         if (isNetworkConnected) {
             new ProcessTag(intent);
         } else new ProcessTagOffline(intent, 0);
+    }
+
+    private void checkLocalSuperviseDatabase() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isSuperviseDbValid = preferences.getBoolean("isSuperviseDbValid", false);
+        if (!isSuperviseDbValid) {
+            updateLocalSuperviseDatabase();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("isSuperviseDbValid", true);
+            editor.apply();
+        }
+    }
+
+    static void updateLocalSuperviseDatabase() {
+        JsonObject jsonQuery = new JsonObject();
+        jsonQuery.addProperty("json", "");
+        Retrofit2x.builder()
+                .setService(new SuperviseGet(URL_SPI))
+                .setQuery(jsonQuery).build()
+                .run(new OnRetrofitListener() {
+
+                    @Override
+                    public void onResponse(JsonObject response) {
+                        new Thread(() -> {
+                            final JsonArray jsonArray = Json.a(response, "data");
+                            SuperviseDao superviseDao = superviseDb.dao();
+                            for (JsonElement element : jsonArray) {
+                                JsonObject object = element.getAsJsonObject();
+                                superviseDao.insert(new Supervise(Json.i(object, "id"), Json.s(object, "supervise")));
+                            }
+                        }).start();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                    }
+                });
     }
 
     private final class ProcessTag {

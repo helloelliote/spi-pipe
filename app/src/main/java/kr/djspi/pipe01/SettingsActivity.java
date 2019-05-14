@@ -13,24 +13,12 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.helloelliote.util.json.Json;
-import com.helloelliote.util.retrofit.Retrofit2x;
-import com.helloelliote.util.retrofit.RetrofitCore;
-import com.helloelliote.util.retrofit.SuperviseGet;
-
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
-import kr.djspi.pipe01.sql.Supervise;
-import kr.djspi.pipe01.sql.SuperviseDao;
 
-import static kr.djspi.pipe01.BaseActivity.superviseDb;
 import static kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
-import static kr.djspi.pipe01.Const.URL_SPI;
 
 public class SettingsActivity extends AppCompatActivity implements OnSelectListener {
 
@@ -110,6 +98,7 @@ public class SettingsActivity extends AppCompatActivity implements OnSelectListe
 
         private Preference pipeTypePref;
         private Preference supervisePref;
+        private Preference updateSupervisePref;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -139,30 +128,16 @@ public class SettingsActivity extends AppCompatActivity implements OnSelectListe
             supervisePref = findPreference("supervise");
             if (supervisePref != null) {
                 supervisePref.setOnPreferenceClickListener(preference -> {
-                    JsonObject jsonQuery = new JsonObject();
-                    jsonQuery.addProperty("json", "");
-                    Retrofit2x.builder()
-                            .setService(new SuperviseGet(URL_SPI))
-                            .setQuery(jsonQuery).build()
-                            .run(new RetrofitCore.OnRetrofitListener() {
+                    new ListDialog().show(getChildFragmentManager(), TAG_SUPERVISE);
+                    return false;
+                });
+            }
 
-                                @Override
-                                public void onResponse(JsonObject response) {
-                                    new Thread(() -> {
-                                        final JsonArray jsonArray = Json.a(response, "data");
-                                        SuperviseDao superviseDao = superviseDb.dao();
-                                        for (JsonElement element : jsonArray) {
-                                            JsonObject object = element.getAsJsonObject();
-                                            superviseDao.insert(new Supervise(Json.i(object, "id"), Json.s(object, "supervise")));
-                                        }
-                                    }).start();
-                                    new ListDialog().show(getChildFragmentManager(), TAG_SUPERVISE);
-                                }
-
-                                @Override
-                                public void onFailure(Throwable throwable) {
-                                }
-                            });
+            updateSupervisePref = findPreference("update_supervise");
+            if (updateSupervisePref != null) {
+                updateSupervisePref.setOnPreferenceClickListener(preference -> {
+                    MainActivity.updateLocalSuperviseDatabase();
+                    updateSupervisePref.setSummary("관리기관 목록을 업데이트하였습니다.");
                     return false;
                 });
             }
