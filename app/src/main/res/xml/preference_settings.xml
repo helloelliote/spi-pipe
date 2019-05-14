@@ -8,7 +8,7 @@
             app:key="switch_preset"
             app:summaryOff="입력값을 적용하지 않습니다."
             app:summaryOn="설정된 입력값을 적용합니다."
-            app:title="관로정보 일괄적용" />
+            app:title="입력내용 일괄적용" />
 
         <Preference
             app:key="help"
@@ -18,7 +18,7 @@
     <PreferenceCategory
         app:dependency="switch_preset"
         app:key="category_default"
-        app:title="관로정보">
+        app:title="입력내용">
 
         <Preference
             app:key="pipe_type"
@@ -66,7 +66,7 @@
 
         <Preference
             app:key="update_supervise"
-            app:title="관리기관 목록 업데이트"
-            app:summary="터치하여 업데이트하세요."/>
+            app:summary="터치하여 업데이트하세요."
+            app:title="관리기관 목록 업데이트" />
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

@@ -17,6 +17,20 @@
             app:title="@string/app_title">
 
             <TextView
+                android:id="@+id/setting_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/button_border"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/setting_confirm"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/nmap_find"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -27,7 +41,8 @@
                 android:padding="3dp"
                 android:text="@string/btn_find_spi"
                 android:textColor="@android:color/white"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
                 android:id="@+id/nmap_mapmode_switch"

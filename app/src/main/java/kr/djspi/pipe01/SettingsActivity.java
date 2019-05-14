@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -16,11 +16,13 @@ import androidx.preference.PreferenceManager;
 import kr.djspi.pipe01.fragment.ListDialog;
 import kr.djspi.pipe01.fragment.OnSelectListener;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS;
 import static kr.djspi.pipe01.Const.TAG_PIPE;
 import static kr.djspi.pipe01.Const.TAG_SUPERVISE;
 
-public class SettingsActivity extends AppCompatActivity implements OnSelectListener {
+public class SettingsActivity extends BaseActivity implements OnSelectListener {
 
     private SettingsFragment settingsFragment;
     private SharedPreferences sharedPreferences;
@@ -34,6 +36,15 @@ public class SettingsActivity extends AppCompatActivity implements OnSelectListe
                 .beginTransaction()
                 .replace(R.id.settings, settingsFragment)
                 .commit();
+        setToolbar(null);
+    }
+
+    @Override
+    void setToolbar(String title) {
+        toolbar.findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
+        TextView textView = toolbar.findViewById(R.id.setting_confirm);
+        textView.setVisibility(VISIBLE);
+        textView.setOnClickListener(v -> onBackPressed());
     }
 
     @Override
@@ -109,7 +120,7 @@ public class SettingsActivity extends AppCompatActivity implements OnSelectListe
                 helpPref.setOnPreferenceClickListener(preference -> {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     AlertDialog alertDialog = builder.setIcon(R.drawable.ic_help)
-                            .setTitle("관로정보 일괄적용")
+                            .setTitle("입력내용 일괄적용")
                             .setMessage(getString(R.string.message_preset_help))
                             .setPositiveButton("닫기", (dialog, which) -> dialog.dismiss()).create();
                     alertDialog.show();

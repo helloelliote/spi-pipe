@@ -186,7 +186,8 @@
     <string name="error_load_image_retry">새로고침</string>
 
     <!--Preferences -->
-    <string name="message_preset_help">반복되는 관로정보를 미리 지정하여, 관로정보를 등록하는 과정에서 불러와 사용할 수 있는 편의기능입니다.
+    <string name="setting_confirm">저장</string>
+    <string name="message_preset_help">반복되는 입력내용을 미리 지정하여, 관로정보를 등록하는 과정에서 불러와 사용할 수 있는 편의기능입니다.
         \n\n별도로 지정하지 않은 정보는 관로정보를 등록하는 과정에서 개별적으로 입력할 수 있습니다.</string>
     <string name="nav_guide_content">
         1. 앱의 용도\n
