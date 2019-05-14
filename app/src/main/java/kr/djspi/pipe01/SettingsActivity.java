@@ -94,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity implements OnSelectListe
         }
     }
 
-    static class SettingsFragment extends PreferenceFragmentCompat {
+    public static class SettingsFragment extends PreferenceFragmentCompat {
 
         private Preference pipeTypePref;
         private Preference supervisePref;
