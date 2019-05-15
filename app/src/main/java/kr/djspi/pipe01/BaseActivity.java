@@ -47,6 +47,7 @@ public class BaseActivity extends AppCompatActivity implements OnNavigationItemS
     Toolbar toolbar;
     ProgressBar progressBar;
     NfcUtil nfcUtil;
+    MenuItem titleSetting;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,17 +89,6 @@ public class BaseActivity extends AppCompatActivity implements OnNavigationItemS
 
                 NavigationView navigationView = drawer.findViewById(R.id.nav_view);
                 Menu menu = navigationView.getMenu();
-                Object what = new TextAppearanceSpan((this), R.style.TextAppearance20sp);
-
-                MenuItem titleInit = menu.findItem(R.id.title_app);
-                SpannableString spannable = new SpannableString(titleInit.getTitle());
-                spannable.setSpan(what, 0, spannable.length(), 0);
-                titleInit.setTitle(spannable);
-
-                MenuItem titleNfc = menu.findItem(R.id.title_setting);
-                spannable = new SpannableString(titleNfc.getTitle());
-                spannable.setSpan(what, 0, spannable.length(), 0);
-                titleNfc.setTitle(spannable);
 
                 View headerView = navigationView.getHeaderView(0);
                 navigationView.setNavigationItemSelectedListener(BaseActivity.this);
@@ -118,6 +108,18 @@ public class BaseActivity extends AppCompatActivity implements OnNavigationItemS
                 phone.setOnClickListener(v ->
                         startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneStr))));
 
+                Object what = new TextAppearanceSpan((this), R.style.TextAppearance20sp);
+                MenuItem titleApp = menu.findItem(R.id.title_app);
+                SpannableString spannable = new SpannableString(titleApp.getTitle());
+                spannable.setSpan(what, 0, spannable.length(), 0);
+                titleApp.setTitle(spannable);
+
+                titleSetting = menu.findItem(R.id.title_setting);
+                titleSetting.setVisible(useSettingsMenu());
+                spannable = new SpannableString(titleSetting.getTitle());
+                spannable.setSpan(what, 0, spannable.length(), 0);
+                titleSetting.setTitle(spannable);
+
                 navigationView.findViewById(R.id.nav_close).setOnClickListener(v -> drawer.closeDrawer(GravityCompat.START));
             } else {
                 toolbar.setVisibility(GONE);
@@ -129,6 +131,10 @@ public class BaseActivity extends AppCompatActivity implements OnNavigationItemS
      * @return Toolbar 를 사용하지 않을 액티비티에서는 오버라이딩해 false 를 리턴
      */
     boolean useToolbar() {
+        return true;
+    }
+
+    boolean useSettingsMenu() {
         return true;
     }
 

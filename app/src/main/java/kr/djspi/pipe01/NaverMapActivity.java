@@ -114,11 +114,17 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         setToolbar(null);
+        useSettingsMenu();
     }
 
     @Override
     void setToolbar(String title) {
         toolbar.findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
+    }
+
+    @Override
+    boolean useSettingsMenu() {
+        return true;
     }
 
     /**

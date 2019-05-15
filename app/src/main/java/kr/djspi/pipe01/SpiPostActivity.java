@@ -90,16 +90,13 @@ public class SpiPostActivity extends BaseActivity implements Serializable, Progr
             dialog.setArguments(bundle);
             dialog.show(getSupportFragmentManager(), getString(R.string.popup_read_only));
         });
+
+        useSettingsMenu();
     }
 
     @Override
-    protected boolean useToolbar() {
-        return true;
-    }
-
-    @Override
-    protected void setToolbar(String string) {
-        super.setToolbar(string);
+    boolean useSettingsMenu() {
+        return false;
     }
 
     /**

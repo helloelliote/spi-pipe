@@ -131,6 +131,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         setToolbar(spiType.getType());
+        useSettingsMenu();
 
         findViewById(R.id.lay_pipe).setOnClickListener(this);
         fPipe = findViewById(R.id.form_pipe);
@@ -215,6 +216,11 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         if (title != null) {
             toolbar.setTitle(format(getString(R.string.app_title_alt), "매설관로", title));
         }
+    }
+
+    @Override
+    boolean useSettingsMenu() {
+        return false;
     }
 
     @Override

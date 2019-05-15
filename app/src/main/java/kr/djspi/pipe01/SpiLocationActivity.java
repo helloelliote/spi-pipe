@@ -88,12 +88,18 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         findViewById(R.id.btn_confirm).setOnClickListener(this);
 
         setToolbar(getString(R.string.record_location_title));
+        useSettingsMenu();
     }
 
     @Override
     void setToolbar(String string) {
         toolbar.setTitle(string);
         toolbar.findViewById(R.id.nmap_find).setVisibility(GONE); // '측량점 찾기' 버튼 없앰
+    }
+
+    @Override
+    boolean useSettingsMenu() {
+        return false;
     }
 
     /**

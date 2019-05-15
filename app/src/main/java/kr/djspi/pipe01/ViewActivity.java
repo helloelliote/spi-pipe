@@ -109,6 +109,7 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
         linearLayout.setDividerDrawable(drawable);
 
         setToolbar("");
+        useSettingsMenu();
 
         setSpiIdInfo();
         setSuperviseInfo();
@@ -120,6 +121,11 @@ public class ViewActivity extends BaseActivity implements Serializable, OnRecord
         if (string != null) {
             toolbar.setTitle(String.format(getString(R.string.app_title_alt), Json.s(jsonObject, "pipe"), ""));
         }
+    }
+
+    @Override
+    boolean useSettingsMenu() {
+        return false;
     }
 
     private void setSpiIdInfo() {
