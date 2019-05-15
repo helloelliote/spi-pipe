@@ -57,7 +57,7 @@
             app:key="switch_location"
             app:summaryOff="(기본) 지도에서 입력합니다."
             app:summaryOn="측량좌표를 직접 입력합니다."
-            app:title="SPI 설치위치 입력" />
+            app:title="SPI 설치위치(지도/좌표) 입력" />
     </PreferenceCategory>
 
     <PreferenceCategory
