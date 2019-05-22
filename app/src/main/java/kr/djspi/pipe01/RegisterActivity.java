@@ -478,7 +478,9 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
             switch (requestCode) {
                 case REQUEST_CAPTURE_IMAGE:
                     try {
-                        if (tempFile.delete()) tempFile = null;
+                        if (tempFile != null) {
+                            if (tempFile.delete()) tempFile = null;
+                        }
                     } catch (SecurityException e) {
                         Toast.makeText(this, getString(R.string.record_delete_error), Toast.LENGTH_SHORT).show();
                     }
