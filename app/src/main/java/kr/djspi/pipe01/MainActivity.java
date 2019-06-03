@@ -3,9 +3,6 @@ package kr.djspi.pipe01;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkRequest;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +21,11 @@ import com.helloelliote.util.retrofit.Retrofit2x;
 import com.helloelliote.util.retrofit.RetrofitCore.OnRetrofitListener;
 import com.helloelliote.util.retrofit.SpiGet;
 import com.helloelliote.util.retrofit.SuperviseGet;
+import com.novoda.merlin.Bindable;
+import com.novoda.merlin.Connectable;
+import com.novoda.merlin.Disconnectable;
+import com.novoda.merlin.Merlin;
+import com.novoda.merlin.NetworkStatus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,13 +50,13 @@ import static kr.djspi.pipe01.nfc.NfcUtil.getRecord;
 import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 import static kr.djspi.pipe01.nfc.StringParser.parseToJsonObject;
 
-public class MainActivity extends LocationUpdate implements Serializable {
+public class MainActivity extends LocationUpdate
+        implements Serializable, Connectable, Disconnectable, Bindable {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private boolean isNetworkConnected;
+    private static boolean isConnected;
     private Context context;
-    private ConnectivityManager connectivityManager;
-    private ConnectivityManager.NetworkCallback networkCallback;
+    private Merlin merlin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,30 +67,12 @@ public class MainActivity extends LocationUpdate implements Serializable {
         setContentView(R.layout.activity_main);
     }
 
-    // TODO: 2019-04-12 서버 상태에 따라서도 나눌 수 있는지 연구
-    // TODO: 2019-04-19 일부 기종에서 유심칩 O, 데이터 네트워크 & 와이파이 X 일때 오프라인 모드 진입 실패
     private void setNetworkCallback() {
-        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkRequest request = new NetworkRequest.Builder().build();
-        networkCallback = new ConnectivityManager.NetworkCallback() {
-            public void onAvailable(Network network) {
-                super.onAvailable(network);
-                isNetworkConnected = true;
-            }
-
-            @Override
-            public void onUnavailable() {
-                super.onUnavailable();
-                isNetworkConnected = false;
-            }
-
-            @Override
-            public void onLost(Network network) {
-                super.onLost(network);
-                isNetworkConnected = false;
-            }
-        };
-        connectivityManager.registerNetworkCallback(request, networkCallback);
+        merlin = new Merlin.Builder()
+                .withConnectableCallbacks()
+                .withDisconnectableCallbacks()
+                .withBindableCallbacks()
+                .build(this);
     }
 
     /**
@@ -102,7 +86,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         LinearLayout mainLayout1 = findViewById(R.id.lay_main1);
         mainLayout1.setOnClickListener(view -> {
             progressBar.setVisibility(VISIBLE);
-            if (!isNetworkConnected) {
+            if (!isConnected) {
                 showMessageDialog(8, "", true);
                 progressBar.setVisibility(INVISIBLE);
             } else if (currentLocation == null) {
@@ -124,9 +108,45 @@ public class MainActivity extends LocationUpdate implements Serializable {
     @Override
     protected void onResume() {
         super.onResume();
+        registerNetworkCallback();
         if (progressBar.getVisibility() == VISIBLE) progressBar.setVisibility(INVISIBLE);
         if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
         if (nfcUtil != null) nfcUtil.onResume();
+    }
+
+    private void registerNetworkCallback() {
+        merlin.registerConnectable(this);
+        merlin.registerDisconnectable(this);
+        merlin.registerBindable(this);
+    }
+
+    @Override
+    public void onConnect() {
+        isConnected = true;
+    }
+
+    @Override
+    public void onDisconnect() {
+        isConnected = false;
+    }
+
+    @Override
+    public void onBind(NetworkStatus networkStatus) {
+        if (!networkStatus.isAvailable()) {
+            onDisconnect();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        merlin.bind();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        merlin.unbind();
     }
 
     @Override
@@ -139,7 +159,10 @@ public class MainActivity extends LocationUpdate implements Serializable {
     protected void onDestroy() {
         super.onDestroy();
         progressBar.setVisibility(INVISIBLE);
-        connectivityManager.unregisterNetworkCallback(networkCallback);
+    }
+
+    private static boolean getConnectivity() {
+        return isConnected;
     }
 
     @Override
@@ -147,7 +170,7 @@ public class MainActivity extends LocationUpdate implements Serializable {
         super.onNewIntent(intent);
         if (intent == null) return;
         progressBar.setVisibility(VISIBLE);
-        if (isNetworkConnected) {
+        if (getConnectivity()) {
             new ProcessTag(intent);
         } else new ProcessTagOffline(intent, 0);
     }
