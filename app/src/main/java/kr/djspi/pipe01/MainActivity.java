@@ -48,6 +48,7 @@ import static com.helloelliote.util.retrofit.ApiKey.API_PIPE_GET;
 import static com.helloelliote.util.retrofit.ApiKey.API_SPI_GET;
 import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.nfc.NfcUtil.getRecord;
+import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 import static kr.djspi.pipe01.nfc.StringParser.parseToJsonObject;
 
 public class MainActivity extends LocationUpdate
@@ -111,8 +112,8 @@ public class MainActivity extends LocationUpdate
         super.onResume();
         registerNetworkCallback();
         if (progressBar.getVisibility() == VISIBLE) progressBar.setVisibility(INVISIBLE);
-//        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
-//        if (nfcUtil != null) nfcUtil.onResume();
+        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
+        if (nfcUtil != null) nfcUtil.onResume();
     }
 
     private void registerNetworkCallback() {
