@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -47,7 +48,6 @@ import static com.helloelliote.util.retrofit.ApiKey.API_PIPE_GET;
 import static com.helloelliote.util.retrofit.ApiKey.API_SPI_GET;
 import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.nfc.NfcUtil.getRecord;
-import static kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled;
 import static kr.djspi.pipe01.nfc.StringParser.parseToJsonObject;
 
 public class MainActivity extends LocationUpdate
@@ -64,6 +64,7 @@ public class MainActivity extends LocationUpdate
         context = this;
         setNetworkCallback();
         new Thread(this::checkLocalSuperviseDatabase).start();
+        checkPowerSaveMode();
         setContentView(R.layout.activity_main);
     }
 
@@ -110,8 +111,8 @@ public class MainActivity extends LocationUpdate
         super.onResume();
         registerNetworkCallback();
         if (progressBar.getVisibility() == VISIBLE) progressBar.setVisibility(INVISIBLE);
-        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
-        if (nfcUtil != null) nfcUtil.onResume();
+//        if (!isNfcEnabled()) showMessageDialog(2, getString(R.string.popup_nfc_on), false);
+//        if (nfcUtil != null) nfcUtil.onResume();
     }
 
     private void registerNetworkCallback() {
@@ -163,6 +164,15 @@ public class MainActivity extends LocationUpdate
 
     private static boolean getConnectivity() {
         return isConnected;
+    }
+
+    private void checkPowerSaveMode() {
+        runOnUiThread(() -> {
+            PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            if (powerManager.isPowerSaveMode()) {
+                showMessageDialog(9, getString(R.string.popup_power_save), false);
+            }
+        });
     }
 
     @Override

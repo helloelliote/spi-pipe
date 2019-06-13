@@ -53,6 +53,8 @@
     <string name="popup_error_offline_read_error">SPI 정보조회에 실패하였습니다.\nSPI를 다시 태깅해 주세요.</string>
     <string name="popup_error_set">SPI 정보 등록에 실패하였습니다.\n입력하신 데이터를 재확인해 주세요.</string>
     <string name="popup_error_supervise">관리기관 목록을 가져오지 못하였습니다. 다시 시도해주세요.</string>
+    <string name="popup_power_save">시스템 절전모드 실행중에는\n일부 기능이 제한될 수 있습니다.\n절전모드를 해제해 주세요.</string>
+    <string name="popup_power_save_sub">절전모드에서는 네트워크 속도가 저하되거나, 내 위치 확인이 제한될 수 있습니다.</string>
 
     <!--NaverMapActivity-->
     <string name="pipe_name_00">도시가스</string>

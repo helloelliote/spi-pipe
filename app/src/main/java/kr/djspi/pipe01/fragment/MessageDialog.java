@@ -134,6 +134,9 @@ public class MessageDialog extends DialogFragment implements OnClickListener {
                 popupText.setText(getString(R.string.popup_error_comm));
 //                popupSubText.setText(getTag());
                 setVisibilityToGone(view);
+            case 9: // (MainActivity.class) 앱 시작 시 절전모드가 실행중인지 확인
+                popupTitle.setText("주의");
+                popupSubText.setText(getString(R.string.popup_power_save_sub));
             default:
                 break;
         }
