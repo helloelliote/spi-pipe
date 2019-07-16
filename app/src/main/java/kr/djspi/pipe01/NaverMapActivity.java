@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback;
@@ -49,8 +51,6 @@ import com.naver.maps.map.overlay.InfoWindow.DefaultTextAdapter;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.transitionseverywhere.ChangeText;
-import com.transitionseverywhere.Transition;
-import com.transitionseverywhere.TransitionManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
