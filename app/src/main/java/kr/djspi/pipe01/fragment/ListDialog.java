@@ -99,7 +99,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
         titleView.setText(dialogTitle);
         view.findViewById(R.id.btn_ok).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
-        view.findViewById(R.id.btn_close).setOnClickListener(this);
+        view.findViewById(R.id.button_close).setOnClickListener(this);
 
         listView = view.findViewById(R.id.list_common);
         if (listTag.equals(TAG_SUPERVISE)) {
@@ -131,7 +131,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:
-            case R.id.btn_close:
+            case R.id.button_close:
                 dismissAllowingStateLoss();
             default:
                 break;

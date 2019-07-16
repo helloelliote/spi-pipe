@@ -94,7 +94,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
         input_x.setFilters(FILTER_SURVEY);
         input_y.setFilters(FILTER_SURVEY);
 
-        view.findViewById(R.id.btn_dismiss).setOnClickListener(this);
+        view.findViewById(R.id.button_dismiss).setOnClickListener(this);
         view.findViewById(R.id.btn_ok).setOnClickListener(this);
 
         return view;
@@ -113,7 +113,7 @@ public class SurveyDialog extends DialogFragment implements OnClickListener {
                     dismissAllowingStateLoss();
                 } else selectIndex = -1;
                 break;
-            case R.id.btn_dismiss:
+            case R.id.button_dismiss:
                 listener.onSelect(TAG_SURVEY, RESULT_FAIL, (String) null);
                 dismissAllowingStateLoss();
                 break;

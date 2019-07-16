@@ -72,7 +72,7 @@ public final class ImageUtil {
         float width = copyBitmap.getWidth();
         float height = copyBitmap.getHeight();
         String timeStamp = new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(new Date());
-        File newFile = new File(file.getParent(), String.format("IMG_%s.jpg", timeStamp));
+        File newFile = new File(file.getParent(), String.format("IMG_%string.jpg", timeStamp));
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             if (width < (float) maxResolution && height < (float) maxResolution) {
                 copyBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);

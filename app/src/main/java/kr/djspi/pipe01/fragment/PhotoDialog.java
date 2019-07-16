@@ -47,7 +47,7 @@ public class PhotoDialog extends DialogFragment implements OnClickListener {
         TextView titleView = view.findViewById(R.id.popup_title);
         titleView.setText(dialogTitle);
 
-        view.findViewById(R.id.btn_close).setOnClickListener(this);
+        view.findViewById(R.id.button_close).setOnClickListener(this);
         view.findViewById(R.id.btn_camera).setOnClickListener(this);
         view.findViewById(R.id.btn_gallery).setOnClickListener(this);
 
@@ -67,7 +67,7 @@ public class PhotoDialog extends DialogFragment implements OnClickListener {
                 listener.onSelect(TAG_PHOTO, selectIndex, (String) null);
                 dismissAllowingStateLoss();
                 break;
-            case R.id.btn_close:
+            case R.id.button_close:
                 dismissAllowingStateLoss();
             default:
                 break;

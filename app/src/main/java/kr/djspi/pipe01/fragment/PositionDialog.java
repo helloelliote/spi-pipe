@@ -88,7 +88,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
 
         checkView = view.findViewById(R.id.v_select);
 
-        view.findViewById(R.id.btn_close).setOnClickListener(this);
+        view.findViewById(R.id.button_close).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
         view.findViewById(R.id.btn_ok).setOnClickListener(this);
 
@@ -177,7 +177,7 @@ public class PositionDialog extends DialogFragment implements OnClickListener {
                 dismissAllowingStateLoss();
                 break;
             case R.id.btn_cancel:
-            case R.id.btn_close:
+            case R.id.button_close:
                 dismissAllowingStateLoss();
                 break;
             case R.id.lay_1:

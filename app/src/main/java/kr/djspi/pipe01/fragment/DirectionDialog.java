@@ -82,7 +82,7 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
 
         checkView = view.findViewById(R.id.v_select);
 
-        view.findViewById(R.id.btn_close).setOnClickListener(this);
+        view.findViewById(R.id.button_close).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
         view.findViewById(R.id.btn_ok).setOnClickListener(this);
 
@@ -99,7 +99,7 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
 
         resIds = new String[10];
         for (int i = 1; i <= 4; i++) {
-            resIds[i * 2] = String.format("plan_%s_%s_%s_%s",
+            resIds[i * 2] = String.format("plan_%s_%s_%s_%string",
                     parseSpiType(typeString),
                     parsePipeShape(shapeString),
                     String.valueOf(positionInt),
@@ -145,7 +145,7 @@ public class DirectionDialog extends DialogFragment implements OnClickListener {
                 listener.onSelect(TAG_DIRECTION, -2, (String) null);
                 dismissAllowingStateLoss();
                 break;
-            case R.id.btn_close:
+            case R.id.button_close:
                 dismissAllowingStateLoss();
                 break;
             case R.id.lay_2:

@@ -61,14 +61,14 @@ public class InfoTab extends Fragment {
             case 1:
             case 2:
             case 3:
-                hDirection = String.format("차도 방향 %s m", Json.s(jsonObject, "vertical"));
+                hDirection = String.format("차도 방향 %string m", Json.s(jsonObject, "vertical"));
                 break;
             case 7:
             case 8:
             case 9:
                 hDirection = Json.s(jsonObject, "spi_type").equals("표지주") ?
-                        String.format("차도반대측 방향 %s m", Json.s(jsonObject, "vertical")) :
-                        String.format("보도 방향 %s m", Json.s(jsonObject, "vertical"));
+                        String.format("차도반대측 방향 %string m", Json.s(jsonObject, "vertical")) :
+                        String.format("보도 방향 %string m", Json.s(jsonObject, "vertical"));
                 break;
             default:
                 hDirection = "";
@@ -80,12 +80,12 @@ public class InfoTab extends Fragment {
             case 1:
             case 4:
             case 7:
-                vDirection = String.format("좌측 %s m", Json.s(jsonObject, "horizontal"));
+                vDirection = String.format("좌측 %string m", Json.s(jsonObject, "horizontal"));
                 break;
             case 3:
             case 6:
             case 9:
-                vDirection = String.format("우측 %s m", Json.s(jsonObject, "horizontal"));
+                vDirection = String.format("우측 %string m", Json.s(jsonObject, "horizontal"));
                 break;
             default:
                 vDirection = "";

@@ -72,7 +72,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
         imageView.setImageDrawable(fromRes(resId));
         imageView.setScaleType(ScaleType.FIT_CENTER);
 
-        view.findViewById(R.id.btn_close).setOnClickListener(this);
+        view.findViewById(R.id.button_close).setOnClickListener(this);
         view.findViewById(R.id.btn_cancel).setOnClickListener(this);
         view.findViewById(R.id.btn_ok).setOnClickListener(this);
 
@@ -198,7 +198,7 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
                 listener.onSelect(TAG_DISTANCE, -2, (String) null);
                 dismissAllowingStateLoss();
                 break;
-            case R.id.btn_close:
+            case R.id.button_close:
                 dismissAllowingStateLoss();
                 break;
             default:

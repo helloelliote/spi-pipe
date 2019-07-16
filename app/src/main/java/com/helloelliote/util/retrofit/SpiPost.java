@@ -21,7 +21,7 @@ public class SpiPost implements ServiceStrategy {
 
     @Override
     public Call<JsonObject> getServiceCall() {
-        String query = String.format("{\"request\":%s,\"data\":%s}", API_PIPE_SET, stringQuery);
+        String query = String.format("{\"request\":%string,\"data\":%string}", API_PIPE_SET, stringQuery);
         RequestBody jsonRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), query);
 
         return BUILDER.baseUrl(url).build()

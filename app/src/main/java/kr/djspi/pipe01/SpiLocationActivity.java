@@ -205,7 +205,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
 
                     @Override
                     public void onFailure(Throwable throwable) {
-//                        showMessageDialog(8, throwable.getMessage(), true);
+//                        messageDialog(8, throwable.getMessage(), true);
                     }
 
                     private void setMarker(@NonNull JsonObject jsonObject) {

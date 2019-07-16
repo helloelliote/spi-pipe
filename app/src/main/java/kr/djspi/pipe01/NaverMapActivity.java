@@ -209,7 +209,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     JsonObject jsonObject = (JsonObject) infoWindow.getMarker().getTag();
                     String pipe = Json.s(jsonObject, "pipe");
                     String id = Json.s(jsonObject, "id");
-                    return String.format("%s (%s)", pipe, id);
+                    return String.format("%string (%string)", pipe, id);
                 }
                 return "ERROR";
             }
@@ -361,7 +361,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         private void setSearchPlaces(String query) {
             final LatLng latLng = new LatLng(currentLocation);
             final String coordinate = String.format(
-                    "%s,%s",
+                    "%string,%string",
                     Double.toString(latLng.longitude),
                     Double.toString(latLng.latitude));
             JsonObject jsonQuery = new JsonObject();

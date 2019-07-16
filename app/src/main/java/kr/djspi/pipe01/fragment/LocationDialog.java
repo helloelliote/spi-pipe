@@ -52,7 +52,7 @@ public class LocationDialog extends DialogFragment implements OnClickListener {
 
         view.findViewById(R.id.btn_survey).setOnClickListener(this);
         view.findViewById(R.id.btn_gps).setOnClickListener(this);
-        view.findViewById(R.id.btn_dismiss).setOnClickListener(this);
+        view.findViewById(R.id.button_dismiss).setOnClickListener(this);
 
         return view;
     }
@@ -70,7 +70,7 @@ public class LocationDialog extends DialogFragment implements OnClickListener {
                 listener.onSelect(TAG_LOCATION, selectIndex, (String) null);
                 dismissAllowingStateLoss();
                 break;
-            case R.id.btn_dismiss:
+            case R.id.button_dismiss:
                 listener.onSelect(TAG_LOCATION, RESULT_FAIL, (String) null);
                 dismissAllowingStateLoss();
                 break;

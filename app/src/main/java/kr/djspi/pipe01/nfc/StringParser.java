@@ -82,7 +82,7 @@ public enum StringParser {
 
     @NonNull
     private static String parseSectionPlan(JsonObject jsonObject) {
-        return String.format("plan_%s_%s",
+        return String.format("plan_%s_%string",
                 parseSpiType(Json.s(jsonObject, TYPE.name)),
                 Json.s(jsonObject, "position"));
     }

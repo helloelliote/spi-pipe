@@ -375,8 +375,8 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
                     showPositionDialog();
                     return;
                 }
-                fHorizontal.setText(format("%s %s", fHorizontal.getTag().toString(), text[0]));
-                fVertical.setText(format("%s %s", fVertical.getTag().toString(), text[1]));
+                fHorizontal.setText(format("%string %string", fHorizontal.getTag().toString(), text[0]));
+                fVertical.setText(format("%string %string", fVertical.getTag().toString(), text[1]));
                 pipePosition.setHorizontal(valueOf(text[0]));
                 pipePosition.setVertical(valueOf(text[1]));
                 fDepth.requestFocus();
@@ -416,10 +416,10 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         fPipe.setText(PIPE_TYPE_ENUMS[index].getName());
         String header = PIPE_TYPE_ENUMS[index].getHeader();
         String unit = PIPE_TYPE_ENUMS[index].getUnit();
-        tHeader.setText(format("%s  ", header));
-        fSpec.setHint(format("%s 입력", header).replace("관경", "관로관경"));
+        tHeader.setText(format("%string  ", header));
+        fSpec.setHint(format("%string 입력", header).replace("관경", "관로관경"));
         fSpec.setText(null);
-        tUnit.setText(format("  %s", unit));
+        tUnit.setText(format("  %string", unit));
         pipe.setType_id(index + 1);
         pipeType.setId(index + 1);
         pipeType.setHeader(header);
@@ -592,7 +592,7 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         pipeType.setPipe(fPipe.getText().toString());
         pipeShape.setShape(fShape.getText().toString());
         pipeShape.setSpec(fSpec.getText().toString());
-        pipePlan.setFile_section(format("plan_%s_%s.png", parseSpiType(spiType.getType()), pipePosition.getPosition()));
+        pipePlan.setFile_section(format("plan_%s_%string.png", parseSpiType(spiType.getType()), pipePosition.getPosition()));
         pipeSupervise.setSupervise(fSupervise.getText().toString());
 
         Entry entry = new Entry(spi, spiType, spiMemo, spiPhoto, pipe, pipeType, pipeShape, pipePosition, pipePlan, pipeSupervise);
