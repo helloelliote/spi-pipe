@@ -1,6 +1,5 @@
 package kr.djspi.pipe01
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -26,7 +25,6 @@ class Intro : AppCompatActivity() {
         }
 
         Handler().postDelayed({
-            getSharedPreferences(packageName, Context.MODE_PRIVATE).edit().clear().apply()
             startActivity(Intent(baseContext, MainActivity::class.java))
             finish()
         }, 750)

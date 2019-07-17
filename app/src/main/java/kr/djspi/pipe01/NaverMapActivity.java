@@ -73,7 +73,7 @@ import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
 import static com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN;
 import static java.lang.Double.parseDouble;
 import static java.util.Objects.requireNonNull;
-import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
+import static kr.djspi.pipe01.BuildConfig.CLIENT_ID;
 import static kr.djspi.pipe01.Const.URL_SPI;
 import static kr.djspi.pipe01.dto.PipeType.parsePipeType;
 
@@ -105,7 +105,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this)
-                .setClient(new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
+                .setClient(new NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID));
         setContentView(R.layout.activity_navermap);
         setNaverMap();
     }
@@ -433,18 +433,18 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
 
             @Override
             @SuppressLint("InflateParams")
-            public View getView(final int position, View view, ViewGroup parent) {
+            public View getView(final int position, View convertView, ViewGroup parent) {
                 final ItemHolder holder;
-                if (view == null) {
-                    view = inflater.inflate(R.layout.list_searchplaces, null);
+                if (convertView == null) {
+                    convertView = inflater.inflate(R.layout.list_searchplaces, null);
                     holder = new ItemHolder();
-                    holder.name = view.findViewById(R.id.name);
-                    view.setTag(holder);
+                    holder.name = convertView.findViewById(R.id.name);
+                    convertView.setTag(holder);
                 } else {
-                    holder = (ItemHolder) view.getTag();
+                    holder = (ItemHolder) convertView.getTag();
                 }
                 holder.name.setText(placesList.get(position).get("name"));
-                view.setOnClickListener((View v) -> {
+                convertView.setOnClickListener((View v) -> {
                     // searchView 내용 변경과 동시에 Query 를 다시 시작하려면 true
                     searchView.setQuery(placesList.get(position).get("name"), false);
                     final double coordinate_x = parseDouble(requireNonNull(placesList.get(position).get("x")));
@@ -461,7 +461,7 @@ public class NaverMapActivity extends LocationUpdate implements OnMapReadyCallba
                     placesList.clear();
                     placesListAdapter.notifyDataSetChanged();
                 });
-                return view;
+                return convertView;
             }
         }
     }

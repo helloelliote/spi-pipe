@@ -1,8 +1,12 @@
-package kr.djspi.pipe01
+package kr.djspi.pipe01.util
 
 import android.app.Activity
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
+import kr.djspi.pipe01.RegisterActivity
+import kr.djspi.pipe01.SpiLocationActivity
+import kr.djspi.pipe01.SpiPostActivity
+import kr.djspi.pipe01.ViewActivity
 import kr.djspi.pipe01.fragment.MessageDialog
 
 fun Activity.settingsMenuEnabled(): Boolean {
