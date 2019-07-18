@@ -13,13 +13,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-val retrofit2x = Retrofit2x()
-
 fun updateLocalSuperviseDatabase(context: Context) {
-    val jsonQuery = JsonObject()
-    jsonQuery.addProperty("request", "supervise-get")
-    retrofit2x.getSuperviseDatabase(jsonQuery.toString()).enqueue(object : RetrofitCallback() {
-        override fun onResponses(response: JsonObject?) {
+    Retrofit2x.getSuperviseDatabase().enqueue(object : RetrofitCallback() {
+        override fun onResponse(response: JsonObject?) {
             response?.let {
                 val jsonArray = it["data"].asJsonArray
                 val superviseDao = superviseDb?.dao()
@@ -40,25 +36,25 @@ fun MainActivity.getOnlineServerData(intent: Intent) {
     val serial = NfcUtil.bytesToHex(tag.id)
     val jsonQuery = JsonObject()
     jsonQuery.addProperty("spi_serial", serial)
-    retrofit2x.getServerData(jsonQuery.toString()).enqueue(object : RetrofitCallback() {
-        override fun onResponses(response: JsonObject?) {
+    Retrofit2x.getSpi("spi-get", jsonQuery).enqueue(object : RetrofitCallback() {
+        override fun onResponse(response: JsonObject?) {
             response?.let {
                 if (it["total_count"].asInt >= 1) {
-                    processServerData(response = it, query = jsonQuery, serial = serial)
+                    processServerData(it, jsonQuery, serial)
                 } else {
                     messageDialog(3, getString(R.string.popup_error_not_spi), false)
                 }
             }
         }
 
-        override fun onFailures(throwable: Throwable) {
+        override fun onFailure(throwable: Throwable) {
             messageDialog(8, throwable.message ?: "")
             throwable.printStackTrace()
         }
     })
 }
 
-fun MainActivity.processServerData(response: JsonObject, query: JsonObject, serial: String) {
+fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, serial: String) {
     val jsonObject = response["data"].asJsonObject
     if (jsonObject["pipe_count"].asInt == 0) {
         startActivity(
@@ -70,8 +66,8 @@ fun MainActivity.processServerData(response: JsonObject, query: JsonObject, seri
                 )
         )
     } else {
-        retrofit2x.getSpi(query.toString()).enqueue(object : RetrofitCallback() {
-            override fun onResponses(response: JsonObject?) {
+        Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
+            override fun onResponse(response: JsonObject?) {
                 response?.let {
                     val elements = it["data"].asJsonArray
                     startActivity(
@@ -82,7 +78,7 @@ fun MainActivity.processServerData(response: JsonObject, query: JsonObject, seri
                 }
             }
 
-            override fun onFailures(throwable: Throwable) {
+            override fun onFailure(throwable: Throwable) {
                 messageDialog(8, throwable.message ?: "")
             }
         })
@@ -92,30 +88,29 @@ fun MainActivity.processServerData(response: JsonObject, query: JsonObject, seri
 /**
  * 직접 #onResponse 또는 #onFailure 를 호출하는 대신 인터페이스 메서드를 호출해 코드 중복을 피한다.
  */
-open class RetrofitCallback : Callback<JsonObject>,
-    OnRetrofitListener {
+open class RetrofitCallback : Callback<JsonObject>, OnRetrofitListener {
 
     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
         if (response.isSuccessful) {
-            onResponses(response.body())
+            onResponse(response.body())
         } else onFailure(call, Throwable(response.message()))
     }
 
     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-        onFailures(t)
+        onFailure(t)
     }
 
-    override fun onResponses(response: JsonObject?) {
+    override fun onResponse(response: JsonObject?) {
 
     }
 
-    override fun onFailures(throwable: Throwable) {
+    override fun onFailure(throwable: Throwable) {
 
     }
 }
 
 internal interface OnRetrofitListener {
-    fun onResponses(response: JsonObject?)
+    fun onResponse(response: JsonObject?)
 
-    fun onFailures(throwable: Throwable)
+    fun onFailure(throwable: Throwable)
 }

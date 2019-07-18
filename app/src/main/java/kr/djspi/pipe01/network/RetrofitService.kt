@@ -38,12 +38,6 @@ interface RetrofitService {
 
     @Headers("Content-Type: application/json")
     @GET("api")
-    fun getServerData(
-        @Query("json") jsonString: String
-    ): Call<JsonObject>
-
-    @Headers("Content-Type: application/json")
-    @GET("api")
     fun getSpi(
         @Query("json") jsonString: String
     ): Call<JsonObject>

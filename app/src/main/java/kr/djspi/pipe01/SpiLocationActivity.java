@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-import androidx.preference.PreferenceManager;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -52,7 +51,7 @@ import static com.naver.maps.map.LocationTrackingMode.None;
 import static com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING;
 import static com.naver.maps.map.overlay.OverlayImage.fromResource;
 import static com.naver.maps.map.util.MapConstants.EXTENT_KOREA;
-import static kr.djspi.pipe01.BuildConfig.NAVER_CLIENT_ID;
+import static kr.djspi.pipe01.BuildConfig.CLIENT_ID;
 import static kr.djspi.pipe01.Const.RESULT_PASS;
 import static kr.djspi.pipe01.Const.TAG_SURVEY;
 import static kr.djspi.pipe01.Const.URL_SPI;
@@ -75,7 +74,7 @@ public class SpiLocationActivity extends LocationUpdate implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this)
-                .setClient(new NaverMapSdk.NaverCloudPlatformClient(NAVER_CLIENT_ID));
+                .setClient(new NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID));
         setContentView(R.layout.activity_spi_location);
         setNaverMap();
     }

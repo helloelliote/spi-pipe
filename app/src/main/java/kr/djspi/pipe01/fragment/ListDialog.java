@@ -153,7 +153,7 @@ public class ListDialog extends DialogFragment implements OnClickListener {
     /**
      * @see <a href="IndexableListView"></a>https://github.com/sylversky/IndexableListView.git</a>
      */
-    private final class ListAdapter extends BaseAdapter implements Indexer {
+    final class ListAdapter extends BaseAdapter implements Indexer {
 
         private final Context context;
         private final ArrayList<String> listItem;

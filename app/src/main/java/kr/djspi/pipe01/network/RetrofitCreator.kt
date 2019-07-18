@@ -6,22 +6,25 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-fun createRetrofit(baseUrl: String): RetrofitService {
-    return Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .client(createOkHttpClient())
-        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
-        .build().create(RetrofitService::class.java)
-}
+object RetrofitCreator {
 
-private fun createOkHttpClient(): OkHttpClient {
-    val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-    val httpLoggingInterceptor = HttpLoggingInterceptor()
-    val interceptor: HttpLoggingInterceptor =
-        httpLoggingInterceptor.apply {
-            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+    fun createRetrofit(baseUrl: String): RetrofitService {
+
+        fun createOkHttpClient(): OkHttpClient {
+            val builder: OkHttpClient.Builder = OkHttpClient.Builder()
+            val httpLoggingInterceptor = HttpLoggingInterceptor()
+            val interceptor: HttpLoggingInterceptor =
+                httpLoggingInterceptor.apply {
+                    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+                }
+            builder.addInterceptor(interceptor)
+            return builder.build()
         }
-    builder.addInterceptor(interceptor)
-    return builder.build()
-}
 
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(createOkHttpClient())
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+            .build().create(RetrofitService::class.java)
+    }
+}

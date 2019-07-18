@@ -50,7 +50,29 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         super.setContentView(view)
 
         setSupportActionBar(toolbar)
+        setNavigationBarDrawer()
+    }
 
+    override fun setSupportActionBar(toolbar: Toolbar?) {
+        super.setSupportActionBar(toolbar)
+        toolbar?.setTitleTextAppearance(this, R.style.TitleHeader)
+        nmap_find.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                when {
+                    currentLocation != null -> {
+                        startActivity(
+                            Intent(context, NaverMapActivity::class.java)
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        )
+                    }
+                    else -> toast(getString(R.string.toast_error_location))
+                }
+            }
+        }
+    }
+
+    private fun setNavigationBarDrawer() {
         Thread(Runnable {
             ActionBarDrawerToggle(
                 this@BaseActivity,
@@ -104,28 +126,8 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         })
     }
 
-    override fun setSupportActionBar(toolbar: Toolbar?) {
-        super.setSupportActionBar(toolbar)
-        toolbar?.setTitleTextAppearance(this, R.style.TitleHeader)
-        nmap_find.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                when {
-                    currentLocation != null -> startActivity(
-                        Intent(
-                            context,
-                            NaverMapActivity::class.java
-                        ).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    )
-                    else -> toast(getString(R.string.toast_error_location))
-                }
-            }
-        }
-    }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         drawer.closeDrawer(GravityCompat.START, false)
-
         when (item.itemId) {
             R.id.nav_guide -> {
                 AlertDialog.Builder(this)
@@ -148,10 +150,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                 Intent(this, SettingsActivity::class.java)
                     .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             )
-            else -> {
-            }
         }
-
         drawer.closeDrawer(GravityCompat.START)
         return true
     }

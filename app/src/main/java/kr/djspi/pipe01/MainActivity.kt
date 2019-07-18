@@ -7,7 +7,6 @@ import android.os.PowerManager
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
-import com.novoda.merlin.*
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.djspi.pipe01.AppPreference.get
@@ -20,16 +19,13 @@ import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
 import org.jetbrains.anko.toast
 import java.io.Serializable
 
-class MainActivity : LocationUpdate(), Serializable, Connectable, Disconnectable, Bindable {
-
-    private lateinit var merlin: Merlin
-    private var isConnected: Boolean = false
+class MainActivity : LocationUpdate(), Serializable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkPowerSaveMode()
         Thread(Runnable {
-            setNetworkCallback()
+            checkPowerSaveMode()
+            MerlinInstance.initiateNetworkMonitor(this)
             checkLocalSuperviseDatabase()
         }).start()
         setContentView(R.layout.activity_main)
@@ -39,7 +35,7 @@ class MainActivity : LocationUpdate(), Serializable, Connectable, Disconnectable
         super.setContentView(layoutResID)
         lay_main1.setOnClickListener {
             progressbar.visibility = View.VISIBLE
-            if (!isConnected) {
+            if (!MerlinInstance.isConnected) {
                 messageDialog(8)
                 progressbar.visibility = View.INVISIBLE
             } else if (currentLocation == null) {
@@ -58,14 +54,6 @@ class MainActivity : LocationUpdate(), Serializable, Connectable, Disconnectable
         }
     }
 
-    private fun setNetworkCallback() {
-        merlin = Merlin.Builder()
-            .withConnectableCallbacks()
-            .withDisconnectableCallbacks()
-            .withBindableCallbacks()
-            .build(this)
-    }
-
     private fun checkPowerSaveMode() {
         runOnUiThread {
             val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -77,7 +65,7 @@ class MainActivity : LocationUpdate(), Serializable, Connectable, Disconnectable
 
     override fun onResume() {
         super.onResume()
-        registerNetworkCallback()
+        MerlinInstance.registerNetworkCallback()
         if (progressbar.visibility == View.VISIBLE) {
             progressbar.visibility = View.GONE
         }
@@ -88,34 +76,14 @@ class MainActivity : LocationUpdate(), Serializable, Connectable, Disconnectable
         nfcUtil.onResume()
     }
 
-    private fun registerNetworkCallback() {
-        merlin.registerConnectable(this)
-        merlin.registerDisconnectable(this)
-        merlin.registerBindable(this)
-    }
-
-    override fun onConnect() {
-        isConnected = true
-    }
-
-    override fun onDisconnect() {
-        isConnected = false
-    }
-
-    override fun onBind(networkStatus: NetworkStatus) {
-        if (!networkStatus.isAvailable) {
-            onDisconnect()
-        }
-    }
-
     override fun onStart() {
         super.onStart()
-        merlin.bind()
+        MerlinInstance.bind()
     }
 
     override fun onStop() {
         super.onStop()
-        merlin.unbind()
+        MerlinInstance.unbind()
     }
 
     override fun onDestroy() {
@@ -131,14 +99,11 @@ class MainActivity : LocationUpdate(), Serializable, Connectable, Disconnectable
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        when (intent) {
-            null -> return
-            else -> {
-                progressbar.visibility = View.VISIBLE
-                when {
-                    isConnected -> getOnlineServerData(intent)
-                    else -> getOfflineTagData(intent, 0)
-                }
+        intent?.let {
+            progressbar.visibility = View.VISIBLE
+            when {
+                MerlinInstance.isConnected -> getOnlineServerData(it)
+                else -> getOfflineTagData(it, 0)
             }
         }
     }
