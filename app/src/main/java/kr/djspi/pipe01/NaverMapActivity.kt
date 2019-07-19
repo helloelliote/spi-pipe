@@ -172,28 +172,27 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         jsonQuery.addProperty("ny", bounds.northLatitude.toString())
 
         Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
-            override fun onResponse(response: JsonObject?) {
-                response?.let {
-                    if (it["total_count"].asInt == 0) {
-                        behavior.state = STATE_COLLAPSED
-                        messageDialog(0, "표시할 SPI 정보가 없습니다")
-                    } else {
-                        response["data"].asJsonArray.forEach { element ->
-                            val jsonObject = element.asJsonObject
-                            val lat = jsonObject["spi_latitude"].asDouble
-                            val lng = jsonObject["spi_longitude"].asDouble
-                            val resId = parsePipeType(jsonObject["pipe"].asString).drawRes
-                            Marker(LatLng(lat, lng), OverlayImage.fromResource(resId)).apply {
-                                tag = jsonObject
-                                minZoom = ZOOM_GET
-                                maxZoom = ZOOM_MAX
-                                onClickListener = overlayOnclickListener
-                            }.run {
-                                this.map = naverMap
-                            }
+            override fun onResponse(response: JsonObject) {
+                if (response["total_count"].asInt == 0) {
+                    behavior.state = STATE_COLLAPSED
+                    messageDialog(0, "표시할 SPI 정보가 없습니다")
+                } else {
+                    response["data"].asJsonArray.forEach { element ->
+                        val jsonObject = element.asJsonObject
+                        val lat = jsonObject["spi_latitude"].asDouble
+                        val lng = jsonObject["spi_longitude"].asDouble
+                        val resId = parsePipeType(jsonObject["pipe"].asString).drawRes
+                        Marker(LatLng(lat, lng), OverlayImage.fromResource(resId)).apply {
+                            tag = jsonObject
+                            minZoom = ZOOM_GET
+                            maxZoom = ZOOM_MAX
+                            onClickListener = overlayOnclickListener
+                        }.run {
+                            this.map = naverMap
                         }
                     }
                 }
+
             }
 
             override fun onFailure(throwable: Throwable) {
@@ -229,7 +228,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         onNewIntentIgnore()
     }
 
-    inner class SetTopSheet(naverMap: NaverMap) {
+    private inner class SetTopSheet(naverMap: NaverMap) {
 
         private val searchView: SearchView
 
@@ -261,23 +260,21 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
             val latLng = LatLng(currentLocation!!)
             val coordinate = "${latLng.longitude},${latLng.latitude}"
             Retrofit2x.searchPlaces(query, coordinate).enqueue(object : RetrofitCallback() {
-                override fun onResponse(response: JsonObject?) {
+                override fun onResponse(response: JsonObject) {
                     placesArrayList.clear()
                     behavior.state = STATE_COLLAPSED
-                    response?.let {
-                        val places = it["places"].asJsonArray
-                        if (places == null || places.size() == 0) {
-                            messageDialog(0, getString(R.string.popup_error_noplace))
-                            return
-                        }
-                        places.forEach { place ->
-                            val jsonObject = place.asJsonObject
-                            val hashMap = HashMap<String, String>(3)
-                            hashMap["name"] = jsonObject["name"].asString
-                            hashMap["x"] = jsonObject["x"].asString
-                            hashMap["y"] = jsonObject["y"].asString
-                            placesArrayList.add(hashMap)
-                        }
+                    val places = response["places"].asJsonArray
+                    if (places == null || places.size() == 0) {
+                        messageDialog(0, getString(R.string.popup_error_noplace))
+                        return
+                    }
+                    places.forEach { place ->
+                        val jsonObject = place.asJsonObject
+                        val hashMap = HashMap<String, String>(3)
+                        hashMap["name"] = jsonObject["name"].asString
+                        hashMap["x"] = jsonObject["x"].asString
+                        hashMap["y"] = jsonObject["y"].asString
+                        placesArrayList.add(hashMap)
                     }
                     placesListAdapter.notifyDataSetChanged()
                 }
@@ -340,7 +337,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         }
     }
 
-    inner class SetBottomSheet(val naverMap: NaverMap) {
+    private inner class SetBottomSheet(val naverMap: NaverMap) {
 
         private val transition: Transition
 

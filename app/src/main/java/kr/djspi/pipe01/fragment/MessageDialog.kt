@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import android.provider.Settings.ACTION_NFC_SETTINGS
 import android.text.Html.fromHtml
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -48,6 +49,8 @@ class MessageDialog : DialogFragment(), OnClickListener {
     }
 
     private fun setDialog(issue: Int?) {
+        // TODO: 테스트 후 삭제
+        Log.w("MessageDialog", this@MessageDialog.toString())
         popup_title.text = "알림"
         popup_contents.text = tag
         when (issue) {

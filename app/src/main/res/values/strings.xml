@@ -179,8 +179,8 @@
      로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s %4$s</font><font color="#F24E4E"> %5$s</font>
       관로가 SPI %6$s 아래 지표면으로부터 <font color="#F24E4E">%7$s m</font>
        깊이에 매설되어 있습니다. 굴착 시 주의하여 주십시오.]]></string>
-    <string name="nfc_info_company"><![CDATA[본 관로는 <font color="#0077C8">%1$s</font>에서 관리하고 있습니다.]]></string>
-    <string name="nfc_info_company_contact"><![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
+    <string name="info_company"><![CDATA[본 관로는 <font color="#0077C8">%1$s</font>에서 관리하고 있습니다.]]></string>
+    <string name="info_contact"><![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
     <string name="nfc_info_construction"><![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
     <string name="nfc_info_id"><![CDATA[관로 ID는 <font color="#0077C8">%1$s</font> 입니다.]]></string>
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>

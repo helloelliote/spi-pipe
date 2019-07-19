@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -178,15 +179,18 @@ public class RegisterActivity extends BaseActivity implements OnSelectListener, 
         fSuperviseContact.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
         fMaterial = findViewById(R.id.form_material);
-        fMaterial.setOnEditorActionListener((v, actionId, event) -> {
-            boolean isHandled = false;
-            if (actionId == IME_ACTION_NEXT && fSupervise.getText().toString().equals("")) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.toggleSoftInputFromWindow(v.getWindowToken(), 0, 0);
-                new ListDialog().show(getSupportFragmentManager(), TAG_SUPERVISE);
-                isHandled = true;
+        fMaterial.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean isHandled = false;
+                if (actionId == IME_ACTION_NEXT && fSupervise.getText().toString().equals("")) {
+                    InputMethodManager imm = (InputMethodManager) RegisterActivity.this.getSystemService(INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInputFromWindow(v.getWindowToken(), 0, 0);
+                    new ListDialog().show(RegisterActivity.this.getSupportFragmentManager(), TAG_SUPERVISE);
+                    isHandled = true;
+                }
+                return isHandled;
             }
-            return isHandled;
         });
 
         fMemo = findViewById(R.id.form_memo);

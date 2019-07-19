@@ -2,6 +2,7 @@ package kr.djspi.pipe01.util
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.*
 import kr.djspi.pipe01.AppPreference.set
@@ -15,18 +16,16 @@ import retrofit2.Response
 
 fun updateLocalSuperviseDatabase(context: Context) {
     Retrofit2x.getSuperviseDatabase().enqueue(object : RetrofitCallback() {
-        override fun onResponse(response: JsonObject?) {
-            response?.let {
-                val jsonArray = it["data"].asJsonArray
-                val superviseDao = superviseDb?.dao()
-                jsonArray.forEach { element ->
-                    val obj = element.asJsonObject
-                    superviseDao?.insert(
-                        Supervise(obj["id"].asInt, obj["supervise"].asString)
-                    )
-                }
-                AppPreference.defaultPrefs(context)["isSuperviseDbValid"] = true
+        override fun onResponse(response: JsonObject) {
+            val jsonArray = response["data"].asJsonArray
+            val superviseDao = superviseDb?.dao()
+            jsonArray.forEach { element ->
+                val obj = element.asJsonObject
+                superviseDao?.insert(
+                    Supervise(obj["id"].asInt, obj["supervise"].asString)
+                )
             }
+            AppPreference.defaultPrefs(context)["isSuperviseDbValid"] = true
         }
     })
 }
@@ -37,14 +36,11 @@ fun MainActivity.getOnlineServerData(intent: Intent) {
     val jsonQuery = JsonObject()
     jsonQuery.addProperty("spi_serial", serial)
     Retrofit2x.getSpi("spi-get", jsonQuery).enqueue(object : RetrofitCallback() {
-        override fun onResponse(response: JsonObject?) {
-            response?.let {
-                if (it["total_count"].asInt >= 1) {
-                    processServerData(it, jsonQuery, serial)
-                } else {
-                    messageDialog(3, getString(R.string.popup_error_not_spi), false)
-                }
-            }
+        override fun onResponse(response: JsonObject) {
+            if (response["total_count"].asInt >= 1) {
+                processServerData(response, jsonQuery, serial)
+            } else
+                messageDialog(3, getString(R.string.popup_error_not_spi), false)
         }
 
         override fun onFailure(throwable: Throwable) {
@@ -67,15 +63,13 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
         )
     } else {
         Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
-            override fun onResponse(response: JsonObject?) {
-                response?.let {
-                    val elements = it["data"].asJsonArray
-                    startActivity(
-                        Intent(applicationContext, ViewActivity::class.java)
-                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                            .putExtra("PipeView", elements[0].toString())
-                    )
-                }
+            override fun onResponse(response: JsonObject) {
+                val elements = response["data"].asJsonArray
+                startActivity(
+                    Intent(applicationContext, ViewActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("PipeView", elements[0].toString())
+                )
             }
 
             override fun onFailure(throwable: Throwable) {
@@ -90,17 +84,21 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
  */
 open class RetrofitCallback : Callback<JsonObject>, OnRetrofitListener {
 
-    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-        if (response.isSuccessful) {
-            onResponse(response.body())
-        } else onFailure(call, Throwable(response.message()))
+    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>?) {
+        response?.let {
+            if (it.isSuccessful) {
+                // TODO: 아래 로그는 테스트 이후 삭제
+                Log.w("Retrofit2x", "onResponse Called")
+                onResponse(it.body()!!)
+            } else onFailure(call, Throwable(it.message()))
+        }
     }
 
     override fun onFailure(call: Call<JsonObject>, t: Throwable) {
         onFailure(t)
     }
 
-    override fun onResponse(response: JsonObject?) {
+    override fun onResponse(response: JsonObject) {
 
     }
 
@@ -109,8 +107,8 @@ open class RetrofitCallback : Callback<JsonObject>, OnRetrofitListener {
     }
 }
 
-internal interface OnRetrofitListener {
-    fun onResponse(response: JsonObject?)
+private interface OnRetrofitListener {
+    fun onResponse(response: JsonObject)
 
     fun onFailure(throwable: Throwable)
 }
