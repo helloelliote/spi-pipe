@@ -196,7 +196,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
             }
 
             override fun onFailure(throwable: Throwable) {
-                messageDialog(8, throwable.message ?: "")
+                messageDialog(8, throwable.message)
             }
         })
     }
@@ -280,7 +280,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 }
 
                 override fun onFailure(throwable: Throwable) {
-                    messageDialog(8, throwable.message ?: "")
+                    messageDialog(8, throwable.message)
                 }
             })
         }

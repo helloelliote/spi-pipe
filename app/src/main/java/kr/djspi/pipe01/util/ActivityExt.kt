@@ -22,7 +22,7 @@ fun Activity.settingsMenuEnabled(): Boolean {
     }
 }
 
-fun AppCompatActivity.messageDialog(issue: Int, tag: String = "", cancelable: Boolean = true) {
+fun AppCompatActivity.messageDialog(issue: Int, tag: String? = "", cancelable: Boolean = true) {
     MessageDialog.newInstance(issue, cancelable).show(supportFragmentManager, tag)
 }
 

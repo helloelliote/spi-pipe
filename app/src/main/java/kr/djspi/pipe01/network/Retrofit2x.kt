@@ -3,9 +3,22 @@ package kr.djspi.pipe01.network
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.network.RetrofitCreator.createRetrofit
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okio.BufferedSink
 import retrofit2.Call
 
-object Retrofit2x {
+object Retrofit2x : RequestBody() {
+
+    override fun contentType(): MediaType? {
+        return null
+    }
+
+    override fun writeTo(sink: BufferedSink) {
+
+    }
 
     private const val URL_SPI = "http://35.200.109.228/"
     private const val URL_SEARCH_PLACES = "https://naveropenapi.apigw.ntruss.com/map-place/v1/"
@@ -38,5 +51,12 @@ object Retrofit2x {
         jsonObject.addProperty("request", api)
         jsonObject.add("data", jsonQuery)
         return createRetrofit(URL_SPI).getSpi(jsonObject.toString())
+    }
+
+    fun postSpi(query: String, part: MultipartBody.Part? = null): Call<JsonObject> {
+        val stringQuery = "{\"request\":\"pipe-set\",\"data\":$query}"
+        val requestBody: RequestBody =
+            stringQuery.toRequestBody(("multipart/form-data").toMediaType())
+        return createRetrofit(URL_SPI).postSpi(requestBody, part)
     }
 }

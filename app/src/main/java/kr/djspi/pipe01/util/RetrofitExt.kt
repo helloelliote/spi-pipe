@@ -44,7 +44,7 @@ fun MainActivity.getOnlineServerData(intent: Intent) {
         }
 
         override fun onFailure(throwable: Throwable) {
-            messageDialog(8, throwable.message ?: "")
+            messageDialog(8, throwable.message)
             throwable.printStackTrace()
         }
     })
@@ -73,7 +73,7 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
             }
 
             override fun onFailure(throwable: Throwable) {
-                messageDialog(8, throwable.message ?: "")
+                messageDialog(8, throwable.message)
             }
         })
     }

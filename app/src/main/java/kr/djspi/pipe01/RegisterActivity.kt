@@ -1,5 +1,6 @@
 package kr.djspi.pipe01
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -18,19 +19,21 @@ import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import androidx.core.content.FileProvider
 import com.andreabaccega.widget.FormEditText
+import com.bumptech.glide.Glide
 import com.helloelliote.util.image.ImageUtil
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.Const.*
 import kr.djspi.pipe01.dto.*
+import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType
 import kr.djspi.pipe01.fragment.*
 import kr.djspi.pipe01.util.*
 import org.jetbrains.anko.toast
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
-import java.lang.String.format
+import java.util.*
 
 class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener, Serializable {
 
@@ -40,15 +43,15 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     private lateinit var spiPhoto: SpiPhoto
     private lateinit var spiLocation: SpiLocation
     private lateinit var imm: InputMethodManager
+    private var photoObj: SpiPhotoObject? = null
+    private var tempFile: File? = null
+    private var tempUri: Uri? = null
     private val pipe: Pipe = Pipe()
     private val pipeType = PipeType()
     private val pipeShape = PipeShape()
     private val pipePosition = PipePosition()
     private val pipePlan = PipePlan()
     private val pipeSupervise = PipeSupervise()
-    private var photoObj: SpiPhotoObject? = null
-    private var tempFile: File? = null
-    private var tempUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -171,26 +174,28 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 PhotoDialog().show(TAG_PHOTO)
             }
             R.id.form_photo_thumbnail -> {
-                if (photoObj == null) return
-                val bundle = Bundle()
-                bundle.putSerializable("SpiPhotoObject", photoObj)
-                ImageDialog().show(TAG_PHOTO, bundle)
+                photoObj?.let {
+                    val bundle = Bundle()
+                    bundle.putSerializable("SpiPhotoObject", it)
+                    ImageDialog().show(TAG_PHOTO, bundle)
+                }
             }
             R.id.btn_delete -> {
-                if (photoObj != null) return
-                photoObj!!.uri = null
-                photoObj!!.file?.delete()
-                photoObj!!.file = null
-                tempUri = null
-                tempFile?.delete()
-                tempFile = null
-                form_photo_thumbnail.setImageDrawable(null)
-                form_photo_name.apply {
-                    isFocusable = false
-                    setText(getString(R.string.record_input_photo_delete))
-                    setTextColor(resources.getColor(R.color.colorAccent, null))
+                photoObj?.let {
+                    it.uri = null
+                    it.file?.delete()
+                    it.file = null
+                    tempUri = null
+                    tempFile?.delete()
+                    tempFile = null
+                    form_photo_thumbnail.setImageDrawable(null)
+                    form_photo_name.apply {
+                        isFocusable = false
+                        setText(getString(R.string.record_input_photo_delete))
+                        setTextColor(resources.getColor(R.color.colorAccent, null))
+                    }
+                    form_photo.text = null
                 }
-                form_photo.text = null
             }
         }
     }
@@ -202,6 +207,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         PositionDialog().show(TAG_POSITION, bundle)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         if (index == -1) return
         when (tag) {
@@ -291,20 +297,8 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     showPositionDialog()
                     return
                 }
-                form_horizontal.setText(
-                    format(
-                        "%string %string",
-                        form_horizontal.tag.toString(),
-                        text[0]
-                    )
-                )
-                form_vertical.setText(
-                    format(
-                        "%string %string",
-                        form_vertical.tag.toString(),
-                        text[1]
-                    )
-                )
+                form_horizontal.setText("${form_horizontal.tag} ${text[0]}")
+                form_vertical.setText("${form_vertical.tag} ${text[0]}")
                 pipePosition.horizontal = text[0]!!.toDouble()
                 pipePosition.vertical = text[1]!!.toDouble()
                 form_depth.requestFocus()
@@ -336,13 +330,14 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun onPipeTypeSelect(index: Int) {
         val fSpec = findViewById<FormEditText>(R.id.form_spec)
         form_pipe.setText(PIPE_TYPE_ENUMS[index].name)
-        header.text = format("%string  ", PIPE_TYPE_ENUMS[index])
-        fSpec.hint = format("%string 입력", header).replace("관경", "관로관경")
+        header.text = "${PIPE_TYPE_ENUMS[index]}  "
+        fSpec.hint = "$header 입력".replace("관경", "관로관경")
         fSpec.text = null
-        unit.text = format("  %string", PIPE_TYPE_ENUMS[index].unit)
+        unit.text = "  ${PIPE_TYPE_ENUMS[index].unit}"
         pipe.type_id = index + 1
         pipeType.id = index + 1
         pipeType.header = PIPE_TYPE_ENUMS[index].header
@@ -351,6 +346,46 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         else {
             fSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
             fSpec.error = null
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            val resizeFile: File?
+            when (requestCode) {
+                REQUEST_CAPTURE_IMAGE -> {
+                    Glide.with(this).load(tempUri).into(form_photo_thumbnail)
+                    resizeFile = ImageUtil.subSample4x(tempFile!!, 1024)
+                    photoObj?.file = resizeFile
+                    photoObj?.uri = tempUri
+                    form_photo_name.setText(resizeFile.name)
+                    form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
+                    form_photo.setText(getString(R.string.record_photo_ok))
+                    tempUri = null
+                    tempFile = null
+                }
+                REQUEST_GALLERY -> {
+                    val uri = (data)!!.data
+                    Glide.with(this).load(uri).into(form_photo_thumbnail)
+                    val file = ImageUtil.uriToFile(this, uri)
+                    resizeFile = ImageUtil.subSample4x(file, 1024)
+                    photoObj?.file = resizeFile
+                    photoObj?.uri = uri
+                    form_photo_name.setText(resizeFile.name)
+                    form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
+                    form_photo.setText(getString(R.string.record_photo_ok))
+                }
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            when (requestCode) {
+                REQUEST_CAPTURE_IMAGE -> {
+                    tempFile?.let {
+                        if (it.delete()) tempFile = null
+                    }
+                    tempUri = null
+                }
+            }
         }
     }
 
@@ -371,7 +406,85 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     private inner class OnNextButtonClick : View.OnClickListener {
         override fun onClick(v: View?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            if (isAllValid() && isSpecValid()) try {
+                val entry = setEntry()
+                val previewEntries = ArrayList<Entry>()
+                previewEntries.add(entry)
+                startActivity(
+                    Intent(applicationContext, ViewActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("RegisterPreview", previewEntries)
+                        .putExtra("PipeIndex", 0)
+                        .putExtra("fHorizontal", form_horizontal.text.toString())
+                        .putExtra("fVertical", form_vertical.text.toString())
+                        .putExtra("SpiPhotoObject", photoObj)
+                )
+            } catch (e: Exception) {
+                messageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.")
+            }
+        }
+
+        private fun isAllValid(): Boolean {
+            var allValid = true
+            arrayOf<FormEditText>(
+                form_pipe,
+                form_shape,
+                form_horizontal,
+                form_vertical,
+                form_depth,
+                form_spec,
+                form_material,
+                form_supervise,
+                form_supervise_contact
+            ).forEach {
+                allValid = it.testValidity() && allValid
+            }
+            return allValid
+        }
+
+        // TODO: 관로관경 최대값 4자리로 설정 후 4자리일 경우 콤마 추가해서 보여주도록 설정
+        private fun isSpecValid(): Boolean {
+            var isSpecValid = true
+            if (form_spec.inputType == TYPE_CLASS_NUMBER) {
+                isSpecValid = form_spec.text.toString().toDouble() < 1000.0
+                if (!isSpecValid) form_spec.error = "이 범위(0.0 - 1000.0)안에 해당하는 숫자만 입력가능합니다."
+            }
+            return isSpecValid
+        }
+
+        private fun setEntry(): Entry {
+            val spiId = spi.id
+            spiMemo.spi_id = spiId
+            spiMemo.memo = form_memo.text.toString()
+            spiPhoto.spi_id = spiId
+            spiLocation.spi_id = spiId
+            pipe.spi_id = spiId
+            pipe.depth = form_depth.text.toString().toDouble()
+            pipe.material = form_material.text.toString()
+            pipe.supervise_contact = form_supervise_contact.text.toString()
+            pipe.construction = form_construction.text.toString()
+            pipe.construction_contact = form_construction_contact.text.toString()
+            pipeType.pipe = form_pipe.text.toString()
+            pipeShape.shape = form_shape.text.toString()
+            pipeShape.spec = form_spec.text.toString()
+            pipePlan.file_section =
+                "plan_${parseSpiType(spiType.type)}_${pipePosition.position}.png"
+            pipeSupervise.supervise = form_supervise.text.toString()
+
+            val entry = Entry(
+                spi,
+                spiType,
+                spiMemo,
+                spiPhoto,
+                pipe,
+                pipeType,
+                pipeShape,
+                pipePosition,
+                pipePlan,
+                pipeSupervise
+            )
+            entry.spi_location = spiLocation
+            return entry
         }
     }
 }
