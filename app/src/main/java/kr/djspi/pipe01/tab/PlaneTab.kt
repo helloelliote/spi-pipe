@@ -1,0 +1,118 @@
+package kr.djspi.pipe01.tab
+
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.google.gson.JsonObject
+import kotlinx.android.synthetic.main.tab_plane.*
+import kr.djspi.pipe01.BaseActivity
+import kr.djspi.pipe01.BaseActivity.Companion.screenRatio
+import kr.djspi.pipe01.R
+
+class PlaneTab : Fragment() {
+
+    private lateinit var json: JsonObject
+    private lateinit var resId: String
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnRecordListener) {
+            json = (context as OnRecordListener).jsonObject
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.tab_plane, container, false)
+        json["file_plane"].asString?.let {
+            resId = it.replace(".png", "_distance")
+            planeImageView.setImageResource(
+                resources.getIdentifier(
+                    resId,
+                    "drawable",
+                    BaseActivity.defPackage
+                )
+            )
+        }
+        text_plane_horizontal.text = json["horizontal"].asString
+        text_plane_vertical.text = json["vertical"].asString
+        setPosition()
+        return view
+    }
+
+    private fun setPosition() {
+// TODO: 2019-04-11 직상일때 0.00 칸 중간에 나오는 문제
+        val positionInt = json["position"].asInt
+        if (json["shape"].asString == "직진형") {
+            when (positionInt) {
+                1 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
+                2 -> {
+                    if (resId == "plan_plate_str_2_out_distance") {
+                        setTranslation(noV = true, noH = true, vY = 0.0f, hX = 0.0f, hY = 0.0f)
+                    } else {
+                        setTranslation(noH = true, vY = -50.0f, hX = 0.0f, hY = 0.0f)
+                    }
+                }
+                3 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
+                4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
+                5 -> {
+                    text_plane_horizontal.visibility = GONE
+                    text_plane_vertical.visibility = GONE
+                }
+                6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
+                7 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
+                8 -> {
+                    if (resId == "plan_plate_str_8_out_distance") {
+                        setTranslation(noV = true, noH = true, vY = 0.0f, hX = 0.0f, hY = 0.0f)
+                    } else {
+                        setTranslation(noH = true, vY = 50.0f, hX = 0.0f, hY = 0.0f)
+                    }
+                }
+                9 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
+            }
+        } else {
+            when (positionInt) {
+                1 -> setTranslation(vY = -100.0f, hX = -170.0f, hY = -350.0f)
+                2 -> setTranslation(noH = true, vY = -100.0f, hX = 0.0f, hY = 0.0f)
+                3 -> setTranslation(vY = -100.0f, hX = 175.0f, hY = -350.0f)
+                4 -> setTranslation(noV = true, vY = 0.0f, hX = -90.0f, hY = 0.0f)
+                5 -> {
+                    text_plane_horizontal.visibility = GONE
+                    text_plane_vertical.visibility = GONE
+                }
+                6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
+                7 -> setTranslation(vY = 90.0f, hX = -170.0f, hY = 350.0f)
+                8 -> setTranslation(noH = true, vY = 95.0f, hX = 0.0f, hY = 0.0f)
+                9 -> setTranslation(vY = 95.0f, hX = 175.0f, hY = 350.0f)
+            }
+        }
+    }
+
+    private fun setTranslation(
+        noV: Boolean = false,
+        noH: Boolean = false,
+        vY: Float,
+        hX: Float,
+        hY: Float
+    ) {
+        if (noV) {
+            text_plane_vertical.visibility = GONE
+            text_plane_horizontal.visibility = VISIBLE
+        }
+        if (noH) {
+            text_plane_horizontal.visibility = GONE
+            text_plane_vertical.visibility = VISIBLE
+        }
+        text_plane_horizontal.translationX = hX * screenRatio
+        text_plane_horizontal.translationY = hY * screenRatio
+        text_plane_vertical.translationY = vY * screenRatio
+    }
+}

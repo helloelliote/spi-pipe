@@ -162,8 +162,8 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
 
     companion object {
         lateinit var defPackage: String
-        var superviseDb: SuperviseDatabase? = null
         var currentLocation: Location? = null
+        var superviseDb: SuperviseDatabase? = null
         var screenRatio: Float = 0.0f
     }
 }

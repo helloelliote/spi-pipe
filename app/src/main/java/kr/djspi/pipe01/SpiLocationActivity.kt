@@ -174,7 +174,7 @@ class SpiLocationActivity :
         }
     }
 
-    override fun onSelect(tag: String?, index: Int, vararg text: String?) {
+    override fun onSelect(tag: String, index: Int, vararg text: String?) {
         when (tag) {
             TAG_SURVEY -> {
                 if (index == RESULT_PASS) {

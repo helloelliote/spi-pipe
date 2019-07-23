@@ -16,13 +16,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.andreabaccega.widget.FormEditText;
-import com.helloelliote.util.filter.DecimalFilter;
 
 import kr.djspi.pipe01.R;
+import kr.djspi.pipe01.util.DecimalFilter;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static kr.djspi.pipe01.BaseActivity.screenScale;
+import static kr.djspi.pipe01.BaseActivity.screenRatio;
 import static kr.djspi.pipe01.Const.TAG_DISTANCE;
 import static kr.djspi.pipe01.fragment.PositionDialog.fromRes;
 
@@ -87,6 +87,13 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
 
         return view;
     }
+
+//    fun fromRes(resId: String): Drawable {
+//        return resources.getDrawable(
+//                resources.getIdentifier(resId, "drawable", defPackage),
+//                null
+//        )
+//    }
 
     private void setPosition() {
         if (shapeString.equals("직진형")) {
@@ -176,9 +183,9 @@ public class DistanceDialog extends DialogFragment implements OnClickListener {
             fHorizontal.setVisibility(VISIBLE);
             fVertical.setVisibility(VISIBLE);
         }
-        fVertical.setTranslationY(vY * screenScale);
-        fHorizontal.setTranslationX(hX * screenScale);
-        fHorizontal.setTranslationY(hY * screenScale);
+        fVertical.setTranslationY(vY * screenRatio);
+        fHorizontal.setTranslationX(hX * screenRatio);
+        fHorizontal.setTranslationY(hY * screenRatio);
     }
 
     @Override

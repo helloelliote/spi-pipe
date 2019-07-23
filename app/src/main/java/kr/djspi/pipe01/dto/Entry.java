@@ -15,17 +15,30 @@ import lombok.Data;
  */
 @Data
 public class Entry implements Serializable {
-    private final Spi spi;
-    private final SpiType spi_type;
-    private final SpiMemo spi_memo;
-    private final SpiPhoto spi_photo;
-    private final Pipe pipe;
-    private final PipeType pipe_type;
-    private final PipeShape pipe_shape;
-    private final PipePosition pipe_position;
-    private final PipePlan pipe_plan;
-    private final PipeSupervise pipe_supervise;
-    private SpiLocation spi_location;
+    public final Spi spi;
+    public final SpiType spi_type;
+    public final SpiMemo spi_memo;
+    public final SpiPhoto spi_photo;
+    public final Pipe pipe;
+    public final PipeType pipe_type;
+    public final PipeShape pipe_shape;
+    public final PipePosition pipe_position;
+    public final PipePlan pipe_plan;
+    public final PipeSupervise pipe_supervise;
+    public SpiLocation spi_location;
+
+    public Entry(Spi spi, SpiType spi_type, SpiMemo spi_memo, SpiPhoto spi_photo, Pipe pipe, PipeType pipe_type, PipeShape pipe_shape, PipePosition pipe_position, PipePlan pipe_plan, PipeSupervise pipe_supervise) {
+        this.spi = spi;
+        this.spi_type = spi_type;
+        this.spi_memo = spi_memo;
+        this.spi_photo = spi_photo;
+        this.pipe = pipe;
+        this.pipe_type = pipe_type;
+        this.pipe_shape = pipe_shape;
+        this.pipe_position = pipe_position;
+        this.pipe_plan = pipe_plan;
+        this.pipe_supervise = pipe_supervise;
+    }
 
     @SuppressWarnings("SameParameterValue")
     public static JsonObject parseEntry(@NonNull ArrayList entries, int index, String... strings) {

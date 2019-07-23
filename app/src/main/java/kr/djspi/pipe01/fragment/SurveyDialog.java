@@ -18,10 +18,10 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.helloelliote.util.filter.DecimalFilter;
 import com.helloelliote.util.geolocation.GeoTrans;
 
 import kr.djspi.pipe01.R;
+import kr.djspi.pipe01.util.DecimalFilter;
 
 import static java.util.Objects.requireNonNull;
 import static kr.djspi.pipe01.Const.RESULT_FAIL;

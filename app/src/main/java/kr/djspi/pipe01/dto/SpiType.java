@@ -10,11 +10,16 @@ import lombok.Getter;
 @Data
 public class SpiType implements DataItem, Serializable {
 
-    private final int id;
+    public SpiType(int id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+
+    public final int id;
     /**
      * SPI 제품 종류: 표지기, 표지판, 표지주
      */
-    private final String type;
+    public final String type;
 
     @Getter
     @SuppressWarnings("NonAsciiCharacters")
@@ -24,8 +29,8 @@ public class SpiType implements DataItem, Serializable {
         표지기("표지기", "marker"),
         표지주("표지주", "column");
 
-        private String name;
-        private String code;
+        public String name;
+        public String code;
 
         SpiTypeEnum(String name, String code) {
             this.name = name;

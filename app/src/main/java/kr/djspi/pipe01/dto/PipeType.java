@@ -4,15 +4,14 @@ import java.io.Serializable;
 
 import kr.djspi.pipe01.R;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class PipeType implements DataItem, Serializable {
 
-    private int id;
-    private String header;
-    private String pipe;
-    private String unit;
+    public int id;
+    public String header;
+    public String pipe;
+    public String unit;
 
     public static PipeTypeEnum parsePipeType(String name) {
         for (PipeTypeEnum pipe : PipeTypeEnum.values()) {
@@ -30,7 +29,6 @@ public class PipeType implements DataItem, Serializable {
     /**
      * Enum 목록의 순서는 변경하지 않는다.
      */
-    @Getter
     @SuppressWarnings("NonAsciiCharacters")
     public enum PipeTypeEnum implements Serializable {
         도시가스("도시가스", R.drawable.cir_01_map, HEAD_RAD, UNIT_MM),
@@ -50,6 +48,22 @@ public class PipeType implements DataItem, Serializable {
         private int drawRes;
         private String header;
         private String unit;
+
+        public String getName() {
+            return name;
+        }
+
+        public int getDrawRes() {
+            return drawRes;
+        }
+
+        public String getHeader() {
+            return header;
+        }
+
+        public String getUnit() {
+            return unit;
+        }
 
         PipeTypeEnum(String name, int drawRes, String header, String unit) {
             this.name = name;

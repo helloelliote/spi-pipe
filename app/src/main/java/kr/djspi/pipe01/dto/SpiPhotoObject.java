@@ -7,9 +7,9 @@ import java.io.Serializable;
 
 public class SpiPhotoObject implements DataItem, Serializable {
 
-    private String uri;
-    private String url;
-    private File file;
+    public String uri;
+    public String url;
+    public File file;
 
     public Uri getUri() {
         if (uri == null) return null;

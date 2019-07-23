@@ -7,13 +7,13 @@ import lombok.Data;
 @Data
 public class Pipe implements DataItem, Serializable {
 
-    private int id = -1;
-    private int type_id;
-    private int spi_id;
-    private double depth;
-    private String material;
-    private int supervise_id;
-    private String supervise_contact;
-    private String construction;
-    private String construction_contact;
+    public int id = -1;
+    public int type_id;
+    public int spi_id;
+    public double depth;
+    public String material;
+    public int supervise_id;
+    public String supervise_contact;
+    public String construction;
+    public String construction_contact;
 }

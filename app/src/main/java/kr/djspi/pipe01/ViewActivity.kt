@@ -3,7 +3,6 @@ package kr.djspi.pipe01
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.net.Uri.parse
 import android.os.Bundle
 import android.text.Html.fromHtml
@@ -144,7 +143,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     override fun getJsonObject(): JsonObject = jsonObject
 
-    override fun getUri(): Uri? = photoObject?.uri
+    override fun getUri(): String? = photoObject?.uri
 
     override fun onRecord(tag: String?, result: Int) {
         when (result) {

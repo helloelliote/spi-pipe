@@ -135,19 +135,17 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 if (pref["pipe_type_id", -1]!! >= 0) {
                     onPipeTypeSelect(pref["pipe_type_id", -1]!!)
                 }
-                form_material.text = pref["material", null]
-                if (pref["supervise", null] != null) {
-                    Thread(Runnable {
-                        val id =
-                            superviseDb!!.dao().selectBySupervise(pref["supervise", null] as String)
-                        pipeSupervise.id = id
-                        pipe.supervise_id = id
-                    }).start()
-                    form_supervise.text = pref["supervise", null]
-                }
-                form_supervise_contact.text = pref["supervise_contact", null]
-                form_construction.text = pref["construction", null]
-                form_construction_contact.text = pref["construction_contact", null]
+                form_material.setText(pref["material", ""])
+                Thread(Runnable {
+                    val id =
+                        superviseDb!!.dao().selectBySupervise(pref["supervise", ""])
+                    pipeSupervise.id = id
+                    pipe.supervise_id = id
+                }).start()
+                form_supervise.setText(pref["supervise", ""])
+                form_supervise_contact.setText(pref["supervise_contact", ""])
+                form_construction.setText(pref["construction", ""])
+                form_construction_contact.setText(pref["construction_contact", ""])
             }
         }
     }
@@ -208,7 +206,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onSelect(tag: String?, index: Int, vararg text: String?) {
+    override fun onSelect(tag: String, index: Int, vararg text: String?) {
         if (index == -1) return
         when (tag) {
             TAG_PIPE -> {
@@ -358,7 +356,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     Glide.with(this).load(tempUri).into(form_photo_thumbnail)
                     resizeFile = ImageUtil.subSample4x(tempFile!!, 1024)
                     photoObj?.file = resizeFile
-                    photoObj?.uri = tempUri
+                    photoObj?.uri = tempUri.toString()
                     form_photo_name.setText(resizeFile.name)
                     form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
                     form_photo.setText(getString(R.string.record_photo_ok))
@@ -371,7 +369,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     val file = ImageUtil.uriToFile(this, uri)
                     resizeFile = ImageUtil.subSample4x(file, 1024)
                     photoObj?.file = resizeFile
-                    photoObj?.uri = uri
+                    photoObj?.uri = uri?.toString()
                     form_photo_name.setText(resizeFile.name)
                     form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
                     form_photo.setText(getString(R.string.record_photo_ok))
