@@ -25,7 +25,7 @@ import kr.djspi.pipe01.Const.TAG_SURVEY
 import kr.djspi.pipe01.dto.PipeType
 import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.fragment.SurveyDialog
-import kr.djspi.pipe01.fragment.SurveyDialog.originPoint
+import kr.djspi.pipe01.fragment.SurveyDialog.Companion.originPoint
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
 import java.io.Serializable
@@ -174,7 +174,7 @@ class SpiLocationActivity :
         }
     }
 
-    override fun onSelect(tag: String, index: Int, vararg text: String?) {
+    override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         when (tag) {
             TAG_SURVEY -> {
                 if (index == RESULT_PASS) {
@@ -207,11 +207,6 @@ class SpiLocationActivity :
     override fun onPause() {
         super.onPause()
         onPauseNfc()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        originPoint = null
     }
 
     override fun onBackPressed() {

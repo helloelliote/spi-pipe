@@ -69,10 +69,6 @@ class ListDialog : DialogFragment(), View.OnClickListener, OnSelectListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
-        btn_ok.setOnClickListener(this)
-        btn_cancel.setOnClickListener(this)
-        button_close.setOnClickListener(this)
-
         if (listTag == TAG_SUPERVISE) {
             list_common.adapter = ListAdapter(context, listItem, true)
         } else {
@@ -87,6 +83,10 @@ class ListDialog : DialogFragment(), View.OnClickListener, OnSelectListener {
             list_common.requestFocus()
             list_common.onRestoreInstanceState(it)
         }
+        btn_ok.setOnClickListener(this)
+        btn_cancel.setOnClickListener(this)
+        button_close.setOnClickListener(this)
+
         return view
     }
 

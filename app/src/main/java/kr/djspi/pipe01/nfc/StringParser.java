@@ -30,9 +30,9 @@ public enum StringParser {
     private final String name;
     private final String label;
 
-    StringParser(String name, String label) {
-        this.name = name;
-        this.label = label;
+    StringParser(String names, String labels) {
+        this.name = names;
+        this.label = labels;
     }
 
     public static String[] parseToStringArray(@NonNull JsonObject jsonObject, int index) {

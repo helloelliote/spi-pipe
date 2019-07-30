@@ -206,7 +206,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onSelect(tag: String, index: Int, vararg text: String?) {
+    override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         if (index == -1) return
         when (tag) {
             TAG_PIPE -> {
@@ -347,8 +347,8 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
         if (resultCode == RESULT_OK) {
             val resizeFile: File?
             when (requestCode) {
@@ -364,15 +364,16 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     tempFile = null
                 }
                 REQUEST_GALLERY -> {
-                    val uri = (data)!!.data
-                    Glide.with(this).load(uri).into(form_photo_thumbnail)
-                    val file = ImageUtil.uriToFile(this, uri)
-                    resizeFile = ImageUtil.subSample4x(file, 1024)
-                    photoObj?.file = resizeFile
-                    photoObj?.uri = uri?.toString()
-                    form_photo_name.setText(resizeFile.name)
-                    form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
-                    form_photo.setText(getString(R.string.record_photo_ok))
+                    intent?.data.let {
+                        Glide.with(this).load(it).into(form_photo_thumbnail)
+                        val file = ImageUtil.uriToFile(this, it!!)
+                        resizeFile = ImageUtil.subSample4x(file, 1024)
+                        photoObj?.file = resizeFile
+                        photoObj?.uri = it.toString()
+                        form_photo_name.setText(resizeFile.name)
+                        form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
+                        form_photo.setText(getString(R.string.record_photo_ok))
+                    }
                 }
             }
         } else if (resultCode == RESULT_CANCELED) {

@@ -196,7 +196,7 @@ public final class NfcUtil {
      */
     public static ArrayList<String> getRecord(@NonNull Intent intent) throws NullPointerException {
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        List<ParsedRecord> records = NdefMessageParser.parse((NdefMessage) rawMsgs[0]);
+        List<ParsedRecord> records = NdefMessageParser.INSTANCE.parse((NdefMessage) rawMsgs[0]);
         ArrayList<String> recordList = new ArrayList<>();
         recordList.add(0, null);
         final int listLength = records.size() + 1;

@@ -93,7 +93,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lay_coordinate_x"
+                android:id="@+id/lay_x"
                 style="@style/Spi.TextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                 app:hintAnimationEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_coordinate_x"
+                    android:id="@+id/input_x"
                     style="@style/Spi.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lay_coordinate_y"
+                android:id="@+id/lay_y"
                 style="@style/Spi.TextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                 app:hintAnimationEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_coordinate_y"
+                    android:id="@+id/input_y"
                     style="@style/Spi.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
