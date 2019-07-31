@@ -1,4 +1,4 @@
-package com.helloelliote.util.image
+package kr.djspi.pipe01.util
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Environment.DIRECTORY_DCIM
 import android.provider.MediaStore.MediaColumns.DATA
-import android.provider.MediaStore.MediaColumns.DISPLAY_NAME
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -18,13 +17,11 @@ import java.util.*
 
 object ImageUtil {
 
-    private val PROJECTION_DATA = arrayOf(DATA)
-    private val PROJECTION_NAME = arrayOf(DISPLAY_NAME)
     private const val DATE_PATTERN = "yyyyMMdd_HHmmss_SSS"
     private const val REGEX_IMAGE_EXT = "((\\.(?i)(jpg|jpeg|tif|tiff|webp|png|gif|bmp))$)"
 
     private fun uriToFilePath(context: Context, uri: Uri): String {
-        val cursor = context.contentResolver.query(uri, PROJECTION_DATA, null, null, null)
+        val cursor = context.contentResolver.query(uri, arrayOf(DATA), null, null, null)
         var path = ""
         cursor?.let {
             it.moveToNext()
@@ -35,9 +32,7 @@ object ImageUtil {
         return path
     }
 
-    fun uriToFile(context: Context, uri: Uri): File {
-        return File(uriToFilePath(context, uri))
-    }
+    fun uriToFile(context: Context, uri: Uri): File = File(uriToFilePath(context, uri))
 
     @Throws(IOException::class)
     fun prepareFile(): File {

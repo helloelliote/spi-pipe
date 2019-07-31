@@ -37,12 +37,6 @@ abstract class LocationUpdate : BaseActivity() {
     private lateinit var locationManager: LocationManager
     private lateinit var locationSource: FusedLocationSource
 
-    init {
-        if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
-            messageDialog(1, getString(R.string.popup_location_on), false)
-        }
-    }
-
     /**
      * Time when the location was updated represented as a String.
      */
@@ -53,6 +47,9 @@ abstract class LocationUpdate : BaseActivity() {
         requestAllPermissions(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
+            messageDialog(1, getString(R.string.popup_location_on), false)
+        }
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
         // Kick off the process of building the LocationCallback, LocationRequest, and

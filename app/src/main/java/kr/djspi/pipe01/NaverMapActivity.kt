@@ -33,7 +33,7 @@ import com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_navermap.*
 import kr.djspi.pipe01.BuildConfig.CLIENT_ID
-import kr.djspi.pipe01.dto.PipeType.parsePipeType
+import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum.Companion.parsePipeType
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
 import java.io.Serializable

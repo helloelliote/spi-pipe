@@ -10,21 +10,22 @@ import android.view.View
 import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.helloelliote.util.retrofit.ProgressBody
 import kotlinx.android.synthetic.main.activity_spi_post.*
 import kr.djspi.pipe01.dto.Entry
-import kr.djspi.pipe01.dto.Entry.parseEntry
+import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
+import kr.djspi.pipe01.network.ProgressBody
+import kr.djspi.pipe01.network.ProgressBody.UploadCallback
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.nfc.NfcUtil
-import kr.djspi.pipe01.nfc.StringParser.parseToStringArray
+import kr.djspi.pipe01.nfc.StringParser.Companion.parseToStringArray
 import kr.djspi.pipe01.util.RetrofitCallback
 import kr.djspi.pipe01.util.messageDialog
 import okhttp3.MultipartBody
 import java.io.File
 import java.io.Serializable
 
-class SpiPostActivity : BaseActivity(), ProgressBody.UploadCallback, Serializable {
+class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
     private lateinit var entries: ArrayList<Entry>
     private lateinit var jsonObject: JsonObject

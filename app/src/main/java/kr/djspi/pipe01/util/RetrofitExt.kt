@@ -21,9 +21,11 @@ fun updateLocalSuperviseDatabase(context: Context) {
             val superviseDao = superviseDb?.dao()
             jsonArray.forEach { element ->
                 val obj = element.asJsonObject
-                superviseDao?.insert(
-                    Supervise(obj["id"].asInt, obj["supervise"].asString)
-                )
+                Thread(Runnable {
+                    superviseDao?.insert(
+                        Supervise(obj["id"].asInt, obj["supervise"].asString)
+                    )
+                }).start()
             }
             AppPreference.defaultPrefs(context)["isSuperviseDbValid"] = true
         }
@@ -108,6 +110,7 @@ open class RetrofitCallback : Callback<JsonObject>, OnRetrofitListener {
 }
 
 private interface OnRetrofitListener {
+
     fun onResponse(response: JsonObject)
 
     fun onFailure(throwable: Throwable)

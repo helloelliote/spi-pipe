@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
 import com.google.gson.JsonObject
-import com.helloelliote.util.geolocation.GeoPoint
-import com.helloelliote.util.geolocation.GeoTrans.Coordinate.GEO
-import com.helloelliote.util.geolocation.GeoTrans.convert
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
@@ -22,10 +19,13 @@ import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.BuildConfig.CLIENT_ID
 import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.Const.TAG_SURVEY
-import kr.djspi.pipe01.dto.PipeType
+import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum.Companion.parsePipeType
 import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.fragment.SurveyDialog
 import kr.djspi.pipe01.fragment.SurveyDialog.Companion.originPoint
+import kr.djspi.pipe01.geolocation.GeoPoint
+import kr.djspi.pipe01.geolocation.GeoTrans
+import kr.djspi.pipe01.geolocation.GeoTrans.convert
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
 import java.io.Serializable
@@ -137,7 +137,7 @@ class SpiLocationActivity :
                         val jsonObject = element.asJsonObject
                         val lat = jsonObject["spi_latitude"].asDouble
                         val lng = jsonObject["spi_longitude"].asDouble
-                        val resId = PipeType.parsePipeType(jsonObject["pipe"].asString).drawRes
+                        val resId = parsePipeType(jsonObject["pipe"].asString).drawRes
                         Marker(LatLng(lat, lng), OverlayImage.fromResource(resId)).apply {
                             minZoom = ZOOM_GET
                             maxZoom = ZOOM_MAX
@@ -169,7 +169,6 @@ class SpiLocationActivity :
                     messageDialog(0, getString(R.string.toast_error_location))
                     return
                 }
-
             }
         }
     }
@@ -195,7 +194,7 @@ class SpiLocationActivity :
      * Tm 좌표계를 LatLng 경위도 좌표계로 변환한다. 반드시 변환 과정에서 X, Y 좌표를 반전시켜 리턴한다.
      */
     private fun convertTmToLatLng(Tm1: Double, Tm2: Double): LatLng {
-        val surveyPoint = convert(originPoint, GEO, GeoPoint(Tm2, Tm1))
+        val surveyPoint = convert(originPoint, GeoTrans.Coordinate.GEO, GeoPoint(Tm2, Tm1))
         return LatLng(surveyPoint.y, surveyPoint.x)
     }
 

@@ -156,7 +156,7 @@
                 android:layout_weight="2.5"
                 android:hint="@string/record_input_4_hint"
                 android:inputType="number|textNoSuggestions"
-                app:maxNumber="1000"
+                app:maxNumber="9999"
                 app:minNumber="0"
                 app:testType="nocheck" />
 

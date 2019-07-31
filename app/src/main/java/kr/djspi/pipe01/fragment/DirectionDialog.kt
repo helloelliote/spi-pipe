@@ -13,10 +13,12 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_plot_direction.*
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
-import kr.djspi.pipe01.Const.*
+import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
+import kr.djspi.pipe01.Const.TAG_DIRECTION
+import kr.djspi.pipe01.Const.TAG_DISTANCE
 import kr.djspi.pipe01.R
-import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.parsePipeShape
-import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType
+import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.Companion.parsePipeShape
+import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import kr.djspi.pipe01.util.show
 
 class DirectionDialog : DialogFragment(), OnClickListener {
@@ -130,7 +132,7 @@ class DirectionDialog : DialogFragment(), OnClickListener {
         v_select.visibility = INVISIBLE
         view.findViewById<View>(R.id.v_select).apply {
             this.visibility = VISIBLE
-            this.findViewById(R.id.v_select)
+            this.findViewById<View>(R.id.v_select)
         }
     }
 

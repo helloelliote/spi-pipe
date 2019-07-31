@@ -17,7 +17,9 @@ import androidx.annotation.DrawableRes
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_plot_position.*
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
-import kr.djspi.pipe01.Const.*
+import kr.djspi.pipe01.Const.PIPE_SHAPES
+import kr.djspi.pipe01.Const.TAG_DIRECTION
+import kr.djspi.pipe01.Const.TAG_POSITION
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.util.show
 
@@ -187,7 +189,7 @@ class PositionDialog : DialogFragment(), OnClickListener {
         v_select.visibility = INVISIBLE
         view.findViewById<View>(R.id.v_select).apply {
             this.visibility = VISIBLE
-            this.findViewById(R.id.v_select)
+            this.findViewById<View>(R.id.v_select)
         }
     }
 
@@ -197,7 +199,6 @@ class PositionDialog : DialogFragment(), OnClickListener {
     }
 
     companion object {
-        private val TAG = PositionDialog::class.java.simpleName
         private const val TAG_TYPE_PLATE = "표지판"
         private const val TAG_TYPE_MARKER = "표지기"
         private const val TAG_TYPE_COLUMN = "표지주"

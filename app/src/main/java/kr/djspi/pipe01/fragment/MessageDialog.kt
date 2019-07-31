@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_message.*
 import kr.djspi.pipe01.MainActivity
 import kr.djspi.pipe01.R
 
+@Suppress("DEPRECATION")
 class MessageDialog : DialogFragment(), OnClickListener {
 
     private var returnToMain: Boolean = false
@@ -28,7 +29,11 @@ class MessageDialog : DialogFragment(), OnClickListener {
         issue = arguments?.getInt("issueType")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_message, container, false)
         button_dismiss.setOnClickListener(this)
         button_close.setOnClickListener(this)
@@ -61,7 +66,11 @@ class MessageDialog : DialogFragment(), OnClickListener {
                 popup_title.text = "주의"
                 popup_contents_sub.text = fromHtml(getString(R.string.popup_location_on_sub))
                 button_ok.setOnClickListener {
-                    startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS).addCategory(CATEGORY_DEFAULT))
+                    startActivity(
+                        Intent(ACTION_LOCATION_SOURCE_SETTINGS).addCategory(
+                            CATEGORY_DEFAULT
+                        )
+                    )
                     dismiss()
                 }
             }
@@ -114,9 +123,11 @@ class MessageDialog : DialogFragment(), OnClickListener {
     override fun onDismiss(dialog: DialogInterface) {
         if (returnToMain) {
             if (isAdded) {
-                startActivity(Intent(context, MainActivity::class.java)
+                startActivity(
+                    Intent(context, MainActivity::class.java)
                         .addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-                        .addFlags(FLAG_ACTIVITY_NEW_TASK))
+                        .addFlags(FLAG_ACTIVITY_NEW_TASK)
+                )
             } else return
         } else return
         super.onDismiss(dialog)

@@ -12,14 +12,6 @@ import retrofit2.Call
 
 object Retrofit2x : RequestBody() {
 
-    override fun contentType(): MediaType? {
-        return null
-    }
-
-    override fun writeTo(sink: BufferedSink) {
-
-    }
-
     private const val URL_SPI = "http://35.200.109.228/"
     private const val URL_SEARCH_PLACES = "https://naveropenapi.apigw.ntruss.com/map-place/v1/"
     private const val URL_REVERSE_GEOCODE =
@@ -58,5 +50,12 @@ object Retrofit2x : RequestBody() {
         val requestBody: RequestBody =
             stringQuery.toRequestBody(("multipart/form-data").toMediaType())
         return createRetrofit(URL_SPI).postSpi(requestBody, part)
+    }
+
+    override fun contentType(): MediaType? {
+        return null
+    }
+
+    override fun writeTo(sink: BufferedSink) {
     }
 }

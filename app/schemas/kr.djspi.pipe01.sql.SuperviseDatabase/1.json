@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d4b94880aa69eb35edce491df199fdc9",
+    "identityHash": "f3a55165544592ec63003f4f19db2533",
     "entities": [
       {
         "tableName": "Supervise",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `supervise` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `supervise` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -18,7 +18,7 @@
             "fieldPath": "supervise",
             "columnName": "supervise",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -34,7 +34,7 @@
             "columnNames": [
               "id"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_Supervise_id` ON `${TABLE_NAME}` (`id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Supervise_id` ON `${TABLE_NAME}` (`id`)"
           }
         ],
         "foreignKeys": []
@@ -43,7 +43,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d4b94880aa69eb35edce491df199fdc9\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f3a55165544592ec63003f4f19db2533')"
     ]
   }
 }

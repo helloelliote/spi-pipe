@@ -20,13 +20,22 @@ import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import androidx.core.content.FileProvider
 import com.andreabaccega.widget.FormEditText
 import com.bumptech.glide.Glide
-import com.helloelliote.util.image.ImageUtil
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
-import kr.djspi.pipe01.Const.*
+import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
+import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
+import kr.djspi.pipe01.Const.REQUEST_CAPTURE_IMAGE
+import kr.djspi.pipe01.Const.REQUEST_GALLERY
+import kr.djspi.pipe01.Const.TAG_DIRECTION
+import kr.djspi.pipe01.Const.TAG_DISTANCE
+import kr.djspi.pipe01.Const.TAG_PHOTO
+import kr.djspi.pipe01.Const.TAG_PIPE
+import kr.djspi.pipe01.Const.TAG_POSITION
+import kr.djspi.pipe01.Const.TAG_SHAPE
+import kr.djspi.pipe01.Const.TAG_SUPERVISE
 import kr.djspi.pipe01.dto.*
-import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.parseSpiType
+import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import kr.djspi.pipe01.fragment.*
 import kr.djspi.pipe01.util.*
 import org.jetbrains.anko.toast
@@ -424,7 +433,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         }
 
         private fun isAllValid(): Boolean {
-            var allValid = true
+            var allValid = false
             arrayOf<FormEditText>(
                 form_pipe,
                 form_shape,
@@ -445,8 +454,8 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         private fun isSpecValid(): Boolean {
             var isSpecValid = true
             if (form_spec.inputType == TYPE_CLASS_NUMBER) {
-                isSpecValid = form_spec.text.toString().toDouble() < 1000.0
-                if (!isSpecValid) form_spec.error = "이 범위(0.0 - 1000.0)안에 해당하는 숫자만 입력가능합니다."
+                isSpecValid = form_spec.text.toString().toDouble() < 9999.9
+                if (!isSpecValid) form_spec.error = "이 범위(0.0 - 9999.9)안에 해당하는 숫자만 입력가능합니다."
             }
             return isSpecValid
         }

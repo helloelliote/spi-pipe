@@ -15,7 +15,11 @@ import com.sylversky.indexablelistview.scroller.Indexer
 import kotlinx.android.synthetic.main.fragment_list.*
 import kotlinx.android.synthetic.main.fragment_list_item.*
 import kr.djspi.pipe01.BaseActivity.Companion.superviseDb
-import kr.djspi.pipe01.Const.*
+import kr.djspi.pipe01.Const.PIPE_SHAPES
+import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
+import kr.djspi.pipe01.Const.TAG_PIPE
+import kr.djspi.pipe01.Const.TAG_SHAPE
+import kr.djspi.pipe01.Const.TAG_SUPERVISE
 import kr.djspi.pipe01.R
 
 class ListDialog : DialogFragment(), View.OnClickListener, OnSelectListener {

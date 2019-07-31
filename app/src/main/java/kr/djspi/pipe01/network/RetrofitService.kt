@@ -30,13 +30,17 @@ interface RetrofitService {
         @Query("output") output: String = "json"
     ): Call<JsonObject>
 
-    @Headers("Content-Type: application/json")
+    @Headers(
+        "Content-Type: application/json"
+    )
     @GET("api")
     fun getSuperviseDatabase(
         @Query("json") jsonString: String
     ): Call<JsonObject>
 
-    @Headers("Content-Type: application/json")
+    @Headers(
+        "Content-Type: application/json"
+    )
     @GET("api")
     fun getSpi(
         @Query("json") jsonString: String

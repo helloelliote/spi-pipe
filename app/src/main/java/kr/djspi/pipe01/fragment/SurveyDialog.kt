@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.fragment.app.DialogFragment
-import com.helloelliote.util.geolocation.GeoTrans
-import com.helloelliote.util.geolocation.GeoTrans.Coordinate.*
 import kotlinx.android.synthetic.main.fragment_location_survey.*
-import kr.djspi.pipe01.Const.*
+import kr.djspi.pipe01.Const.RESULT_FAIL
+import kr.djspi.pipe01.Const.RESULT_PASS
+import kr.djspi.pipe01.Const.TAG_SURVEY
 import kr.djspi.pipe01.R
+import kr.djspi.pipe01.geolocation.GeoTrans
+import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
 import kr.djspi.pipe01.util.DecimalFilter
 
 class SurveyDialog : DialogFragment(), View.OnClickListener {

@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.tab_preview.*
-import kr.djspi.pipe01.Const.*
+import kr.djspi.pipe01.Const.RESULT_FAIL
+import kr.djspi.pipe01.Const.RESULT_PASS
+import kr.djspi.pipe01.Const.TAG_PREVIEW
 import kr.djspi.pipe01.R
 
 class PreviewTab : Fragment(), View.OnClickListener {

@@ -10,7 +10,9 @@ import androidx.preference.PreferenceFragmentCompat
 import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.AppPreference.set
-import kr.djspi.pipe01.Const.*
+import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
+import kr.djspi.pipe01.Const.TAG_PIPE
+import kr.djspi.pipe01.Const.TAG_SUPERVISE
 import kr.djspi.pipe01.fragment.ListDialog
 import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.util.onNewIntentIgnore
@@ -38,7 +40,7 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
         }
     }
 
-    override fun onSelect(tag: String, index: Int, vararg text: String?) {
+    override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         if (index == -1) return
         when (tag) {
             TAG_PIPE -> {

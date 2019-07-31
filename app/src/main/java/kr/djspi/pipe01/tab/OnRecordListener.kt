@@ -5,7 +5,7 @@ import com.google.gson.JsonObject
 interface OnRecordListener {
     val jsonObject: JsonObject
 
-    val uri: String
+    val uri: String?
 
     fun onRecord(tag: String, result: Int)
 }

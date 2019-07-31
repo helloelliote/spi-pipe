@@ -15,7 +15,7 @@ import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_pipe_view.*
 import kr.djspi.pipe01.dto.Entry
-import kr.djspi.pipe01.dto.Entry.parseEntry
+import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.tab.OnRecordListener
 import kr.djspi.pipe01.tab.TabAdapter
@@ -29,7 +29,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     private var pipeIndex: Int = 0
     private var photoObject: SpiPhotoObject? = null
     private lateinit var previewEntries: ArrayList<Entry>
-    private lateinit var jsonObject: JsonObject
+    private lateinit var jsonObj: JsonObject
     private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
         intent?.let {
             val jsonString: String? = it.getStringExtra("PipeView")
-            jsonObject = JsonParser().parse(jsonString).asJsonObject
+            jsonObj = JsonParser().parse(jsonString).asJsonObject
 
             val preview = it.getSerializableExtra("RegisterPreview")
             val fHorizontal = it.getStringExtra("fHorizontal")
@@ -45,7 +45,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             pipeIndex = it.getIntExtra("PipeIndex", 0)
             if (preview is ArrayList<*>) {
                 previewEntries = preview as ArrayList<Entry>
-                jsonObject = parseEntry(previewEntries, pipeIndex, fHorizontal, fVertical)
+                jsonObj = parseEntry(previewEntries, pipeIndex, fHorizontal, fVertical)
             }
 
             val photo = it.getSerializableExtra("SpiPhotoObject")
@@ -141,20 +141,6 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         }
     }
 
-    override fun getJsonObject(): JsonObject = jsonObject
-
-    override fun getUri(): String? = photoObject?.uri
-
-    override fun onRecord(tag: String?, result: Int) {
-        when (result) {
-            RESULT_PASS -> {
-                startActivityForResult(
-                    Intent(this, SpiLocationActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP
-                )
-            }
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -163,9 +149,9 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
                 val locations = data.getDoubleArrayExtra("locations")
                 val currentEntry = previewEntries[pipeIndex]
                 val location = currentEntry.spi_location
-                location.latitude = locations[0]
-                location.longitude = locations[1]
-                location.count = 0
+                location?.latitude = locations[0]
+                location?.longitude = locations[1]
+                location?.count = 0
                 currentEntry.spi_location = location
                 previewEntries[pipeIndex] = currentEntry
                 startActivity(
@@ -173,6 +159,22 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("entry", previewEntries)
                         .putExtra("SpiPhotoObject", photoObject)
+                )
+            }
+        }
+    }
+
+    override val jsonObject: JsonObject
+        get() = jsonObj
+    override val uri: String?
+        get() = photoObject?.uri
+
+    override fun onRecord(tag: String, result: Int) {
+        when (result) {
+            RESULT_PASS -> {
+                startActivityForResult(
+                    Intent(this, SpiLocationActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP
                 )
             }
         }

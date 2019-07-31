@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.nfc.NfcUtil.getRecord
 import kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled
-import kr.djspi.pipe01.nfc.StringParser.parseToJsonObject
+import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.util.getOnlineServerData
 import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
@@ -33,7 +33,8 @@ class MainActivity : LocationUpdate(), Serializable {
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        lay_main1.setOnClickListener {
+        val layMain1 = findViewById<LinearLayout>(R.id.lay_main_menu1)
+        layMain1?.setOnClickListener {
             progressbar.visibility = View.VISIBLE
             if (!MerlinInstance.isConnected) {
                 messageDialog(8)
@@ -47,7 +48,8 @@ class MainActivity : LocationUpdate(), Serializable {
                 )
             }
         }
-        lay_main2.setOnClickListener {
+        val layMain2 = findViewById<LinearLayout>(R.id.lay_main_menu2)
+        layMain2?.setOnClickListener {
             Toast.makeText(this, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT).apply {
                 setGravity(Gravity.CENTER, 0, 0)
             }.show()
