@@ -12,16 +12,16 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout.LayoutParams
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.fragment_plot_position.*
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
 import kr.djspi.pipe01.Const.PIPE_SHAPES
 import kr.djspi.pipe01.Const.TAG_DIRECTION
 import kr.djspi.pipe01.Const.TAG_POSITION
 import kr.djspi.pipe01.R
-import kr.djspi.pipe01.util.show
 
 class PositionDialog : DialogFragment(), OnClickListener {
 
@@ -30,6 +30,7 @@ class PositionDialog : DialogFragment(), OnClickListener {
     private var dialogTitle: String? = null
     private var bundle: Bundle? = null
     private var shapeString: String? = null
+    private lateinit var selectView: ImageView
     private lateinit var listener: OnSelectListener
 
     override fun onAttach(context: Context) {
@@ -55,23 +56,25 @@ class PositionDialog : DialogFragment(), OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_plot_position, container, false)
-        popup_title.text = dialogTitle
+        val title = view.findViewById<TextView>(R.id.popup_title)
+        title.text = dialogTitle
         arrayOf<View>(
-            lay_1,
-            lay_2,
-            lay_3,
-            lay_4,
-            lay_5,
-            lay_6,
-            lay_7,
-            lay_8,
-            lay_9,
-            button_close,
-            btn_cancel,
-            btn_ok
+            view.findViewById(R.id.lay_1),
+            view.findViewById(R.id.lay_2),
+            view.findViewById(R.id.lay_3),
+            view.findViewById(R.id.lay_4),
+            view.findViewById(R.id.lay_5),
+            view.findViewById(R.id.lay_6),
+            view.findViewById(R.id.lay_7),
+            view.findViewById(R.id.lay_8),
+            view.findViewById(R.id.lay_9),
+            view.findViewById(R.id.button_close),
+            view.findViewById(R.id.btn_cancel),
+            view.findViewById(R.id.btn_ok)
         ).forEach {
             it.setOnClickListener(this)
         }
+        selectView = view.findViewById(R.id.v_select)
         setLayoutVisibility(view)
         return view
     }
@@ -82,10 +85,11 @@ class PositionDialog : DialogFragment(), OnClickListener {
         (1..9).forEach { i ->
             views[i] = view.findViewById(resources.getIdentifier("image_$i", defType, defPackage))
         }
+        val background = view.findViewById<ImageView>(R.id.lay_background)
         when (typeString) {
             TAG_TYPE_PLATE -> {
-                lay_background.setImageDrawable(fromRes(R.drawable.bg_p))
-                lay_row_2.visibility = INVISIBLE
+                background.setImageDrawable(fromRes(R.drawable.bg_p))
+                view.findViewById<LinearLayout>(R.id.lay_row_2).visibility = INVISIBLE
                 views[1]!!.setImageDrawable(fromRes(R.drawable.btn_01_7))
                 views[2]!!.setImageDrawable(fromRes(R.drawable.btn_01_8))
                 views[3]!!.setImageDrawable(fromRes(R.drawable.btn_01_9))
@@ -94,8 +98,8 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 views[9]!!.setImageDrawable(fromRes(R.drawable.btn_01_3))
             }
             TAG_TYPE_MARKER -> {
-                lay_background.setImageDrawable(fromRes(R.drawable.bg_m))
-                lay_row_3.visibility = GONE
+                background.setImageDrawable(fromRes(R.drawable.bg_m))
+                view.findViewById<LinearLayout>(R.id.lay_row_3).visibility = GONE
                 views[1]!!.setImageDrawable(fromRes(R.drawable.btn_10_7))
                 views[2]!!.setImageDrawable(fromRes(R.drawable.btn_10_8))
                 views[3]!!.setImageDrawable(fromRes(R.drawable.btn_10_9))
@@ -104,8 +108,8 @@ class PositionDialog : DialogFragment(), OnClickListener {
             TAG_TYPE_COLUMN -> {
                 val params = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER)
                 params.setMargins(0, 60, 0, 0)
-                lay_rows.layoutParams = params
-                lay_background.setImageDrawable(fromRes(R.drawable.bg_c))
+                view.findViewById<LinearLayout>(R.id.lay_rows).layoutParams = params
+                background.setImageDrawable(fromRes(R.drawable.bg_c))
                 views[1]!!.setImageDrawable(fromRes(R.drawable.btn_11_7))
                 views[2]!!.setImageDrawable(fromRes(R.drawable.btn_11_8))
                 views[3]!!.setImageDrawable(fromRes(R.drawable.btn_11_9))
@@ -142,7 +146,8 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 }
                 listener.onSelect(TAG_POSITION, selectIndex, null)
                 bundle!!.putInt("positionInt", selectIndex)
-                DirectionDialog().show(TAG_DIRECTION, bundle)
+                DirectionDialog().apply { arguments = bundle }
+                    .show(fragmentManager!!, TAG_DIRECTION)
                 dismissAllowingStateLoss()
             }
             R.id.lay_1 -> {
@@ -186,11 +191,9 @@ class PositionDialog : DialogFragment(), OnClickListener {
     }
 
     private fun setFocus(view: View) {
-        v_select.visibility = INVISIBLE
-        view.findViewById<View>(R.id.v_select).apply {
-            this.visibility = VISIBLE
-            this.findViewById<View>(R.id.v_select)
-        }
+        selectView.visibility = INVISIBLE
+        view.findViewById<ImageView>(R.id.v_select).visibility = VISIBLE
+        this.selectView = view.findViewById(R.id.v_select)
     }
 
     override fun onDismiss(dialog: DialogInterface) {

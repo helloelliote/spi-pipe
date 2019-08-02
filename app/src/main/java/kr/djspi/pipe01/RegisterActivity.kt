@@ -17,6 +17,8 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NEXT
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.FileProvider
 import com.andreabaccega.widget.FormEditText
 import com.bumptech.glide.Glide
@@ -61,6 +63,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     private val pipePosition = PipePosition()
     private val pipePlan = PipePlan()
     private val pipeSupervise = PipeSupervise()
+    private lateinit var lPhotoDesc: LinearLayout
+    private lateinit var imageThumb: ImageView
+    private lateinit var fPhoto: FormEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,9 +116,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         }
         form_construction_contact.addTextChangedListener(
             object : PhoneNumberFormattingTextWatcher() {})
-        lay_photo_desc.visibility = View.GONE
-        form_photo_name.isFocusable = false
-        button_confirm.setOnClickListener(OnNextButtonClick())
     }
 
     private fun setOnClickListeners() {
@@ -128,13 +130,23 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             lay_supervise,
             form_supervise,
             lay_photo,
-            form_photo,
-            lay_photo_desc,
-            form_photo_thumbnail,
-            btn_delete
+            lay_photo_desc
         ).forEach {
             it.setOnClickListener(this)
         }
+
+        fPhoto = findViewById(R.id.form_photo)
+        fPhoto.setOnClickListener(this)
+        lPhotoDesc = findViewById(R.id.lay_photo_desc)
+        lPhotoDesc.setOnClickListener(this)
+        lPhotoDesc.visibility = View.GONE
+        imageThumb = lPhotoDesc.findViewById(R.id.form_photo_thumbnail)
+        imageThumb.setOnClickListener(this)
+        val fPhotoName = lPhotoDesc.findViewById<FormEditText>(R.id.form_photo_name)
+        fPhotoName.isFocusable = false
+        val buttonDelete = lPhotoDesc.findViewById<ImageView>(R.id.btn_delete)
+        buttonDelete.setOnClickListener(this)
+        button_next.setOnClickListener(OnNextButtonClick())
     }
 
     private fun restoreInstanceState() {
@@ -150,6 +162,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         superviseDb!!.dao().selectBySupervise(pref["supervise", ""])
                     pipeSupervise.id = id
                     pipe.supervise_id = id
+                    superviseDb?.close()
                 }).start()
                 form_supervise.setText(pref["supervise", ""])
                 form_supervise_contact.setText(pref["supervise_contact", ""])
@@ -161,37 +174,42 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.lay_pipe, R.id.form_pipe -> ListDialog().show(TAG_PIPE)
+            R.id.lay_pipe, R.id.form_pipe -> ListDialog().show(supportFragmentManager, TAG_PIPE)
             R.id.lay_shape, R.id.form_shape -> {
                 pipeShape.shape = null
-                ListDialog().show(TAG_SHAPE)
+                ListDialog().show(supportFragmentManager, TAG_SHAPE)
             }
-            R.id.lay_supervise, R.id.form_supervise -> ListDialog().show(TAG_SUPERVISE)
+            R.id.lay_supervise, R.id.form_supervise -> ListDialog().show(
+                supportFragmentManager,
+                TAG_SUPERVISE
+            )
             R.id.lay_distance, R.id.form_horizontal, R.id.form_vertical -> {
                 form_horizontal.text = null
                 form_vertical.text = null
                 if (pipeShape.shape == null) {
-                    ListDialog().show(TAG_SHAPE)
+                    ListDialog().show(supportFragmentManager, TAG_SHAPE)
                 } else {
                     showPositionDialog()
                 }
             }
             R.id.lay_photo, R.id.form_photo -> {
                 lay_photo_desc.visibility = View.VISIBLE
-                PhotoDialog().show(TAG_PHOTO)
+                PhotoDialog().show(supportFragmentManager, TAG_PHOTO)
             }
             R.id.form_photo_thumbnail -> {
                 photoObj?.let {
                     val bundle = Bundle()
                     bundle.putSerializable("SpiPhotoObject", it)
-                    ImageDialog().show(TAG_PHOTO, bundle)
+                    ImageDialog().apply {
+                        arguments = bundle
+                    }.show(supportFragmentManager, TAG_PHOTO)
                 }
             }
             R.id.btn_delete -> {
-                photoObj?.let {
-                    it.uri = null
-                    it.file?.delete()
-                    it.file = null
+                photoObj?.let{
+                    photoObj?.uri = null
+                    photoObj?.file?.delete()
+                    photoObj?.file = null
                     tempUri = null
                     tempFile?.delete()
                     tempFile = null
@@ -207,13 +225,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         }
     }
 
-    private fun showPositionDialog() {
-        val bundle = Bundle()
-        bundle.putString("typeString", spiType.type)
-        bundle.putString("shapeString", pipeShape.shape)
-        PositionDialog().show(TAG_POSITION, bundle)
-    }
-
     @SuppressLint("SetTextI18n")
     override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         if (index == -1) return
@@ -222,7 +233,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 onPipeTypeSelect(index)
                 if (form_shape.text.toString() == "") {
                     pipeShape.shape = null
-                    ListDialog().show(TAG_SHAPE)
+                    ListDialog().show(supportFragmentManager, TAG_SHAPE)
                 }
             }
             TAG_SHAPE -> {
@@ -236,6 +247,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     val id = superviseDb!!.dao().selectBySupervise(text[0])
                     pipeSupervise.id = id
                     pipe.supervise_id = id
+                    superviseDb?.close()
                 }).start()
                 runOnUiThread {
                     form_supervise.setText(text[0])
@@ -337,12 +349,19 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         }
     }
 
+    private fun showPositionDialog() {
+        val bundle = Bundle()
+        bundle.putString("typeString", spiType.type)
+        bundle.putString("shapeString", pipeShape.shape)
+        PositionDialog().apply { arguments = bundle }.show(supportFragmentManager, TAG_POSITION)
+    }
+
     @SuppressLint("SetTextI18n")
     private fun onPipeTypeSelect(index: Int) {
-        val fSpec = findViewById<FormEditText>(R.id.form_spec)
         form_pipe.setText(PIPE_TYPE_ENUMS[index].name)
-        header.text = "${PIPE_TYPE_ENUMS[index]}  "
-        fSpec.hint = "$header 입력".replace("관경", "관로관경")
+        header.text = PIPE_TYPE_ENUMS[index].header
+        val fSpec = findViewById<FormEditText>(R.id.form_spec)
+//        fSpec.hint = "$header 입력".replace("관경", "관로관경")
         fSpec.text = null
         unit.text = "  ${PIPE_TYPE_ENUMS[index].unit}"
         pipe.type_id = index + 1
@@ -419,8 +438,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 val previewEntries = ArrayList<Entry>()
                 previewEntries.add(entry)
                 startActivity(
-                    Intent(applicationContext, ViewActivity::class.java)
+                    Intent(this@RegisterActivity, ViewActivity::class.java)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("PipeView", "Register")
                         .putExtra("RegisterPreview", previewEntries)
                         .putExtra("PipeIndex", 0)
                         .putExtra("fHorizontal", form_horizontal.text.toString())
@@ -433,8 +453,8 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         }
 
         private fun isAllValid(): Boolean {
-            var allValid = false
-            arrayOf<FormEditText>(
+            var allValid = true
+            val validateFields = arrayOf<FormEditText>(
                 form_pipe,
                 form_shape,
                 form_horizontal,
@@ -444,8 +464,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 form_material,
                 form_supervise,
                 form_supervise_contact
-            ).forEach {
-                allValid = it.testValidity() && allValid
+            )
+            for (field in validateFields) {
+                allValid = field.testValidity() && allValid
             }
             return allValid
         }

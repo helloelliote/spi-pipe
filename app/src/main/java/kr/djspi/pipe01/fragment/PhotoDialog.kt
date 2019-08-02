@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.fragment_photo.*
 import kr.djspi.pipe01.Const.TAG_PHOTO
 import kr.djspi.pipe01.R
 
@@ -35,11 +35,15 @@ class PhotoDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_photo, container, false)
-        button_close.setOnClickListener(this)
-        btn_camera.setOnClickListener(this)
-        btn_gallery.setOnClickListener(this)
-
-        popup_title.text = dialogTitle
+        val title = view.findViewById<TextView>(R.id.popup_title)
+        title.text = dialogTitle
+        arrayOf<View>(
+            view.findViewById(R.id.button_close),
+            view.findViewById(R.id.btn_camera),
+            view.findViewById(R.id.btn_gallery)
+        ).forEach {
+            it.setOnClickListener(this)
+        }
         return view
     }
 

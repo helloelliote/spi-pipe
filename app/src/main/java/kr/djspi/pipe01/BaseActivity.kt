@@ -9,16 +9,18 @@ import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.MenuItem
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.room.Room
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.navigation_header.*
 import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.screenScale
@@ -27,6 +29,7 @@ import org.jetbrains.anko.toast
 
 open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
+    private lateinit var drawer: DrawerLayout
     lateinit var nfcUtil: NfcUtil
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,10 +49,13 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
     @SuppressLint("InflateParams")
     override fun setContentView(layoutResID: Int) {
         val view = layoutInflater.inflate(R.layout.activity_base, null)
-        layoutInflater.inflate(layoutResID, activity_content, true)
+        val activityContainer = view.findViewById<FrameLayout>(R.id.activity_content)
+        layoutInflater.inflate(layoutResID, activityContainer, true)
         super.setContentView(view)
 
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        drawer = findViewById(R.id.drawer_layout)
         setNavigationBarDrawer()
     }
 
@@ -89,13 +95,19 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                 drawer.addDrawerListener(this)
                 syncState()
             }
-            val menu = navView.menu
-            navView.setNavigationItemSelectedListener(this@BaseActivity)
-            versionName.text = getString(
+
+            val navigationView = drawer.findViewById<NavigationView>(R.id.navView)
+            val menu = navigationView.menu
+            val headerView = navigationView.getHeaderView(0)
+            navigationView.setNavigationItemSelectedListener(this@BaseActivity)
+
+            val version = headerView.findViewById<TextView>(R.id.versionName)
+            version.text = getString(
                 R.string.nav_version_name,
                 BuildConfig.VERSION_NAME,
                 BuildConfig.BUILD_TYPE
             )
+            val email = headerView.findViewById<TextView>(R.id.email)
             email.text = getString(R.string.nav_email, "djgis@chol.com")
             email.setOnClickListener {
                 startActivity(
@@ -105,6 +117,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                     )
                 )
             }
+            val phone = headerView.findViewById<TextView>(R.id.phone)
             phone.text = getString(R.string.nav_dj_phone)
             phone.setOnClickListener {
                 startActivity(
@@ -123,7 +136,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             menu.findItem(R.id.title_setting).isVisible = settingsMenuEnabled()
 
             nav_close.setOnClickListener { drawer.closeDrawer(GravityCompat.START) }
-        })
+        }).start()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

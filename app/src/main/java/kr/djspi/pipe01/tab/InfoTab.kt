@@ -8,16 +8,16 @@ import android.text.Html.fromHtml
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.tab_info.*
 import kr.djspi.pipe01.Const.TAG_PHOTO
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.fragment.ImageDialog
-import kr.djspi.pipe01.util.show
 
 class InfoTab : Fragment() {
 
@@ -38,11 +38,11 @@ class InfoTab : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.tab_info, container, false)
-        setInfo()
+        setInfo(view)
         return view
     }
 
-    private fun setInfo() {
+    private fun setInfo(view: View) {
         val hDirection: String = when (json["position"].asInt) {
             1, 2, 3 -> "차도 방향 ${json["vertical"].asString} m"
             7, 8, 9 -> {
@@ -62,7 +62,7 @@ class InfoTab : Fragment() {
         }
 
         if (hDirection == "" && vDirection == "") {
-            txt_contents.text = fromHtml(
+            view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
                 getString(
                     R.string.nfc_info_read_contents_alt,
                     json["pipe"].asString,
@@ -75,7 +75,7 @@ class InfoTab : Fragment() {
                 )
             )
         } else {
-            txt_contents.text = fromHtml(
+            view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
                 getString(
                     R.string.nfc_info_read_contents,
                     json["pipe"].asString,
@@ -92,8 +92,9 @@ class InfoTab : Fragment() {
 
         try {
             if (!json["spi_memo"].isJsonNull) {
-                txt_memo.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
-                txt_memo.text = json["spi_memo"].asString
+                view.findViewById<TextView>(R.id.txt_memo)
+                    .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
+                view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
             }
         } catch (ignore: NullPointerException) {
         }
@@ -102,23 +103,24 @@ class InfoTab : Fragment() {
             var requestBuilder: RequestBuilder<Drawable>? = null
             val photoObj = SpiPhotoObject()
             if (imageUri != null) {
-                requestBuilder = Glide.with(view!!).load(imageUri)
+                requestBuilder = Glide.with(view).load(imageUri)
                 photoObj.uri = imageUri
             } else {
-                if (!json["spi_photo_url"].isJsonNull) {
-                    requestBuilder = Glide.with(view!!).load(json["spi_photo_url"].asString)
+                if (json["spi_photo_url"] != null) {
+                    requestBuilder = Glide.with(view).load(json["spi_photo_url"].asString)
                     photoObj.uri = json["spi_photo_url"].asString
                 }
             }
+            val imageView = view.findViewById<ImageView>(R.id.img_photo)
             requestBuilder?.apply {
                 fitCenter()
                 error(R.drawable.ic_photo_error)
                 dontAnimate()
-                into(img_photo)
-                img_photo.setOnClickListener {
+                into(imageView)
+                imageView.setOnClickListener {
                     val bundle = Bundle(1)
                     bundle.putSerializable("SpiPhotoObject", photoObj)
-                    ImageDialog().show(TAG_PHOTO, bundle)
+                    ImageDialog().apply { arguments = bundle }.show(childFragmentManager, TAG_PHOTO)
                 }
             }
         } catch (ignore: NullPointerException) {

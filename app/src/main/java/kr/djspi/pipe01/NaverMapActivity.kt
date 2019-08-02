@@ -2,7 +2,6 @@ package kr.djspi.pipe01
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
@@ -24,7 +23,7 @@ import com.naver.maps.map.*
 import com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING
 import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.Overlay.OnClickListener
+import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MapConstants.EXTENT_KOREA
@@ -44,7 +43,30 @@ import kotlin.collections.HashMap
 class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
     private val placesArrayList = ArrayList<HashMap<String, String>>(5)
-    private lateinit var overlayOnclickListener: OnClickListener
+    private val overlayOnclickListener = Overlay.OnClickListener {
+        when (it) {
+            is Marker -> {
+                if (infoWindows.isAdded) {
+                    infoWindows.close()
+                } else {
+                    infoWindows.open(it)
+                }
+            }
+            is InfoWindow -> {
+                infoWindows.marker?.let { marker ->
+                    val jsonObject = marker.tag as JsonObject
+                    startActivity(
+                        Intent(this@NaverMapActivity, ViewActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                            .putExtra("PipeView", jsonObject.toString())
+                    )
+                }
+                infoWindows.close()
+            }
+        }
+        return@OnClickListener true
+    }
+    private lateinit var infoWindows: InfoWindow
     private lateinit var behavior: BottomSheetBehavior<*>
     private lateinit var placesListAdapter: SetTopSheet.ListViewAdapter
 
@@ -58,7 +80,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        toolbar.visibility = View.GONE
+        nmap_find.visibility = View.GONE
     }
 
     private fun setNaverMap() {
@@ -105,55 +127,29 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
     private fun setMapModeSwitch(naverMap: NaverMap) {
-        findViewById<ToggleSwitch>(R.id.nmap_mapmode_switch).apply {
-            visibility = View.VISIBLE
-            checkedPosition = 0
-            onChangeListener = object : ToggleSwitch.OnChangeListener {
-                override fun onToggleSwitchChanged(position: Int) {
-                    when (position) {
-                        0 -> naverMap.mapType = NaverMap.MapType.Basic
-                        1 -> naverMap.mapType = NaverMap.MapType.Hybrid
-                        else -> naverMap.mapType = NaverMap.MapType.Basic
-                    }
+        val toggleSwitch = findViewById<ToggleSwitch>(R.id.nmap_mapmode_switch)
+        toggleSwitch.visibility = View.VISIBLE
+        toggleSwitch.onChangeListener = object : ToggleSwitch.OnChangeListener {
+            override fun onToggleSwitchChanged(position: Int) {
+                when (position) {
+                    0 -> naverMap.mapType = NaverMap.MapType.Basic
+                    1 -> naverMap.mapType = NaverMap.MapType.Hybrid
+                    else -> naverMap.mapType = NaverMap.MapType.Basic
                 }
             }
         }
+        toggleSwitch.setCheckedPosition(0)
     }
 
     private fun setOverlayListener() {
-        overlayOnclickListener = OnClickListener {
-            when (it) {
-                is Marker -> {
-                    if (it.infoWindow == null) {
-                        it.infoWindow?.open(it)
-                    } else {
-                        it.infoWindow?.close()
-                    }
-                }
-                is InfoWindow -> {
-                    it.marker?.let { marker ->
-                        val jsonObject = marker.tag as JsonObject
-                        startActivity(
-                            Intent(this@NaverMapActivity, ViewActivity::class.java)
-                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                                .putExtra("PipeView", jsonObject.toString())
-                        )
-                    }
-                    it.close()
-                }
-            }
-            return@OnClickListener true
-        }
-
-        InfoWindow(object : InfoWindow.DefaultTextAdapter(applicationContext) {
+        infoWindows = InfoWindow(object : InfoWindow.DefaultTextAdapter(applicationContext) {
             override fun getText(infoWindow: InfoWindow): CharSequence {
-                infoWindow.marker?.let {
-                    val jsonObject = it.tag as JsonObject
+                return if (infoWindow.marker != null && infoWindow.marker?.tag != null) {
+                    val jsonObject = (infoWindow.marker)?.tag as JsonObject
                     val pipe = jsonObject["pipe"].asString
                     val id = jsonObject["id"].asString
-                    return "$pipe $id"
-                }
-                return "ERROR"
+                    "$pipe $id"
+                } else "ERROR"
             }
         }).apply {
             maxZoom = ZOOM_MAX
@@ -187,12 +183,10 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                             minZoom = ZOOM_GET
                             maxZoom = ZOOM_MAX
                             onClickListener = overlayOnclickListener
-                        }.run {
-                            this.map = naverMap
+                            map = naverMap
                         }
                     }
                 }
-
             }
 
             override fun onFailure(throwable: Throwable) {
@@ -286,50 +280,57 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         }
 
         inner class ListViewAdapter(
-            private val naverMap: NaverMap,
-            private val placesArrayList: ArrayList<HashMap<String, String>>,
-            context: Context = applicationContext
+            naverMap: NaverMap,
+            placesArrayList: ArrayList<HashMap<String, String>>
         ) : BaseAdapter() {
 
-            private val inflater: LayoutInflater = LayoutInflater.from(context)
+            private val placesList: ArrayList<HashMap<String, String>>
+            private val naverMap: NaverMap
+
+            init {
+                this.placesList = placesArrayList
+                this.naverMap = naverMap
+            }
 
             @SuppressLint("InflateParams")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                var view = convertView
+                var view: View? = convertView
                 val holder: ItemHolder
                 if (view == null) {
-                    view = inflater.inflate(R.layout.list_searchplaces, null)
+                    view = LayoutInflater.from(applicationContext)
+                        .inflate(R.layout.list_searchplaces, null)
                     holder = ItemHolder()
                     holder.name = view.findViewById(R.id.name)
                     view.tag = holder
                 } else {
                     holder = view.tag as ItemHolder
                 }
-                val hashMap = placesArrayList[position]
-                holder.name.text = hashMap["name"]
-                view!!.setOnClickListener {
-                    searchView.setQuery(hashMap["name"], false)
-                    val cordX = hashMap["x"]!!.toDouble()
-                    val cordY = hashMap["y"]!!.toDouble()
-                    val zoom = naverMap.cameraPosition.zoom
-                    naverMap.moveCamera(CameraUpdate
-                        .scrollAndZoomTo(LatLng(cordY, cordX), zoom)
-                        .animate(CameraAnimation.Fly)
-                        .finishCallback {
-                            behavior.state = STATE_EXPANDED
-                            searchView.clearFocus()
-                        })
+                holder.name.text = placesList[position]["name"]
+                view?.setOnClickListener {
+                    searchView.setQuery(placesList[position]["name"], false)
+                    val coordX = placesList[position]["x"]!!.toDouble()
+                    val coordY = placesList[position]["y"]!!.toDouble()
+                    var zoom = naverMap.cameraPosition.zoom
+                    zoom = if (zoom < ZOOM_GET) ZOOM_GET + 1.0 else zoom
+                    naverMap.moveCamera(
+                        CameraUpdate.scrollAndZoomTo(LatLng(coordY, coordX), zoom)
+                            .animate(CameraAnimation.Fly)
+                            .finishCallback {
+                                behavior.state = STATE_EXPANDED
+                                searchView.clearFocus()
+                            }
+                    )
+                    placesList.clear()
+                    placesListAdapter.notifyDataSetChanged()
                 }
-                placesArrayList.clear()
-                placesListAdapter.notifyDataSetChanged()
-                return view
+                return view!!
             }
 
-            override fun getItem(position: Int): Any = placesArrayList[position]
+            override fun getItem(position: Int): Any = placesList[position]
 
             override fun getItemId(position: Int): Long = position.toLong()
 
-            override fun getCount(): Int = placesArrayList.size
+            override fun getCount(): Int = placesList.size
 
             private inner class ItemHolder {
                 lateinit var name: TextView

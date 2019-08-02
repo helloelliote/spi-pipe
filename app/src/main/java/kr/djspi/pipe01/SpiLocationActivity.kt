@@ -3,7 +3,9 @@ package kr.djspi.pipe01
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import com.google.gson.JsonObject
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch
 import com.naver.maps.geometry.LatLng
@@ -32,15 +34,17 @@ import java.io.Serializable
 import java.util.*
 
 class SpiLocationActivity :
-    LocationUpdate(), OnMapReadyCallback, View.OnClickListener, OnSelectListener, Serializable {
+    LocationUpdate(), OnMapReadyCallback, OnClickListener, OnSelectListener, Serializable {
 
-    private lateinit var surveyDialog: SurveyDialog
-    private lateinit var naverMap: NaverMap
+    private var surveyDialog: SurveyDialog = SurveyDialog()
     private var isSelected = true
+    private lateinit var naverMap: NaverMap
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
-        NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
+        Log.w("Location", "Created")
+        NaverMapSdk.getInstance(applicationContext).client =
+            NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
         setContentView(R.layout.activity_spi_location)
         setNaverMap()
     }
@@ -55,21 +59,23 @@ class SpiLocationActivity :
     }
 
     private fun setNaverMap() {
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
-            ?: MapFragment.newInstance(
-                NaverMapOptions()
-                    .locale(Locale.KOREA)
-                    .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
-                    .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING)
-                    .minZoom(ZOOM_MIN)
-                    .maxZoom(ZOOM_MAX)
-                    .extent(MapConstants.EXTENT_KOREA)
-                    .compassEnabled(true)
-                    .locationButtonEnabled(true)
-                    .zoomGesturesEnabled(true)
-            ).also {
-                supportFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
-            }
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
+                ?: MapFragment.newInstance(
+                    NaverMapOptions()
+                        .locale(Locale.KOREA)
+                        .contentPadding(0, 45, 0, 45)
+                        .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
+                        .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING)
+                        .minZoom(ZOOM_MIN)
+                        .maxZoom(ZOOM_MAX)
+                        .extent(MapConstants.EXTENT_KOREA)
+                        .compassEnabled(true)
+                        .locationButtonEnabled(true)
+                        .zoomGesturesEnabled(true)
+                ).also {
+                    supportFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
+                }
         mapFragment.getMapAsync(this)
     }
 
@@ -89,10 +95,9 @@ class SpiLocationActivity :
         if (preferences["switch_location", false]!!) {
             runOnUiThread {
                 record_gps.visibility = View.INVISIBLE
-                surveyDialog = SurveyDialog().apply {
+                surveyDialog.apply {
                     isCancelable = false
-                }
-                surveyDialog.show(supportFragmentManager, TAG_SURVEY)
+                }.show(supportFragmentManager, TAG_SURVEY)
             }
         }
 

@@ -9,9 +9,9 @@ import android.view.View.*
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.fragment_plot_direction.*
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
 import kr.djspi.pipe01.Const.TAG_DIRECTION
@@ -19,7 +19,6 @@ import kr.djspi.pipe01.Const.TAG_DISTANCE
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.Companion.parsePipeShape
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
-import kr.djspi.pipe01.util.show
 
 class DirectionDialog : DialogFragment(), OnClickListener {
 
@@ -29,7 +28,8 @@ class DirectionDialog : DialogFragment(), OnClickListener {
     private var typeString: String? = null
     private var shapeString: String? = null
     private var bundle: Bundle? = null
-    private lateinit var resIds: ArrayList<String>
+    private var resIds = arrayOfNulls<String>(9)
+    private lateinit var selectView: ImageView
     private lateinit var listener: OnSelectListener
 
     override fun onAttach(context: Context) {
@@ -56,24 +56,33 @@ class DirectionDialog : DialogFragment(), OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_plot_direction, container, false)
-        popup_title.text = dialogTitle
-        arrayOf<View>(lay_2, lay_4, lay_6, lay_8, button_close, btn_cancel, btn_ok).forEach {
+        val title = view.findViewById<TextView>(R.id.popup_title)
+        title.text = dialogTitle
+        arrayOf<View>(
+            view.findViewById(R.id.lay_2),
+            view.findViewById(R.id.lay_4),
+            view.findViewById(R.id.lay_6),
+            view.findViewById(R.id.lay_8),
+            view.findViewById(R.id.button_close),
+            view.findViewById(R.id.btn_cancel),
+            view.findViewById(R.id.btn_ok)
+        ).forEach {
             it.setOnClickListener(this)
         }
-        setLayoutVisibility()
+        selectView = view.findViewById(R.id.v_select)
+        setLayoutVisibility(view)
         return view
     }
 
-    private fun setLayoutVisibility() {
-        resIds = ArrayList()
+    private fun setLayoutVisibility(view: View) {
         for (i in 1..4) {
             resIds[i * 2] =
                 "plan_${parseSpiType(typeString)}_${parsePipeShape(shapeString)}_${positionInt}_${PIPE_DIRECTIONS[i * 2]}"
         }
-        setImageView(image_2, resIds[2])
-        setImageView(image_4, resIds[4])
-        setImageView(image_6, resIds[6])
-        setImageView(image_8, resIds[8])
+        setImageView(view.findViewById(R.id.image_2), resIds[2]!!)
+        setImageView(view.findViewById(R.id.image_4), resIds[4]!!)
+        setImageView(view.findViewById(R.id.image_6), resIds[6]!!)
+        setImageView(view.findViewById(R.id.image_8), resIds[8]!!)
     }
 
     private fun setImageView(view: ImageView, resId: String) {
@@ -100,7 +109,8 @@ class DirectionDialog : DialogFragment(), OnClickListener {
                     return
                 } else {
                     bundle!!.putString("planString", resIds[selectIndex])
-                    DistanceDialog().show(TAG_DISTANCE, bundle)
+                    DistanceDialog().apply { arguments = bundle }
+                        .show(fragmentManager!!, TAG_DISTANCE)
                     dismissAllowingStateLoss()
                 }
             }
@@ -129,11 +139,9 @@ class DirectionDialog : DialogFragment(), OnClickListener {
     }
 
     private fun setFocus(view: View) {
-        v_select.visibility = INVISIBLE
-        view.findViewById<View>(R.id.v_select).apply {
-            this.visibility = VISIBLE
-            this.findViewById<View>(R.id.v_select)
-        }
+        selectView.visibility = INVISIBLE
+        view.findViewById<ImageView>(R.id.v_select).visibility = VISIBLE
+        this.selectView = view.findViewById(R.id.v_select)
     }
 
     override fun onDismiss(dialog: DialogInterface) {

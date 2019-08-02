@@ -10,9 +10,9 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.andreabaccega.widget.FormEditText
-import kotlinx.android.synthetic.main.fragment_plot_distance.*
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
 import kr.djspi.pipe01.BaseActivity.Companion.screenRatio
 import kr.djspi.pipe01.Const.TAG_DISTANCE
@@ -26,6 +26,8 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
     private lateinit var shape: String
     private lateinit var plan: String
     private lateinit var resId: String
+    private lateinit var horizontal: FormEditText
+    private lateinit var vertical: FormEditText
     private lateinit var listener: OnSelectListener
 
     override fun onAttach(context: Context) {
@@ -53,13 +55,21 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_plot_distance, container, false)
-        popup_title.text = dialogTitle
-        lay_background.setImageDrawable(fromRes(resId))
-        lay_background.scaleType = ImageView.ScaleType.FIT_CENTER
+        view.findViewById<TextView>(R.id.popup_title).text = dialogTitle
+        view.findViewById<ImageView>(R.id.lay_background).apply {
+            setImageDrawable(fromRes(resId))
+            scaleType = ImageView.ScaleType.FIT_CENTER
+        }
+        horizontal = view.findViewById(R.id.form_horizontal)
+        vertical = view.findViewById(R.id.form_vertical)
         val filter = arrayOf<InputFilter>(DecimalFilter(4, 2))
-        form_horizontal.filters = filter
-        form_vertical.filters = filter
-        arrayOf<View>(button_close, btn_cancel, btn_ok).forEach {
+        horizontal.filters = filter
+        vertical.filters = filter
+        arrayOf<View>(
+            view.findViewById(R.id.button_close),
+            view.findViewById(R.id.btn_cancel),
+            view.findViewById(R.id.btn_ok)
+        ).forEach {
             it.setOnClickListener(this)
         }
         setPosition()
@@ -68,8 +78,7 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
 
     private fun fromRes(resId: String): Drawable {
         return resources.getDrawable(
-            resources.getIdentifier(resId, "drawable", defPackage),
-            null
+            resources.getIdentifier(resId, "drawable", defPackage), null
         )
     }
 
@@ -124,23 +133,23 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
     ) {
         when {
             noV -> {
-                form_vertical.setText("0.0")
-                form_vertical.visibility = GONE
-                form_horizontal.visibility = VISIBLE
+                vertical.setText("0.0")
+                vertical.visibility = GONE
+                horizontal.visibility = VISIBLE
             }
             noH -> {
-                form_horizontal.setText("0.0")
-                form_horizontal.visibility = GONE
-                form_vertical.visibility = VISIBLE
+                horizontal.setText("0.0")
+                horizontal.visibility = GONE
+                vertical.visibility = VISIBLE
             }
             else -> {
-                form_horizontal.visibility = VISIBLE
-                form_vertical.visibility = VISIBLE
+                horizontal.visibility = VISIBLE
+                vertical.visibility = VISIBLE
             }
         }
-        form_vertical.translationY = vY * screenRatio
-        form_horizontal.translationX = hX * screenRatio
-        form_horizontal.translationY = hY * screenRatio
+        vertical.translationY = vY * screenRatio
+        horizontal.translationX = hX * screenRatio
+        horizontal.translationY = hY * screenRatio
     }
 
     override fun onClick(v: View) {
@@ -149,16 +158,16 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
                 listener.onSelect(
                     TAG_DISTANCE,
                     0,
-                    form_horizontal.text.toString(),
-                    form_vertical.text.toString()
+                    horizontal.text.toString(),
+                    vertical.text.toString()
                 )
-                form_horizontal.visibility = VISIBLE
-                form_vertical.visibility = VISIBLE
+                horizontal.visibility = VISIBLE
+                vertical.visibility = VISIBLE
                 dismissAllowingStateLoss()
             } else return
             R.id.btn_cancel -> {
-                form_horizontal.visibility = VISIBLE
-                form_vertical.visibility = VISIBLE
+                horizontal.visibility = VISIBLE
+                vertical.visibility = VISIBLE
                 listener.onSelect(TAG_DISTANCE, -2, null)
                 dismissAllowingStateLoss()
             }
@@ -168,20 +177,10 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
 
     private fun isAllValid(): Boolean {
         var allValid = true
-        val validateFields = arrayOf<FormEditText>(form_horizontal, form_vertical)
+        val validateFields = arrayOf(horizontal, vertical)
         for (field in validateFields) {
             allValid = field.testValidity() && allValid
         }
         return allValid
     }
-
-//    override fun onDismiss(dialog: DialogInterface) {
-//        resId = null
-//        super.onDismiss(dialog)
-//    }
-//
-//    override fun onDetach() {
-//        super.onDetach()
-//        listener = null
-//    }
 }

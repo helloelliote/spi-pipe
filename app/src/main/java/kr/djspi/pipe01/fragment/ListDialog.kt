@@ -6,14 +6,16 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.View.TEXT_ALIGNMENT_CENTER
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.sylversky.indexablelistview.scroller.Indexer
-import kotlinx.android.synthetic.main.fragment_list.*
-import kotlinx.android.synthetic.main.fragment_list_item.*
+import com.sylversky.indexablelistview.widget.IndexableListView
 import kr.djspi.pipe01.BaseActivity.Companion.superviseDb
 import kr.djspi.pipe01.Const.PIPE_SHAPES
 import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
@@ -22,14 +24,14 @@ import kr.djspi.pipe01.Const.TAG_SHAPE
 import kr.djspi.pipe01.Const.TAG_SUPERVISE
 import kr.djspi.pipe01.R
 
-class ListDialog : DialogFragment(), View.OnClickListener, OnSelectListener {
+class ListDialog : DialogFragment(), OnClickListener {
 
     private var listTag: String? = null
     private var dialogTitle: String? = null
     private var componentName: String? = null
-    private var selectPosition: Int = -1
     private var selectIndex: Int = -1
     private var state: Parcelable? = null
+    private lateinit var listView: IndexableListView
     private lateinit var listItem: ArrayList<String>
     private lateinit var listener: OnSelectListener
 
@@ -61,6 +63,7 @@ class ListDialog : DialogFragment(), View.OnClickListener, OnSelectListener {
                     superviseDb!!.dao().all.forEach {
                         listItem.add(it.supervise)
                     }
+                    superviseDb?.close()
                 }.start()
                 dialogTitle = getString(R.string.popup_title_select_supervise)
             }
@@ -73,23 +76,26 @@ class ListDialog : DialogFragment(), View.OnClickListener, OnSelectListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
+        val titleView = view.findViewById<TextView>(R.id.popup_list_title)
+        titleView.text = dialogTitle
+        listView = view.findViewById(R.id.list_common)
         if (listTag == TAG_SUPERVISE) {
-            list_common.adapter = ListAdapter(context, listItem, true)
+            listView.adapter = ListAdapter(context, listItem, true)
         } else {
-            list_common.adapter = ListAdapter(context, listItem, false)
-            list_common.isFastScrollEnabled = false
+            listView.adapter = ListAdapter(context, listItem, false)
+            listView.isFastScrollEnabled = false
         }
-        list_common.setOnItemClickListener { _, _, position, _ ->
+        listView.setOnItemClickListener { _, _, position, _ ->
             componentName = listItem[position]
-            selectPosition = position
+            selectIndex = position
         }
         state?.let {
-            list_common.requestFocus()
-            list_common.onRestoreInstanceState(it)
+            listView.requestFocus()
+            listView.onRestoreInstanceState(it)
         }
-        btn_ok.setOnClickListener(this)
-        btn_cancel.setOnClickListener(this)
-        button_close.setOnClickListener(this)
+        view.findViewById<TextView>(R.id.btn_ok).setOnClickListener(this)
+        view.findViewById<TextView>(R.id.btn_cancel).setOnClickListener(this)
+        view.findViewById<ImageView>(R.id.button_close).setOnClickListener(this)
 
         return view
     }
@@ -108,12 +114,8 @@ class ListDialog : DialogFragment(), View.OnClickListener, OnSelectListener {
         }
     }
 
-    override fun onSelect(tag: String?, index: Int, vararg text: String?) {
-
-    }
-
     override fun onPause() {
-        state = list_common.onSaveInstanceState()
+        state = listView.onSaveInstanceState()
         super.onPause()
     }
 
@@ -140,13 +142,14 @@ class ListDialog : DialogFragment(), View.OnClickListener, OnSelectListener {
             if (view == null) {
                 view = LayoutInflater.from(context).inflate(R.layout.fragment_list_item, null)
             }
-            txt_name.apply {
+            val textView = view!!.findViewById<TextView>(R.id.txt_name)
+            textView.apply {
                 text = listItem[position]
                 textAlignment =
                     if (isListSupervise) View.TEXT_ALIGNMENT_TEXT_START else TEXT_ALIGNMENT_CENTER
                 setOnFocusChangeListener { _, _ -> }
             }
-            return view!!
+            return view
         }
 
         override fun getItem(position: Int): Any = listItem[position]

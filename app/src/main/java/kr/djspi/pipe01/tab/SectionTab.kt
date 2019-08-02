@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.tab_plane.*
-import kotlinx.android.synthetic.main.tab_preview.*
 import kr.djspi.pipe01.BaseActivity
 import kr.djspi.pipe01.BaseActivity.Companion.screenRatio
 import kr.djspi.pipe01.R
@@ -17,6 +17,10 @@ import kr.djspi.pipe01.R
 class SectionTab : Fragment() {
 
     private lateinit var json: JsonObject
+    private lateinit var vertical: TextView
+    private lateinit var depth: TextView
+    private lateinit var spec: TextView
+    private lateinit var material: TextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -34,7 +38,8 @@ class SectionTab : Fragment() {
         val view = inflater.inflate(R.layout.tab_section, container, false)
         json["file_section"].asString?.let {
             val resId = it.replace(".png", "")
-            planeImageView.setImageResource(
+            val imageView = view.findViewById<ImageView>(R.id.planeImageView)
+            imageView.setImageResource(
                 resources.getIdentifier(
                     resId,
                     "drawable",
@@ -42,16 +47,20 @@ class SectionTab : Fragment() {
                 )
             )
         }
-        text_plane_vertical.text = json["vertical"].asString
-        text_depth.text = json["depth"].asString
-        text_spec.text =
+        vertical = view.findViewById(R.id.text_plane_vertical)
+        vertical.text = json["vertical"].asString
+        depth = view.findViewById(R.id.text_depth)
+        depth.text = json["depth"].asString
+        spec = view.findViewById(R.id.text_spec)
+        spec.text =
             "${json["header"].asString} ${json["spec"].asString} ${json["unit"].asString}"
-        text_material.text = json["material"].asString
+        material = view.findViewById(R.id.text_material)
+        material.text = json["material"].asString
         when (json["position"].asInt) {
             1, 2, 3 -> setTranslation(false, -355.0f)
             4, 5, 6 -> {
-                text_spec.translationX = 175.0f
-                text_material.translationX = 175.0f
+                spec.translationX = 175.0f
+                material.translationX = 175.0f
                 setTranslation(true)
             }
             7, 8, 9 -> setTranslation(false, 355.0f)
@@ -60,11 +69,11 @@ class SectionTab : Fragment() {
     }
 
     private fun setTranslation(noV: Boolean, dX: Float = 0.0f) {
-        if (noV) text_plane_vertical.visibility = View.GONE
-        text_depth.translationX = dX * screenRatio
-        text_depth.translationY = 77.5f * screenRatio
-        text_plane_vertical.translationY = -475.0f * screenRatio
-        text_spec.translationY = 300.0f * screenRatio
-        text_material.translationY = 400.0f * screenRatio
+        if (noV) vertical.visibility = View.GONE
+        depth.translationX = dX * screenRatio
+        depth.translationY = 77.5f * screenRatio
+        vertical.translationY = -475.0f * screenRatio
+        spec.translationY = 300.0f * screenRatio
+        material.translationY = 400.0f * screenRatio
     }
 }

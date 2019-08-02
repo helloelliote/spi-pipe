@@ -4,10 +4,8 @@ import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.nfc.NfcAdapter
-import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import kr.djspi.pipe01.RegisterActivity
 import kr.djspi.pipe01.SpiLocationActivity
 import kr.djspi.pipe01.SpiPostActivity
@@ -23,7 +21,7 @@ fun Activity.settingsMenuEnabled(): Boolean {
 }
 
 fun AppCompatActivity.messageDialog(issue: Int, tag: String? = "", cancelable: Boolean = true) {
-    MessageDialog.newInstance(issue, cancelable).show(supportFragmentManager, tag)
+    MessageDialog.getInstance(issue, cancelable).show(supportFragmentManager, tag)
 }
 
 fun Activity.screenScale(): Float {
@@ -57,10 +55,4 @@ fun Activity.onNewIntentIgnore() {
     if (NfcAdapter.ACTION_TAG_DISCOVERED == intent?.action) {
         // drop NFC events
     }
-}
-
-fun DialogFragment.show(tag: String, bundle: Bundle? = null) {
-    this.apply {
-        arguments = bundle
-    }.show(AppCompatActivity().supportFragmentManager, tag)
 }

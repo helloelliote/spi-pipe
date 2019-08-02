@@ -7,14 +7,13 @@ import android.os.Bundle
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import android.provider.Settings.ACTION_NFC_SETTINGS
 import android.text.Html.fromHtml
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.fragment_list.popup_title
-import kotlinx.android.synthetic.main.fragment_message.*
 import kr.djspi.pipe01.MainActivity
 import kr.djspi.pipe01.R
 
@@ -23,6 +22,13 @@ class MessageDialog : DialogFragment(), OnClickListener {
 
     private var returnToMain: Boolean = false
     private var issue: Int? = 0
+    private lateinit var title: TextView
+    private lateinit var contents: TextView
+    private lateinit var contentsSub: TextView
+    private lateinit var buttonDismiss: TextView
+    private lateinit var buttonOk: TextView
+    private lateinit var infoIcon: ImageView
+    private lateinit var border: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +41,16 @@ class MessageDialog : DialogFragment(), OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_message, container, false)
-        button_dismiss.setOnClickListener(this)
-        button_close.setOnClickListener(this)
-        button_ok.setOnClickListener(this)
+        title = view.findViewById(R.id.popup_title)
+        contents = view.findViewById(R.id.popup_contents)
+        contentsSub = view.findViewById(R.id.popup_contents_sub)
+        buttonDismiss = view.findViewById(R.id.button_dismiss)
+        buttonDismiss.setOnClickListener(this)
+        buttonOk = view.findViewById(R.id.button_ok)
+        buttonOk.setOnClickListener(this)
+        infoIcon = view.findViewById(R.id.icon_info_s)
+        border = view.findViewById(R.id.view_border)
+        view.findViewById<ImageView>(R.id.button_close).setOnClickListener(this)
         setDialog(issue)
         return view
     }
@@ -54,18 +67,16 @@ class MessageDialog : DialogFragment(), OnClickListener {
     }
 
     private fun setDialog(issue: Int?) {
-        // TODO: 테스트 후 삭제
-        Log.w("MessageDialog", this@MessageDialog.toString())
-        popup_title.text = "알림"
-        popup_contents.text = tag
+        title.text = "알림"
+        contents.text = tag
         when (issue) {
             0 -> { // 일반 메시지 전달
                 setVisibilityToGone()
             }
             1 -> { // (공통) 위치 기능이 꺼져 있음
-                popup_title.text = "주의"
-                popup_contents_sub.text = fromHtml(getString(R.string.popup_location_on_sub))
-                button_ok.setOnClickListener {
+                title.text = "주의"
+                contentsSub.text = fromHtml(getString(R.string.popup_location_on_sub))
+                buttonOk.setOnClickListener {
                     startActivity(
                         Intent(ACTION_LOCATION_SOURCE_SETTINGS).addCategory(
                             CATEGORY_DEFAULT
@@ -75,18 +86,18 @@ class MessageDialog : DialogFragment(), OnClickListener {
                 }
             }
             2 -> { // (공통) NFC 기능이 꺼져 있음
-                popup_title.text = "주의"
-                popup_contents_sub.text = fromHtml(getString(R.string.popup_nfc_on_sub))
-                button_ok.setOnClickListener {
+                title.text = "주의"
+                contentsSub.text = fromHtml(getString(R.string.popup_nfc_on_sub))
+                buttonOk.setOnClickListener {
                     startActivity(Intent(ACTION_NFC_SETTINGS).addCategory(CATEGORY_DEFAULT))
                     dismiss()
                 }
             }
             3 -> { // (MainActivity.class) 정품 SPI 가 아닌 태그가 태깅되었음
                 setVisibilityToGone()
-                popup_title.text = "주의"
-                button_ok.text = "종료"
-                button_ok.setOnClickListener {
+                title.text = "주의"
+                buttonOk.text = "종료"
+                buttonOk.setOnClickListener {
                     dismiss()
                     android.os.Process.killProcess(android.os.Process.myPid())
                 }
@@ -96,26 +107,26 @@ class MessageDialog : DialogFragment(), OnClickListener {
             }
             5 -> { // (SpiPostActivity.class) 쓰기 작업 이후 수정이 불가함을 안내
                 setVisibilityToGone()
-                popup_title.text = "주의"
-                popup_contents.text = fromHtml(getString(R.string.popup_read_only))
-                button_dismiss.visibility = View.VISIBLE
-                button_dismiss.text = "이전"
+                title.text = "주의"
+                contents.text = fromHtml(getString(R.string.popup_read_only))
+                buttonDismiss.visibility = View.VISIBLE
+                buttonDismiss.text = "이전"
             }
             6 -> { // (SpiPostActivity.class) 정보가 정상적으로 기록됨
                 setVisibilityToGone()
                 returnToMain = true
             }
             7 -> { // (SpiPostActivity.class) 하나 이상의 관로 정보 등록 과정에서 에러 발생 안내
-                popup_contents.text = getString(R.string.popup_error_set)
-                popup_contents_sub.text = tag
+                contents.text = getString(R.string.popup_error_set)
+                contentsSub.text = tag
             }
             8 -> { // (공통) 서버와의 통신 에러
-                popup_contents.text = getString(R.string.popup_error_comm)
+                contents.text = getString(R.string.popup_error_comm)
                 setVisibilityToGone()
             }
             9 -> { // (MainActivity.class) 앱 시작 시 절전모드가 실행중인지 확인
-                popup_title.text = "주의"
-                popup_contents_sub.text = getString(R.string.popup_power_save_sub)
+                title.text = "주의"
+                contentsSub.text = getString(R.string.popup_power_save_sub)
             }
         }
     }
@@ -134,15 +145,36 @@ class MessageDialog : DialogFragment(), OnClickListener {
     }
 
     private fun setVisibilityToGone() {
-        popup_contents_sub.visibility = View.GONE
-        icon_info_s.visibility = View.GONE
-        view_border.visibility = View.GONE
+        contentsSub.visibility = View.GONE
+        infoIcon.visibility = View.GONE
+        border.visibility = View.GONE
     }
 
     companion object {
+        // TODO: 아래 싱글톤 패턴을 사용할 경우 팝업 내용 갱신이 되지 않는 문제 발생
+//        @SuppressLint("StaticFieldLeak")
+//        private var INSTANCE: MessageDialog? = null
+//
+//        /**
+//         * Returns the single instance of this class, creating it if necessary.
+//         * *
+//         * @return the [MessageDialog] instance
+//         */
+//        @JvmStatic
+//        fun getInstance(issue: Int, cancelable: Boolean) =
+//            INSTANCE ?: synchronized(MessageDialog::class.java) {
+//                INSTANCE ?: MessageDialog().apply {
+//                    arguments = Bundle().apply {
+//                        putInt("issueType", issue)
+//                    }
+//                    isCancelable = cancelable
+//                }.also {
+//                    INSTANCE = it
+//                }
+//            }
 
         @JvmStatic
-        fun newInstance(issue: Int, cancelable: Boolean): MessageDialog {
+        fun getInstance(issue: Int, cancelable: Boolean): MessageDialog {
             return MessageDialog().apply {
                 arguments = Bundle().apply {
                     putInt("issueType", issue)

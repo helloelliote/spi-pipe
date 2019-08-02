@@ -4,9 +4,8 @@ import com.google.gson.JsonObject
 import kr.djspi.pipe01.dto.*
 import java.util.*
 
-fun parseServerData(jsonObject: JsonObject, serial: String): HashMap<String, DataItem> {
+fun parseServerData(data: JsonObject, serial: String): HashMap<String, DataItem> {
     val hashMap = HashMap<String, DataItem>()
-    val data = jsonObject["data"].asJsonObject
     // Spi.class DTO
     val spiId = data["spi_id"].asInt
     val typeId = data["spi_type_id"].asInt

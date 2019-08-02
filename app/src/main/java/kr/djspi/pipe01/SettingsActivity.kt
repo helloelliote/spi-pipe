@@ -22,7 +22,7 @@ import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
 
 class SettingsActivity : BaseActivity(), OnSelectListener {
 
-    private var preferences: SharedPreferences = AppPreference.defaultPrefs(this)
+    private lateinit var preferences: SharedPreferences
     private var settingsFragment: SettingsFragment
 
     init {
@@ -33,6 +33,7 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         supportFragmentManager.beginTransaction().replace(R.id.settings, settingsFragment).commit()
+        preferences = AppPreference.defaultPrefs(this)
         nmap_find.visibility = View.GONE
         setting_confirm.visibility = View.VISIBLE
         setting_confirm.setOnClickListener {
@@ -89,7 +90,7 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
         onNewIntentIgnore()
     }
 
-    private inner class SettingsFragment : PreferenceFragmentCompat() {
+    open class SettingsFragment : PreferenceFragmentCompat() {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preference_settings, rootKey)

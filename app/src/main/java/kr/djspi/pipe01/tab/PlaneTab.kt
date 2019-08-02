@@ -7,9 +7,10 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.tab_plane.*
 import kr.djspi.pipe01.BaseActivity
 import kr.djspi.pipe01.BaseActivity.Companion.screenRatio
 import kr.djspi.pipe01.R
@@ -18,6 +19,8 @@ class PlaneTab : Fragment() {
 
     private lateinit var json: JsonObject
     private lateinit var resId: String
+    private lateinit var horizontal: TextView
+    private lateinit var vertical: TextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -34,7 +37,8 @@ class PlaneTab : Fragment() {
         val view = inflater.inflate(R.layout.tab_plane, container, false)
         json["file_plane"].asString?.let {
             resId = it.replace(".png", "_distance")
-            planeImageView.setImageResource(
+            val imageView = view.findViewById<ImageView>(R.id.planeImageView)
+            imageView.setImageResource(
                 resources.getIdentifier(
                     resId,
                     "drawable",
@@ -42,8 +46,10 @@ class PlaneTab : Fragment() {
                 )
             )
         }
-        text_plane_horizontal.text = json["horizontal"].asString
-        text_plane_vertical.text = json["vertical"].asString
+        horizontal = view.findViewById(R.id.text_plane_horizontal)
+        horizontal.text = json["horizontal"].asString
+        vertical = view.findViewById(R.id.text_plane_vertical)
+        vertical.text = json["vertical"].asString
         setPosition()
         return view
     }
@@ -64,8 +70,8 @@ class PlaneTab : Fragment() {
                 3 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
                 4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
                 5 -> {
-                    text_plane_horizontal.visibility = GONE
-                    text_plane_vertical.visibility = GONE
+                    horizontal.visibility = GONE
+                    vertical.visibility = GONE
                 }
                 6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
                 7 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
@@ -85,8 +91,8 @@ class PlaneTab : Fragment() {
                 3 -> setTranslation(vY = -100.0f, hX = 175.0f, hY = -350.0f)
                 4 -> setTranslation(noV = true, vY = 0.0f, hX = -90.0f, hY = 0.0f)
                 5 -> {
-                    text_plane_horizontal.visibility = GONE
-                    text_plane_vertical.visibility = GONE
+                    horizontal.visibility = GONE
+                    vertical.visibility = GONE
                 }
                 6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
                 7 -> setTranslation(vY = 90.0f, hX = -170.0f, hY = 350.0f)
@@ -104,15 +110,15 @@ class PlaneTab : Fragment() {
         hY: Float
     ) {
         if (noV) {
-            text_plane_vertical.visibility = GONE
-            text_plane_horizontal.visibility = VISIBLE
+            vertical.visibility = GONE
+            horizontal.visibility = VISIBLE
         }
         if (noH) {
-            text_plane_horizontal.visibility = GONE
-            text_plane_vertical.visibility = VISIBLE
+            horizontal.visibility = GONE
+            vertical.visibility = VISIBLE
         }
-        text_plane_horizontal.translationX = hX * screenRatio
-        text_plane_horizontal.translationY = hY * screenRatio
-        text_plane_vertical.translationY = vY * screenRatio
+        horizontal.translationX = hX * screenRatio
+        horizontal.translationY = hY * screenRatio
+        vertical.translationY = vY * screenRatio
     }
 }

@@ -2,7 +2,6 @@ package kr.djspi.pipe01.util
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.*
 import kr.djspi.pipe01.AppPreference.set
@@ -53,14 +52,15 @@ fun MainActivity.getOnlineServerData(intent: Intent) {
 }
 
 fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, serial: String) {
-    val jsonObject = response["data"].asJsonObject
+    val jsonArray = response["data"].asJsonArray
+    val jsonObject = jsonArray[0].asJsonObject
     if (jsonObject["pipe_count"].asInt == 0) {
         startActivity(
             Intent(applicationContext, RegisterActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(
                     "RegisterActivity",
-                    parseServerData(response, serial)
+                    parseServerData(jsonObject, serial)
                 )
         )
     } else {
@@ -89,8 +89,6 @@ open class RetrofitCallback : Callback<JsonObject>, OnRetrofitListener {
     override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>?) {
         response?.let {
             if (it.isSuccessful) {
-                // TODO: 아래 로그는 테스트 이후 삭제
-                Log.w("Retrofit2x", "onResponse Called")
                 onResponse(it.body()!!)
             } else onFailure(call, Throwable(it.message()))
         }

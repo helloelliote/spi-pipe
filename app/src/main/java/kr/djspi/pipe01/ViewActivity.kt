@@ -10,10 +10,13 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_pipe_view.*
+import kr.djspi.pipe01.Const.REQUEST_MAP
+import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.dto.Entry
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
@@ -28,7 +31,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     private var pipeIndex: Int = 0
     private var photoObject: SpiPhotoObject? = null
-    private lateinit var previewEntries: ArrayList<Entry>
+    private var previewEntries: ArrayList<Entry>? = null
     private lateinit var jsonObj: JsonObject
     private lateinit var viewPager: ViewPager
 
@@ -36,8 +39,10 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         super.onCreate(savedInstanceState)
 
         intent?.let {
-            val jsonString: String? = it.getStringExtra("PipeView")
-            jsonObj = JsonParser().parse(jsonString).asJsonObject
+            val jsonString = intent.getStringExtra("PipeView")
+            if (jsonString != "Register") {
+                jsonObj = JsonParser().parse(jsonString).asJsonObject
+            }
 
             val preview = it.getSerializableExtra("RegisterPreview")
             val fHorizontal = it.getStringExtra("fHorizontal")
@@ -45,7 +50,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             pipeIndex = it.getIntExtra("PipeIndex", 0)
             if (preview is ArrayList<*>) {
                 previewEntries = preview as ArrayList<Entry>
-                jsonObj = parseEntry(previewEntries, pipeIndex, fHorizontal, fVertical)
+                jsonObj = parseEntry(previewEntries!!, pipeIndex, fHorizontal, fVertical)
             }
 
             val photo = it.getSerializableExtra("SpiPhotoObject")
@@ -65,12 +70,12 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        toolbar.title = "SPI ${jsonObject["pipe"].asString}"
+        toolbar.title = "SPI ${jsonObj["pipe"].asString}"
         setTabLayout()
     }
 
     private fun setTabLayout() {
-        if (previewEntries.isEmpty()) {
+        if (previewEntries == null) {
             tabs.removeTab(tabs.getTabAt(3))
         }
         viewPager = findViewById(R.id.container)
@@ -90,27 +95,27 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     }
 
     private fun setSpiIdInfo() {
-        if (jsonObject["id"].isJsonNull) {
+        if (jsonObj["id"] == null) {
             txt_id.visibility = View.GONE
         } else {
-            txt_id.text = fromHtml(getString(R.string.nfc_info_id, jsonObject["id"].asString))
+            txt_id.text = fromHtml(getString(R.string.nfc_info_id, jsonObj["id"].asString))
         }
     }
 
     private fun setSuperviseInfo() {
-        if (jsonObject["supervise"].isJsonNull) {
+        if (jsonObj["supervise"] == null) {
             txt_company.visibility = View.GONE
             txt_contact.visibility = View.GONE
         } else {
             txt_company.text =
-                fromHtml(getString(R.string.info_company, jsonObject["supervise"].asString))
+                fromHtml(getString(R.string.info_company, jsonObj["supervise"].asString))
             txt_contact.text =
-                fromHtml(getString(R.string.info_contact, jsonObject["supervise_contact"].asString))
+                fromHtml(getString(R.string.info_contact, jsonObj["supervise_contact"].asString))
             txt_contact.setOnClickListener {
                 startActivity(
                     Intent(
                         ACTION_DIAL,
-                        parse("tel:${jsonObject["supervise_contact"].asString}")
+                        parse("tel:${jsonObj["supervise_contact"].asString}")
                     )
                 )
             }
@@ -118,11 +123,11 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     }
 
     private fun setConstructionInfo() {
-        if (jsonObject["construction"].isJsonNull) {
+        if (jsonObj["construction"] == null) {
             txt_construction.visibility = View.GONE
         } else {
-            val construction = jsonObject["construction"].asString
-            val constructionContact = jsonObject["construction_contact"].asString
+            val construction = jsonObj["construction"].asString
+            val constructionContact = jsonObj["construction_contact"].asString
             if (construction.isNotEmpty() || constructionContact.isNotEmpty()) {
                 txt_construction.visibility = View.VISIBLE
                 txt_construction.text = fromHtml(
@@ -141,19 +146,18 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         }
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null) {
             if (requestCode == REQUEST_MAP) {
                 val locations = data.getDoubleArrayExtra("locations")
-                val currentEntry = previewEntries[pipeIndex]
+                val currentEntry = previewEntries!![pipeIndex]
                 val location = currentEntry.spi_location
                 location?.latitude = locations[0]
                 location?.longitude = locations[1]
                 location?.count = 0
                 currentEntry.spi_location = location
-                previewEntries[pipeIndex] = currentEntry
+                previewEntries!![pipeIndex] = currentEntry
                 startActivity(
                     Intent(this, SpiPostActivity::class.java)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -172,9 +176,9 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     override fun onRecord(tag: String, result: Int) {
         when (result) {
             RESULT_PASS -> {
-                startActivityForResult(
-                    Intent(this, SpiLocationActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP
+                this.startActivity(
+                    Intent(this@ViewActivity, SpiLocationActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 )
             }
         }
@@ -195,7 +199,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         onNewIntentIgnore()
     }
 
-    private inner class TabSelected : TabLayout.OnTabSelectedListener {
+    private inner class TabSelected : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             viewPager.currentItem = tab.position
             if (tab.position == 3) lay_bottom.visibility = View.GONE
@@ -207,11 +211,5 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {
         }
-    }
-
-    companion object {
-        private const val REQUEST_MAP = 30001
-        private const val RESULT_PASS = 200
-        private const val RESULT_FAIL = 400
     }
 }
