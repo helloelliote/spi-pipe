@@ -2,19 +2,19 @@ package kr.djspi.pipe01
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.annotation.UiThread
 import com.google.gson.JsonObject
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.CameraUpdate.REASON_GESTURE
 import com.naver.maps.map.LocationTrackingMode.None
+import com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
-import com.naver.maps.map.util.MapConstants
+import com.naver.maps.map.util.MapConstants.EXTENT_KOREA
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_spi_location.*
 import kr.djspi.pipe01.AppPreference.get
@@ -40,11 +40,9 @@ class SpiLocationActivity :
     private var isSelected = true
     private lateinit var naverMap: NaverMap
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        Log.w("Location", "Created")
-        NaverMapSdk.getInstance(applicationContext).client =
-            NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
         setContentView(R.layout.activity_spi_location)
         setNaverMap()
     }
@@ -58,25 +56,28 @@ class SpiLocationActivity :
         nmap_find.visibility = View.GONE
     }
 
+    /**
+     * 네이버 지도의 기초 UI 설정
+     */
+    @UiThread
     private fun setNaverMap() {
-        val mapFragment =
-            supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
-                ?: MapFragment.newInstance(
-                    NaverMapOptions()
-                        .locale(Locale.KOREA)
-                        .contentPadding(0, 45, 0, 45)
-                        .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
-                        .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING)
-                        .minZoom(ZOOM_MIN)
-                        .maxZoom(ZOOM_MAX)
-                        .extent(MapConstants.EXTENT_KOREA)
-                        .compassEnabled(true)
-                        .locationButtonEnabled(true)
-                        .zoomGesturesEnabled(true)
-                ).also {
-                    supportFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
-                }
-        mapFragment.getMapAsync(this)
+        var mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance(
+                NaverMapOptions()
+                    .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
+                    .enabledLayerGroups(LAYER_GROUP_BUILDING)
+                    .locale(Locale.KOREA)
+                    .minZoom(ZOOM_MIN)
+                    .maxZoom(ZOOM_MAX)
+                    .extent(EXTENT_KOREA)
+                    .compassEnabled(true)
+                    .locationButtonEnabled(true)
+                    .zoomGesturesEnabled(true)
+            )
+            supportFragmentManager.beginTransaction().add(R.id.map_fragment, mapFragment).commit()
+        }
+        mapFragment!!.getMapAsync(this)
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -112,19 +113,18 @@ class SpiLocationActivity :
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
     private fun setMapModeSwitch(naverMap: NaverMap) {
-        findViewById<ToggleSwitch>(R.id.nmap_mapmode_switch).apply {
-            visibility = View.VISIBLE
-            checkedPosition = 0
-            onChangeListener = object : ToggleSwitch.OnChangeListener {
-                override fun onToggleSwitchChanged(position: Int) {
-                    when (position) {
-                        0 -> naverMap.mapType = NaverMap.MapType.Basic
-                        1 -> naverMap.mapType = NaverMap.MapType.Hybrid
-                        else -> naverMap.mapType = NaverMap.MapType.Basic
-                    }
+        val toggleSwitch = findViewById<ToggleSwitch>(R.id.nmap_mapmode_switch)
+        toggleSwitch.visibility = View.VISIBLE
+        toggleSwitch.onChangeListener = object : ToggleSwitch.OnChangeListener {
+            override fun onToggleSwitchChanged(position: Int) {
+                when (position) {
+                    0 -> naverMap.mapType = NaverMap.MapType.Basic
+                    1 -> naverMap.mapType = NaverMap.MapType.Hybrid
+                    else -> naverMap.mapType = NaverMap.MapType.Basic
                 }
             }
         }
+        toggleSwitch.setCheckedPosition(0)
     }
 
     private fun onRequestPipe(naverMap: NaverMap) {

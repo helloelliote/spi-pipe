@@ -85,13 +85,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".ViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".SpiLocationActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SpiPostActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ViewActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SettingsActivity"

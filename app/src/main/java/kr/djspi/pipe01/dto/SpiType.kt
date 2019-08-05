@@ -7,6 +7,7 @@ import java.io.Serializable
  */
 class SpiType(val id: Int = -1, val type: String) : DataItem, Serializable {
 
+    @Suppress("NonAsciiCharacters", "EnumEntryName", "unused")
     enum class SpiTypeEnum(internal var typeName: String, internal var code: String) {
 
         표지판("표지판", "plate"),

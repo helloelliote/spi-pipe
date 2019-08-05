@@ -2,6 +2,7 @@ package kr.djspi.pipe01.dto
 
 import java.io.Serializable
 
+@Suppress("NonAsciiCharacters")
 data class PipeShape(var id: Int = -1) : DataItem, Serializable {
 
     var pipe_id: Int = -1
@@ -9,6 +10,7 @@ data class PipeShape(var id: Int = -1) : DataItem, Serializable {
     var spec: String? = null
     var spec_sub: String? = null
 
+    @Suppress("NonAsciiCharacters", "EnumEntryName", "unused")
     enum class PipeShapeEnum(internal var type: String, internal var code: String) {
 
         직진형("직진형", "str"),

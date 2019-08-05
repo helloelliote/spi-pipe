@@ -176,9 +176,9 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     override fun onRecord(tag: String, result: Int) {
         when (result) {
             RESULT_PASS -> {
-                this.startActivity(
-                    Intent(this@ViewActivity, SpiLocationActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                this.startActivityForResult(
+                    Intent(this, SpiLocationActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP
                 )
             }
         }

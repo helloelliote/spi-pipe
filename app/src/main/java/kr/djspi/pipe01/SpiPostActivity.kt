@@ -6,12 +6,12 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_spi_post.*
-import kr.djspi.pipe01.dto.Entry
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.network.ProgressBody
@@ -27,7 +27,7 @@ import java.io.Serializable
 
 class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
-    private lateinit var entries: ArrayList<Entry>
+    private lateinit var entries: ArrayList<*>
     private lateinit var jsonObject: JsonObject
     private lateinit var progressBar: ProgressBar
     private lateinit var progressDrawable: Drawable
@@ -36,11 +36,14 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        entries = intent.getSerializableExtra("entry") as ArrayList<Entry>
+        entries = intent.getSerializableExtra("entry") as ArrayList<*>
         jsonObject = parseEntry(entries, 0, "", "")
-        file = (intent.getSerializableExtra("SpiPhotoObject") as SpiPhotoObject).file
-        file?.let {
-            part = getMultipart(it, "image")
+        Log.w("POST", jsonObject.toString())
+        intent.getSerializableExtra("SpiPhotoObject")?.let {
+            if (it is SpiPhotoObject) {
+                file = it.file
+                part = getMultipart(file!!, "image")
+            }
         }
         setContentView(R.layout.activity_spi_post)
     }
@@ -73,11 +76,10 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intent?.let {
-            if (processTag(intent, jsonObject, 0)) {
-                setSpiAndPipe()
-            } else messageDialog(0, getString(R.string.popup_write_retry), false)
-        }
+        if (intent == null) return
+        if (processTag(intent, jsonObject, 0)) {
+            setSpiAndPipe()
+        } else messageDialog(0, getString(R.string.popup_write_retry), false)
     }
 
     /**
@@ -88,9 +90,9 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
      * @param intent 전달된 태그 인텐트
      * @see NfcUtil.writeTag
      */
-    private fun processTag(intent: Intent, response: JsonObject, index: Int): Boolean {
+    private fun processTag(intent: Intent, json: JsonObject, index: Int): Boolean {
         var isWriteSuccess = false
-        val strings = parseToStringArray(response, index)
+        val strings = parseToStringArray(json, index)
         if (nfcUtil.writeTag(intent, strings)) {
             isWriteSuccess = true
         }
@@ -117,6 +119,11 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
                 throwable.printStackTrace()
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        nfcUtil.onResume()
     }
 
     override fun onDestroy() {

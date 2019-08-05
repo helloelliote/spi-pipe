@@ -106,7 +106,7 @@ class InfoTab : Fragment() {
                 requestBuilder = Glide.with(view).load(imageUri)
                 photoObj.uri = imageUri
             } else {
-                if (json["spi_photo_url"] != null) {
+                if (!json["spi_photo_url"].isJsonNull) {
                     requestBuilder = Glide.with(view).load(json["spi_photo_url"].asString)
                     photoObj.uri = json["spi_photo_url"].asString
                 }

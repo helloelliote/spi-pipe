@@ -1,5 +1,6 @@
 package kr.djspi.pipe01.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -137,6 +138,7 @@ class ListDialog : DialogFragment(), OnClickListener {
             else customSection = null
         }
 
+        @SuppressLint("InflateParams")
         override fun getView(position: Int, convertView: View?, container: ViewGroup): View {
             var view = convertView
             if (view == null) {

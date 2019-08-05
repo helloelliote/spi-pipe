@@ -280,17 +280,11 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         }
 
         inner class ListViewAdapter(
-            naverMap: NaverMap,
+            private val naverMap: NaverMap,
             placesArrayList: ArrayList<HashMap<String, String>>
         ) : BaseAdapter() {
 
-            private val placesList: ArrayList<HashMap<String, String>>
-            private val naverMap: NaverMap
-
-            init {
-                this.placesList = placesArrayList
-                this.naverMap = naverMap
-            }
+            private val placesList: ArrayList<HashMap<String, String>> = placesArrayList
 
             @SuppressLint("InflateParams")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

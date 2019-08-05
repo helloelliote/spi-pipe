@@ -5,6 +5,7 @@ import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.Companion.parsePipeShape
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import java.util.*
 
+@Suppress("unused")
 enum class StringParser(
     private val property: String,
     private val label: String
@@ -29,11 +30,12 @@ enum class StringParser(
 
         fun parseToStringArray(jsonObject: JsonObject, index: Int): Array<String?> {
             val parsers = values()
-            val dataObject: JsonObject = try {
+            val dataObject: JsonObject = if (jsonObject["data"] != null) {
                 jsonObject["data"].asJsonObject
-            } catch (e: NullPointerException) {
+            } else {
                 jsonObject
             }
+
             val builder = StringBuilder()
             for (parser in parsers) {
                 builder.append(parser.label).append(dataObject[parser.property].asString)
