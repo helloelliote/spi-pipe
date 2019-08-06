@@ -91,7 +91,7 @@ class InfoTab : Fragment() {
         }
 
         try {
-            if (!json["spi_memo"].isJsonNull) {
+            if (json["spi_memo"] != null) {
                 view.findViewById<TextView>(R.id.txt_memo)
                     .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
@@ -106,9 +106,11 @@ class InfoTab : Fragment() {
                 requestBuilder = Glide.with(view).load(imageUri)
                 photoObj.uri = imageUri
             } else {
-                if (!json["spi_photo_url"].isJsonNull) {
-                    requestBuilder = Glide.with(view).load(json["spi_photo_url"].asString)
-                    photoObj.uri = json["spi_photo_url"].asString
+                if (json["spi_photo_url"] != null) {
+                    if (!json["spi_photo_url"].isJsonNull) {
+                        requestBuilder = Glide.with(view).load(json["spi_photo_url"].asString)
+                        photoObj.uri = json["spi_photo_url"].asString
+                    }
                 }
             }
             val imageView = view.findViewById<ImageView>(R.id.img_photo)

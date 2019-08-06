@@ -6,7 +6,7 @@ import androidx.core.util.Preconditions.checkArgument
 import java.util.*
 import kotlin.experimental.and
 
-private object NdefMessageParser {
+object NdefMessageParser {
 
     fun parse(message: NdefMessage): List<ParsedRecord> {
         return getRecords(message.records)

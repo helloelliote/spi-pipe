@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import com.google.gson.Gson
@@ -38,7 +37,6 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
         super.onCreate(savedInstanceState)
         entries = intent.getSerializableExtra("entry") as ArrayList<*>
         jsonObject = parseEntry(entries, 0, "", "")
-        Log.w("POST", jsonObject.toString())
         intent.getSerializableExtra("SpiPhotoObject")?.let {
             if (it is SpiPhotoObject) {
                 file = it.file

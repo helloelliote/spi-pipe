@@ -10,8 +10,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.AppPreference.get
-import kr.djspi.pipe01.nfc.NfcUtil.getRecord
-import kr.djspi.pipe01.nfc.NfcUtil.isNfcEnabled
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.util.getOnlineServerData
 import kr.djspi.pipe01.util.messageDialog
@@ -71,7 +69,7 @@ class MainActivity : LocationUpdate(), Serializable {
         if (progressbar.visibility == View.VISIBLE) {
             progressbar.visibility = View.GONE
         }
-        if (!isNfcEnabled()) {
+        if (!nfcUtil.isNfcEnabled()) {
             messageDialog(2, getString(R.string.popup_nfc_on), false)
             return
         }
@@ -112,7 +110,7 @@ class MainActivity : LocationUpdate(), Serializable {
 
     private fun getOfflineTagData(intent: Intent, index: Int) {
         try {
-            val stringArrayList = getRecord(intent)
+            val stringArrayList = nfcUtil.getRecord(intent)
             stringArrayList.removeAt(0)
             val data = parseToJsonObject(stringArrayList, index)
             startActivity(

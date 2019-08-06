@@ -7,11 +7,11 @@ import kr.djspi.pipe01.*
 import kr.djspi.pipe01.AppPreference.set
 import kr.djspi.pipe01.BaseActivity.Companion.superviseDb
 import kr.djspi.pipe01.network.Retrofit2x
-import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.sql.Supervise
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 fun updateLocalSuperviseDatabase(context: Context) {
     Retrofit2x.getSuperviseDatabase().enqueue(object : RetrofitCallback() {
@@ -32,8 +32,8 @@ fun updateLocalSuperviseDatabase(context: Context) {
 }
 
 fun MainActivity.getOnlineServerData(intent: Intent) {
-    val tag = NfcUtil.onNewTagIntent(intent)
-    val serial = NfcUtil.bytesToHex(tag.id)
+    val tag = nfcUtil.onNewTagIntent(intent)
+    val serial = bytesToHex(tag.id)
     val jsonQuery = JsonObject()
     jsonQuery.addProperty("spi_serial", serial)
     Retrofit2x.getSpi("spi-get", jsonQuery).enqueue(object : RetrofitCallback() {
@@ -79,6 +79,16 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
             }
         })
     }
+}
+
+fun bytesToHex(bytes: ByteArray): String {
+    val builder: StringBuilder = StringBuilder()
+    bytes.forEach {
+        val hex = String.format("%02X", it)
+        builder.append(hex)
+    }
+    val string = builder.toString().replace("(..)".toRegex(), "$1:")
+    return string.take(string.length - 1)
 }
 
 /**
