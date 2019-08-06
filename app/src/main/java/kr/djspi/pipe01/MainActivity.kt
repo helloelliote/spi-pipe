@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.PowerManager
-import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
@@ -48,9 +46,13 @@ class MainActivity : LocationUpdate(), Serializable {
         }
         val layMain2 = findViewById<LinearLayout>(R.id.lay_main_menu2)
         layMain2?.setOnClickListener {
-            Toast.makeText(this, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT).apply {
-                setGravity(Gravity.CENTER, 0, 0)
-            }.show()
+            //            startActivity(Intent(applicationContext, UnityCallActivity::class.java))
+            val intent = Intent(this, kr.djspi.unitysample.UnityPlayerActivity::class.java)
+            intent.putExtra("arguments", 50)
+            startActivity(intent)
+//            Toast.makeText(this, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT).apply {
+//                setGravity(Gravity.CENTER, 0, 0)
+//            }.show()
         }
     }
 

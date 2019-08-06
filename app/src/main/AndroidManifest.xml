@@ -100,5 +100,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kr.djspi.pipe01.MainActivity" />
         </activity>
+        <activity android:name=".UnityCallActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="kr.djspi.pipe01.MainActivity" />
+        </activity>
     </application>
 </manifest>

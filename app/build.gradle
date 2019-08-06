@@ -19,6 +19,9 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+        ndk {
+            abiFilters 'armeabi-v7a', 'x86'
+        }
     }
 
     applicationVariants.all { variant ->
@@ -55,6 +58,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation project(":unitysample")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.anko:anko:$anko_version"
     implementation 'androidx.core:core-ktx:1.2.0-alpha02'
