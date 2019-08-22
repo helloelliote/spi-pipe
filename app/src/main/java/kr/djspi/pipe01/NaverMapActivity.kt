@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +14,13 @@ import android.widget.BaseAdapter
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
 import android.widget.TextView
+import androidx.core.view.get
 import androidx.transition.Transition
 import androidx.transition.TransitionManager.beginDelayedTransition
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.gson.JsonObject
-import com.llollox.androidtoggleswitch.widgets.ToggleSwitch
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING
@@ -37,6 +40,7 @@ import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
 import java.io.Serializable
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.collections.HashMap
 
 class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
@@ -116,7 +120,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     mode == LocationTrackingMode.Follow || mode == LocationTrackingMode.Face
             }
         }
-        setMapModeSwitch()
+        setMapModeSwitch(naverMap)
         setOverlayListener()
         SetTopSheet()
         SetBottomSheet()
@@ -126,19 +130,28 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
     /**
      * Toolbar 에서 지도 모드 전환 스위치 구현
      */
-    private fun setMapModeSwitch() {
-        val toggleSwitch = findViewById<ToggleSwitch>(R.id.nmap_mapmode_switch)
-        toggleSwitch.visibility = View.VISIBLE
-        toggleSwitch.onChangeListener = object : ToggleSwitch.OnChangeListener {
-            override fun onToggleSwitchChanged(position: Int) {
-                when (position) {
-                    0 -> naverMap?.mapType = NaverMap.MapType.Basic
-                    1 -> naverMap?.mapType = NaverMap.MapType.Hybrid
-                    else -> naverMap?.mapType = NaverMap.MapType.Basic
+    private fun setMapModeSwitch(naverMap: NaverMap) {
+        val toggleSwitch = findViewById<MaterialButtonToggleGroup>(R.id.nmap_mapmode_switch)
+        toggleSwitch.apply {
+            visibility = View.VISIBLE
+            isSingleSelection = true
+            val green = resources.getColor(R.color.green, null)
+            val white = resources.getColor(android.R.color.white, null)
+            addOnButtonCheckedListener { group, _, _ ->
+                when (group.checkedButtonId) {
+                    R.id.button_hybrid -> {
+                        naverMap.mapType = NaverMap.MapType.Hybrid
+                        group[0].setBackgroundColor(white)
+                        group[1].setBackgroundColor(green)
+                    }
+                    R.id.button_basic -> {
+                        naverMap.mapType = NaverMap.MapType.Basic
+                        group[0].setBackgroundColor(white)
+                        group[1].setBackgroundColor(green)
+                    }
                 }
             }
         }
-        toggleSwitch.setCheckedPosition(0)
     }
 
     private fun setOverlayListener() {
@@ -160,41 +173,50 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
     }
 
     private fun onRequestPipe() {
-        Thread(Runnable {
-            val jsonQuery = JsonObject()
-            val bounds = naverMap?.contentBounds!!
-            jsonQuery.addProperty("sx", bounds.westLongitude.toString())
-            jsonQuery.addProperty("sy", bounds.southLatitude.toString())
-            jsonQuery.addProperty("nx", bounds.eastLongitude.toString())
-            jsonQuery.addProperty("ny", bounds.northLatitude.toString())
+        val jsonQuery = JsonObject()
+        val bounds = naverMap?.contentBounds!!
+        jsonQuery.addProperty("sx", bounds.westLongitude.toString())
+        jsonQuery.addProperty("sy", bounds.southLatitude.toString())
+        jsonQuery.addProperty("nx", bounds.eastLongitude.toString())
+        jsonQuery.addProperty("ny", bounds.northLatitude.toString())
 
-            Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
-                override fun onResponse(response: JsonObject) {
-                    if (response["total_count"].asInt == 0) {
-                        behavior.state = STATE_COLLAPSED
-                        messageDialog(0, "표시할 SPI 정보가 없습니다")
-                    } else {
+        Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
+            override fun onResponse(response: JsonObject) {
+                if (response["total_count"].asInt == 0) {
+                    behavior.state = STATE_COLLAPSED
+                    messageDialog(0, "표시할 SPI 정보가 없습니다")
+                } else {
+                    val executor = Executors.newFixedThreadPool(3)
+                    val handler = Handler(Looper.getMainLooper())
+                    executor.execute {
+                        val markers = mutableListOf<Marker>()
                         response["data"].asJsonArray.forEach { element ->
                             val jsonObject = element.asJsonObject
                             val lat = jsonObject["spi_latitude"].asDouble
                             val lng = jsonObject["spi_longitude"].asDouble
                             val resId = parsePipeType(jsonObject["pipe"].asString).drawRes
-                            Marker(LatLng(lat, lng), OverlayImage.fromResource(resId)).apply {
+                            markers.add(Marker().apply {
+                                position = LatLng(lat, lng)
+                                icon = OverlayImage.fromResource(resId)
                                 tag = jsonObject
                                 minZoom = 12.0
                                 maxZoom = 21.0
                                 onClickListener = overlayOnclickListener
-                                map = naverMap
+                            })
+                        }
+                        handler.post {
+                            markers.forEach { marker: Marker ->
+                                marker.map = naverMap
                             }
                         }
                     }
                 }
+            }
 
-                override fun onFailure(throwable: Throwable) {
-                    messageDialog(8, throwable.message)
-                }
-            })
-        }).start()
+            override fun onFailure(throwable: Throwable) {
+                messageDialog(8, throwable.message)
+            }
+        })
     }
 
     override fun onBackPressed() {
@@ -404,8 +426,15 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         }
 
         private fun clearMarker() {
-            naverMap?.pickAll(PointF(0.5f, 0.5f), screenSize())?.forEach {
-                if (it is Marker) it.map = null
+            val executor = Executors.newFixedThreadPool(1)
+            val handler = Handler(Looper.getMainLooper())
+            executor.execute {
+                val markers = naverMap?.pickAll(PointF(0.5f, 0.5f), screenSize())
+                handler.post {
+                    markers?.forEach {
+                        if (it is Marker) it.map = null
+                    }
+                }
             }
         }
     }

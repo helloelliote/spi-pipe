@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.UiThread
+import androidx.core.view.get
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.gson.JsonObject
-import com.llollox.androidtoggleswitch.widgets.ToggleSwitch
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.CameraUpdate.REASON_GESTURE
@@ -113,18 +114,27 @@ class SpiLocationActivity :
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
     private fun setMapModeSwitch(naverMap: NaverMap) {
-        val toggleSwitch = findViewById<ToggleSwitch>(R.id.nmap_mapmode_switch)
-        toggleSwitch.visibility = View.VISIBLE
-        toggleSwitch.onChangeListener = object : ToggleSwitch.OnChangeListener {
-            override fun onToggleSwitchChanged(position: Int) {
-                when (position) {
-                    0 -> naverMap.mapType = NaverMap.MapType.Basic
-                    1 -> naverMap.mapType = NaverMap.MapType.Hybrid
-                    else -> naverMap.mapType = NaverMap.MapType.Basic
+        val toggleSwitch = findViewById<MaterialButtonToggleGroup>(R.id.nmap_mapmode_switch)
+        toggleSwitch.apply {
+            visibility = View.VISIBLE
+            isSingleSelection = true
+            val green = resources.getColor(R.color.green, null)
+            val white = resources.getColor(android.R.color.white, null)
+            addOnButtonCheckedListener { group, _, _ ->
+                when (group.checkedButtonId) {
+                    R.id.button_hybrid -> {
+                        naverMap.mapType = NaverMap.MapType.Hybrid
+                        group[0].setBackgroundColor(white)
+                        group[1].setBackgroundColor(green)
+                    }
+                    R.id.button_basic -> {
+                        naverMap.mapType = NaverMap.MapType.Basic
+                        group[0].setBackgroundColor(white)
+                        group[1].setBackgroundColor(green)
+                    }
                 }
             }
         }
-        toggleSwitch.setCheckedPosition(0)
     }
 
     private fun onRequestPipe(naverMap: NaverMap) {
