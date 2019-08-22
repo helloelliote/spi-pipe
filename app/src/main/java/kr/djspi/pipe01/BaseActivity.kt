@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.room.Room
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import kotlinx.android.synthetic.main.activity_base.*
@@ -25,25 +24,24 @@ import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.screenScale
 import kr.djspi.pipe01.util.settingsMenuEnabled
-import org.jetbrains.anko.toast
+import kr.djspi.pipe01.util.toast
 
 open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private lateinit var drawer: DrawerLayout
     lateinit var nfcUtil: NfcUtil
 
+    init {
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         nfcUtil = NfcUtil(this, javaClass)
-        Thread(Runnable {
-            superviseDb = Room.databaseBuilder(
-                this@BaseActivity,
-                SuperviseDatabase::class.java,
-                "db_supervise"
-            ).build()
-        }).start()
-        defPackage = packageName
-        screenRatio = screenScale()
+        defPackage = this@BaseActivity.packageName
+        if (screenRatio == 0.0f) {
+            screenRatio = this@BaseActivity.screenScale()
+        }
     }
 
     @SuppressLint("InflateParams")
@@ -166,11 +164,6 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         }
         drawer.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        nfcUtil.onPause()
     }
 
     companion object {

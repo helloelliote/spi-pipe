@@ -2,7 +2,7 @@ package kr.djspi.pipe01
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 
 object AppPreference {
 

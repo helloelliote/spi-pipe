@@ -9,13 +9,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import kotlinx.android.synthetic.main.fragment_photo_view.*
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import java.nio.charset.Charset
@@ -23,7 +23,7 @@ import java.security.MessageDigest
 
 class ImageDialog : DialogFragment() {
 
-    private val transformation = RotateTransformation(90f)
+    private var transformation: RotateTransformation? = null
     private var imageUri: Uri? = null
     private var imageUrl: String? = null
 
@@ -51,7 +51,9 @@ class ImageDialog : DialogFragment() {
         } else if (imageUrl != null) {
             requestBuilder = Glide.with(view).load(imageUrl)
         }
-        requestBuilder?.transform(CenterInside(), transformation)?.into(image_view)?.clearOnDetach()
+        val imageView = view.findViewById<ImageView>(R.id.image_view)
+        if (transformation == null) transformation = RotateTransformation(90f)
+        requestBuilder?.transform(CenterInside(), transformation)?.into(imageView)?.clearOnDetach()
         return view
     }
 
@@ -59,6 +61,7 @@ class ImageDialog : DialogFragment() {
         super.onDismiss(dialog)
         imageUri = null
         imageUrl = null
+        transformation = null
     }
 
     /**

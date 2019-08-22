@@ -17,7 +17,7 @@ public class UnityPlayerActivity extends Activity {
     // Setup activity layout
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
 
         mUnityPlayer = new UnityPlayer(this);
@@ -100,6 +100,7 @@ public class UnityPlayerActivity extends Activity {
     // For some reason the multiple keyevent type is not supported by the ndk.
     // Force event injection by overriding dispatchKeyEvent().
     @Override
+    @SuppressWarnings("deprecation")
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_MULTIPLE)
             return mUnityPlayer.injectEvent(event);

@@ -5,7 +5,6 @@ import android.graphics.Color.*
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import android.text.Html
 import android.view.View
 import android.widget.ProgressBar
 import com.google.gson.Gson
@@ -19,6 +18,7 @@ import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToStringArray
 import kr.djspi.pipe01.util.RetrofitCallback
+import kr.djspi.pipe01.util.fromHtml
 import kr.djspi.pipe01.util.messageDialog
 import okhttp3.MultipartBody
 import java.io.File
@@ -48,7 +48,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        txt_write.text = Html.fromHtml(getString(R.string.write_instruction))
+        txt_write.text = fromHtml(getString(R.string.write_instruction))
         progressBar = findViewById(R.id.progressBar)
         progressDrawable = ((progressBar.progressDrawable) as LayerDrawable).getDrawable(1)
         progressDrawable.setTint(YELLOW)

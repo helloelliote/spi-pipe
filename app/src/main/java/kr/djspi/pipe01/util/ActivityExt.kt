@@ -4,8 +4,12 @@ import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.nfc.NfcAdapter
+import android.text.Spanned
 import android.util.DisplayMetrics
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
+import androidx.core.text.HtmlCompat.fromHtml
 import kr.djspi.pipe01.RegisterActivity
 import kr.djspi.pipe01.SpiLocationActivity
 import kr.djspi.pipe01.SpiPostActivity
@@ -55,4 +59,12 @@ fun Activity.onNewIntentIgnore() {
     if (NfcAdapter.ACTION_TAG_DISCOVERED == intent?.action) {
         // drop NFC events
     }
+}
+
+fun Activity.toast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+
+fun fromHtml(source: String): Spanned {
+    return fromHtml(source, HtmlCompat.FROM_HTML_MODE_LEGACY)
 }

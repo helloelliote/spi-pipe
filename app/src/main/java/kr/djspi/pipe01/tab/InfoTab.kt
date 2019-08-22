@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Html.fromHtml
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +12,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
+import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.Const.TAG_PHOTO
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.fragment.ImageDialog
+import kr.djspi.pipe01.util.fromHtml
 
 class InfoTab : Fragment() {
 
@@ -91,7 +92,7 @@ class InfoTab : Fragment() {
         }
 
         try {
-            if (json["spi_memo"] != null) {
+            if (json.get("spi_memo") != JsonNull.INSTANCE) {
                 view.findViewById<TextView>(R.id.txt_memo)
                     .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
@@ -106,8 +107,8 @@ class InfoTab : Fragment() {
                 requestBuilder = Glide.with(view).load(imageUri)
                 photoObj.uri = imageUri
             } else {
-                if (json["spi_photo_url"] != null) {
-                    if (!json["spi_photo_url"].isJsonNull) {
+                if (json.get("spi_photo_url") != null) {
+                    if (json["spi_photo_url"] != JsonNull.INSTANCE) {
                         requestBuilder = Glide.with(view).load(json["spi_photo_url"].asString)
                         photoObj.uri = json["spi_photo_url"].asString
                     }

@@ -28,7 +28,7 @@ import java.util.*
 class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
 
     private lateinit var intentFilters: Array<IntentFilter>
-    private lateinit var nxpNfcLib: NxpNfcLib
+    private var nxpNfcLib: NxpNfcLib? = null
     /**
      * 아래의 변수들은 반드시 final 선언해야만 하며, 그렇지 않을 경우 intent 들 간의 간섭이 발생하여
      * NFC 태그를 태깅하면 이전 액티비티 인텐트를 실행하기도 한다.
@@ -66,9 +66,8 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     private fun initializeLibrary(activity: Activity) {
         try {
             nxpNfcLib = NxpNfcLib.getInstance()
-            nxpNfcLib.registerActivity(activity, NFC_APP_KEY)
+            nxpNfcLib?.registerActivity(activity, NFC_APP_KEY)
         } catch (e: Exception) {
-            Log.e("NfcUtil", e.message)
         }
     }
 
@@ -82,10 +81,10 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     private fun getTagType(intent: Intent): INTag213215216? {
         try {
             objNtag = when {
-                nxpNfcLib.getCardType(intent) == NTag216
-                -> NTagFactory.getInstance().getNTAG216(nxpNfcLib.customModules)
-                nxpNfcLib.getCardType(intent) == NTag213
-                -> NTagFactory.getInstance().getNTAG213(nxpNfcLib.customModules)
+                nxpNfcLib?.getCardType(intent) == NTag216
+                -> NTagFactory.getInstance().getNTAG216(nxpNfcLib?.customModules)
+                nxpNfcLib?.getCardType(intent) == NTag213
+                -> NTagFactory.getInstance().getNTAG213(nxpNfcLib?.customModules)
                 else -> {
                     Log.w("NfcUtil", "Tag is NOT NTAG 216 Type")
                     return null
@@ -167,7 +166,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     }
 
     fun onNewTagIntent(intent: Intent): Tag {
-        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)!!
     }
 
     fun onResume() {
@@ -206,8 +205,8 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
             texts[i] = records[i]!!.toByteArray(encoding)
             data[i] = ByteArray(langBytesLength + texts[i]!!.size + 1) // 0번 레코드를 위해 1자리 추가
             data[i]!![0] = status.toByte()
-            System.arraycopy(langBytes, 0, data[i], 1, langBytesLength)
-            System.arraycopy(texts[i], 0, data[i], 1 + langBytesLength, texts[i]!!.size)
+            System.arraycopy(langBytes, 0, data[i]!!, 1, langBytesLength)
+            System.arraycopy(texts[i] as Any, 0, data[i]!!, 1 + langBytesLength, texts[i]!!.size)
             wrappers[i + 1] = NdefRecordWrapper(
                 TNF_WELL_KNOWN,
                 RTD_TEXT,
@@ -229,13 +228,15 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     </String> */
     @Throws(NullPointerException::class)
     fun getRecord(intent: Intent): ArrayList<String> {
-        val rawMsg = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-        val records = NdefMessageParser.parse(rawMsg[0] as NdefMessage)
         val recordList = ArrayList<String>()
-        recordList.add(0, "")
-        val listLength = records.size + 1
-        for (it in 1 until listLength) {
-            recordList.add(it, (records[it - 1] as TextRecord).text)
+        val rawMsg = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+        rawMsg?.let {
+            val records = NdefMessageParser.parse(it[0] as NdefMessage)
+            recordList.add(0, "")
+            val listLength = records.size + 1
+            for (i in 1 until listLength) {
+                recordList.add(i, (records[i - 1] as TextRecord).text)
+            }
         }
         return recordList
     }

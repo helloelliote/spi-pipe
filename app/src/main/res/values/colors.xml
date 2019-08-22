@@ -15,9 +15,6 @@
     <!--ListDialog-->
     <color name="popup_color_bg_title">#ebebeb</color>
 
-    <!--PositionDialog-->
-    <color name="common_color_gray_popup">#020202</color>
-
     <!--RecordInputActivity-->
     <color name="blue_bright">#1c73e8</color>
 

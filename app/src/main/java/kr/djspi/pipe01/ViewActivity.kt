@@ -5,7 +5,6 @@ import android.content.Intent.ACTION_DIAL
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri.parse
 import android.os.Bundle
-import android.text.Html.fromHtml
 import android.view.View
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
@@ -22,6 +21,7 @@ import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.tab.OnRecordListener
 import kr.djspi.pipe01.tab.TabAdapter
+import kr.djspi.pipe01.util.fromHtml
 import kr.djspi.pipe01.util.onNewIntentIgnore
 import kr.djspi.pipe01.util.onPauseNfc
 import kr.djspi.pipe01.util.onResumeNfc
@@ -32,8 +32,8 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     private var pipeIndex: Int = 0
     private var photoObject: SpiPhotoObject? = null
     private var previewEntries: ArrayList<Entry>? = null
+    private var viewPager: ViewPager? = null
     private lateinit var jsonObj: JsonObject
-    private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,9 +79,9 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             tabs.removeTab(tabs.getTabAt(3))
         }
         viewPager = findViewById(R.id.container)
-        viewPager.apply {
-            adapter = TabAdapter(supportFragmentManager, tabs.tabCount)
-            addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+        viewPager?.let {
+            it.adapter = TabAdapter(supportFragmentManager, tabs.tabCount)
+            it.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         }
         tabs.addOnTabSelectedListener(TabSelected())
         val linearLayout: LinearLayout = tabs.getChildAt(0) as LinearLayout
@@ -150,7 +150,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null) {
             if (requestCode == REQUEST_MAP) {
-                val locations = data.getDoubleArrayExtra("locations")
+                val locations: DoubleArray = data.getDoubleArrayExtra("locations")!!
                 val currentEntry = previewEntries!![pipeIndex]
                 val location = currentEntry.spi_location
                 location?.latitude = locations[0]
@@ -194,6 +194,11 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         onPauseNfc()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewPager = null
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         onNewIntentIgnore()
@@ -201,7 +206,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     private inner class TabSelected : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
-            viewPager.currentItem = tab.position
+            viewPager?.currentItem = tab.position
             if (tab.position == 3) lay_bottom.visibility = View.GONE
             else lay_bottom.visibility = View.VISIBLE
         }

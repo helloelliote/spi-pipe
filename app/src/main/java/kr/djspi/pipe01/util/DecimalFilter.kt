@@ -17,6 +17,6 @@ class DecimalFilter(beforeZero: Int, afterZero: Int) : InputFilter {
         dstart: Int,
         dend: Int
     ): CharSequence? {
-        return if (!pattern.matcher(dest).matches()) "" else null
+        return if (!pattern.matcher(dest as CharSequence).matches()) "" else null
     }
 }

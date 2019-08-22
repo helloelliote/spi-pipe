@@ -40,7 +40,6 @@ import kr.djspi.pipe01.dto.*
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import kr.djspi.pipe01.fragment.*
 import kr.djspi.pipe01.util.*
-import org.jetbrains.anko.toast
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
@@ -90,16 +89,33 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
         setOnClickListeners()
         form_shape.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun afterTextChanged(s: Editable?) {
+                pipeShape.shape = s.toString()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
-            override fun afterTextChanged(s: Editable?) {
-                pipeShape.shape = s.toString()
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
+//        form_spec.addTextChangedListener(object: TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {
+//                var s: String? = null
+//                try {
+//                     s= String.format("%,d", parseLong(s.toString()))
+//                } catch (ignore: NumberFormatException) {
+//                }
+//            }
+//
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//
+//            }
+//        })
         form_horizontal.isFocusable = false
         form_vertical.isFocusable = false
         form_depth.filters = arrayOf(DecimalFilter(4, 2))
@@ -206,7 +222,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 }
             }
             R.id.btn_delete -> {
-                photoObj?.let{
+                photoObj?.let {
                     photoObj?.uri = null
                     photoObj?.file?.delete()
                     photoObj?.file = null
@@ -329,7 +345,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                         if (cameraIntent.resolveActivity(packageManager) != null) {
                             try {
-                                tempFile = ImageUtil.prepareFile()
+                                tempFile = ImageUtil.prepareFile(this)
                                 tempUri = FileProvider.getUriForFile(this, packageName, tempFile!!)
                                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri)
                             } catch (e: IOException) {

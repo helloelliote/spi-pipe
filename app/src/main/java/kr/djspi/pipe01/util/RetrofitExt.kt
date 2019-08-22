@@ -12,7 +12,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 fun updateLocalSuperviseDatabase(context: Context) {
     Retrofit2x.getSuperviseDatabase().enqueue(object : RetrofitCallback() {
         override fun onResponse(response: JsonObject) {
@@ -21,9 +20,7 @@ fun updateLocalSuperviseDatabase(context: Context) {
             jsonArray.forEach { element ->
                 val obj = element.asJsonObject
                 Thread(Runnable {
-                    superviseDao?.insert(
-                        Supervise(obj["id"].asInt, obj["supervise"].asString)
-                    )
+                    superviseDao?.insert(Supervise(obj["id"].asInt, obj["supervise"].asString))
                 }).start()
             }
             AppPreference.defaultPrefs(context)["isSuperviseDbValid"] = true
@@ -32,23 +29,26 @@ fun updateLocalSuperviseDatabase(context: Context) {
 }
 
 fun MainActivity.getOnlineServerData(intent: Intent) {
-    val tag = nfcUtil.onNewTagIntent(intent)
-    val serial = bytesToHex(tag.id)
-    val jsonQuery = JsonObject()
-    jsonQuery.addProperty("spi_serial", serial)
-    Retrofit2x.getSpi("spi-get", jsonQuery).enqueue(object : RetrofitCallback() {
-        override fun onResponse(response: JsonObject) {
-            if (response["total_count"].asInt >= 1) {
-                processServerData(response, jsonQuery, serial)
-            } else
-                messageDialog(3, getString(R.string.popup_error_not_spi), false)
-        }
+    Thread(Runnable {
+        val tag = nfcUtil.onNewTagIntent(intent)
+//        if (tag == null)
+        val serial = bytesToHex(tag.id)
+        val jsonQuery = JsonObject()
+        jsonQuery.addProperty("spi_serial", serial)
+        Retrofit2x.getSpi("spi-get", jsonQuery).enqueue(object : RetrofitCallback() {
+            override fun onResponse(response: JsonObject) {
+                if (response["total_count"].asInt >= 1) {
+                    processServerData(response, jsonQuery, serial)
+                } else
+                    messageDialog(3, getString(R.string.popup_error_not_spi), false)
+            }
 
-        override fun onFailure(throwable: Throwable) {
-            messageDialog(8, throwable.message)
-            throwable.printStackTrace()
-        }
-    })
+            override fun onFailure(throwable: Throwable) {
+                messageDialog(8, throwable.message)
+                throwable.printStackTrace()
+            }
+        })
+    }).start()
 }
 
 fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, serial: String) {
@@ -64,20 +64,22 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
                 )
         )
     } else {
-        Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
-            override fun onResponse(response: JsonObject) {
-                val elements = response["data"].asJsonArray
-                startActivity(
-                    Intent(applicationContext, ViewActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .putExtra("PipeView", elements[0].toString())
-                )
-            }
+        Thread(Runnable {
+            Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
+                override fun onResponse(response: JsonObject) {
+                    val elements = response["data"].asJsonArray
+                    startActivity(
+                        Intent(applicationContext, ViewActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                            .putExtra("PipeView", elements[0].toString())
+                    )
+                }
 
-            override fun onFailure(throwable: Throwable) {
-                messageDialog(8, throwable.message)
-            }
-        })
+                override fun onFailure(throwable: Throwable) {
+                    messageDialog(8, throwable.message)
+                }
+            })
+        }).start()
     }
 }
 

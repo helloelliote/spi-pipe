@@ -7,8 +7,6 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapFactory.decodeFile
 import android.net.Uri
 import android.os.Environment
-import android.os.Environment.DIRECTORY_DCIM
-import android.provider.MediaStore.MediaColumns.DATA
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -21,11 +19,11 @@ object ImageUtil {
     private const val REGEX_IMAGE_EXT = "((\\.(?i)(jpg|jpeg|tif|tiff|webp|png|gif|bmp))$)"
 
     private fun uriToFilePath(context: Context, uri: Uri): String {
-        val cursor = context.contentResolver.query(uri, arrayOf(DATA), null, null, null)
+        val cursor = context.contentResolver.query(uri, arrayOf("_data"), null, null, null)
         var path = ""
         cursor?.let {
             it.moveToNext()
-            path = it.getString(cursor.getColumnIndex(DATA))
+            path = it.getString(cursor.getColumnIndex("_data"))
             it.close()
         }
         cursor?.close()
@@ -35,11 +33,11 @@ object ImageUtil {
     fun uriToFile(context: Context, uri: Uri): File = File(uriToFilePath(context, uri))
 
     @Throws(IOException::class)
-    fun prepareFile(): File {
+    fun prepareFile(context: Context): File {
         val timeStamp = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(Date())
         val imageFileName = "IMG_$timeStamp"
         val storageDir =
-            File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DCIM), "Camera")
+            File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Camera")
         return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
 

@@ -25,11 +25,11 @@ class Entry(
 
     companion object {
 
-        fun parseEntry(entries: ArrayList<*>, index: Int, vararg strings: String): JsonObject {
+        fun parseEntry(entries: ArrayList<*>, index: Int, vararg strings: String?): JsonObject {
             return parseEntrySingle((entries[index] as Entry), strings)
         }
 
-        private fun parseEntrySingle(entry: Entry, strings: Array<out String>): JsonObject {
+        private fun parseEntrySingle(entry: Entry, strings: Array<out String?>): JsonObject {
             return JsonObject().apply {
                 addProperty("spi_id", entry.spi.id)
                 addProperty("supervise", entry.pipe_supervise.supervise)

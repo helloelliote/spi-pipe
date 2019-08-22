@@ -6,13 +6,15 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.view.View
 import android.widget.LinearLayout
+import androidx.room.Room
 import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
+import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.getOnlineServerData
 import kr.djspi.pipe01.util.messageDialog
+import kr.djspi.pipe01.util.toast
 import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
-import org.jetbrains.anko.toast
 import java.io.Serializable
 
 class MainActivity : LocationUpdate(), Serializable {
@@ -23,6 +25,13 @@ class MainActivity : LocationUpdate(), Serializable {
             checkPowerSaveMode()
             MerlinInstance.initiateNetworkMonitor(this)
             checkLocalSuperviseDatabase()
+        }).start()
+        Thread(Runnable {
+            superviseDb = Room.databaseBuilder(
+                this,
+                SuperviseDatabase::class.java,
+                "db_supervise"
+            ).build()
         }).start()
         setContentView(R.layout.activity_main)
     }
@@ -76,6 +85,11 @@ class MainActivity : LocationUpdate(), Serializable {
             return
         }
         nfcUtil.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        nfcUtil.onPause()
     }
 
     override fun onStart() {

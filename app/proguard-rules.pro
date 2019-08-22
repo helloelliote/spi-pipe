@@ -46,9 +46,6 @@
     @retrofit2.http.* <methods>;
 }
 
-# Ignore annotation used for build tooling.
--dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
-
 # Ignore JSR 305 annotations for embedding nullability information.
 -dontwarn javax.annotation.**
 
@@ -63,6 +60,15 @@
 # and replaces all potential values with null. Explicitly keeping the interfaces prevents this.
 -if interface * { @retrofit2.http.* <methods>; }
 -keep,allowobfuscation interface <1>
+
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
+# Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
+-dontwarn org.codehaus.mojo.animal_sniffer.*
+
+# OkHttp platform used only on JVM and when Conscrypt dependency is available.
+-dontwarn okhttp3.internal.platform.ConscryptPlatform
 
 # To remove debug logs:
 -assumenosideeffects class android.util.Log {
@@ -83,10 +89,6 @@
 
 # Ignores: data transfer object class must be preserved
 -keep class kr.djspi.pipe01.dto.** { *; }
-
--keepclassmembers class com.helloelliote.util.dto.** {
-  !transient <fields>;
-}
 
 -keepclassmembers class kr.djspi.pipe01.sql.** {
   !transient <fields>;

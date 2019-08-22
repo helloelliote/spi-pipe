@@ -37,12 +37,14 @@ import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
-    private val placesArrayList = ArrayList<HashMap<String, String>>(5)
+    private var placesListAdapter: SetTopSheet.ListViewAdapter? = null
+    private var placesArrayList = ArrayList<HashMap<String, String>>(5)
+    private var naverMap: NaverMap? = null
+    private var mapFragment: MapFragment? = null
     private val overlayOnclickListener = Overlay.OnClickListener {
         when (it) {
             is Marker -> {
@@ -68,7 +70,6 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
     }
     private lateinit var infoWindows: InfoWindow
     private lateinit var behavior: BottomSheetBehavior<*>
-    private lateinit var placesListAdapter: SetTopSheet.ListViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,15 +85,15 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
     }
 
     private fun setNaverMap() {
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
+        mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
             ?: MapFragment.newInstance(
                 NaverMapOptions()
                     .locale(Locale.KOREA)
                     .contentPadding(0, 45, 0, 45)
-                    .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
+                    .camera(CameraPosition(LatLng(currentLocation!!), 18.0, 0.0, 0.0))
                     .enabledLayerGroups(LAYER_GROUP_BUILDING)
-                    .minZoom(ZOOM_MIN)
-                    .maxZoom(ZOOM_MAX)
+                    .minZoom(6.0)
+                    .maxZoom(21.0)
                     .extent(EXTENT_KOREA)
                     .compassEnabled(true)
                     .locationButtonEnabled(true)
@@ -100,10 +101,11 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
             ).also {
                 supportFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
             }
-        mapFragment.getMapAsync(this)
+        mapFragment?.getMapAsync(this)
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
         val fusedLocationSource = FusedLocationSource(this, 100)
         naverMap.apply {
             locationSource = fusedLocationSource
@@ -114,27 +116,25 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     mode == LocationTrackingMode.Follow || mode == LocationTrackingMode.Face
             }
         }
-        setMapModeSwitch(naverMap)
+        setMapModeSwitch()
         setOverlayListener()
-        SetTopSheet(naverMap)
-        SetBottomSheet(naverMap)
-        onRequestPipe(naverMap)
+        SetTopSheet()
+        SetBottomSheet()
+        onRequestPipe()
     }
 
     /**
      * Toolbar 에서 지도 모드 전환 스위치 구현
-     *
-     * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
-    private fun setMapModeSwitch(naverMap: NaverMap) {
+    private fun setMapModeSwitch() {
         val toggleSwitch = findViewById<ToggleSwitch>(R.id.nmap_mapmode_switch)
         toggleSwitch.visibility = View.VISIBLE
         toggleSwitch.onChangeListener = object : ToggleSwitch.OnChangeListener {
             override fun onToggleSwitchChanged(position: Int) {
                 when (position) {
-                    0 -> naverMap.mapType = NaverMap.MapType.Basic
-                    1 -> naverMap.mapType = NaverMap.MapType.Hybrid
-                    else -> naverMap.mapType = NaverMap.MapType.Basic
+                    0 -> naverMap?.mapType = NaverMap.MapType.Basic
+                    1 -> naverMap?.mapType = NaverMap.MapType.Hybrid
+                    else -> naverMap?.mapType = NaverMap.MapType.Basic
                 }
             }
         }
@@ -152,59 +152,67 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 } else "ERROR"
             }
         }).apply {
-            maxZoom = ZOOM_MAX
+            maxZoom = 21.0
             minZoom = 14.0
             alpha = 0.85f
             onClickListener = overlayOnclickListener
         }
     }
 
-    private fun onRequestPipe(naverMap: NaverMap) {
-        val jsonQuery = JsonObject()
-        val bounds = naverMap.contentBounds
-        jsonQuery.addProperty("sx", bounds.westLongitude.toString())
-        jsonQuery.addProperty("sy", bounds.southLatitude.toString())
-        jsonQuery.addProperty("nx", bounds.eastLongitude.toString())
-        jsonQuery.addProperty("ny", bounds.northLatitude.toString())
+    private fun onRequestPipe() {
+        Thread(Runnable {
+            val jsonQuery = JsonObject()
+            val bounds = naverMap?.contentBounds!!
+            jsonQuery.addProperty("sx", bounds.westLongitude.toString())
+            jsonQuery.addProperty("sy", bounds.southLatitude.toString())
+            jsonQuery.addProperty("nx", bounds.eastLongitude.toString())
+            jsonQuery.addProperty("ny", bounds.northLatitude.toString())
 
-        Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
-            override fun onResponse(response: JsonObject) {
-                if (response["total_count"].asInt == 0) {
-                    behavior.state = STATE_COLLAPSED
-                    messageDialog(0, "표시할 SPI 정보가 없습니다")
-                } else {
-                    response["data"].asJsonArray.forEach { element ->
-                        val jsonObject = element.asJsonObject
-                        val lat = jsonObject["spi_latitude"].asDouble
-                        val lng = jsonObject["spi_longitude"].asDouble
-                        val resId = parsePipeType(jsonObject["pipe"].asString).drawRes
-                        Marker(LatLng(lat, lng), OverlayImage.fromResource(resId)).apply {
-                            tag = jsonObject
-                            minZoom = ZOOM_GET
-                            maxZoom = ZOOM_MAX
-                            onClickListener = overlayOnclickListener
-                            map = naverMap
+            Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
+                override fun onResponse(response: JsonObject) {
+                    if (response["total_count"].asInt == 0) {
+                        behavior.state = STATE_COLLAPSED
+                        messageDialog(0, "표시할 SPI 정보가 없습니다")
+                    } else {
+                        response["data"].asJsonArray.forEach { element ->
+                            val jsonObject = element.asJsonObject
+                            val lat = jsonObject["spi_latitude"].asDouble
+                            val lng = jsonObject["spi_longitude"].asDouble
+                            val resId = parsePipeType(jsonObject["pipe"].asString).drawRes
+                            Marker(LatLng(lat, lng), OverlayImage.fromResource(resId)).apply {
+                                tag = jsonObject
+                                minZoom = 12.0
+                                maxZoom = 21.0
+                                onClickListener = overlayOnclickListener
+                                map = naverMap
+                            }
                         }
                     }
                 }
-            }
 
-            override fun onFailure(throwable: Throwable) {
-                messageDialog(8, throwable.message)
-            }
-        })
+                override fun onFailure(throwable: Throwable) {
+                    messageDialog(8, throwable.message)
+                }
+            })
+        }).start()
     }
 
     override fun onBackPressed() {
-        if (behavior.state == STATE_EXPANDED) {
-            behavior.state = STATE_COLLAPSED
-            return
-        } else if (placesArrayList.size != 0) {
-            placesArrayList.clear()
-            placesListAdapter.notifyDataSetChanged()
-            return
+        when {
+            behavior.state == STATE_EXPANDED -> {
+                behavior.state = STATE_COLLAPSED
+                return
+            }
+            placesArrayList.size != 0 -> {
+                placesArrayList.clear()
+                placesListAdapter?.notifyDataSetChanged()
+                return
+            }
+            else -> {
+
+                super.onBackPressed()
+            }
         }
-        super.onBackPressed()
     }
 
     override fun onResume() {
@@ -215,6 +223,14 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
     override fun onPause() {
         super.onPause()
         onPauseNfc()
+        placesListAdapter = null
+    }
+
+    override fun onDestroy() {
+        mapFragment?.onDestroy()
+        mapFragment = null
+        naverMap = null
+        super.onDestroy()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -222,12 +238,12 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         onNewIntentIgnore()
     }
 
-    private inner class SetTopSheet(naverMap: NaverMap) {
+    private inner class SetTopSheet {
 
         private val searchView: SearchView
 
         init {
-            placesListAdapter = ListViewAdapter(naverMap, placesArrayList)
+            placesListAdapter = ListViewAdapter(placesArrayList)
             searchView = findViewById(R.id.nmap_searchView)
             setContentView()
         }
@@ -251,40 +267,41 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         }
 
         private fun setSearchPlaces(query: String) {
-            val latLng = LatLng(currentLocation!!)
-            val coordinate = "${latLng.longitude},${latLng.latitude}"
-            Retrofit2x.searchPlaces(query, coordinate).enqueue(object : RetrofitCallback() {
-                override fun onResponse(response: JsonObject) {
-                    placesArrayList.clear()
-                    behavior.state = STATE_COLLAPSED
-                    val places = response["places"].asJsonArray
-                    if (places == null || places.size() == 0) {
-                        messageDialog(0, getString(R.string.popup_error_noplace))
-                        return
+            Thread(Runnable {
+                val latLng = LatLng(currentLocation!!)
+                val coordinate = "${latLng.longitude},${latLng.latitude}"
+                Retrofit2x.searchPlaces(query, coordinate).enqueue(object : RetrofitCallback() {
+                    override fun onResponse(response: JsonObject) {
+                        placesArrayList.clear()
+                        behavior.state = STATE_COLLAPSED
+                        val places = response["places"].asJsonArray
+                        if (places == null || places.size() == 0) {
+                            messageDialog(0, getString(R.string.popup_error_noplace))
+                            return
+                        }
+                        places.forEach { place ->
+                            val jsonObject = place.asJsonObject
+                            val hashMap = HashMap<String, String>(3)
+                            hashMap["name"] = jsonObject["name"].asString
+                            hashMap["x"] = jsonObject["x"].asString
+                            hashMap["y"] = jsonObject["y"].asString
+                            placesArrayList.add(hashMap)
+                        }
+                        placesListAdapter?.notifyDataSetChanged()
                     }
-                    places.forEach { place ->
-                        val jsonObject = place.asJsonObject
-                        val hashMap = HashMap<String, String>(3)
-                        hashMap["name"] = jsonObject["name"].asString
-                        hashMap["x"] = jsonObject["x"].asString
-                        hashMap["y"] = jsonObject["y"].asString
-                        placesArrayList.add(hashMap)
-                    }
-                    placesListAdapter.notifyDataSetChanged()
-                }
 
-                override fun onFailure(throwable: Throwable) {
-                    messageDialog(8, throwable.message)
-                }
-            })
+                    override fun onFailure(throwable: Throwable) {
+                        messageDialog(8, throwable.message)
+                    }
+                })
+            }).start()
         }
 
         inner class ListViewAdapter(
-            private val naverMap: NaverMap,
             placesArrayList: ArrayList<HashMap<String, String>>
         ) : BaseAdapter() {
 
-            private val placesList: ArrayList<HashMap<String, String>> = placesArrayList
+            private var placesList: ArrayList<HashMap<String, String>> = placesArrayList
 
             @SuppressLint("InflateParams")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -299,14 +316,14 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 } else {
                     holder = view.tag as ItemHolder
                 }
-                holder.name.text = placesList[position]["name"]
+                holder.name.text = placesList[position].getFor("name")
                 view?.setOnClickListener {
-                    searchView.setQuery(placesList[position]["name"], false)
-                    val coordX = placesList[position]["x"]!!.toDouble()
-                    val coordY = placesList[position]["y"]!!.toDouble()
-                    var zoom = naverMap.cameraPosition.zoom
-                    zoom = if (zoom < ZOOM_GET) ZOOM_GET + 1.0 else zoom
-                    naverMap.moveCamera(
+                    searchView.setQuery(placesList[position].getFor("name"), false)
+                    val coordX = placesList[position].getFor("x")!!.toDouble()
+                    val coordY = placesList[position].getFor("y")!!.toDouble()
+                    var zoom = naverMap?.cameraPosition!!.zoom
+                    zoom = if (zoom < 12.0) 12.0 + 1.0 else zoom
+                    naverMap?.moveCamera(
                         CameraUpdate.scrollAndZoomTo(LatLng(coordY, coordX), zoom)
                             .animate(CameraAnimation.Fly)
                             .finishCallback {
@@ -315,7 +332,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                             }
                     )
                     placesList.clear()
-                    placesListAdapter.notifyDataSetChanged()
+                    placesListAdapter?.notifyDataSetChanged()
                 }
                 return view!!
             }
@@ -326,13 +343,15 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
             override fun getCount(): Int = placesList.size
 
+            private fun HashMap<*, *>.getFor(key: String): String? = this[key] as String?
+
             private inner class ItemHolder {
                 lateinit var name: TextView
             }
         }
     }
 
-    private inner class SetBottomSheet(val naverMap: NaverMap) {
+    private inner class SetBottomSheet {
 
         private val transition: Transition
 
@@ -349,7 +368,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                         behavior.state = STATE_COLLAPSED
                     }
                     STATE_COLLAPSED -> {
-                        if (naverMap.cameraPosition.zoom < ZOOM_GET) {
+                        if (naverMap?.cameraPosition!!.zoom < 12.0) {
                             messageDialog(0, getString(R.string.popup_error_zoom))
                             return@setOnClickListener
                         }
@@ -366,12 +385,12 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     when (newState) {
                         STATE_EXPANDED -> {
                             nmap_bottom_sheet_text.text = textExpanded
-                            naverMap.setContentPadding(0, 45, 0, bottomSheetHeight)
-                            onRequestPipe(naverMap)
+                            naverMap?.setContentPadding(0, 45, 0, bottomSheetHeight)
+                            onRequestPipe()
                         }
                         STATE_COLLAPSED -> {
                             nmap_bottom_sheet_text.text = textCollapsed
-                            naverMap.setContentPadding(0, 45, 0, 45)
+                            naverMap?.setContentPadding(0, 45, 0, 45)
                             clearMarker()
                         }
                         else -> {
@@ -385,17 +404,9 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         }
 
         private fun clearMarker() {
-            naverMap.pickAll(POINT_F, screenSize()).forEach {
+            naverMap?.pickAll(PointF(0.5f, 0.5f), screenSize())?.forEach {
                 if (it is Marker) it.map = null
             }
         }
-    }
-
-    companion object {
-        private const val ZOOM_DEFAULT = 18.0 // 기본 줌레벨
-        private const val ZOOM_MIN = 6.0 // 최소 줌레벨
-        private const val ZOOM_GET = 12.0
-        private const val ZOOM_MAX = NaverMap.MAXIMUM_ZOOM.toDouble() // 최대 줌레벨(21)
-        private val POINT_F = PointF(0.5f, 0.5f)
     }
 }
