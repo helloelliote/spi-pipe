@@ -55,7 +55,6 @@ class PlaneTab : Fragment() {
     }
 
     private fun setPosition() {
-// TODO: 2019-04-11 직상일때 0.00 칸 중간에 나오는 문제
         val positionInt = json["position"].asInt
         if (json["shape"].asString == "직진형") {
             when (positionInt) {
@@ -63,6 +62,7 @@ class PlaneTab : Fragment() {
                 2 -> {
                     if (resId == "plan_plate_str_2_out_distance") {
                         setTranslation(noV = true, noH = true, vY = 0.0f, hX = 0.0f, hY = 0.0f)
+
                     } else {
                         setTranslation(noH = true, vY = -50.0f, hX = 0.0f, hY = 0.0f)
                     }
@@ -116,6 +116,10 @@ class PlaneTab : Fragment() {
         if (noH) {
             horizontal.visibility = GONE
             vertical.visibility = VISIBLE
+        }
+        if (noV && noH) {
+            horizontal.visibility = GONE
+            vertical.visibility = GONE
         }
         horizontal.translationX = hX * screenRatio
         horizontal.translationY = hY * screenRatio

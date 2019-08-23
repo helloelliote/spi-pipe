@@ -100,6 +100,7 @@ class InfoTab : Fragment() {
         } catch (ignore: NullPointerException) {
         }
 
+        // TODO: 사진 표시 안됨
         try {
             var requestBuilder: RequestBuilder<Drawable>? = null
             val photoObj = SpiPhotoObject()

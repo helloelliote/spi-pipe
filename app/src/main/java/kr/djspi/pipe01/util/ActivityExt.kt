@@ -16,7 +16,6 @@ import kr.djspi.pipe01.SpiPostActivity
 import kr.djspi.pipe01.ViewActivity
 import kr.djspi.pipe01.fragment.MessageDialog
 
-// TODO: 예전 BaseActivity 참조하여 수정
 fun Activity.settingsMenuEnabled(): Boolean {
     return when (this) {
         is ViewActivity, is RegisterActivity, is SpiLocationActivity, is SpiPostActivity -> false

@@ -151,28 +151,6 @@ class MessageDialog : DialogFragment(), OnClickListener {
     }
 
     companion object {
-        // TODO: 아래 싱글톤 패턴을 사용할 경우 팝업 내용 갱신이 되지 않는 문제 발생
-//        @SuppressLint("StaticFieldLeak")
-//        private var INSTANCE: MessageDialog? = null
-//
-//        /**
-//         * Returns the single instance of this class, creating it if necessary.
-//         * *
-//         * @return the [MessageDialog] instance
-//         */
-//        @JvmStatic
-//        fun getInstance(issue: Int, cancelable: Boolean) =
-//            INSTANCE ?: synchronized(MessageDialog::class.java) {
-//                INSTANCE ?: MessageDialog().apply {
-//                    arguments = Bundle().apply {
-//                        putInt("issueType", issue)
-//                    }
-//                    isCancelable = cancelable
-//                }.also {
-//                    INSTANCE = it
-//                }
-//            }
-
         @JvmStatic
         fun getInstance(issue: Int, cancelable: Boolean): MessageDialog {
             return MessageDialog().apply {
