@@ -51,7 +51,6 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
                 }
                 preferences["pipe_type"] = PIPE_TYPE_ENUMS[index].name
                 preferences["pipe_type_id"] = index
-
             }
             TAG_SUPERVISE -> {
                 text.let {

@@ -2,12 +2,12 @@ package kr.djspi.pipe01.network
 
 import android.os.Handler
 import android.os.Looper
+import java.io.File
+import java.io.FileInputStream
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okio.BufferedSink
-import java.io.File
-import java.io.FileInputStream
 
 class ProgressBody(
     private val file: File,

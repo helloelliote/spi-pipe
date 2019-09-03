@@ -78,9 +78,7 @@ class MessageDialog : DialogFragment(), OnClickListener {
                 contentsSub.text = fromHtml(getString(R.string.popup_location_on_sub))
                 buttonOk.setOnClickListener {
                     startActivity(
-                        Intent(ACTION_LOCATION_SOURCE_SETTINGS).addCategory(
-                            CATEGORY_DEFAULT
-                        )
+                        Intent(ACTION_LOCATION_SOURCE_SETTINGS).addCategory(CATEGORY_DEFAULT)
                     )
                     dismiss()
                 }

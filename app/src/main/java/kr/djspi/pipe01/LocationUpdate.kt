@@ -13,7 +13,6 @@ import com.nabinbhandari.android.permissions.Permissions
 import com.naver.maps.map.util.FusedLocationSource
 import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.toast
-import java.util.*
 
 abstract class LocationUpdate : BaseActivity() {
 

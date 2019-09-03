@@ -111,11 +111,9 @@ open class RetrofitCallback : Callback<JsonObject>, OnRetrofitListener {
     }
 
     override fun onResponse(response: JsonObject) {
-
     }
 
     override fun onFailure(throwable: Throwable) {
-
     }
 }
 

@@ -62,7 +62,6 @@ class PlaneTab : Fragment() {
                 2 -> {
                     if (resId == "plan_plate_str_2_out_distance") {
                         setTranslation(noV = true, noH = true, vY = 0.0f, hX = 0.0f, hY = 0.0f)
-
                     } else {
                         setTranslation(noH = true, vY = -50.0f, hX = 0.0f, hY = 0.0f)
                     }

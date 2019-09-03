@@ -2,7 +2,6 @@ package kr.djspi.pipe01.util
 
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.dto.*
-import java.util.*
 
 fun parseServerData(data: JsonObject, serial: String): HashMap<String, DataItem> {
     val hashMap = HashMap<String, DataItem>()

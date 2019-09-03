@@ -21,9 +21,9 @@ import com.nxp.nfclib.ndef.NdefMessageWrapper
 import com.nxp.nfclib.ndef.NdefRecordWrapper
 import com.nxp.nfclib.ntag.INTag213215216
 import com.nxp.nfclib.ntag.NTagFactory
-import kr.djspi.pipe01.BuildConfig.*
 import java.nio.charset.Charset
 import java.util.*
+import kr.djspi.pipe01.BuildConfig.*
 
 class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
 

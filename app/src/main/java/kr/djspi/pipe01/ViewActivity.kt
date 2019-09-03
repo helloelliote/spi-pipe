@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_base.*
@@ -204,7 +203,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         onNewIntentIgnore()
     }
 
-    private inner class TabSelected : OnTabSelectedListener {
+    private inner class TabSelected : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             viewPager?.currentItem = tab.position
             if (tab.position == 3) lay_bottom.visibility = View.GONE

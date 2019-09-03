@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.room.Room
+import java.io.Serializable
 import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
@@ -17,7 +18,6 @@ import kr.djspi.pipe01.util.getOnlineServerData
 import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.toast
 import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
-import java.io.Serializable
 
 class MainActivity : LocationUpdate(), Serializable {
 

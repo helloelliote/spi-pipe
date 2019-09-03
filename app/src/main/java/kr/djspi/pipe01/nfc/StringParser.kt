@@ -1,10 +1,9 @@
 package kr.djspi.pipe01.nfc
 
 import com.google.gson.JsonObject
+import java.util.*
 import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.Companion.parsePipeShape
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
-import java.util.*
-
 
 @Suppress("unused")
 enum class StringParser(

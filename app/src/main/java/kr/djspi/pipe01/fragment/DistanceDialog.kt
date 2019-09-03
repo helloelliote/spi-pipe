@@ -129,7 +129,9 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
     private fun setTranslation(
         noV: Boolean = false,
         noH: Boolean = false,
-        vY: Float, hX: Float, hY: Float
+        vY: Float,
+        hX: Float,
+        hY: Float
     ) {
         when {
             noV -> {

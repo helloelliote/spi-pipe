@@ -31,10 +31,6 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
     private lateinit var drawer: DrawerLayout
     lateinit var nfcUtil: NfcUtil
 
-    init {
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         nfcUtil = NfcUtil(this, javaClass)

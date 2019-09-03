@@ -303,6 +303,8 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
+도면/
+
 ### How to update git index with new .gitignore ###
 
 # git rm -r --cached . 

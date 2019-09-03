@@ -22,6 +22,10 @@ import android.widget.LinearLayout
 import androidx.core.content.FileProvider
 import com.andreabaccega.widget.FormEditText
 import com.bumptech.glide.Glide
+import java.io.File
+import java.io.IOException
+import java.io.Serializable
+import java.util.*
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
@@ -40,10 +44,6 @@ import kr.djspi.pipe01.dto.*
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import kr.djspi.pipe01.fragment.*
 import kr.djspi.pipe01.util.*
-import java.io.File
-import java.io.IOException
-import java.io.Serializable
-import java.util.*
 
 class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener, Serializable {
 

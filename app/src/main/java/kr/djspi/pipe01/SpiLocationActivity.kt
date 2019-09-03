@@ -16,6 +16,8 @@ import com.naver.maps.map.NaverMap.LAYER_GROUP_BUILDING
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.MapConstants.EXTENT_KOREA
+import java.io.Serializable
+import java.util.*
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_spi_location.*
 import kr.djspi.pipe01.AppPreference.get
@@ -31,8 +33,6 @@ import kr.djspi.pipe01.geolocation.GeoTrans
 import kr.djspi.pipe01.geolocation.GeoTrans.convert
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
-import java.io.Serializable
-import java.util.*
 
 class SpiLocationActivity :
     LocationUpdate(), OnMapReadyCallback, OnClickListener, OnSelectListener, Serializable {

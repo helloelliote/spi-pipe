@@ -3,6 +3,7 @@ apply from: "$project.rootDir/tools/script-grgit-version.gradle"
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 android {
     compileSdkVersion 29
@@ -16,7 +17,10 @@ android {
         aaptOptions.cruncherEnabled = false
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+                arguments = [
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.incremental"   : "true"
+                ]
             }
         }
 //        ndk {
@@ -69,8 +73,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-analytics:17.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     // room
-    implementation 'androidx.room:room-runtime:2.2.0-alpha02'
-    kapt 'androidx.room:room-compiler:2.2.0-alpha02'
+    implementation 'androidx.room:room-runtime:2.2.0-beta01'
+    kapt 'androidx.room:room-compiler:2.2.0-beta01'
 
     implementation 'com.naver.maps:map-sdk:3.5.0'
     implementation 'com.andkulikov:transitionseverywhere:2.1.0-beta01'

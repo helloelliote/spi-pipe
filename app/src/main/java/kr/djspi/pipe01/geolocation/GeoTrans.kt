@@ -20,7 +20,7 @@ object GeoTrans {
 
     // following constants from geocent.c
     private const val HALF_PI = 0.5 * Math.PI
-    private const val COS_67P5 = 0.38268343236508977  /* cosine of 67.5 degrees */
+    private const val COS_67P5 = 0.38268343236508977 /* cosine of 67.5 degrees */
     private const val AD_C = 1.0026000
 
     private fun D2R(degree: Double): Double = degree * Math.PI / 180.0
@@ -291,14 +291,14 @@ object GeoTrans {
         var Longitude = p.x
         var Latitude = p.y
         val Height = p.z
-        val X: Double  // output
+        val X: Double // output
         val Y: Double
         val Z: Double
 
-        val Rn: Double            /*  Earth radius at location  */
-        val Sin_Lat: Double       /*  sin(Latitude)  */
-        val Sin2_Lat: Double      /*  Square of sin(Latitude)  */
-        val Cos_Lat: Double       /*  cos(Latitude)  */
+        val Rn: Double /*  Earth radius at location  */
+        val Sin_Lat: Double /*  sin(Latitude)  */
+        val Sin2_Lat: Double /*  Square of sin(Latitude)  */
+        val Cos_Lat: Double /*  cos(Latitude)  */
 
         /*
          ** Don't blow up if Latitude is just a little out of the value
@@ -343,20 +343,20 @@ object GeoTrans {
         var Latitude = 0.0
         val Height: Double
 
-        val W: Double        /* distance from Z axis */
-        val W2: Double       /* square of distance from Z axis */
-        val T0: Double       /* initial estimate of vertical component */
-        val T1: Double       /* corrected estimate of vertical component */
-        val S0: Double       /* initial estimate of horizontal component */
-        val S1: Double       /* corrected estimate of horizontal component */
-        val Sin_B0: Double   /* sin(B0), B0 is estimate of Bowring aux doubleiable */
-        val Sin3_B0: Double  /* cube of sin(B0) */
-        val Cos_B0: Double   /* cos(B0) */
-        val Sin_p1: Double   /* sin(phi1), phi1 is estimated latitude */
-        val Cos_p1: Double   /* cos(phi1) */
-        val Rn: Double       /* Earth radius at location */
-        val Sum: Double      /* numerator of cos(phi1) */
-        var At_Pole: Boolean  /* indicates location is in polar region */
+        val W: Double /* distance from Z axis */
+        val W2: Double /* square of distance from Z axis */
+        val T0: Double /* initial estimate of vertical component */
+        val T1: Double /* corrected estimate of vertical component */
+        val S0: Double /* initial estimate of horizontal component */
+        val S1: Double /* corrected estimate of horizontal component */
+        val Sin_B0: Double /* sin(B0), B0 is estimate of Bowring aux doubleiable */
+        val Sin3_B0: Double /* cube of sin(B0) */
+        val Cos_B0: Double /* cos(B0) */
+        val Sin_p1: Double /* sin(phi1), phi1 is estimated latitude */
+        val Cos_p1: Double /* cos(phi1) */
+        val Rn: Double /* Earth radius at location */
+        val Sum: Double /* numerator of cos(phi1) */
+        var At_Pole: Boolean /* indicates location is in polar region */
 
         At_Pole = false
         if (X != 0.0) {
@@ -373,7 +373,7 @@ object GeoTrans {
                             Latitude = HALF_PI
                         Z < 0.0 -> /* south pole */
                             Latitude = -HALF_PI
-                        else -> {  /* center of earth */
+                        else -> { /* center of earth */
                             Latitude = HALF_PI
                             Height = -type.arMinor
                             return
@@ -416,7 +416,7 @@ object GeoTrans {
      * p = point to transform in geocentric coordinates (x,y,z)
      */
     private fun geocentric_to_wgs84(p: GeoPoint) {
-        //if( defn.datum_type == PJD_3PARAM )
+        // if( defn.datum_type == PJD_3PARAM )
         // if( x[io] == HUGE_VAL )
         //    continue;
         p.x = p.x + GEO.datumX
@@ -430,13 +430,13 @@ object GeoTrans {
      *  p = point to transform in geocentric coordinates (x,y,z)
      */
     private fun geocentric_from_wgs84(p: GeoPoint) {
-        //if( defn.datum_type == PJD_3PARAM )
-        //if( x[io] == HUGE_VAL )
+        // if( defn.datum_type == PJD_3PARAM )
+        // if( x[io] == HUGE_VAL )
         //    continue;
         p.x = p.x - GEO.datumX
         p.y = p.y - GEO.datumY
         p.z = p.z - GEO.datumZ
-    } //geocentric_from_wgs84()
+    } // geocentric_from_wgs84()
 
     enum class Coordinate(
         val arMajor: Double,

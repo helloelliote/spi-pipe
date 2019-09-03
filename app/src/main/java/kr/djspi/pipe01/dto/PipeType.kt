@@ -1,7 +1,7 @@
 package kr.djspi.pipe01.dto
 
-import kr.djspi.pipe01.R
 import java.io.Serializable
+import kr.djspi.pipe01.R
 
 data class PipeType(var id: Int = -1) : DataItem, Serializable {
 
