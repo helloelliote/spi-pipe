@@ -1,8 +1,8 @@
 package kr.djspi.pipe01.geolocation
 
-import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
 import java.lang.Math.pow
 import kotlin.math.*
+import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
 
 /**
  * convert between geodetic coordinates (longitude, latitude, height)

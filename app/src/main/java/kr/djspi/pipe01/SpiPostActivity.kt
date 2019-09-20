@@ -9,6 +9,8 @@ import android.view.View
 import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import java.io.File
+import java.io.Serializable
 import kotlinx.android.synthetic.main.activity_spi_post.*
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
@@ -21,8 +23,6 @@ import kr.djspi.pipe01.util.RetrofitCallback
 import kr.djspi.pipe01.util.fromHtml
 import kr.djspi.pipe01.util.messageDialog
 import okhttp3.MultipartBody
-import java.io.File
-import java.io.Serializable
 
 class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 

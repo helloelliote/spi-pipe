@@ -260,7 +260,9 @@
                 android:id="@+id/form_memo"
                 style="@style/FormEditText"
                 android:hint="@string/record_input_8_hint"
-                app:emptyAllowed="true" />
+                app:emptyAllowed="true"
+                android:inputType="textNoSuggestions"
+                android:maxLength="50" />
         </LinearLayout>
 
         <View

@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import java.io.Serializable
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_pipe_view.*
 import kr.djspi.pipe01.Const.REQUEST_MAP
@@ -24,7 +25,6 @@ import kr.djspi.pipe01.util.fromHtml
 import kr.djspi.pipe01.util.onNewIntentIgnore
 import kr.djspi.pipe01.util.onPauseNfc
 import kr.djspi.pipe01.util.onResumeNfc
-import java.io.Serializable
 
 class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
@@ -75,7 +75,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     private fun setTabLayout() {
         if (previewEntries == null) {
-            tabs.removeTab(tabs.getTabAt(3))
+            tabs.removeTab(tabs.getTabAt(3)!!)
         }
         viewPager = findViewById(R.id.container)
         viewPager?.let {

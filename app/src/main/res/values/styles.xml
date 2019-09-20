@@ -78,7 +78,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
         <item name="backgroundTint">@color/colorPrimaryDark</item>
-        <item name="cornerRadius">40dp</item>
+        <item name="cornerRadius">30dp</item>
     </style>
 
     <style name="Spi.Tab" parent="Widget.AppCompat.Toolbar">
