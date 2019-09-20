@@ -136,8 +136,8 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         toggleSwitch.apply {
             visibility = View.VISIBLE
             isSingleSelection = true
-            val green = resources.getColor(R.color.green, null)
-            val white = resources.getColor(android.R.color.white, null)
+            val green = resources.getColor(R.color.green)
+            val white = resources.getColor(android.R.color.white)
             addOnButtonCheckedListener { group, _, _ ->
                 when (group.checkedButtonId) {
                     R.id.button_hybrid -> {
@@ -402,7 +402,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
             val textExpanded = getString(R.string.map_search_input)
             val textCollapsed = getString(R.string.map_search_point)
             val bottomSheetHeight = nmap_bottom_sheet.height
-            behavior.setBottomSheetCallback(object : BottomSheetCallback() {
+            behavior.bottomSheetCallback = object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     beginDelayedTransition(nmap_bottom_sheet, transition)
                     when (newState) {
@@ -423,7 +423,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 }
-            })
+            }
         }
 
         private fun clearMarker() {

@@ -87,7 +87,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         linearLayout.apply {
             showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
             dividerDrawable = GradientDrawable().apply {
-                setColor(resources.getColor(R.color.yellow, null))
+                setColor(resources.getColor(R.color.yellow))
                 setSize(8, 1)
             }
         }

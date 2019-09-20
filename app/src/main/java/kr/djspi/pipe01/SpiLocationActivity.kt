@@ -118,8 +118,8 @@ class SpiLocationActivity :
         toggleSwitch.apply {
             visibility = View.VISIBLE
             isSingleSelection = true
-            val green = resources.getColor(R.color.green, null)
-            val white = resources.getColor(android.R.color.white, null)
+            val green = resources.getColor(R.color.green)
+            val white = resources.getColor(android.R.color.white)
             addOnButtonCheckedListener { group, _, _ ->
                 when (group.checkedButtonId) {
                     R.id.button_hybrid -> {

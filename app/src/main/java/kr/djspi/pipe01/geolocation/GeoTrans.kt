@@ -1,6 +1,5 @@
 package kr.djspi.pipe01.geolocation
 
-import java.lang.Math.pow
 import kotlin.math.*
 import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
 
@@ -195,10 +194,7 @@ object GeoTrans {
         val latitude = lat2 - lat1
 
         val a =
-            pow(sin(latitude / 2.0), 2.0) + cos(lat1) * cos(lat2) * pow(
-                sin(longitude / 2.0),
-                2.0
-            )
+            sin(latitude / 2.0).pow(2.0) + cos(lat1) * cos(lat2) * sin(longitude / 2.0).pow(2.0)
         return 6376.5 * 2.0 * atan2(sqrt(a), sqrt(1.0 - a))
     }
 

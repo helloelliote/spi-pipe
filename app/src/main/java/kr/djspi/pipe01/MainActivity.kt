@@ -57,9 +57,6 @@ class MainActivity : LocationUpdate(), Serializable {
         }
         val layMain2 = findViewById<LinearLayout>(R.id.lay_main_menu2)
         layMain2?.setOnClickListener {
-            //            val intent = Intent(this, kr.djspi.unitysample.UnityPlayerActivity::class.java)
-//            intent.putExtra("arguments", 50)
-//            startActivity(intent)
             Toast.makeText(this, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT).apply {
                 setGravity(Gravity.CENTER, 0, 0)
             }.show()

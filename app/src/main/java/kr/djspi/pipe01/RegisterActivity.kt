@@ -233,7 +233,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     form_photo_name.apply {
                         isFocusable = false
                         setText(getString(R.string.record_input_photo_delete))
-                        setTextColor(resources.getColor(R.color.colorAccent, null))
+                        setTextColor(resources.getColor(R.color.colorAccent))
                     }
                     form_photo.text = null
                 }
@@ -402,7 +402,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     photoObj?.file = resizeFile
                     photoObj?.uri = tempUri.toString()
                     form_photo_name.setText(resizeFile.name)
-                    form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
+                    form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary))
                     form_photo.setText(getString(R.string.record_photo_ok))
                     tempUri = null
                     tempFile = null
@@ -415,7 +415,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         photoObj?.file = resizeFile
                         photoObj?.uri = it.toString()
                         form_photo_name.setText(resizeFile.name)
-                        form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
+                        form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary))
                         form_photo.setText(getString(R.string.record_photo_ok))
                     }
                 }

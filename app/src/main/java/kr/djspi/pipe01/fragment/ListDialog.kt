@@ -131,12 +131,8 @@ class ListDialog : DialogFragment(), OnClickListener {
         private val isListSupervise: Boolean
     ) : BaseAdapter(), Indexer {
 
-        private val customSection: CustomSection?
-
-        init {
-            if (isListSupervise) customSection = CustomSection(this)
-            else customSection = null
-        }
+        private val customSection: CustomSection? =
+            if (isListSupervise) CustomSection(this) else null
 
         @SuppressLint("InflateParams")
         override fun getView(position: Int, convertView: View?, container: ViewGroup): View {

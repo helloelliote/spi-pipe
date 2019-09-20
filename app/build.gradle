@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "kr.djspi.pipe01"
-        minSdkVersion 23
+        minSdkVersion 22
         targetSdkVersion 29
         versionCode gitVersionCode + 1
         versionName gitVersionName
@@ -71,7 +71,6 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
 
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
-//    implementation project(":unitysample")
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0-alpha04'
