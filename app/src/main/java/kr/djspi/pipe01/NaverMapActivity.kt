@@ -187,7 +187,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     behavior.state = STATE_COLLAPSED
                     messageDialog(0, "표시할 SPI 정보가 없습니다")
                 } else {
-                    val executor = Executors.newFixedThreadPool(3)
+                    val executor = Executors.newFixedThreadPool(5)
                     val handler = Handler(Looper.getMainLooper())
                     executor.execute {
                         val markers = mutableListOf<Marker>()
@@ -196,14 +196,14 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                             val lat = jsonObject["spi_latitude"].asDouble
                             val lng = jsonObject["spi_longitude"].asDouble
                             val resId = parsePipeType(jsonObject["pipe"].asString).drawRes
-                            markers.add(Marker().apply {
+                            markers += Marker().apply {
                                 position = LatLng(lat, lng)
                                 icon = OverlayImage.fromResource(resId)
                                 tag = jsonObject
                                 minZoom = 12.0
                                 maxZoom = 21.0
                                 onClickListener = overlayOnclickListener
-                            })
+                            }
                         }
                         handler.post {
                             markers.forEach { marker: Marker ->

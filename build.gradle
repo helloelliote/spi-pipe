@@ -8,6 +8,9 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        maven {
+            url 'https://navercorp.bintray.com/maps'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
