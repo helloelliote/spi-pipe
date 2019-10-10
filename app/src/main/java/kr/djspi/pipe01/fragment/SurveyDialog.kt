@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.fragment_location_survey.*
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import kr.djspi.pipe01.Const.RESULT_FAIL
 import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.Const.TAG_SURVEY
@@ -21,6 +24,10 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
 
     private var dialogTitle: String? = null
     private var selectIndex: Int = -1
+    private lateinit var inputX: TextInputEditText
+    private lateinit var inputY: TextInputEditText
+    private lateinit var layX: TextInputLayout
+    private lateinit var layY: TextInputLayout
     private lateinit var listener: OnSelectListener
 
     override fun onAttach(context: Context) {
@@ -41,8 +48,10 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_location_survey, container, false)
-        popup_title.text = dialogTitle
-        nmap_radioGroup.setOnCheckedChangeListener { group, checkedId ->
+        val popupTitle = view.findViewById<TextView>(R.id.popup_title)
+        popupTitle.text = dialogTitle
+        val nmapRadiogroup = view.findViewById<RadioGroup>(R.id.nmap_radioGroup)
+        nmapRadiogroup.setOnCheckedChangeListener { group, checkedId ->
             val checkedRadioButton = group.findViewById<RadioButton>(checkedId)
             selectIndex = group.indexOfChild(checkedRadioButton)
             when (checkedId) {
@@ -52,10 +61,18 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
                 R.id.nmap_radio_west -> originPoint = GRS80_WEST
             }
         }
-        input_x.filters = arrayOf(DecimalFilter(4, 2))
-        input_y.filters = arrayOf(DecimalFilter(4, 2))
-        button_dismiss.setOnClickListener(this)
-        btn_ok.setOnClickListener(this)
+        inputX = view.findViewById(R.id.input_x)
+        inputY = view.findViewById(R.id.input_y)
+        inputX.filters = arrayOf(DecimalFilter(10, 4))
+        inputY.filters = arrayOf(DecimalFilter(10, 4))
+        layX = view.findViewById(R.id.lay_x)
+        layY = view.findViewById(R.id.lay_y)
+        arrayOf<View>(
+            view.findViewById(R.id.button_dismiss),
+            view.findViewById(R.id.btn_ok)
+        ).forEach {
+            it.setOnClickListener(this)
+        }
         return view
     }
 
@@ -65,10 +82,10 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
                 if (isInputValid()) {
                     listener.onSelect(
                         TAG_SURVEY, RESULT_PASS,
-                        input_x.text.toString(),
-                        input_y.text.toString()
+                        inputX.text.toString(),
+                        inputY.text.toString()
                     )
-                    dismissAllowingStateLoss()
+                    dismiss()
                 } else selectIndex = -1
             }
             R.id.button_dismiss -> {
@@ -88,31 +105,31 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
         var isY = false
 
         try {
-            if (input_x.text.toString().toDouble() > 999999.9999) {
-                lay_x.error = getString(R.string.map_coord_error)
+            if (inputX.text.toString().toDouble() > 999999.9999) {
+                layX.error = getString(R.string.map_coord_error)
             } else {
                 isX = true
-                lay_x.error = null
-                input_x.clearFocus()
+                layX.error = null
+                inputX.clearFocus()
             }
         } catch (e: NullPointerException) {
-            lay_x.error = getString(R.string.map_input_error)
+            layX.error = getString(R.string.map_input_error)
         } catch (e: NumberFormatException) {
-            lay_x.error = getString(R.string.map_input_error)
+            layX.error = getString(R.string.map_input_error)
         }
 
         try {
-            if (input_y.text.toString().toDouble() > 999999.9999) {
-                lay_y.error = getString(R.string.map_coord_error)
+            if (inputY.text.toString().toDouble() > 999999.9999) {
+                layY.error = getString(R.string.map_coord_error)
             } else {
                 isY = true
-                lay_y.error = null
-                input_y.clearFocus()
+                layY.error = null
+                inputY.clearFocus()
             }
         } catch (e: NullPointerException) {
-            lay_y.error = getString(R.string.map_input_error)
+            layY.error = getString(R.string.map_input_error)
         } catch (e: NumberFormatException) {
-            lay_y.error = getString(R.string.map_input_error)
+            layY.error = getString(R.string.map_input_error)
         }
         return isX && isY
     }

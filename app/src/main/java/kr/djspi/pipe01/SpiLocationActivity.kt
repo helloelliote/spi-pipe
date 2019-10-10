@@ -192,7 +192,8 @@ class SpiLocationActivity :
         when (tag) {
             TAG_SURVEY -> {
                 if (index == RESULT_PASS) {
-                    val surveyLatLng = convertTmToLatLng(text[0]!!.toDouble(), text[1]!!.toDouble())
+                    val surveyLatLng =
+                        convertTmToLatLng(text[0]!!.toDouble(), text[1]!!.toDouble())
                     val cameraUpdate = CameraUpdate
                         .scrollAndZoomTo(surveyLatLng, ZOOM_DEFAULT)
                         .animate(CameraAnimation.Fly)
