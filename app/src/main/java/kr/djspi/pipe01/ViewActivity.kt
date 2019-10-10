@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import com.google.gson.JsonParser.parseString
 import java.io.Serializable
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_pipe_view.*
@@ -40,7 +40,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         intent?.let {
             val jsonString = intent.getStringExtra("PipeView")
             if (jsonString != "Register") {
-                jsonObj = JsonParser().parse(jsonString).asJsonObject
+                jsonObj = parseString(jsonString).asJsonObject
             }
 
             val preview = it.getSerializableExtra("RegisterPreview")
@@ -168,7 +168,9 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     }
 
     override val jsonObject: JsonObject
-        get() = jsonObj
+        get() {
+            return jsonObj
+        }
     override val uri: String?
         get() = photoObject?.uri
 
@@ -177,8 +179,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             RESULT_PASS -> {
                 this.startActivityForResult(
                     Intent(this, SpiLocationActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP
-                )
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP)
             }
         }
     }

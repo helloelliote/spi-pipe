@@ -17,7 +17,6 @@ import kr.djspi.pipe01.MainActivity
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.util.fromHtml
 
-@Suppress("DEPRECATION")
 class MessageDialog : DialogFragment(), OnClickListener {
 
     private var returnToMain: Boolean = false

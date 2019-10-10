@@ -402,7 +402,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
             val textExpanded = getString(R.string.map_search_input)
             val textCollapsed = getString(R.string.map_search_point)
             val bottomSheetHeight = nmap_bottom_sheet.height
-            behavior.bottomSheetCallback = object : BottomSheetCallback() {
+            behavior.addBottomSheetCallback(object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     beginDelayedTransition(nmap_bottom_sheet, transition)
                     when (newState) {
@@ -423,7 +423,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 }
-            }
+            })
         }
 
         private fun clearMarker() {
