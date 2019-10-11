@@ -25,7 +25,7 @@ class PreviewTab : Fragment(), View.OnClickListener {
         if (context is OnRecordListener) {
             listener = context
             json = listener.jsonObject
-            imageFileUri = listener.uri
+            imageFileUri = listener.uri.toString()
         }
     }
 

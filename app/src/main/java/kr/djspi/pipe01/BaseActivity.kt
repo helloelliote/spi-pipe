@@ -122,12 +122,18 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                 )
             }
             val what: Any = TextAppearanceSpan(this@BaseActivity, R.style.TextAppearance20sp)
-            val titleApp = menu.findItem(R.id.title_app)
+
+            val titleApp = menu.findItem(R.id.nav_apptitle)
             val spannable = SpannableString(titleApp.title)
             spannable.setSpan(what, 0, spannable.length, 0)
             titleApp.title = spannable
 
-            menu.findItem(R.id.title_setting).isVisible = settingsMenuEnabled()
+            val titleSetting = menu.findItem(R.id.nav_settingtitle)
+            val spannable2 = SpannableString(titleSetting.title)
+            spannable2.setSpan(what, 0, spannable2.length, 0)
+            titleSetting.title = spannable2
+
+            menu.findItem(R.id.nav_settingtitle).isVisible = settingsMenuEnabled()
 
             nav_close.setOnClickListener { drawer.closeDrawer(GravityCompat.START) }
         }).start()

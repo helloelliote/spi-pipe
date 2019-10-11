@@ -16,10 +16,10 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import java.nio.charset.Charset
-import java.security.MessageDigest
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.SpiPhotoObject
+import java.nio.charset.Charset
+import java.security.MessageDigest
 
 class ImageDialog : DialogFragment() {
 
@@ -31,7 +31,7 @@ class ImageDialog : DialogFragment() {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, android.R.style.Theme_Black_NoTitleBar)
         arguments?.let { it ->
-            val photoObj: SpiPhotoObject? = it.getSerializable("SpiPhotoObject") as SpiPhotoObject
+            val photoObj: SpiPhotoObject? = it.getSerializable("PhotoObj") as SpiPhotoObject
             return@let photoObj?.let { photoObject ->
                 imageUri = photoObject.getUri()
                 imageUrl = photoObject.url

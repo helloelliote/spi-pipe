@@ -3,6 +3,7 @@ package kr.djspi.pipe01.tab
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,13 +24,14 @@ import kr.djspi.pipe01.util.fromHtml
 class InfoTab : Fragment() {
 
     private lateinit var json: JsonObject
-    private var imageUri: String? = null
+    private var imageUri: Uri? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnRecordListener) {
-            json = (context as OnRecordListener).jsonObject
-            imageUri = (context as OnRecordListener).uri
+            val listener = context as OnRecordListener
+            json = listener.jsonObject
+            imageUri = listener.uri
         }
     }
 
@@ -40,6 +42,7 @@ class InfoTab : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.tab_info, container, false)
         setInfo(view)
+        setPhoto(view)
         return view
     }
 
@@ -97,37 +100,49 @@ class InfoTab : Fragment() {
                     .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
             }
+
+            // TODO: 사진 표시 안됨
+            println()
+
+
         } catch (ignore: NullPointerException) {
         }
+    }
 
-        // TODO: 사진 표시 안됨
+    private fun setPhoto(view: View) {
         try {
+            println(imageUri)
+            val imageView: ImageView = view.findViewById(R.id.img_photo)
             var requestBuilder: RequestBuilder<Drawable>? = null
             val photoObj = SpiPhotoObject()
             if (imageUri != null) {
                 requestBuilder = Glide.with(view).load(imageUri)
-                photoObj.uri = imageUri
+                photoObj.setUri(imageUri)
             } else {
                 if (json.get("spi_photo_url") != null) {
-                    if (json["spi_photo_url"] != JsonNull.INSTANCE) {
-                        requestBuilder = Glide.with(view).load(json["spi_photo_url"].asString)
-                        photoObj.uri = json["spi_photo_url"].asString
+                    if (!json.get("spi_photo_url").isJsonNull) {
+                        requestBuilder = Glide.with(view)
+                            .load(json["spi_photo_url"].asString)
+                        photoObj.url = json["spi_photo_url"].asString
                     }
                 }
             }
-            val imageView = view.findViewById<ImageView>(R.id.img_photo)
-            requestBuilder?.apply {
-                fitCenter()
-                error(R.drawable.ic_photo_error)
-                dontAnimate()
-                into(imageView)
-                imageView.setOnClickListener {
+            if (requestBuilder != null) {
+                requestBuilder.fitCenter()
+                    .error(R.drawable.ic_photo_error)
+                    .dontAnimate()
+                    .into(imageView)
+                imageView.setOnClickListener { v: View? ->
+                    val imageDialog =
+                        ImageDialog()
                     val bundle = Bundle(1)
-                    bundle.putSerializable("SpiPhotoObject", photoObj)
-                    ImageDialog().apply { arguments = bundle }.show(childFragmentManager, TAG_PHOTO)
+                    bundle.putSerializable("PhotoObj", photoObj)
+                    imageDialog.arguments = bundle
+                    imageDialog.show(fragmentManager!!, TAG_PHOTO)
                 }
             }
-        } catch (ignore: NullPointerException) {
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
         }
     }
 }

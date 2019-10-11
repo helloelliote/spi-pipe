@@ -4,7 +4,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.network.RetrofitCreator.createRetrofit
 import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
@@ -47,8 +46,7 @@ object Retrofit2x : RequestBody() {
 
     fun postSpi(query: String, part: MultipartBody.Part? = null): Call<JsonObject> {
         val stringQuery = "{\"request\":\"pipe-set\",\"data\":$query}"
-        val requestBody: RequestBody =
-            stringQuery.toRequestBody(("multipart/form-data").toMediaType())
+        val requestBody: RequestBody = create(MediaType.parse("multipart/form-data"), stringQuery)
         return createRetrofit(URL_SPI).postSpi(requestBody, part)
     }
 

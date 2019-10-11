@@ -24,6 +24,7 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
 
     private var dialogTitle: String? = null
     private var selectIndex: Int = -1
+    private var checkeId: Int = -1
     private lateinit var inputX: TextInputEditText
     private lateinit var inputY: TextInputEditText
     private lateinit var layX: TextInputLayout
@@ -53,6 +54,7 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
         val nmapRadiogroup = view.findViewById<RadioGroup>(R.id.nmap_radioGroup)
         nmapRadiogroup.setOnCheckedChangeListener { group, checkedId ->
             val checkedRadioButton = group.findViewById<RadioButton>(checkedId)
+            checkeId = checkedId
             selectIndex = group.indexOfChild(checkedRadioButton)
             when (checkedId) {
                 R.id.nmap_radio_central -> originPoint = GRS80_MIDDLE_WITH_JEJUDO
@@ -79,6 +81,11 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.btn_ok -> {
+                if (checkeId == -1) {
+                    layX.error = "원점을 선택해주세요."
+                    layY.error = "원점을 선택해주세요."
+                    return
+                }
                 if (isInputValid()) {
                     listener.onSelect(
                         TAG_SURVEY, RESULT_PASS,
@@ -136,6 +143,7 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
 
     override fun onDismiss(dialog: DialogInterface) {
         selectIndex = -1
+        checkeId = -1
         super.onDismiss(dialog)
     }
 

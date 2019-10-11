@@ -9,8 +9,6 @@ import android.view.View
 import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import java.io.File
-import java.io.Serializable
 import kotlinx.android.synthetic.main.activity_spi_post.*
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
@@ -23,6 +21,8 @@ import kr.djspi.pipe01.util.RetrofitCallback
 import kr.djspi.pipe01.util.fromHtml
 import kr.djspi.pipe01.util.messageDialog
 import okhttp3.MultipartBody
+import java.io.File
+import java.io.Serializable
 
 class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
@@ -37,10 +37,11 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
         super.onCreate(savedInstanceState)
         entries = intent.getSerializableExtra("entry") as ArrayList<*>
         jsonObject = parseEntry(entries, 0, "", "")
-        intent.getSerializableExtra("SpiPhotoObject")?.let {
+        intent.getSerializableExtra("Photos")?.let {
             if (it is SpiPhotoObject) {
                 file = it.file
                 part = getMultipart(file!!, "image")
+                System.err.println(file!!.length())
             }
         }
         setContentView(R.layout.activity_spi_post)
@@ -65,6 +66,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
                 file.name,
                 ProgressBody(file, fileType, this)
             )
+            System.err.println(part!!.body().contentLength())
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
             return null

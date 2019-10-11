@@ -24,7 +24,11 @@ fun Activity.settingsMenuEnabled(): Boolean {
 }
 
 fun AppCompatActivity.messageDialog(issue: Int, tag: String? = "", cancelable: Boolean = true) {
-    MessageDialog.getInstance(issue, cancelable).show(supportFragmentManager, tag)
+    try {
+        MessageDialog.getInstance(issue, cancelable).show(supportFragmentManager, tag)
+    } catch (ignore: Exception) {
+      
+    }
 }
 
 fun Activity.screenScale(): Float {

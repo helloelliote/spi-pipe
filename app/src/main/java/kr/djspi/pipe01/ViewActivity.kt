@@ -3,6 +3,7 @@ package kr.djspi.pipe01
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.net.Uri.parse
 import android.os.Bundle
 import android.view.View
@@ -11,7 +12,6 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser.parseString
-import java.io.Serializable
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_pipe_view.*
 import kr.djspi.pipe01.Const.REQUEST_MAP
@@ -25,6 +25,7 @@ import kr.djspi.pipe01.util.fromHtml
 import kr.djspi.pipe01.util.onNewIntentIgnore
 import kr.djspi.pipe01.util.onPauseNfc
 import kr.djspi.pipe01.util.onResumeNfc
+import java.io.Serializable
 
 class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
@@ -51,11 +52,11 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
                 previewEntries = preview as ArrayList<Entry>
                 jsonObj = parseEntry(previewEntries!!, pipeIndex, fHorizontal, fVertical)
             }
+        }
 
-            val photo = it.getSerializableExtra("SpiPhotoObject")
-            if (photo is SpiPhotoObject) {
-                photoObject = photo
-            }
+        val classSerializable = intent.getSerializableExtra("PhotoObj")
+        if (classSerializable != null) {
+            photoObject = classSerializable as SpiPhotoObject
         }
 
         setContentView(R.layout.activity_pipe_view)
@@ -161,25 +162,25 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
                     Intent(this, SpiPostActivity::class.java)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("entry", previewEntries)
-                        .putExtra("SpiPhotoObject", photoObject)
+                        .putExtra("Photos", photoObject)
                 )
             }
         }
     }
 
     override val jsonObject: JsonObject
-        get() {
-            return jsonObj
-        }
-    override val uri: String?
-        get() = photoObject?.uri
+        get() = jsonObj
+    override val uri: Uri?
+        get() = if (photoObject == null) null else photoObject!!.getUri()
+
 
     override fun onRecord(tag: String, result: Int) {
         when (result) {
             RESULT_PASS -> {
                 this.startActivityForResult(
                     Intent(this, SpiLocationActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP
+                )
             }
         }
     }

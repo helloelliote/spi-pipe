@@ -145,7 +145,7 @@
     <string name="popup_survey">측량좌표 입력</string>
     <string name="popup_gps">지도에서 입력</string>
     <string name="popup_title_survey">측량좌표를 입력하시오</string>
-    <string name="map_origin">원점 :</string>
+    <string name="map_origin">원점</string>
     <string name="map_origin_western">서부</string>
     <string name="map_origin_central">중부</string>
     <string name="map_origin_eastern">동부</string>
@@ -153,7 +153,7 @@
     <string name="map_coord_x">X 좌표</string>
     <string name="map_coord_y">Y 좌표</string>
     <string name="map_input_error">값을 입력해주세요</string>
-    <string name="map_coord_error">잘못된 좌표값입니다</string>
+    <string name="map_coord_error">좌표값 오류</string>
 
     <!--SpiPostActivity-->
     <string name="write_instruction"><![CDATA[SPI의 상면을 스마트폰 뒷면의 NFC 안테나 위치에 접촉

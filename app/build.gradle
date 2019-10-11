@@ -59,16 +59,6 @@ android {
     }
 }
 
-configurations {
-    ktlint
-}
-
-task ktlintFormat(type: JavaExec, group: "formatting") {
-    main = "com.pinterest.ktlint.Main"
-    classpath = configurations.ktlint
-    args "-F", "src/**/*.kt"
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -93,10 +83,8 @@ dependencies {
     }
 
     // retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
-    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
     // glide
     implementation 'com.github.bumptech.glide:glide:4.10.0'
@@ -104,9 +92,6 @@ dependencies {
 
     implementation 'com.sylversky.library:indexablelistview:1.0.1'
     compileOnly 'javax.annotation:jsr250-api:1.0'
-
-    //ktlint
-    ktlint "com.pinterest:ktlint:0.34.2"
 
     testImplementation 'junit:junit:4.13-beta-3'
     // debugImplementation because LeakCanary should only run in debug builds.

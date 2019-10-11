@@ -22,10 +22,6 @@ import android.widget.LinearLayout
 import androidx.core.content.FileProvider
 import com.andreabaccega.widget.FormEditText
 import com.bumptech.glide.Glide
-import java.io.File
-import java.io.IOException
-import java.io.Serializable
-import java.util.*
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
@@ -44,6 +40,10 @@ import kr.djspi.pipe01.dto.*
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import kr.djspi.pipe01.fragment.*
 import kr.djspi.pipe01.util.*
+import java.io.File
+import java.io.IOException
+import java.io.Serializable
+import java.util.*
 
 class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener, Serializable {
 
@@ -394,29 +394,31 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         if (resultCode == RESULT_OK) {
-            val resizeFile: File?
+            var resizeFile: File?
             when (requestCode) {
                 REQUEST_CAPTURE_IMAGE -> {
-                    Glide.with(this).load(tempUri).into(form_photo_thumbnail)
+                    photoObj = SpiPhotoObject()
+                    Glide.with(this).load(tempUri).into(imageThumb)
                     resizeFile = ImageUtil.subSample4x(tempFile!!, 1024)
-                    photoObj?.file = resizeFile
-                    photoObj?.uri = tempUri.toString()
+                    photoObj!!.file = resizeFile
+                    photoObj!!.setUri(tempUri)
                     form_photo_name.setText(resizeFile.name)
                     form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary))
-                    form_photo.setText(getString(R.string.record_photo_ok))
+                    fPhoto.setText(getString(R.string.record_photo_ok))
                     tempUri = null
                     tempFile = null
                 }
                 REQUEST_GALLERY -> {
                     intent?.data.let {
-                        Glide.with(this).load(it).into(form_photo_thumbnail)
+                        photoObj = SpiPhotoObject()
+                        Glide.with(this).load(it).into(imageThumb)
                         val file = ImageUtil.uriToFile(this, it!!)
                         resizeFile = ImageUtil.subSample4x(file, 1024)
-                        photoObj?.file = resizeFile
-                        photoObj?.uri = it.toString()
-                        form_photo_name.setText(resizeFile.name)
+                        photoObj!!.file = resizeFile
+                        photoObj!!.setUri(it)
+                        form_photo_name.setText(resizeFile!!.name)
                         form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary))
-                        form_photo.setText(getString(R.string.record_photo_ok))
+                        fPhoto.setText(getString(R.string.record_photo_ok))
                     }
                 }
             }
@@ -461,7 +463,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         .putExtra("PipeIndex", 0)
                         .putExtra("fHorizontal", form_horizontal.text.toString())
                         .putExtra("fVertical", form_vertical.text.toString())
-                        .putExtra("SpiPhotoObject", photoObj)
+                        .putExtra("PhotoObj", photoObj)
                 )
             } catch (e: Exception) {
                 messageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.")

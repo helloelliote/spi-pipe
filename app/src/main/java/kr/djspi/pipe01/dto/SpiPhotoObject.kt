@@ -10,12 +10,10 @@ data class SpiPhotoObject(var file: File? = null) : DataItem, Serializable {
     var uri: String? = null
 
     fun getUri(): Uri? {
-        return if (uri == null) null
-        else Uri.parse(uri)
+        return if (uri == null) null else Uri.parse(uri)
     }
 
     fun setUri(uri: Uri?) {
-        if (uri == null) this.uri = null
-        else this.uri = uri.toString()
+        if (uri == null) this.uri = null else this.uri = uri.toString()
     }
 }
