@@ -99,23 +99,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
-//        form_spec.addTextChangedListener(object: TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                var s: String? = null
-//                try {
-//                     s= String.format("%,d", parseLong(s.toString()))
-//                } catch (ignore: NumberFormatException) {
-//                }
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//
-//            }
-//        })
         form_horizontal.isFocusable = false
         form_vertical.isFocusable = false
         form_depth.filters = arrayOf(DecimalFilter(4, 2))
@@ -333,7 +316,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     return
                 }
                 form_horizontal.setText("${form_horizontal.tag} ${text[0]}")
-                form_vertical.setText("${form_vertical.tag} ${text[0]}")
+                form_vertical.setText("${form_vertical.tag} ${text[1]}")
                 pipePosition.horizontal = text[0]!!.toDouble()
                 pipePosition.vertical = text[1]!!.toDouble()
                 form_depth.requestFocus()
@@ -489,7 +472,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             return allValid
         }
 
-        // TODO: 관로관경 최대값 4자리로 설정 후 4자리일 경우 콤마 추가해서 보여주도록 설정
         private fun isSpecValid(): Boolean {
             var isSpecValid = true
             if (form_spec.inputType == TYPE_CLASS_NUMBER) {

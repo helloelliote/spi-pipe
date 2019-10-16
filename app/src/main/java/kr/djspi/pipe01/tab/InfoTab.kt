@@ -100,11 +100,6 @@ class InfoTab : Fragment() {
                     .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
             }
-
-            // TODO: 사진 표시 안됨
-            println()
-
-
         } catch (ignore: NullPointerException) {
         }
     }
