@@ -64,22 +64,26 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
                 )
         )
     } else {
-        Thread(Runnable {
-            Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
-                override fun onResponse(response: JsonObject) {
-                    val elements = response["data"].asJsonArray
-                    startActivity(
-                        Intent(applicationContext, ViewActivity::class.java)
-                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                            .putExtra("PipeView", elements[0].toString())
-                    )
-                }
+        if (jsonObject.get("spi_count").isJsonNull) {
+            messageDialog(3, getString(R.string.popup_error_not_spi), false)
+        } else {
+            Thread(Runnable {
+                Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
+                    override fun onResponse(response: JsonObject) {
+                        val elements = response["data"].asJsonArray
+                        startActivity(
+                            Intent(applicationContext, ViewActivity::class.java)
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                                .putExtra("PipeView", elements[0].toString())
+                        )
+                    }
 
-                override fun onFailure(throwable: Throwable) {
-                    messageDialog(8, throwable.message)
-                }
-            })
-        }).start()
+                    override fun onFailure(throwable: Throwable) {
+                        messageDialog(8, throwable.message)
+                    }
+                })
+            }).start()
+        }
     }
 }
 
