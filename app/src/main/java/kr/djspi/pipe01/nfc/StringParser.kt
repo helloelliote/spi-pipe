@@ -71,7 +71,7 @@ enum class StringParser(
 
         private fun parseSectionPlan(jsonObject: JsonObject): String {
             return String.format(
-                "plan_%s_%string",
+                "plan_%s_%s",
                 parseSpiType(jsonObject[TYPE.property].asString),
                 jsonObject["position"].asString
             )

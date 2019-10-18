@@ -96,9 +96,11 @@ class InfoTab : Fragment() {
 
         try {
             if (json.get("spi_memo") != JsonNull.INSTANCE) {
-                view.findViewById<TextView>(R.id.txt_memo)
-                    .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
-                view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
+                if (json.get("spi_memo") != null){
+                    view.findViewById<TextView>(R.id.txt_memo)
+                        .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
+                    view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
+                }
             }
         } catch (ignore: NullPointerException) {
         }
@@ -106,7 +108,6 @@ class InfoTab : Fragment() {
 
     private fun setPhoto(view: View) {
         try {
-            println(imageUri)
             val imageView: ImageView = view.findViewById(R.id.img_photo)
             var requestBuilder: RequestBuilder<Drawable>? = null
             val photoObj = SpiPhotoObject()
