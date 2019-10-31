@@ -161,7 +161,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         superviseDb!!.dao().selectBySupervise(pref["supervise", ""])
                     pipeSupervise.id = id
                     pipe.supervise_id = id
-                    superviseDb?.close()
                 }).start()
                 form_supervise.setText(pref["supervise", ""])
                 form_supervise_contact.setText(pref["supervise_contact", ""])
@@ -246,7 +245,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     val id = superviseDb!!.dao().selectBySupervise(text[0])
                     pipeSupervise.id = id
                     pipe.supervise_id = id
-                    superviseDb?.close()
                 }).start()
                 runOnUiThread {
                     form_supervise.setText(text[0])

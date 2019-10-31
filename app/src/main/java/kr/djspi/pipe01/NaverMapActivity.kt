@@ -11,9 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.SearchView
-import android.widget.SearchView.OnQueryTextListener
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.view.get
 import androidx.transition.Transition
 import androidx.transition.TransitionManager.beginDelayedTransition
@@ -32,17 +32,17 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MapConstants.EXTENT_KOREA
 import com.transitionseverywhere.ChangeText
 import com.transitionseverywhere.ChangeText.CHANGE_BEHAVIOR_OUT_IN
-import java.io.Serializable
-import java.util.*
-import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_navermap.*
 import kr.djspi.pipe01.BuildConfig.CLIENT_ID
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum.Companion.parsePipeType
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
+import java.io.Serializable
+import java.util.*
+import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
@@ -273,7 +273,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
         private fun setContentView() {
             nmap_listView.adapter = placesListAdapter
-            setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_LOCAL)
+            setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_GLOBAL)
             searchView.apply {
                 isSubmitButtonEnabled = true
                 setOnQueryTextListener(object : OnQueryTextListener {

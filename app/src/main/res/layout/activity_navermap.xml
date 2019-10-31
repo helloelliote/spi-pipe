@@ -13,21 +13,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <SearchView
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/nmap_searchView"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:alpha="0.9"
         android:background="#FFFFFF"
-        android:closeIcon="@drawable/ic_search_close"
         android:focusable="false"
-        android:focusableInTouchMode="true"
-        android:goIcon="@drawable/ic_search"
-        android:iconifiedByDefault="false"
-        android:imeOptions="actionSearch"
-        android:queryHint="@string/map_search_hint"
-        android:searchHintIcon="@null"
-        android:searchIcon="@null" />
+        app:closeIcon="@drawable/ic_search_close"
+        app:defaultQueryHint="@string/map_search_hint"
+        app:goIcon="@drawable/ic_search"
+        app:iconifiedByDefault="false"
+        app:queryBackground="@null"
+        app:searchHintIcon="@null"
+        app:searchIcon="@drawable/addr2"
+        app:submitBackground="@null" />
 
     <ListView
         android:id="@+id/nmap_listView"

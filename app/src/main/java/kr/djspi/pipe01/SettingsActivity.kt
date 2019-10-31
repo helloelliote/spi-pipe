@@ -119,8 +119,12 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
             }
             findPreference<Preference>("update_supervise")?.let {
                 it.setOnPreferenceClickListener { preference ->
-                    updateLocalSuperviseDatabase(context!!)
-                    preference.summary = "관리기관 목록을 업데이트하였습니다."
+                    preference.summary = "업데이트중입니다..."
+                    if (updateLocalSuperviseDatabase(context!!)) {
+                        preference.summary = "관리기관 목록을 업데이트하였습니다."
+                    } else {
+                        preference.summary = "다시 한 번 업데이트해주세요."
+                    }
                     return@setOnPreferenceClickListener false
                 }
             }

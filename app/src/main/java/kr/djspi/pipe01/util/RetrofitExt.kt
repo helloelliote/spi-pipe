@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.*
+import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.AppPreference.set
 import kr.djspi.pipe01.BaseActivity.Companion.superviseDb
 import kr.djspi.pipe01.network.Retrofit2x
@@ -12,20 +13,26 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-fun updateLocalSuperviseDatabase(context: Context) {
+fun updateLocalSuperviseDatabase(context: Context): Boolean {
     Retrofit2x.getSuperviseDatabase().enqueue(object : RetrofitCallback() {
         override fun onResponse(response: JsonObject) {
-            val jsonArray = response["data"].asJsonArray
-            val superviseDao = superviseDb?.dao()
-            jsonArray.forEach { element ->
-                val obj = element.asJsonObject
-                Thread(Runnable {
-                    superviseDao?.insert(Supervise(obj["id"].asInt, obj["supervise"].asString))
-                }).start()
-            }
-            AppPreference.defaultPrefs(context)["isSuperviseDbValid"] = true
+            Thread(Runnable {
+                val superviseDao = superviseDb!!.dao()
+                superviseDb!!.dao().all
+                if (superviseDb?.isOpen!!) {
+                    val jsonArray = response["data"].asJsonArray
+                    jsonArray.forEach { element ->
+                        val obj = element.asJsonObject
+                        superviseDao.insert(Supervise(obj["id"].asInt, obj["supervise"].asString))
+                    }
+                    AppPreference.defaultPrefs(context)["isSuperviseDbValid"] = true
+                } else {
+                    AppPreference.defaultPrefs(context)["isSuperviseDbValid"] = false
+                }
+            }).start()
         }
     })
+    return AppPreference.defaultPrefs(context)["isSuperviseDbValid"]!!
 }
 
 fun MainActivity.getOnlineServerData(intent: Intent) {

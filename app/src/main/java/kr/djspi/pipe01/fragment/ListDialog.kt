@@ -60,12 +60,11 @@ class ListDialog : DialogFragment(), OnClickListener {
                 dialogTitle = getString(R.string.popup_title_select_shape)
             }
             TAG_SUPERVISE -> {
-                Thread {
+                Thread(Runnable {
                     superviseDb!!.dao().all.forEach {
                         listItem.add(it.supervise)
                     }
-                    superviseDb?.close()
-                }.start()
+                }).start()
                 dialogTitle = getString(R.string.popup_title_select_supervise)
             }
         }

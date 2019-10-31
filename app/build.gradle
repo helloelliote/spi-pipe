@@ -70,9 +70,12 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-analytics:17.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-    // room
-    implementation 'androidx.room:room-runtime:2.2.0'
-    kapt 'androidx.room:room-compiler:2.2.0'
+
+    implementation "androidx.room:room-runtime:2.2.1"
+    kapt "androidx.room:room-compiler:2.2.1" // For Kotlin use kapt instead of annotationProcessor
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:2.2.1"
 
     implementation 'com.naver.maps:map-sdk:3.6.1'
     implementation 'com.andkulikov:transitionseverywhere:2.1.0-rc01'
