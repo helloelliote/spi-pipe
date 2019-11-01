@@ -31,6 +31,7 @@
     <string name="lay_main3_title">SPI 조회ㆍ등록</string>
     <string name="lay_main3_sub">SPI를 태깅하여 관로정보를 조회하거나\n새로운 관로정보를 등록합니다.\nSPI를 태깅하시오.</string>
     <string name="toast_spi_tag">SPI를 태깅하시오.</string>
+    <string name="lay_notify_debug">디버그 모드</string>
 
     <!--NfcUtil-->
     <string name="toast_error">입력값을 확인해주세요</string>

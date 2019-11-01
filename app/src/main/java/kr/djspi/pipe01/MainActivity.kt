@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.room.Room
 import kotlinx.android.synthetic.main.activity_base.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.sql.SuperviseDatabase
@@ -60,6 +61,16 @@ class MainActivity : LocationUpdate(), Serializable {
             Toast.makeText(this, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT).apply {
                 setGravity(Gravity.CENTER, 0, 0)
             }.show()
+        }
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            arrayOf(
+                lay_main_debug_1,
+                lay_main_debug_2,
+                lay_main_debug_3,
+                lay_main_debug_4
+            ).forEach {
+                it.visibility = View.VISIBLE
+            }
         }
     }
 
