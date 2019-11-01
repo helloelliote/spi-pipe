@@ -14,7 +14,7 @@
 
     <!--NavigationView-->
     <string name="nav_title">SPI(Smart Pipe Indicator)</string>
-    <string name="nav_version_name">버전 %1$s (%2$s)</string>
+    <string name="nav_version_name">버전 %1$s %2$s</string>
     <string name="nav_email">대진기술정보(주) %1$s</string>
     <string name="nav_dj_email">djgis@chol.com</string>
     <string name="nav_dj_phone">+82–53–424–9547</string>
@@ -22,6 +22,7 @@
     <string name="nav_app">어플리케이션</string>
     <string name="nav_guide">어플리케이션 정보</string>
     <string name="nav_homepage">홈페이지</string>
+    <string name="nav_manual_video">사용법 보기(YouTube)</string>
     <string name="nav_settings">환경설정</string>
     <string name="nav_preference">설정</string>
 

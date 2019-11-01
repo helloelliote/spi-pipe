@@ -1,6 +1,7 @@
 package kr.djspi.pipe01
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
@@ -154,6 +155,19 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                         it.findViewById<TextView>(android.R.id.message)?.textSize = 14.0f
                         it.show()
                     }
+            }
+            R.id.nav_manual_video -> {
+                val appIntent = Intent(
+                    Intent.ACTION_VIEW, Uri.parse("vnd.youtube:6Ttio_ff3n8")
+                )
+                val webIntent = Intent(
+                    Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=6Ttio_ff3n8")
+                )
+                try {
+                    startActivity(appIntent)
+                } catch (e: ActivityNotFoundException) {
+                    startActivity(webIntent)
+                }
             }
             R.id.nav_homepage -> startActivity(
                 Intent(
