@@ -96,10 +96,12 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             navigationView.setNavigationItemSelectedListener(this@BaseActivity)
 
             val version = headerView.findViewById<TextView>(R.id.versionName)
+            val buildType: String
+            if (BuildConfig.BUILD_TYPE == "debug") buildType = "(DEBUG)" else buildType = ""
             version.text = getString(
                 R.string.nav_version_name,
                 BuildConfig.VERSION_NAME,
-                BuildConfig.BUILD_TYPE
+                buildType
             )
             val email = headerView.findViewById<TextView>(R.id.email)
             email.text = getString(R.string.nav_email, "djgis@chol.com")
