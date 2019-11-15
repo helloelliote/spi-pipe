@@ -97,8 +97,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             navigationView.setNavigationItemSelectedListener(this@BaseActivity)
 
             val version = headerView.findViewById<TextView>(R.id.versionName)
-            val buildType: String
-            if (BuildConfig.BUILD_TYPE == "debug") buildType = "(DEBUG)" else buildType = ""
+            val buildType: String = if (BuildConfig.BUILD_TYPE == "debug") "(DEBUG)" else ""
             version.text = getString(
                 R.string.nav_version_name,
                 BuildConfig.VERSION_NAME,

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.system.exitProcess
 
 class Intro : AppCompatActivity() {
 
@@ -14,14 +15,14 @@ class Intro : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        if (BuildConfig.BUILD_TYPE == "release") {
-//            val installer = packageManager.getInstallerPackageName(packageName)
-//            if (!installer!!.startsWith("com.android.vending")) {
-//                finishAffinity()
-//                System.runFinalization()
-//                exitProcess(0)
-//            }
-//        }
+        if (BuildConfig.BUILD_TYPE == "release") {
+            val installer = packageManager.getInstallerPackageName(packageName)
+            if (!installer!!.startsWith("com.android.vending")) {
+                finishAffinity()
+                System.runFinalization()
+                exitProcess(0)
+            }
+        }
 
         Handler().postDelayed({
             startActivity(Intent(baseContext, MainActivity::class.java))

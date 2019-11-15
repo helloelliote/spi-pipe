@@ -3,10 +3,6 @@ package kr.djspi.pipe01
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum
 
 object Const {
-
-    internal const val URL_SPI = "http://35.200.109.228/"
-    internal const val URL_TEST = "http://192.168.0.33/"
-
     const val TAG_PIPE = "pipe"
     const val TAG_SHAPE = "shape"
     const val TAG_SUPERVISE = "supervise"

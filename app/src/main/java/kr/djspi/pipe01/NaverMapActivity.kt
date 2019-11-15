@@ -147,8 +147,8 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     }
                     R.id.button_basic -> {
                         naverMap.mapType = NaverMap.MapType.Basic
-                        group[0].setBackgroundColor(white)
-                        group[1].setBackgroundColor(green)
+                        group[1].setBackgroundColor(white)
+                        group[0].setBackgroundColor(green)
                     }
                 }
             }

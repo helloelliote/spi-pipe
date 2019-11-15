@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import kr.djspi.pipe01.MainActivity
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.util.fromHtml
+import kotlin.system.exitProcess
 
 class MessageDialog : DialogFragment(), OnClickListener {
 
@@ -96,7 +97,9 @@ class MessageDialog : DialogFragment(), OnClickListener {
                 buttonOk.text = "종료"
                 buttonOk.setOnClickListener {
                     dismiss()
-                    android.os.Process.killProcess(android.os.Process.myPid())
+//                    android.os.Process.killProcess(android.os.Process.myPid())
+                    System.runFinalization()
+                    exitProcess(0)
                 }
             }
             4 -> { // (MainActivity.class) 태그 정보 조회 실패

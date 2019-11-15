@@ -98,5 +98,5 @@ dependencies {
 
     testImplementation 'junit:junit:4.13-beta-3'
     // debugImplementation because LeakCanary should only run in debug builds.
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
 }
