@@ -12,6 +12,11 @@ import kr.djspi.pipe01.sql.Supervise
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Socket
+
+private const val HOST_SPI = "35.200.109.228"
 
 fun updateLocalSuperviseDatabase(context: Context): Boolean {
     Retrofit2x.getSuperviseDatabase().enqueue(object : RetrofitCallback() {
@@ -35,26 +40,42 @@ fun updateLocalSuperviseDatabase(context: Context): Boolean {
     return AppPreference.defaultPrefs(context)["isSuperviseDbValid"]!!
 }
 
+private fun isServerReachable(): Boolean {
+    return try {
+        Socket().use {
+            // Port =  22 - ssh, 80 or 443 - webserver, 25 - mailserver etc.
+            it.connect(InetSocketAddress(HOST_SPI, 80), 2000)
+        }
+        true
+    } catch (e: IOException) {
+        false
+    }
+}
+
 fun MainActivity.getOnlineServerData(intent: Intent) {
     Thread(Runnable {
-        val tag = nfcUtil.onNewTagIntent(intent)
-//        if (tag == null)
-        val serial = bytesToHex(tag.id)
-        val jsonQuery = JsonObject()
-        jsonQuery.addProperty("spi_serial", serial)
-        Retrofit2x.getSpi("spi-get", jsonQuery).enqueue(object : RetrofitCallback() {
-            override fun onResponse(response: JsonObject) {
-                if (response["total_count"].asInt >= 1) {
-                    processServerData(response, jsonQuery, serial)
-                } else
-                    messageDialog(3, getString(R.string.popup_error_not_spi), false)
-            }
+        if (!isServerReachable()) {
+            getOfflineTagData(intent, 0, false)
+        } else {
+            val tag = nfcUtil.onNewTagIntent(intent)
+            val serial = bytesToHex(tag.id)
+            val jsonQuery = JsonObject()
+            jsonQuery.addProperty("spi_serial", serial)
+            Retrofit2x.getSpi("spi-get", jsonQuery).enqueue(object : RetrofitCallback() {
+                override fun onResponse(response: JsonObject) {
+                    if (response["total_count"].asInt >= 1) {
+                        processServerData(response, jsonQuery, serial)
+                    } else {
+                        getOfflineTagData(intent, 0, false)
+                    }
+                }
 
-            override fun onFailure(throwable: Throwable) {
-                messageDialog(8, throwable.message)
-                throwable.printStackTrace()
-            }
-        })
+                override fun onFailure(throwable: Throwable) {
+                    messageDialog(8, throwable.message)
+                    throwable.printStackTrace()
+                }
+            })
+        }
     }).start()
 }
 

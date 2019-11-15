@@ -128,13 +128,13 @@ class MainActivity : LocationUpdate(), Serializable {
             progressbar.visibility = View.VISIBLE
             when {
                 MerlinInstance.isConnected -> getOnlineServerData(it)
-                else -> getOfflineTagData(it, 0)
+                else -> getOfflineTagData(it, 0, true)
             }
         }
     }
 
-    private fun getOfflineTagData(intent: Intent, index: Int) {
-        try {
+    fun getOfflineTagData(intent: Intent, index: Int, isOfflineMode: Boolean = true) {
+        return try {
             val stringArrayList = nfcUtil.getRecord(intent)
             stringArrayList.removeAt(0)
             val data = parseToJsonObject(stringArrayList, index)
@@ -144,7 +144,11 @@ class MainActivity : LocationUpdate(), Serializable {
                     .putExtra("PipeView", data.toString())
             )
         } catch (e: Exception) {
-            messageDialog(4, getString(R.string.popup_error_offline_read_error), true)
+            if (isOfflineMode) {
+                messageDialog(4, getString(R.string.popup_error_offline_read_error), true)
+            } else {
+                messageDialog(3, getString(R.string.popup_error_not_spi), false)
+            }
         }
     }
 }
