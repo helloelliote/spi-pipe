@@ -51,7 +51,7 @@
 
     <PreferenceCategory
         app:key="category_location"
-        app:title="위치정보">
+        app:title="위치 정보">
 
         <SwitchPreferenceCompat
             app:key="switch_location"

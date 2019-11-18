@@ -32,7 +32,7 @@ android {
             variant.buildConfigField "String", "CLIENT_ID", "\"2ckb549ihl\""
             variant.buildConfigField "String", "CLIENT_SECRET", "\"OQIllDmpKhAJHgUSChZcBkGTDw5Vq7r0j8QjPxWk\""
             variant.buildConfigField "String", "NFC_APP_KEY", "\"2ec29d3c973e2fa2e8c5ce49f98b5e64\""
-            variant.buildConfigField "String", "NFC_LICENSE_KEY", "\"0HaywLgnV0q1OycMY9Fa0uWzODl+QHLkeXXROOx3ztU1AbbFTZcz3RTFiQ0HXUYFU4fKpmPt1oyuMbrZH0Jz+w==\""
+            variant.buildConfigField "String", "NFC_OFFLINE_KEY", "\"0HaywLgnV0q1OycMY9Fa0uWzODl+QHLkeXXROOx3ztU1AbbFTZcz3RTFiQ0HXUYFU4fKpmPt1oyuMbrZH0Jz+w==\""
             variant.buildConfigField "byte[]", "k", "{(byte) 0x32, (byte) 0x30, (byte) 0x31, (byte) 0x34}"
             variant.buildConfigField "byte[]", "a", "{(byte) 0x73, (byte) 0x77}"
             outputFileName = "${android.defaultConfig.applicationId}-${variant.name}-${variant.versionName}.apk"
@@ -70,6 +70,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-analytics:17.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-messaging:20.0.1'
 
     implementation "androidx.room:room-runtime:2.2.1"
     kapt "androidx.room:room-compiler:2.2.1" // For Kotlin use kapt instead of annotationProcessor
@@ -81,7 +83,7 @@ dependencies {
     implementation 'com.andkulikov:transitionseverywhere:2.1.0-rc01'
     implementation 'com.andreabaccega:android-edittext-validator:1.3.5'
     implementation 'com.novoda:merlin:1.2.0'
-    implementation('taplinx-android:nxpnfcandroidlib:1.5@aar') {
+    implementation('taplinx-android:nxpnfcandroidlib:1.7@aar') {
         transitive = true
     }
 
@@ -98,5 +100,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13-beta-3'
     // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
 }
+
+apply plugin: 'com.google.gms.google-services'

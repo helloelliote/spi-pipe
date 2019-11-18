@@ -2,10 +2,12 @@ package kr.djspi.pipe01
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.MenuItem
@@ -20,17 +22,19 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import com.naver.maps.map.NaverMapSdk
 import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.sql.SuperviseDatabase
+import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.screenScale
 import kr.djspi.pipe01.util.settingsMenuEnabled
-import kr.djspi.pipe01.util.toast
 
 open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private lateinit var drawer: DrawerLayout
     lateinit var nfcUtil: NfcUtil
+    var locationFailureCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +66,15 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             setOnClickListener {
                 when {
                     currentLocation != null -> {
+                        locationFailureCount = 0
                         startActivity(
                             Intent(context, NaverMapActivity::class.java)
                                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         )
                     }
-                    else -> toast(getString(R.string.toast_error_location))
+                    else -> {
+                        runLocationCounter(this@BaseActivity)
+                    }
                 }
             }
         }
@@ -181,6 +188,30 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         }
         drawer.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun runLocationCounter(context: Context) {
+        when {
+            locationFailureCount == 1 -> {
+                NaverMapSdk.getInstance(context).flushCache {}
+            }
+            locationFailureCount >= 2 -> {
+                locationFailureCount++
+                progressbar.visibility = View.INVISIBLE
+                messageDialog(10, getString(R.string.popup_fail_location), false)
+                return
+            }
+        }
+        object : CountDownTimer(5000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                locationFailureCount++
+                progressbar.visibility = View.INVISIBLE
+                messageDialog(0, getString(R.string.popup_error_location))
+            }
+        }.start()
     }
 
     companion object {

@@ -96,7 +96,7 @@ class InfoTab : Fragment() {
 
         try {
             if (json.get("spi_memo") != JsonNull.INSTANCE) {
-                if (json.get("spi_memo") != null){
+                if (json.get("spi_memo") != null) {
                     view.findViewById<TextView>(R.id.txt_memo)
                         .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                     view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
@@ -117,8 +117,7 @@ class InfoTab : Fragment() {
             } else {
                 if (json.get("spi_photo_url") != null) {
                     if (!json.get("spi_photo_url").isJsonNull) {
-                        requestBuilder = Glide.with(view)
-                            .load(json["spi_photo_url"].asString)
+                        requestBuilder = Glide.with(view).load(json["spi_photo_url"].asString)
                         photoObj.url = json["spi_photo_url"].asString
                     }
                 }
@@ -128,9 +127,8 @@ class InfoTab : Fragment() {
                     .error(R.drawable.ic_photo_error)
                     .dontAnimate()
                     .into(imageView)
-                imageView.setOnClickListener { v: View? ->
-                    val imageDialog =
-                        ImageDialog()
+                imageView.setOnClickListener {
+                    val imageDialog = ImageDialog()
                     val bundle = Bundle(1)
                     bundle.putSerializable("PhotoObj", photoObj)
                     imageDialog.arguments = bundle

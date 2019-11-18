@@ -66,7 +66,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     private fun initializeLibrary(activity: Activity) {
         try {
             nxpNfcLib = NxpNfcLib.getInstance()
-            nxpNfcLib?.registerActivity(activity, NFC_APP_KEY)
+            nxpNfcLib?.registerActivity(activity, NFC_APP_KEY, NFC_OFFLINE_KEY)
         } catch (e: Exception) {
         }
     }

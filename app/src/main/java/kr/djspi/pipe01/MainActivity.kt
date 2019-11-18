@@ -3,12 +3,14 @@ package kr.djspi.pipe01
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.PowerManager
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.room.Room
+import com.naver.maps.map.NaverMapSdk
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.djspi.pipe01.AppPreference.get
@@ -16,7 +18,6 @@ import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.getOnlineServerData
 import kr.djspi.pipe01.util.messageDialog
-import kr.djspi.pipe01.util.toast
 import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
 import java.io.Serializable
 
@@ -48,8 +49,10 @@ class MainActivity : LocationUpdate(), Serializable {
                 messageDialog(8)
                 progressbar.visibility = View.INVISIBLE
             } else if (currentLocation == null) {
-                toast(getString(R.string.toast_error_location))
+                startLocationUpdates()
+                runLocationCounter(this@MainActivity)
             } else {
+                locationFailureCount = 0
                 startActivity(
                     Intent(this, NaverMapActivity::class.java)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -152,3 +155,5 @@ class MainActivity : LocationUpdate(), Serializable {
         }
     }
 }
+
+// TODO: Merlin Leak 연구, 지도보기 터치 후 무한 루프, 위치찾기 실패, 사진방향 가로눕기

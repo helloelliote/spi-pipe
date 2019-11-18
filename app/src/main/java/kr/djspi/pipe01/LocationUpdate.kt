@@ -14,6 +14,7 @@ import com.naver.maps.map.util.FusedLocationSource
 import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.toast
 
+
 abstract class LocationUpdate : BaseActivity() {
 
     /**
@@ -36,9 +37,6 @@ abstract class LocationUpdate : BaseActivity() {
     private lateinit var locationManager: LocationManager
     private lateinit var locationSource: FusedLocationSource
 
-    /**
-     * Time when the location was updated represented as a String.
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,23 +74,20 @@ abstract class LocationUpdate : BaseActivity() {
 
                 override fun onDenied(context: Context, deniedPermissions: ArrayList<String>) {
                     requestingLocationUpdates = false
-                    toast("위치정보를 사용할 수 없습니다")
+                    toast("위치 정보를 사용할 수 없습니다")
                 }
             })/*rationale*//*options*/
     }
 
-    /**
-     * Creates a callback for receiving location events.
-     */
-    private fun createLocationCallback() {
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                super.onLocationResult(locationResult)
-                locationResult?.let {
-                    currentLocation = it.lastLocation
-                }
-            }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            return
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     /**
@@ -117,6 +112,20 @@ abstract class LocationUpdate : BaseActivity() {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
 
+    /**
+     * Creates a callback for receiving location events.
+     */
+    private fun createLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                super.onLocationResult(locationResult)
+                locationResult?.let {
+                    currentLocation = it.lastLocation
+                }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         currentLocation ?: startLocationUpdates()
@@ -126,7 +135,7 @@ abstract class LocationUpdate : BaseActivity() {
      * Requests location updates from the FusedLocationApi.
      */
     @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
+    fun startLocationUpdates() {
         fusedLocationClient
             .requestLocationUpdates(
                 locationRequest, locationCallback, Looper.myLooper()
@@ -157,7 +166,7 @@ abstract class LocationUpdate : BaseActivity() {
         /**
          * The desired interval for location updates. Inexact. Updates may be more or less frequent.
          */
-        private const val UPDATE_INTERVAL_IN_MS: Long = 10000
+        private const val UPDATE_INTERVAL_IN_MS: Long = 5000
         /**
          * The fastest rate for active location updates. Exact. Updates will never be more frequent
          * than this value.

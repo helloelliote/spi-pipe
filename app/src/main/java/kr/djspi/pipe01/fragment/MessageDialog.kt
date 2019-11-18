@@ -128,6 +128,10 @@ class MessageDialog : DialogFragment(), OnClickListener {
                 title.text = "주의"
                 contentsSub.text = getString(R.string.popup_power_save_sub)
             }
+            10 -> { // (BaseActivity.class) 위치 정보를 가져오지 못하여 지도보기를 실행하지 못함
+                title.text = "주의"
+                contentsSub.text = getString(R.string.popup_error_location_count_exceed_sub)
+            }
         }
     }
 
