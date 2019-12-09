@@ -173,7 +173,7 @@
     <!--ViewActivity-->
     <string name="pipe_info">관로정보</string>
     <string name="pipe_section">단면도</string>
-    <string name="pipe_plane">평면도</string>
+    <string name="pipe_plane">측면도</string>
     <string name="pipe_confirm">정보저장</string>
 
     <string name="nfc_info_read_contents"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
