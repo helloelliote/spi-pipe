@@ -3,10 +3,14 @@ package kr.djspi.pipe01
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -162,7 +166,15 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     val jsonObject = (infoWindow.marker)?.tag as JsonObject
                     val pipe = jsonObject["pipe"].asString
                     val id = jsonObject["id"].asString
-                    "$pipe $id"
+//                    "$pipe $id"
+                    val spannable: Spannable = SpannableString("$pipe $id")
+                    spannable.setSpan(
+                        ForegroundColorSpan(Color.BLACK),
+                        0,
+                        spannable.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    return spannable
                 } else "ERROR"
             }
         }).apply {
