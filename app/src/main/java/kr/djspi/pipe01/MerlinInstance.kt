@@ -6,7 +6,7 @@ import com.novoda.merlin.*
 object MerlinInstance : Connectable, Disconnectable, Bindable {
 
     private lateinit var merlin: Merlin
-    var isConnected: Boolean = false
+    var isConnected: Boolean = true
 
     fun initiateNetworkMonitor(context: Context) {
         merlin = Merlin.Builder()

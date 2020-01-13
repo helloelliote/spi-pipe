@@ -129,10 +129,8 @@ class MainActivity : LocationUpdate(), Serializable {
         super.onNewIntent(intent)
         intent?.let {
             progressbar.visibility = View.VISIBLE
-            when {
-                MerlinInstance.isConnected -> getOnlineServerData(it)
-                else -> getOfflineTagData(it, 0, true)
-            }
+            if (MerlinInstance.isConnected) getOnlineServerData(it)
+            else getOfflineTagData(it, 0, true)
         }
     }
 
