@@ -83,8 +83,8 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
     val jsonArray = response["data"].asJsonArray
     val jsonObject = jsonArray[0].asJsonObject
     if (jsonObject["pipe_count"].asInt == 0) {
-        startActivity(
-            Intent(applicationContext, RegisterActivity::class.java)
+        this.startActivity(
+            Intent(this.applicationContext, RegisterActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(
                     "RegisterActivity",

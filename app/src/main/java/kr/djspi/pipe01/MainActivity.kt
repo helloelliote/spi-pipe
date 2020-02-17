@@ -3,14 +3,12 @@ package kr.djspi.pipe01
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.PowerManager
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.room.Room
-import com.naver.maps.map.NaverMapSdk
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.djspi.pipe01.AppPreference.get
@@ -129,8 +127,11 @@ class MainActivity : LocationUpdate(), Serializable {
         super.onNewIntent(intent)
         intent?.let {
             progressbar.visibility = View.VISIBLE
-            if (MerlinInstance.isConnected) getOnlineServerData(it)
-            else getOfflineTagData(it, 0, true)
+            if (MerlinInstance.isConnected) {
+                getOnlineServerData(it)
+            } else {
+                getOfflineTagData(it, 0, true)
+            }
         }
     }
 
