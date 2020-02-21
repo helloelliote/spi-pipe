@@ -13,7 +13,6 @@ object Const {
     const val TAG_SURVEY = "survey"
     const val TAG_PREVIEW = "preview"
     const val TAG_PHOTO = "photo"
-    val PIPE_SHAPES = arrayOf("직진형", "T분기형", "엘보형", "관말형")
     val PIPE_DIRECTIONS = arrayOf("", "", "out", "", "outl", "", "outr", "", "in", "")
     val PIPE_TYPE_ENUMS = PipeTypeEnum.values()
 

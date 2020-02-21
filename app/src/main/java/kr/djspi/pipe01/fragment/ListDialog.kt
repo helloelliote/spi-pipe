@@ -18,12 +18,12 @@ import androidx.fragment.app.DialogFragment
 import com.sylversky.indexablelistview.scroller.Indexer
 import com.sylversky.indexablelistview.widget.IndexableListView
 import kr.djspi.pipe01.BaseActivity.Companion.superviseDb
-import kr.djspi.pipe01.Const.PIPE_SHAPES
 import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
 import kr.djspi.pipe01.Const.TAG_PIPE
 import kr.djspi.pipe01.Const.TAG_SHAPE
 import kr.djspi.pipe01.Const.TAG_SUPERVISE
 import kr.djspi.pipe01.R
+import kr.djspi.pipe01.dto.PipeShape
 
 class ListDialog : DialogFragment(), OnClickListener {
 
@@ -56,7 +56,7 @@ class ListDialog : DialogFragment(), OnClickListener {
                 dialogTitle = getString(R.string.popup_title_select_pipe)
             }
             TAG_SHAPE -> {
-                listItem.addAll(listOf(*PIPE_SHAPES))
+                listItem.addAll(PipeShape.PipeShapeEnum.getTypes())
                 dialogTitle = getString(R.string.popup_title_select_shape)
             }
             TAG_SUPERVISE -> {

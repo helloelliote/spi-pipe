@@ -112,16 +112,16 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
             }
         } else {
             when (position) {
-                1 -> setTranslation(vY = -90.0f, hX = -150.0f, hY = -300.0f)
+                1 -> setTranslation(vY = -90.0f, hX = -150.0f, hY = -280.0f)
                 2 -> setTranslation(noH = true, vY = -90.0f, hX = 0.0f, hY = 0.0f)
-                3 -> setTranslation(vY = -90.0f, hX = 155.0f, hY = -300.0f)
+                3 -> setTranslation(vY = -90.0f, hX = 155.0f, hY = -280.0f)
                 4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
                 5 -> { // Unreachable case
                 }
                 6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
-                7 -> setTranslation(vY = 90.0f, hX = -150.0f, hY = 300.0f)
+                7 -> setTranslation(vY = 90.0f, hX = -150.0f, hY = 280.0f)
                 8 -> setTranslation(noH = true, vY = 95.0f, hX = 0.0f, hY = 0.0f)
-                9 -> setTranslation(vY = 95.0f, hX = 155.0f, hY = 300.0f)
+                9 -> setTranslation(vY = 95.0f, hX = 155.0f, hY = 280.0f)
             }
         }
     }

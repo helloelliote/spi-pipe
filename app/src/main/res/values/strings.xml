@@ -128,11 +128,12 @@
     <string name="popup_title_select_shape">매설관로 형태선택</string>
     <string name="popup_title_select_position">매설관로 위치선택</string>
     <string name="popup_title_select_direction">매설관로 방향선택</string>
+    <string name="popup_title_select_direction_sub">매설관로의 방향을 선택해주세요.</string>
+    <string name="popup_title_select_direction_sub_elb135">굴곡지점의 관로방향과 표지판의 관로방향이 일치하도록 부착해주세요.</string>
     <string name="popup_title_input_distance">매설관로 거리입력</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>
     <string name="popup_title_select_photo">사진 첨부</string>
     <string name="popup_error_select_position">매설관로의 위치를 선택해주세요.</string>
-    <string name="popup_error_select_direction">매설관로의 방향을 선택해주세요.</string>
     <string name="popup_error_input_distance">매설관로의 이격거리(m)를 입력해주세요.</string>
     <string name="popup_camera">사진 촬영</string>
     <string name="popup_gallery">갤러리</string>
@@ -191,6 +192,7 @@
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
     <string name="error_load_image_fail">이미지를 불러오지 못하였습니다.</string>
     <string name="error_load_image_retry">새로고침</string>
+    <string name="nfc_info_plane_elb135">굴곡지점의 관로방향은\n표지판의 관로방향을 참조하시오.</string>
 
     <!--Preferences -->
     <string name="setting_confirm">저장</string>

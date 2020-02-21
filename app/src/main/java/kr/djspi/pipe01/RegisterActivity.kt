@@ -235,7 +235,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 }
             }
             TAG_SHAPE -> {
-                form_shape.setText(PipeShape.PipeShapeEnum.values()[index].name)
+                form_shape.setText(PipeShape.PipeShapeEnum.values()[index].type)
                 form_horizontal.text = null
                 form_vertical.text = null
                 showPositionDialog()

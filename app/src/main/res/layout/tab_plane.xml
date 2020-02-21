@@ -1,79 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:ignore="ContentDescription,DuplicateIds">
 
-    <FrameLayout
-        android:id="@+id/lay_0"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/planeImageView"
+        <FrameLayout
+            android:id="@+id/lay_0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/planeImageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+
+            <TextView
+                android:id="@+id/text_plane_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext_border"
+                android:gravity="center"
+                android:minEms="3"
+                android:padding="2dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_plane_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext_border"
+                android:gravity="center"
+                android:minEms="3"
+                android:padding="2dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </FrameLayout>
 
         <TextView
-            android:id="@+id/text_plane_vertical"
-            android:layout_width="wrap_content"
+            android:id="@+id/lay_elb"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/edittext_border"
-            android:gravity="center"
-            android:minEms="3"
-            android:padding="2dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="25dp"
+            android:lineSpacingExtra="3.5dp"
+            android:text="@string/nfc_info_plane_elb135"
             android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            android:textColor="@color/colorAccent"
+            android:textSize="19sp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/lay_0" />
 
-        <TextView
-            android:id="@+id/text_plane_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/edittext_border"
-            android:gravity="center"
-            android:minEms="3"
-            android:padding="2dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-    </FrameLayout>
+        <!--<LinearLayout-->
+        <!--android:id="@+id/lay_empty"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_margin="20dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/lay_0">-->
 
-    <!--<LinearLayout-->
-    <!--android:id="@+id/lay_empty"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_margin="20dp"-->
-    <!--android:layout_weight="1"-->
-    <!--android:gravity="center"-->
-    <!--android:orientation="vertical"-->
-    <!--android:visibility="gone"-->
-    <!--app:layout_constraintTop_toBottomOf="@+id/lay_0">-->
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="15dp"-->
+        <!--android:text="@string/error_load_image_fail"-->
+        <!--android:textColor="@color/gray"-->
+        <!--android:textSize="15sp" />-->
 
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="15dp"-->
-    <!--android:text="@string/error_load_image_fail"-->
-    <!--android:textColor="@color/gray"-->
-    <!--android:textSize="15sp" />-->
-
-    <!--<android.support.design.button.MaterialButton-->
-    <!--android:id="@+id/btn_photo"-->
-    <!--style="@style/Spi.Button"-->
-    <!--android:layout_width="83.67dp"-->
-    <!--android:layout_height="33dp"-->
-    <!--android:layout_gravity="bottom|center"-->
-    <!--android:visibility="invisible" />-->
-    <!--</LinearLayout>-->
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!--<android.support.design.button.MaterialButton-->
+        <!--android:id="@+id/btn_photo"-->
+        <!--style="@style/Spi.Button"-->
+        <!--android:layout_width="83.67dp"-->
+        <!--android:layout_height="33dp"-->
+        <!--android:layout_gravity="bottom|center"-->
+        <!--android:visibility="invisible" />-->
+        <!--</LinearLayout>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

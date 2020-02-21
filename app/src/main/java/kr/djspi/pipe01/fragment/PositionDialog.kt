@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.DialogFragment
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
-import kr.djspi.pipe01.Const.PIPE_SHAPES
 import kr.djspi.pipe01.Const.TAG_DIRECTION
 import kr.djspi.pipe01.Const.TAG_POSITION
 import kr.djspi.pipe01.R
@@ -119,7 +118,7 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 views[7]!!.setImageDrawable(fromRes(R.drawable.btn_11_1))
                 views[8]!!.setImageDrawable(fromRes(R.drawable.btn_11_2))
                 views[9]!!.setImageDrawable(fromRes(R.drawable.btn_11_3))
-                if (shapeString == PIPE_SHAPES[0]) { // 직진형
+                if (shapeString == "직진형") { // 직진형
                     views[1]!!.visibility = GONE
                     (views[1]!!.parent as View).visibility = GONE
                     views[3]!!.visibility = GONE

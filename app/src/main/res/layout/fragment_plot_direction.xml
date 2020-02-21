@@ -42,11 +42,11 @@
         tools:ignore="DuplicateIds">
 
         <TextView
+            android:id="@+id/popup_title_sub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:gravity="center"
-            android:text="@string/popup_error_select_direction"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
 
