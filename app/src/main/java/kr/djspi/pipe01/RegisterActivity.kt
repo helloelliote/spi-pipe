@@ -197,7 +197,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             R.id.form_photo_thumbnail -> {
                 photoObj?.let {
                     val bundle = Bundle()
-                    bundle.putSerializable("SpiPhotoObject", it)
+                    bundle.putSerializable("PhotoObj", photoObj)
                     ImageDialog().apply {
                         arguments = bundle
                     }.show(supportFragmentManager, TAG_PHOTO)
@@ -395,6 +395,10 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         Glide.with(this).load(it).into(imageThumb)
                         val file = ImageUtil.uriToFile(this, it!!)
                         resizeFile = ImageUtil.subSample4x(file, 1024)
+                        // FIXME: 2020-02-25 Android Q 이상에 새로운 File Storage 방식이 적용될
+                        //  예정임. 그에 따라 우선 임시로 AndroidManifest.xml:32 에
+                        //  requestLegacyExternalStorage = true 설정하였음. 추후 targetSdkVersion 29 이상에 맞춰 업데이트 요망
+                        //  참고!: https://commonsware.com/blog/2019/06/07/death-external-storage-end-saga.html
                         photoObj!!.file = resizeFile
                         photoObj!!.setUri(it)
                         form_photo_name.setText(resizeFile!!.name)

@@ -29,6 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/Spi.Theme"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:allowBackup">
 
