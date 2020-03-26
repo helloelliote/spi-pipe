@@ -21,14 +21,15 @@ import com.nxp.nfclib.ndef.NdefMessageWrapper
 import com.nxp.nfclib.ndef.NdefRecordWrapper
 import com.nxp.nfclib.ntag.INTag213215216
 import com.nxp.nfclib.ntag.NTagFactory
+import kr.djspi.pipe01.BuildConfig.*
 import java.nio.charset.Charset
 import java.util.*
-import kr.djspi.pipe01.BuildConfig.*
 
 class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
 
     private lateinit var intentFilters: Array<IntentFilter>
     private var nxpNfcLib: NxpNfcLib? = null
+
     /**
      * 아래의 변수들은 반드시 final 선언해야만 하며, 그렇지 않을 경우 intent 들 간의 간섭이 발생하여
      * NFC 태그를 태깅하면 이전 액티비티 인텐트를 실행하기도 한다.
@@ -78,7 +79,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
      * @param intent 발생한 NTAG 인텐트
      * @return objNtag 인식된 NTAG 216 태그 객체
      */
-    private fun getTagType(intent: Intent): INTag213215216? {
+    private fun getNtag(intent: Intent): INTag213215216? {
         try {
             objNtag = when {
                 nxpNfcLib?.getCardType(intent) == NTag216
@@ -107,7 +108,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     fun writeTag(intent: Intent, strings: Array<String?>): Boolean {
         var isSuccess = false
         try {
-            objNtag = getTagType(intent)
+            objNtag = getNtag(intent)
             objNtag?.let {
                 it.reader.connect()
                 it.reader.timeout = 2000

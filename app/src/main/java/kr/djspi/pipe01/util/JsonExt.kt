@@ -1,6 +1,7 @@
 package kr.djspi.pipe01.util
 
 import com.google.gson.JsonObject
+import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
 import kr.djspi.pipe01.dto.*
 
 fun parseServerData(data: JsonObject, serial: String): HashMap<String, DataItem> {
@@ -13,6 +14,19 @@ fun parseServerData(data: JsonObject, serial: String): HashMap<String, DataItem>
     // SpiType.class DTO
     val type = data["spi_type"].asString
     val spiType = SpiType(typeId, type)
+    // PipeType.class DTO
+    val pipeTypeId = data["pipe_type_id"].asInt
+    val pipeType = PipeType(pipeTypeId)
+    pipeType.header = PIPE_TYPE_ENUMS[pipeTypeId - 1].header
+    pipeType.pipe = PIPE_TYPE_ENUMS[pipeTypeId - 1].pipeName
+    pipeType.unit = PIPE_TYPE_ENUMS[pipeTypeId - 1].unit
+    // PipeShape.class DTO
+    val pipeShape = PipeShape()
+    pipeShape.shape = data["pipe_shape"].asString
+    // PipeSupervise.class DTO
+    val pipeSuperviseId = data["pipe_supervise_id"].asInt
+    val pipeSupervise = PipeSupervise(pipeSuperviseId)
+    pipeSupervise.supervise = data["pipe_supervise"].asString
     // SpiLocation.class DTO
     val spiLocation = SpiLocation()
     if (!data["spi_location_id"].isJsonNull) {
@@ -46,6 +60,9 @@ fun parseServerData(data: JsonObject, serial: String): HashMap<String, DataItem>
     }
     hashMap["Spi"] = spi
     hashMap["SpiType"] = spiType
+    hashMap["PipeType"] = pipeType
+    hashMap["PipeShape"] = pipeShape
+    hashMap["PipeSupervise"] = pipeSupervise
     hashMap["SpiLocation"] = spiLocation
     hashMap["SpiMemo"] = spiMemo
     hashMap["SpiPhoto"] = spiPhoto

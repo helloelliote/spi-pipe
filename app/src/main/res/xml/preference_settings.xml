@@ -20,18 +20,10 @@
         app:key="category_default"
         app:title="입력내용">
 
-        <Preference
-            app:key="pipe_type"
-            app:title="관로종류" />
-
         <EditTextPreference
             app:key="material"
             app:title="관로재질"
             app:useSimpleSummaryProvider="true" />
-
-        <Preference
-            app:key="supervise"
-            app:title="관리기관" />
 
         <EditTextPreference
             app:key="supervise_contact"

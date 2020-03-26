@@ -30,9 +30,9 @@ class DirectionDialog : DialogFragment(), OnClickListener {
     private var typeString: String? = null
     private var shapeString: String? = null
     private var bundle: Bundle? = null
-    private var resIds = arrayOfNulls<String>(9)
+    private var resIds = arrayOfNulls<String>(10)
+    private val selects = arrayOfNulls<ImageView>(10)
     private lateinit var dialogTitleSub: String
-    private lateinit var selectView: ImageView
     private lateinit var listener: OnSelectListener
 
     override fun onAttach(context: Context) {
@@ -84,15 +84,17 @@ class DirectionDialog : DialogFragment(), OnClickListener {
         ).forEach {
             it.setOnClickListener(this)
         }
-        selectView = view.findViewById(R.id.v_select)
         setLayoutVisibility(view)
         return view
     }
 
     private fun setLayoutVisibility(view: View) {
+        val defType = "id"
         for (i in 1..4) {
             resIds[i * 2] =
                 "plan_${parseSpiType(typeString)}_${parsePipeShape(shapeString)}_${positionInt}_${PIPE_DIRECTIONS[i * 2]}"
+            selects[i * 2] =
+                view.findViewById(resources.getIdentifier("v_select_${i * 2}", defType, defPackage))
         }
         setImageView(view.findViewById(R.id.image_2), resIds[2]!!)
         setImageView(view.findViewById(R.id.image_4), resIds[4]!!)
@@ -136,27 +138,28 @@ class DirectionDialog : DialogFragment(), OnClickListener {
             R.id.button_close -> dismissAllowingStateLoss()
             R.id.lay_2 -> {
                 selectIndex = 2
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_8 -> {
                 selectIndex = 8
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_4 -> {
                 selectIndex = 4
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_6 -> {
                 selectIndex = 6
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
         }
     }
 
-    private fun setFocus(view: View) {
-        selectView.visibility = INVISIBLE
-        view.findViewById<ImageView>(R.id.v_select).visibility = VISIBLE
-        this.selectView = view.findViewById(R.id.v_select)
+    private fun setFocus(view: View, selectIndex: Int) {
+        selects.forEach {
+            it?.visibility = INVISIBLE
+        }
+        selects[selectIndex]?.visibility = VISIBLE
     }
 
     override fun onDismiss(dialog: DialogInterface) {

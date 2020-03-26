@@ -29,7 +29,7 @@ class PositionDialog : DialogFragment(), OnClickListener {
     private var dialogTitle: String? = null
     private var bundle: Bundle? = null
     private var shapeString: String? = null
-    private lateinit var selectView: ImageView
+    private val selects = arrayOfNulls<ImageView>(10)
     private lateinit var listener: OnSelectListener
 
     override fun onAttach(context: Context) {
@@ -73,7 +73,6 @@ class PositionDialog : DialogFragment(), OnClickListener {
         ).forEach {
             it.setOnClickListener(this)
         }
-        selectView = view.findViewById(R.id.v_select)
         setLayoutVisibility(view)
         return view
     }
@@ -83,6 +82,8 @@ class PositionDialog : DialogFragment(), OnClickListener {
         val views = arrayOfNulls<ImageView>(10)
         (1..9).forEach { i ->
             views[i] = view.findViewById(resources.getIdentifier("image_$i", defType, defPackage))
+            selects[i] =
+                view.findViewById(resources.getIdentifier("v_select_$i", defType, defPackage))
         }
         val background = view.findViewById<ImageView>(R.id.lay_background)
         when (typeString) {
@@ -151,48 +152,49 @@ class PositionDialog : DialogFragment(), OnClickListener {
             }
             R.id.lay_1 -> {
                 selectIndex = 1
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_2 -> {
                 selectIndex = 2
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_3 -> {
                 selectIndex = 3
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_4 -> {
                 selectIndex = 4
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_5 -> {
                 selectIndex = 5
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_6 -> {
                 selectIndex = 6
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_7 -> {
                 selectIndex = 7
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_8 -> {
                 selectIndex = 8
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.lay_9 -> {
                 selectIndex = 9
-                setFocus(v)
+                setFocus(v, selectIndex)
             }
             R.id.btn_cancel, R.id.button_close -> dismissAllowingStateLoss()
         }
     }
 
-    private fun setFocus(view: View) {
-        selectView.visibility = INVISIBLE
-        view.findViewById<ImageView>(R.id.v_select).visibility = VISIBLE
-        this.selectView = view.findViewById(R.id.v_select)
+    private fun setFocus(view: View, selectIndex: Int) {
+        selects.forEach {
+            it?.visibility = INVISIBLE
+        }
+        selects[selectIndex]?.visibility = VISIBLE
     }
 
     override fun onDismiss(dialog: DialogInterface) {

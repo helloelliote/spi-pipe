@@ -8,12 +8,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import kotlinx.android.synthetic.main.activity_base.*
-import kr.djspi.pipe01.AppPreference.get
-import kr.djspi.pipe01.AppPreference.set
-import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
-import kr.djspi.pipe01.Const.TAG_PIPE
-import kr.djspi.pipe01.Const.TAG_SUPERVISE
-import kr.djspi.pipe01.fragment.ListDialog
 import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.util.onNewIntentIgnore
 import kr.djspi.pipe01.util.onPauseNfc
@@ -43,39 +37,10 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
 
     override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         if (index == -1) return
-        when (tag) {
-            TAG_PIPE -> {
-                runOnUiThread {
-                    settingsFragment.findPreference<Preference>("pipe_type")?.summary =
-                        PIPE_TYPE_ENUMS[index].name
-                }
-                preferences["pipe_type"] = PIPE_TYPE_ENUMS[index].name
-                preferences["pipe_type_id"] = index
-            }
-            TAG_SUPERVISE -> {
-                text.let {
-                    runOnUiThread {
-                        settingsFragment.findPreference<Preference>("supervise")?.summary =
-                            text[0]
-                    }
-                    preferences["supervise"] = text[0]
-                }
-            }
-        }
-    }
-
-    private fun restoreInstanceState() {
-        runOnUiThread {
-            settingsFragment.findPreference<Preference>("pipe_type")?.summary =
-                preferences["pipe_type", ""]
-            settingsFragment.findPreference<Preference>("supervise")?.summary =
-                preferences["supervise", ""]
-        }
     }
 
     override fun onResume() {
         super.onResume()
-        restoreInstanceState()
         onResumeNfc()
     }
 
@@ -102,18 +67,6 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
                         .setPositiveButton("닫기") { dialog, _ -> dialog.dismiss() }
                         .create()
                         .show()
-                    return@setOnPreferenceClickListener false
-                }
-            }
-            findPreference<Preference>("pipe_type")?.let {
-                it.setOnPreferenceClickListener {
-                    ListDialog().show(childFragmentManager, TAG_PIPE)
-                    return@setOnPreferenceClickListener false
-                }
-            }
-            findPreference<Preference>("supervise")?.let {
-                it.setOnPreferenceClickListener {
-                    ListDialog().show(childFragmentManager, TAG_SUPERVISE)
                     return@setOnPreferenceClickListener false
                 }
             }

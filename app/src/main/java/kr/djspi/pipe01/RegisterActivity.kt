@@ -8,10 +8,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.telephony.PhoneNumberFormattingTextWatcher
-import android.text.Editable
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NEXT
 import android.view.inputmethod.InputMethodManager
@@ -26,19 +24,18 @@ import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
-import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
 import kr.djspi.pipe01.Const.REQUEST_CAPTURE_IMAGE
 import kr.djspi.pipe01.Const.REQUEST_GALLERY
 import kr.djspi.pipe01.Const.TAG_DIRECTION
 import kr.djspi.pipe01.Const.TAG_DISTANCE
 import kr.djspi.pipe01.Const.TAG_PHOTO
-import kr.djspi.pipe01.Const.TAG_PIPE
 import kr.djspi.pipe01.Const.TAG_POSITION
-import kr.djspi.pipe01.Const.TAG_SHAPE
-import kr.djspi.pipe01.Const.TAG_SUPERVISE
 import kr.djspi.pipe01.dto.*
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
-import kr.djspi.pipe01.fragment.*
+import kr.djspi.pipe01.fragment.ImageDialog
+import kr.djspi.pipe01.fragment.OnSelectListener
+import kr.djspi.pipe01.fragment.PhotoDialog
+import kr.djspi.pipe01.fragment.PositionDialog
 import kr.djspi.pipe01.util.*
 import java.io.File
 import java.io.IOException
@@ -49,19 +46,20 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     private lateinit var spi: Spi
     private lateinit var spiType: SpiType
+    private lateinit var pipeType: PipeType
+    private lateinit var pipeShape: PipeShape
+    private lateinit var pipeSupervise: PipeSupervise
     private lateinit var spiMemo: SpiMemo
     private lateinit var spiPhoto: SpiPhoto
     private lateinit var spiLocation: SpiLocation
+    private lateinit var supervise: String
     private lateinit var imm: InputMethodManager
     private var photoObj: SpiPhotoObject? = null
     private var tempFile: File? = null
     private var tempUri: Uri? = null
     private val pipe: Pipe = Pipe()
-    private val pipeType = PipeType()
-    private val pipeShape = PipeShape()
     private val pipePosition = PipePosition()
     private val pipePlan = PipePlan()
-    private val pipeSupervise = PipeSupervise()
     private lateinit var lPhotoDesc: LinearLayout
     private lateinit var imageThumb: ImageView
     private lateinit var fPhoto: FormEditText
@@ -73,6 +71,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             if (serializable is HashMap<*, *>) {
                 spi = serializable["Spi"] as Spi
                 spiType = serializable["SpiType"] as SpiType
+                pipeType = serializable["PipeType"] as PipeType
+                pipeShape = serializable["PipeShape"] as PipeShape
+                pipeSupervise = serializable["PipeSupervise"] as PipeSupervise
                 spiLocation = serializable["SpiLocation"] as SpiLocation
                 spiMemo = serializable["SpiMemo"] as SpiMemo
                 spiPhoto = serializable["SpiPhoto"] as SpiPhoto
@@ -85,20 +86,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        toolbar.title = "SPI 매설관로 ${spiType.type}"
+        toolbar.title = "SPI 지중선로 ${spiType.type}"
 
         setOnClickListeners()
-        form_shape.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                pipeShape.shape = s.toString()
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
         form_horizontal.isFocusable = false
         form_vertical.isFocusable = false
         form_depth.filters = arrayOf(DecimalFilter(4, 2))
@@ -106,28 +96,36 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             object : PhoneNumberFormattingTextWatcher() {})
         form_material.setOnEditorActionListener { v, actionId, _ ->
             var isHandled = false
-            if (actionId == IME_ACTION_NEXT && form_supervise.text.toString() == "") {
+            if (actionId == IME_ACTION_NEXT && form_supervise_contact.text.toString() == "") {
                 imm.toggleSoftInputFromWindow(v.windowToken, 0, 0)
-                ListDialog().show(this@RegisterActivity.supportFragmentManager, "supervise")
+                form_supervise_contact.requestFocus()
                 isHandled = true
             }
             return@setOnEditorActionListener isHandled
         }
         form_construction_contact.addTextChangedListener(
             object : PhoneNumberFormattingTextWatcher() {})
+        // 초기화 항목 지정
+        runOnUiThread {
+            form_pipe.setText(pipeType.pipe)
+            form_shape.setText(pipeShape.shape)
+            val fSpec = findViewById<FormEditText>(R.id.form_spec)
+            if (pipeType.unit == "mm") fSpec.inputType = TYPE_CLASS_NUMBER
+            else {
+                fSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                fSpec.error = null
+            }
+            header.text = pipeType.header
+            unit.text = pipeType.unit
+            form_supervise.setText(pipeSupervise.supervise)
+        }
     }
 
     private fun setOnClickListeners() {
         arrayOf(
-            lay_pipe,
-            form_pipe,
-            lay_shape,
-            form_shape,
             lay_distance,
             form_horizontal,
             form_vertical,
-            lay_supervise,
-            form_supervise,
             lay_photo,
             lay_photo_desc
         ).forEach {
@@ -152,17 +150,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         val pref = AppPreference.defaultPrefs(this)
         if (pref["switch_preset", false]!!) {
             runOnUiThread {
-                if (pref["pipe_type_id", -1]!! >= 0) {
-                    onPipeTypeSelect(pref["pipe_type_id", -1]!!)
-                }
                 form_material.setText(pref["material", ""])
-                Thread(Runnable {
-                    val id =
-                        superviseDb!!.dao().selectBySupervise(pref["supervise", ""])
-                    pipeSupervise.id = id
-                    pipe.supervise_id = id
-                }).start()
-                form_supervise.setText(pref["supervise", ""])
                 form_supervise_contact.setText(pref["supervise_contact", ""])
                 form_construction.setText(pref["construction", ""])
                 form_construction_contact.setText(pref["construction_contact", ""])
@@ -172,23 +160,10 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.lay_pipe, R.id.form_pipe -> ListDialog().show(supportFragmentManager, TAG_PIPE)
-            R.id.lay_shape, R.id.form_shape -> {
-                pipeShape.shape = null
-                ListDialog().show(supportFragmentManager, TAG_SHAPE)
-            }
-            R.id.lay_supervise, R.id.form_supervise -> ListDialog().show(
-                supportFragmentManager,
-                TAG_SUPERVISE
-            )
             R.id.lay_distance, R.id.form_horizontal, R.id.form_vertical -> {
                 form_horizontal.text = null
                 form_vertical.text = null
-                if (pipeShape.shape == null) {
-                    ListDialog().show(supportFragmentManager, TAG_SHAPE)
-                } else {
-                    showPositionDialog()
-                }
+                showPositionDialog()
             }
             R.id.lay_photo, R.id.form_photo -> {
                 lay_photo_desc.visibility = View.VISIBLE
@@ -227,30 +202,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         if (index == -1) return
         when (tag) {
-            TAG_PIPE -> {
-                onPipeTypeSelect(index)
-                if (form_shape.text.toString() == "") {
-                    pipeShape.shape = null
-                    ListDialog().show(supportFragmentManager, TAG_SHAPE)
-                }
-            }
-            TAG_SHAPE -> {
-                form_shape.setText(PipeShape.PipeShapeEnum.values()[index].type)
-                form_horizontal.text = null
-                form_vertical.text = null
-                showPositionDialog()
-            }
-            TAG_SUPERVISE -> {
-                Thread(Runnable {
-                    val id = superviseDb!!.dao().selectBySupervise(text[0])
-                    pipeSupervise.id = id
-                    pipe.supervise_id = id
-                }).start()
-                runOnUiThread {
-                    form_supervise.setText(text[0])
-                    form_supervise_contact.requestFocus()
-                }
-            }
             TAG_POSITION -> {
                 pipePosition.position = index
                 when (index) {
@@ -351,25 +302,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         bundle.putString("typeString", spiType.type)
         bundle.putString("shapeString", pipeShape.shape)
         PositionDialog().apply { arguments = bundle }.show(supportFragmentManager, TAG_POSITION)
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun onPipeTypeSelect(index: Int) {
-        form_pipe.setText(PIPE_TYPE_ENUMS[index].name)
-        header.text = PIPE_TYPE_ENUMS[index].header
-        val fSpec = findViewById<FormEditText>(R.id.form_spec)
-//        fSpec.hint = "$header 입력".replace("관경", "관로관경")
-        fSpec.text = null
-        unit.text = "  ${PIPE_TYPE_ENUMS[index].unit}"
-        pipe.type_id = index + 1
-        pipeType.id = index + 1
-        pipeType.header = PIPE_TYPE_ENUMS[index].header
-        pipeType.unit = PIPE_TYPE_ENUMS[index].unit
-        if (PIPE_TYPE_ENUMS[index].unit == "mm") fSpec.inputType = TYPE_CLASS_NUMBER
-        else {
-            fSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
-            fSpec.error = null
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -490,18 +422,16 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             spiPhoto.spi_id = spiId
             spiLocation.spi_id = spiId
             pipe.spi_id = spiId
+            pipe.type_id = pipeType.id
             pipe.depth = form_depth.text.toString().toDouble()
             pipe.material = form_material.text.toString()
+            pipe.supervise_id = pipeSupervise.id
             pipe.supervise_contact = form_supervise_contact.text.toString()
             pipe.construction = form_construction.text.toString()
             pipe.construction_contact = form_construction_contact.text.toString()
-            pipeType.pipe = form_pipe.text.toString()
-            pipeShape.shape = form_shape.text.toString()
             pipeShape.spec = form_spec.text.toString()
             pipePlan.file_section =
                 "plan_${parseSpiType(spiType.type)}_${pipePosition.position}.png"
-            pipeSupervise.supervise = form_supervise.text.toString()
-
             val entry = Entry(
                 spi,
                 spiType,

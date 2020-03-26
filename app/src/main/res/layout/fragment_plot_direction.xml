@@ -68,7 +68,7 @@
                     android:layout_height="match_parent" />
 
                 <ImageView
-                    android:id="@+id/v_select"
+                    android:id="@+id/v_select_2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/btn_on2"
@@ -87,7 +87,7 @@
                     android:layout_height="match_parent" />
 
                 <ImageView
-                    android:id="@+id/v_select"
+                    android:id="@+id/v_select_4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/btn_on2"
@@ -115,7 +115,7 @@
                     android:layout_height="match_parent" />
 
                 <ImageView
-                    android:id="@+id/v_select"
+                    android:id="@+id/v_select_6"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/btn_on2"
@@ -133,7 +133,7 @@
                     android:layout_height="match_parent" />
 
                 <ImageView
-                    android:id="@+id/v_select"
+                    android:id="@+id/v_select_8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/btn_on2"
