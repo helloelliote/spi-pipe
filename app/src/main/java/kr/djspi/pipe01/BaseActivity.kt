@@ -216,8 +216,10 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
 
     companion object {
         lateinit var defPackage: String
+        lateinit var currentSerial: String
         var currentLocation: Location? = null
         var superviseDb: SuperviseDatabase? = null
         var screenRatio: Float = 0.0f
+        var isReadyForPost: Boolean = false // (SpiPostActivity.class) 원치 않은 시점에서 태깅 동작이 발생하지 않도록 한다.
     }
 }

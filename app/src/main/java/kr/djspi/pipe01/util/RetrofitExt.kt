@@ -83,14 +83,16 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
     val jsonArray = response["data"].asJsonArray
     val jsonObject = jsonArray[0].asJsonObject
     if (jsonObject["pipe_count"].asInt == 0) {
-        this.startActivity(
-            Intent(this.applicationContext, RegisterActivity::class.java)
-                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(
-                    "RegisterActivity",
-                    parseServerData(jsonObject, serial)
-                )
-        )
+        try {
+            this.startActivity(
+                Intent(this.applicationContext, RegisterActivity::class.java)
+                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    .putExtra("RegisterActivity", parseServerData(jsonObject, serial))
+            )
+        } catch (e: UnsupportedOperationException) {
+            messageDialog(11, getString(R.string.popup_error_not_spi_renewal))
+            return
+        }
     } else {
         if (jsonObject.get("spi_count").isJsonNull) {
             messageDialog(3, getString(R.string.popup_error_not_spi), false)

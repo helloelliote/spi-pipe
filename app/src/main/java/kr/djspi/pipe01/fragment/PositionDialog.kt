@@ -10,11 +10,8 @@ import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.*
 import android.widget.FrameLayout.LayoutParams
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.DialogFragment
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
@@ -103,7 +100,9 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 views[1]!!.setImageDrawable(fromRes(R.drawable.btn_10_7))
                 views[2]!!.setImageDrawable(fromRes(R.drawable.btn_10_8))
                 views[3]!!.setImageDrawable(fromRes(R.drawable.btn_10_9))
+                view.findViewById<FrameLayout>(R.id.lay_4).visibility = GONE
                 views[5]!!.setImageDrawable(fromRes(R.drawable.btn_10_2))
+                view.findViewById<FrameLayout>(R.id.lay_6  ).visibility = GONE
             }
             TAG_TYPE_COLUMN -> {
                 val params = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER)

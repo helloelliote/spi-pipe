@@ -41,8 +41,8 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
 
     init {
         try {
-            intentFilters = arrayOf(IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain"))
-            intentFilters[0].addDataType("application/kr.djspi.pipe01")
+            intentFilters = arrayOf(IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED))
+//            intentFilters[0].addDataType("application/kr.djspi.pipe01")
         } catch (ignore: MalformedMimeTypeException) {
         }
 
@@ -135,49 +135,6 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
         return isSuccess
     }
 
-    fun readTag(tag: Tag): String {
-        val ret = StringBuilder()
-        try {
-            val ndefTag = Ndef.get(tag)
-            val ndefMessage = ndefTag.cachedNdefMessage
-            val ndefRecords = ndefMessage.records
-            if (ndefRecords.isNotEmpty()) {
-                ndefRecords.forEach {
-                    when {
-                        String(it.type) == String(RTD_TEXT)
-                        -> ret.append(String(it.payload, Charsets.UTF_8).substring("\nko".length))
-                        String(it.type) == String(RTD_URI)
-                        -> ret.append(String(it.payload, Charsets.UTF_8))
-                        String(it.type) == "android.com:pkg"
-                        -> ret.append(String(it.payload))
-                    }
-                }
-            }
-        } catch (ignore: Exception) {
-        }
-        return ret.toString()
-    }
-
-    /**
-     * NFC 기능 동작 확인
-     * (NFC 꺼짐) 사용자가 NFC 기능을 켤 수 있게 팝업 생성
-     */
-    fun isNfcEnabled(): Boolean {
-        return nfcAdapter != null && nfcAdapter!!.isEnabled
-    }
-
-    fun onNewTagIntent(intent: Intent): Tag {
-        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)!!
-    }
-
-    fun onResume() {
-        nfcAdapter?.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists)
-    }
-
-    fun onPause() {
-        nfcAdapter?.disableForegroundDispatch(activity)
-    }
-
     /**
      * (TapLinx 라이브러리) NDEF 레코드 생성함수
      * 0번 레코드(고정): 앱 패키지명 지정. SPI 정품 태그를 태깅할 시
@@ -241,4 +198,142 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
         }
         return recordList
     }
+
+    @Throws(NullPointerException::class)
+    fun getSerial(intent: Intent): String {
+        val tag: Tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+            ?: throw NullPointerException("Not Found")
+        val bytes: ByteArray = tag.id
+        val stringBuilder = StringBuilder(0)
+        for (byte in bytes) {
+            stringBuilder.append(String.format("%02X", byte))
+        }
+        val serial = stringBuilder.toString().replace("(..)".toRegex(), "$1:")
+        return serial.substring(0, serial.length - 1)
+    }
+
+    /**
+     * NFC 기능 동작 확인
+     * (NFC 꺼짐) 사용자가 NFC 기능을 켤 수 있게 팝업 생성
+     */
+    fun isNfcEnabled(): Boolean {
+        return nfcAdapter != null && nfcAdapter!!.isEnabled
+    }
+
+    fun onNewTagIntent(intent: Intent): Tag {
+        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)!!
+    }
+
+    fun onResume() {
+        nfcAdapter?.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists)
+    }
+
+    fun onPause() {
+        nfcAdapter?.disableForegroundDispatch(activity)
+    }
+
+    /**
+     * Reserved for spi-init
+     *
+    @Throws(IOException::class, FormatException::class)
+    fun writeInitTag(
+    intent: Intent,
+    strings: Array<String?>
+    ): Boolean {
+    val length = strings.size
+    val ndefRecords = arrayOfNulls<NdefRecord>(length)
+    ndefRecords[0] = createApplicationRecord(strings[0])
+    for (i in 1 until length) {
+    ndefRecords[i] = createTextRecord(null, strings[i])
+    }
+    val ndefMessage = NdefMessage(ndefRecords)
+
+    // 초기화 정보를 기록
+    val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+    val ndef = Ndef.get(tag)
+    if (ndef != null) {
+    ndef.connect()
+    if (ndef.isWritable && ndef.maxSize >= ndefMessage.toByteArray().size) {
+    ndef.writeNdefMessage(ndefMessage)
+    ndef.close()
+    return true
+    }
+    } else {
+    val format = NdefFormatable.get(tag)
+    if (format != null) {
+    format.connect()
+    format.format(ndefMessage)
+    format.close()
+    return true
+    }
+    }
+    return false
+    }
+
+    fun readTag(tag: Tag): String {
+    val ret = StringBuilder()
+    try {
+    val ndefTag = Ndef.get(tag)
+    val ndefMessage = ndefTag.cachedNdefMessage
+    val ndefRecords = ndefMessage.records
+    if (ndefRecords.isNotEmpty()) {
+    ndefRecords.forEach {
+    when {
+    String(it.type) == String(RTD_TEXT)
+    -> ret.append(String(it.payload, Charsets.UTF_8).substring("\nko".length))
+    String(it.type) == String(RTD_URI)
+    -> ret.append(String(it.payload, Charsets.UTF_8))
+    String(it.type) == "android.com:pkg"
+    -> ret.append(String(it.payload))
+    }
+    }
+    }
+    } catch (ignore: Exception) {
+    }
+    return ret.toString()
+    }
+
+    fun setNtagPwdProtection(intent: Intent, setReadOnly: Boolean): Boolean {
+    return try {
+    val tag: INTag213215216? = getNtag(intent)
+    tag?.programPWDPack(k, a)
+    tag?.enablePasswordProtection(false, 4)
+    if (setReadOnly) {
+    tag?.makeCardReadOnly()
+    }
+    true
+    } catch (e: Exception) {
+    false
+    }
+    }
+
+    @Throws(NullPointerException::class, NxpNfcLibException::class)
+    fun clearTag(tag: INTag213215216?): Boolean {
+    if (tag == null) {
+    throw NullPointerException("Not Found")
+    }
+    tag.authenticatePwd(k, a)
+    return if (tag.isPwdAuthenticated) {
+    tag.enablePasswordProtection(false, 255)
+    tag.clear()
+    true
+    } else {
+    throw NxpNfcLibException("Auth Fail")
+    }
+    }
+
+    @Throws(NullPointerException::class, NxpNfcLibException::class)
+    fun getCardType(intent: Intent): CardType? {
+    val type = nxpNfcLib?.getCardType(intent)
+    if (type == CardType.UnknownCard) {
+    throw NxpNfcLibException("Bad Type")
+    }
+    return when (type) {
+    NTag213 -> NTag213
+    NTag216 -> NTag216
+    else -> throw IllegalArgumentException("Bad Type")
+    }
+    }
+     *
+     */
 }

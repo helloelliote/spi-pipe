@@ -1,9 +1,9 @@
 package kr.djspi.pipe01.nfc
 
 import com.google.gson.JsonObject
-import java.util.*
 import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.Companion.parsePipeShape
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
+import java.util.*
 
 @Suppress("unused")
 enum class StringParser(
@@ -32,7 +32,8 @@ enum class StringParser(
             val parsers = values()
             val builder = StringBuilder()
             for (parser in parsers) {
-                builder.append(parser.label).append(jsonObject[parser.property].asString).append(" ")
+                builder.append(parser.label).append(jsonObject[parser.property].asString)
+                    .append(" ")
             }
             val strings = arrayOfNulls<String>(1)
             strings[index] = builder.toString().trim { it <= ' ' }

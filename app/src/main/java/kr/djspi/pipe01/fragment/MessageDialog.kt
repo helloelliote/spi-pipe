@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import kr.djspi.pipe01.BaseActivity.Companion.isReadyForPost
 import kr.djspi.pipe01.MainActivity
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.util.fromHtml
@@ -58,7 +59,12 @@ class MessageDialog : DialogFragment(), OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.button_dismiss -> activity?.onBackPressed()
-            R.id.button_ok -> dismiss()
+            R.id.button_ok -> {
+                if (issue == 5) {
+                    isReadyForPost = true
+                }
+                dismiss()
+            }
             R.id.button_close -> {
                 returnToMain = true
                 dismiss()
@@ -91,7 +97,7 @@ class MessageDialog : DialogFragment(), OnClickListener {
                     dismiss()
                 }
             }
-            3 -> { // (MainActivity.class) 정품 SPI 가 아닌 태그가 태깅되었음
+            3 -> { // (MainActivity.kt) 정품 SPI 가 아닌 태그가 태깅되었음
                 setVisibilityToGone()
                 title.text = "주의"
                 buttonOk.text = "종료"
@@ -102,21 +108,21 @@ class MessageDialog : DialogFragment(), OnClickListener {
                     exitProcess(0)
                 }
             }
-            4 -> { // (MainActivity.class) 태그 정보 조회 실패
+            4 -> { // (MainActivity.kt) 태그 정보 조회 실패
                 setVisibilityToGone()
             }
-            5 -> { // (SpiPostActivity.class) 쓰기 작업 이후 수정이 불가함을 안내
+            5 -> { // (SpiPostActivity.kt) 쓰기 작업 이후 수정이 불가함을 안내
                 setVisibilityToGone()
                 title.text = "주의"
                 contents.text = fromHtml(getString(R.string.popup_read_only))
                 buttonDismiss.visibility = View.VISIBLE
                 buttonDismiss.text = "이전"
             }
-            6 -> { // (SpiPostActivity.class) 정보가 정상적으로 기록됨
+            6 -> { // (SpiPostActivity.kt) 정보가 정상적으로 기록됨
                 setVisibilityToGone()
                 returnToMain = true
             }
-            7 -> { // (SpiPostActivity.class) 하나 이상의 관로 정보 등록 과정에서 에러 발생 안내
+            7 -> { // (SpiPostActivity.kt) 하나 이상의 관로 정보 등록 과정에서 에러 발생 안내
                 contents.text = getString(R.string.popup_error_set)
                 contentsSub.text = tag
             }
@@ -124,13 +130,20 @@ class MessageDialog : DialogFragment(), OnClickListener {
                 contents.text = getString(R.string.popup_error_comm)
                 setVisibilityToGone()
             }
-            9 -> { // (MainActivity.class) 앱 시작 시 절전모드가 실행중인지 확인
+            9 -> { // (MainActivity.kt) 앱 시작 시 절전모드가 실행중인지 확인
                 title.text = "주의"
                 contentsSub.text = getString(R.string.popup_power_save_sub)
             }
-            10 -> { // (BaseActivity.class) 위치 정보를 가져오지 못하여 지도보기를 실행하지 못함
+            10 -> { // (BaseActivity.kt) 위치 정보를 가져오지 못하여 지도보기를 실행하지 못함
                 title.text = "주의"
                 contentsSub.text = getString(R.string.popup_error_location_count_exceed_sub)
+            }
+            11 -> { // (MainActivity.kt) SPI 제품 초기화 개편 (선로종류, 형태, 관리기관 추가) 후 이전 초기화 제품에 대한 안내
+                contents.text = fromHtml(tag!!)
+                setVisibilityToGone()
+            }
+            12 -> { // (SpiPostActivity.kt) 정보를 등록하려는 태그와 실제 태깅된 태그가 다를 때 등록 거부
+                contentsSub.text = getString(R.string.popup_error_serial_mismatch_sub)
             }
         }
     }
@@ -144,7 +157,10 @@ class MessageDialog : DialogFragment(), OnClickListener {
                         .addFlags(FLAG_ACTIVITY_NEW_TASK)
                 )
             } else return
-        } else return
+        } else {
+            return
+        }
+        isReadyForPost = false
         super.onDismiss(dialog)
     }
 

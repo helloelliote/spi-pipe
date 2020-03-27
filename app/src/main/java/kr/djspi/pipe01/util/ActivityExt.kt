@@ -27,7 +27,7 @@ fun AppCompatActivity.messageDialog(issue: Int, tag: String? = "", cancelable: B
     try {
         MessageDialog.getInstance(issue, cancelable).show(supportFragmentManager, tag)
     } catch (ignore: Exception) {
-      
+
     }
 }
 
