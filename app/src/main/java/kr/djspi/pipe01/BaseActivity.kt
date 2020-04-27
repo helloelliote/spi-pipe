@@ -110,26 +110,10 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                 BuildConfig.VERSION_NAME,
                 buildType
             )
-            val email = headerView.findViewById<TextView>(R.id.email)
-            email.text = getString(R.string.nav_email, "djgis@chol.com")
-            email.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_SENDTO,
-                        Uri.fromParts("mailto", "djgis@chol.com", null)
-                    )
-                )
-            }
-            val phone = headerView.findViewById<TextView>(R.id.phone)
+            val email = headerView.findViewById<TextView>(R.id.contact_email)
+            email.text = getString(R.string.nav_email, getString(R.string.nav_dj_email))
+            val phone = headerView.findViewById<TextView>(R.id.contact_phone)
             phone.text = getString(R.string.nav_dj_phone)
-            phone.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_DIAL,
-                        Uri.parse("tel:${phone.text}")
-                    )
-                )
-            }
             val what: Any = TextAppearanceSpan(this@BaseActivity, R.style.TextAppearance20sp)
 
             val titleApp = menu.findItem(R.id.nav_apptitle)
@@ -220,6 +204,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         var currentLocation: Location? = null
         var superviseDb: SuperviseDatabase? = null
         var screenRatio: Float = 0.0f
-        var isReadyForPost: Boolean = false // (SpiPostActivity.class) 원치 않은 시점에서 태깅 동작이 발생하지 않도록 한다.
+        var isReadyForPost: Boolean =
+            false // (SpiPostActivity.class) 원치 않은 시점에서 태깅 동작이 발생하지 않도록 한다.
     }
 }
