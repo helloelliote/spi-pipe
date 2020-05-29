@@ -113,19 +113,19 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         mapFragment?.getMapAsync(this)
     }
 
-    override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap
+    override fun onMapReady(naverMap0: NaverMap) {
+        this.naverMap = naverMap0
         val fusedLocationSource = FusedLocationSource(this, 100)
-        naverMap.apply {
+        naverMap!!.apply {
             locationSource = fusedLocationSource
             locationTrackingMode = LocationTrackingMode.Follow
             addOnOptionChangeListener {
-                val mode: LocationTrackingMode = naverMap.locationTrackingMode
+                val mode: LocationTrackingMode = this.locationTrackingMode
                 fusedLocationSource.isCompassEnabled =
                     mode == LocationTrackingMode.Follow || mode == LocationTrackingMode.Face
             }
         }
-        setMapModeSwitch(naverMap)
+        setMapModeSwitch(naverMap0)
         setOverlayListener()
         SetTopSheet()
         SetBottomSheet()
