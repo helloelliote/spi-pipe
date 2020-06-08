@@ -304,31 +304,35 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         private fun setSearchPlaces(query: String) {
             Thread(Runnable {
                 val latLng = LatLng(currentLocation!!)
-                val coordinate = "${latLng.longitude},${latLng.latitude}"
-                Retrofit2x.searchPlaces(query, coordinate).enqueue(object : RetrofitCallback() {
-                    override fun onResponse(response: JsonObject) {
-                        placesArrayList.clear()
-                        behavior.state = STATE_COLLAPSED
-                        val places = response["places"].asJsonArray
-                        if (places == null || places.size() == 0) {
-                            messageDialog(0, getString(R.string.popup_error_noplace))
-                            return
+                val x = "${latLng.longitude}"
+                val y = "${latLng.latitude}"
+                Retrofit2x.searchPlaces(query, x, y)
+                    .enqueue(object : RetrofitCallback() {
+                        override fun onResponse(response: JsonObject) {
+                            placesArrayList.clear()
+                            behavior.state = STATE_COLLAPSED
+                            val metaData = response["meta"].asJsonObject
+                            val totalCount = metaData["total_count"].asInt
+                            if (totalCount == 0) {
+                                messageDialog(0, getString(R.string.popup_error_noplace))
+                                return
+                            }
+                            val places = response["documents"].asJsonArray
+                            places.forEach { place ->
+                                val jsonObject = place.asJsonObject
+                                val hashMap = HashMap<String, String>(3)
+                                hashMap["name"] = jsonObject["place_name"].asString
+                                hashMap["x"] = jsonObject["x"].asString
+                                hashMap["y"] = jsonObject["y"].asString
+                                placesArrayList.add(hashMap)
+                            }
+                            placesListAdapter?.notifyDataSetChanged()
                         }
-                        places.forEach { place ->
-                            val jsonObject = place.asJsonObject
-                            val hashMap = HashMap<String, String>(3)
-                            hashMap["name"] = jsonObject["name"].asString
-                            hashMap["x"] = jsonObject["x"].asString
-                            hashMap["y"] = jsonObject["y"].asString
-                            placesArrayList.add(hashMap)
-                        }
-                        placesListAdapter?.notifyDataSetChanged()
-                    }
 
-                    override fun onFailure(throwable: Throwable) {
-                        messageDialog(8, throwable.message)
-                    }
-                })
+                        override fun onFailure(throwable: Throwable) {
+                            messageDialog(8, throwable.message)
+                        }
+                    })
             }).start()
         }
 

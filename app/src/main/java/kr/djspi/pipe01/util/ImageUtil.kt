@@ -37,7 +37,6 @@ object ImageUtil {
         val timeStamp = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(Date())
         val imageFileName = "IMG_$timeStamp"
         val storageDir = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "")
-        System.err.println(storageDir.toString())
         return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
 

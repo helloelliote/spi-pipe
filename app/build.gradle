@@ -31,6 +31,7 @@ android {
         variant.outputs.all {
             variant.buildConfigField "String", "CLIENT_ID", "\"2ckb549ihl\""
             variant.buildConfigField "String", "CLIENT_SECRET", "\"OQIllDmpKhAJHgUSChZcBkGTDw5Vq7r0j8QjPxWk\""
+            variant.buildConfigField "String", "KAKAO_APP_KEY", "\"f389a3003f035270af558e04db3fa9f2\""
             variant.buildConfigField "String", "NFC_APP_KEY", "\"2ec29d3c973e2fa2e8c5ce49f98b5e64\""
             variant.buildConfigField "String", "NFC_OFFLINE_KEY", "\"0HaywLgnV0q1OycMY9Fa0uWzODl+QHLkeXXROOx3ztU1AbbFTZcz3RTFiQ0HXUYFU4fKpmPt1oyuMbrZH0Jz+w==\""
             variant.buildConfigField "byte[]", "k", "{(byte) 0x32, (byte) 0x30, (byte) 0x31, (byte) 0x34}"

@@ -43,7 +43,6 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
             if (it is SpiPhotoObject) {
                 file = it.file
                 part = getMultipart(file!!, "image")
-                System.err.println(file!!.length())
             }
         }
         setContentView(R.layout.activity_spi_post)
@@ -68,7 +67,6 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
                 file.name,
                 ProgressBody(file, fileType, this)
             )
-            System.err.println(part!!.body().contentLength())
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
             return null
