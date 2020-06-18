@@ -32,6 +32,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
     private lateinit var progressBar: ProgressBar
     private lateinit var progressDrawable: Drawable
     private var file: File? = null
+    private var uri: String? = null
     private var part: MultipartBody.Part? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +43,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
         intent.getSerializableExtra("Photos")?.let {
             if (it is SpiPhotoObject) {
                 file = it.file
+                uri = it.uri
                 part = getMultipart(file!!, "image")
             }
         }
@@ -118,6 +120,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
                 messageDialog(6, getString(R.string.popup_write_success), false)
                 file?.let {
                     if (it.exists()) it.delete()
+                    uri = null
                 }
             }
 

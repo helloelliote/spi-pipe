@@ -37,6 +37,7 @@ import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.fragment.PhotoDialog
 import kr.djspi.pipe01.fragment.PositionDialog
 import kr.djspi.pipe01.util.*
+import kr.djspi.pipe01.util.ImageUtil.preserveExifOf
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
@@ -312,14 +313,20 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 REQUEST_CAPTURE_IMAGE -> {
                     photoObj = SpiPhotoObject()
                     Glide.with(this).load(tempUri).into(imageThumb)
-                    resizeFile = ImageUtil.subSample4x(tempFile!!, 1024)
+                    resizeFile =
+                        ImageUtil.subSample4x(tempFile!!, 1024).preserveExifOf(tempFile!!)
                     photoObj!!.file = resizeFile
-                    photoObj!!.setUri(tempUri)
+                    photoObj!!.setUri(Uri.fromFile(resizeFile))
                     form_photo_name.setText(resizeFile.name)
                     form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary))
                     fPhoto.setText(getString(R.string.record_photo_ok))
-                    tempUri = null
-                    tempFile = null
+                    ImageUtil.saveImageToGallery(this, tempFile!!, "SPI").also {
+                        tempFile?.let {
+                            if (it.exists()) it.delete()
+                            tempFile = null
+                        }
+                        tempUri = null
+                    }
                 }
                 REQUEST_GALLERY -> {
                     intent?.data.let {
@@ -343,7 +350,8 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             when (requestCode) {
                 REQUEST_CAPTURE_IMAGE -> {
                     tempFile?.let {
-                        if (it.delete()) tempFile = null
+                        if (it.exists()) it.delete()
+                        tempFile = null
                     }
                     tempUri = null
                 }
