@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "kr.djspi.pipe01"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode gitVersionCode + 1
         versionName gitVersionName

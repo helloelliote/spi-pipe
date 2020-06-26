@@ -40,6 +40,8 @@
     <!--MessageDialog-->
     <string name="popup_ok">확 인</string>
     <string name="popup_cancel">취 소</string>
+    <string name="popup_submit">입력완료</string>
+    <string name="popup_none">입력안함</string>
     <string name="popup_next">다 음</string>
     <string name="popup_pre">이 전</string>
     <string name="popup_nfc_on">폰의 NFC 기능이 꺼져 있어\nNFC 설정창으로 이동합니다.</string>
@@ -89,13 +91,15 @@
     <!--RegisterActivity-->
     <string name="record_optional">선택입력 사항</string>
     <string name="record_optional_50">선택입력 사항 (50자 이하)</string>
-    <string name="record_location">SPI 위치설정</string>
+    <string name="record_location">위치 입력</string>
     <string name="record_confirm">관로정보 입력완료</string>
     <string name="record_error">필수입력 항목입니다.</string>
     <string name="record_photo_ok">사진이 첨부되었습니다.</string>
-    <string name="record_photo_error">카메라를 준비할 수 없습니다.</string>
-    <string name="record_delete_error">임시파일을 삭제하지 못하였습니다.</string>
+    <string name="record_photo_error">사진을 불러오지 못하였습니다.</string>
+    <string name="record_camera_error">카메라를 준비할 수 없습니다.</string>
+    <string name="record_gallery_error">갤러리를 준비할 수 없습니다.</string>
 
+    <string name="record_input_unit">m</string>
     <string name="record_input_0">관로종류</string>
     <string name="record_input_0_hint">지중선로의 종류 입력</string>
     <string name="record_input_1">관로형태</string>
@@ -148,12 +152,13 @@
 
     <!--SpiLocationActivity-->
     <string name="record_location_title">SPI 지중선로 위치설정</string>
-    <string name="record_gps_sub">지도를 움직여 SPI 설치 위치를 확정하시오</string>
-    <string name="record_confirm_location">SPI 위치 저장</string>
+    <string name="record_gps_sub">지도를 움직여 SPI 설치위치를 확정하시오</string>
+    <string name="record_confirm_location">위치 저장</string>
     <string name="popup_title_location">SPI 설치 위치 입력</string>
     <string name="popup_survey">측량좌표 입력</string>
     <string name="popup_gps">지도에서 입력</string>
-    <string name="popup_title_survey">측량좌표를 입력하시오</string>
+    <string name="popup_title_survey_spi">SPI 설치지점 측량좌표</string>
+    <string name="popup_title_survey_pipe">관로의 측량좌표</string>
     <string name="map_origin">원점</string>
     <string name="map_origin_western">서부</string>
     <string name="map_origin_central">중부</string>
@@ -179,6 +184,10 @@
     <string name="pipe_section">단면도</string>
     <string name="pipe_plane">평면도</string>
     <string name="pipe_confirm">정보저장</string>
+    <string name="pipe_plane_survey_title">관로의 측량좌표</string>
+    <string name="pipe_plane_survey_origin">원점</string>
+    <string name="pipe_plane_survey_x">X (m)</string>
+    <string name="pipe_plane_survey_y">Y (m)</string>
 
     <string name="nfc_info_read_contents"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
      로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s %4$s</font><font color="#F24E4E"> %5$s</font>
@@ -195,7 +204,7 @@
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
     <string name="error_load_image_fail">이미지를 불러오지 못하였습니다.</string>
     <string name="error_load_image_retry">새로고침</string>
-    <string name="nfc_info_plane_elb135">굴곡지점의 관로방향은\n표지판의 관로방향을 참조하시오.</string>
+    <string name="nfc_info_plane_elb135">굴곡지점의 관로방향은 표지판을 참조하시오</string>
 
     <!--Preferences -->
     <string name="setting_confirm">저장</string>

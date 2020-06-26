@@ -127,7 +127,7 @@ class DirectionDialog : DialogFragment(), OnClickListener {
                 } else {
                     bundle!!.putString("planString", resIds[selectIndex])
                     DistanceDialog().apply { arguments = bundle }
-                        .show(fragmentManager!!, TAG_DISTANCE)
+                        .show(parentFragmentManager, TAG_DISTANCE)
                     dismissAllowingStateLoss()
                 }
             }

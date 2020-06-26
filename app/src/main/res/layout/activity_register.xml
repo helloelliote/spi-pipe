@@ -84,7 +84,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.20"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
 
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_horizontal"
@@ -97,7 +97,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.20"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
         </LinearLayout>
 
         <View
@@ -131,7 +131,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.50"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
         </LinearLayout>
 
         <View

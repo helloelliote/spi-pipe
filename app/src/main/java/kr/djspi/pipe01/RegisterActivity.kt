@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
-import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
@@ -37,7 +37,10 @@ import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.fragment.PhotoDialog
 import kr.djspi.pipe01.fragment.PositionDialog
 import kr.djspi.pipe01.util.*
-import kr.djspi.pipe01.util.ImageUtil.preserveExifOf
+import kr.djspi.pipe01.util.ImageUtil.preserveExif
+import kr.djspi.pipe01.util.ImageUtil.resizeImageToRes
+import kr.djspi.pipe01.util.ImageUtil.saveImageToGallery
+import kr.djspi.pipe01.util.ImageUtil.uriToFilePath
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
@@ -53,11 +56,10 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     private lateinit var spiMemo: SpiMemo
     private lateinit var spiPhoto: SpiPhoto
     private lateinit var spiLocation: SpiLocation
-    private lateinit var supervise: String
+    private lateinit var pipeLocation: PipeLocation
     private lateinit var imm: InputMethodManager
+    private lateinit var currentPhotoPath: String
     private var photoObj: SpiPhotoObject? = null
-    private var tempFile: File? = null
-    private var tempUri: Uri? = null
     private val pipe: Pipe = Pipe()
     private val pipePosition = PipePosition()
     private val pipePlan = PipePlan()
@@ -67,17 +69,18 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent?.let {
-            val serializable = it.getSerializableExtra("RegisterActivity")
-            if (serializable is HashMap<*, *>) {
-                spi = serializable["Spi"] as Spi
-                spiType = serializable["SpiType"] as SpiType
-                pipeType = serializable["PipeType"] as PipeType
-                pipeShape = serializable["PipeShape"] as PipeShape
-                pipeSupervise = serializable["PipeSupervise"] as PipeSupervise
-                spiLocation = serializable["SpiLocation"] as SpiLocation
-                spiMemo = serializable["SpiMemo"] as SpiMemo
-                spiPhoto = serializable["SpiPhoto"] as SpiPhoto
+        if (intent != null) {
+            val extra = intent.getSerializableExtra("RegisterActivity")
+            if (extra is HashMap<*, *>) {
+                spi = extra["Spi"] as Spi
+                spiType = extra["SpiType"] as SpiType
+                pipeType = extra["PipeType"] as PipeType
+                pipeShape = extra["PipeShape"] as PipeShape
+                pipeSupervise = extra["PipeSupervise"] as PipeSupervise
+                spiLocation = extra["SpiLocation"] as SpiLocation
+                pipeLocation = extra["PipeLocation"] as PipeLocation
+                spiMemo = extra["SpiMemo"] as SpiMemo
+                spiPhoto = extra["SpiPhoto"] as SpiPhoto
             }
         }
         imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -111,8 +114,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             form_pipe.setText(pipeType.pipe)
             form_shape.setText(pipeShape.shape)
             val fSpec = findViewById<FormEditText>(R.id.form_spec)
-            if (pipeType.unit == "mm") fSpec.inputType = TYPE_CLASS_NUMBER
-            else {
+            if (pipeType.unit == "mm") {
+                fSpec.inputType = TYPE_CLASS_NUMBER
+            } else {
                 fSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
                 fSpec.error = null
             }
@@ -171,29 +175,26 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 PhotoDialog().show(supportFragmentManager, TAG_PHOTO)
             }
             R.id.form_photo_thumbnail -> {
-                photoObj?.let {
+                photoObj?.run {
                     val bundle = Bundle()
-                    bundle.putSerializable("PhotoObj", photoObj)
+                    bundle.putSerializable("PhotoObj", this)
                     ImageDialog().apply {
                         arguments = bundle
                     }.show(supportFragmentManager, TAG_PHOTO)
                 }
             }
             R.id.btn_delete -> {
-                photoObj?.let {
-                    photoObj?.uri = null
-                    photoObj?.file?.delete()
-                    photoObj?.file = null
-                    tempUri = null
-                    tempFile?.delete()
-                    tempFile = null
+                photoObj?.run {
                     form_photo_thumbnail.setImageDrawable(null)
                     form_photo_name.apply {
                         isFocusable = false
                         setText(getString(R.string.record_input_photo_delete))
-                        setTextColor(resources.getColor(R.color.colorAccent))
+                        setTextColor(resources.getColor(R.color.colorAccent, null))
                     }
                     form_photo.text = null
+                    uri = null
+                    file?.delete()
+                    file = null
                 }
             }
         }
@@ -267,34 +268,60 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 }
                 form_horizontal.setText("${form_horizontal.tag} ${text[0]}")
                 form_vertical.setText("${form_vertical.tag} ${text[1]}")
+                form_depth.requestFocus()
                 pipePosition.horizontal = text[0]!!.toDouble()
                 pipePosition.vertical = text[1]!!.toDouble()
-                form_depth.requestFocus()
                 imm.toggleSoftInput(SHOW_IMPLICIT, HIDE_NOT_ALWAYS)
             }
             TAG_PHOTO -> {
                 when (index) {
                     1 -> {
-                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        if (cameraIntent.resolveActivity(packageManager) != null) {
-                            try {
-                                tempFile = ImageUtil.prepareFile(this)
-                                tempUri = FileProvider.getUriForFile(this, packageName, tempFile!!)
-                                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri)
-                            } catch (e: IOException) {
-                                toast(getString(R.string.record_photo_error))
-                                return
+                        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { intent ->
+                            intent.resolveActivity(packageManager)?.also {
+                                val photoFile: File? = try {
+                                    createImageFile()
+                                } catch (e: IOException) {
+                                    toast(getString(R.string.record_camera_error))
+                                    null
+                                }
+                                photoFile?.also {
+                                    val photoURI: Uri =
+                                        FileProvider.getUriForFile(this, packageName, it)
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                                    startActivityForResult(intent, REQUEST_CAPTURE_IMAGE)
+                                }
                             }
                         }
-                        startActivityForResult(cameraIntent, REQUEST_CAPTURE_IMAGE)
                     }
                     2 -> {
-                        val galleryIntent = Intent(Intent.ACTION_PICK)
-                        galleryIntent.setDataAndType(EXTERNAL_CONTENT_URI, "image/*")
-                        startActivityForResult(galleryIntent, REQUEST_GALLERY)
+                        Intent(Intent.ACTION_PICK).also { intent ->
+                            intent.resolveActivity(packageManager)?.also {
+                                val photoFile: File? = try {
+                                    createImageFile()
+                                } catch (e: IOException) {
+                                    toast(getString(R.string.record_gallery_error))
+                                    null
+                                }
+                                photoFile?.also {
+                                    intent.setDataAndType(
+                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                        MediaStore.Images.Media.CONTENT_TYPE
+                                    )
+                                    startActivityForResult(intent, REQUEST_GALLERY)
+                                }
+                            }
+                        }
                     }
                 }
             }
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        return File.createTempFile("TEMP_", ".jpg", storageDir).apply {
+            currentPhotoPath = absolutePath
         }
     }
 
@@ -308,54 +335,41 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         if (resultCode == RESULT_OK) {
-            var resizeFile: File?
             when (requestCode) {
                 REQUEST_CAPTURE_IMAGE -> {
-                    photoObj = SpiPhotoObject()
-                    Glide.with(this).load(tempUri).into(imageThumb)
-                    resizeFile =
-                        ImageUtil.subSample4x(tempFile!!, 1024).preserveExifOf(tempFile!!)
-                    photoObj!!.file = resizeFile
-                    photoObj!!.setUri(Uri.fromFile(resizeFile))
+                    val file = File(currentPhotoPath)
+                    val resizeFile = file.resizeImageToRes(1024).preserveExif(file)
+                    Glide.with(this).load(resizeFile).into(imageThumb)
                     form_photo_name.setText(resizeFile.name)
-                    form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary))
+                    form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
                     fPhoto.setText(getString(R.string.record_photo_ok))
-                    ImageUtil.saveImageToGallery(this, tempFile!!, "SPI").also {
-                        tempFile?.let {
-                            if (it.exists()) it.delete()
-                            tempFile = null
+                    Thread(Runnable {
+                        photoObj = SpiPhotoObject()
+                        photoObj!!.file = resizeFile
+                        photoObj!!.setUri(Uri.fromFile(resizeFile))
+                        saveImageToGallery(file, "SPI").also {
+                            if (file.exists()) file.delete()
                         }
-                        tempUri = null
-                    }
+                    }).start()
                 }
                 REQUEST_GALLERY -> {
-                    intent?.data.let {
-                        photoObj = SpiPhotoObject()
-                        Glide.with(this).load(it).into(imageThumb)
-                        val file = ImageUtil.uriToFile(this, it!!)
-                        resizeFile = ImageUtil.subSample4x(file, 1024)
-                        // FIXME: 2020-02-25 Android Q 이상에 새로운 File Storage 방식이 적용될
-                        //  예정임. 그에 따라 우선 임시로 AndroidManifest.xml:32 에
-                        //  requestLegacyExternalStorage = true 설정하였음. 추후 targetSdkVersion 29 이상에 맞춰 업데이트 요망
-                        //  참고!: https://commonsware.com/blog/2019/06/07/death-external-storage-end-saga.html
-                        photoObj!!.file = resizeFile
-                        photoObj!!.setUri(it)
-                        form_photo_name.setText(resizeFile!!.name)
-                        form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary))
+                    intent?.data.run {
+                        val file = File(uriToFilePath(this))
+                        val resizeFile = file.resizeImageToRes(1024)
+                        Glide.with(applicationContext).load(resizeFile).into(imageThumb)
+                        form_photo_name.setText(resizeFile.name)
+                        form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
                         fPhoto.setText(getString(R.string.record_photo_ok))
+                        Thread(Runnable {
+                            photoObj = SpiPhotoObject()
+                            photoObj!!.file = resizeFile
+                            photoObj!!.setUri(this)
+                        }).start()
                     }
                 }
             }
         } else if (resultCode == RESULT_CANCELED) {
-            when (requestCode) {
-                REQUEST_CAPTURE_IMAGE -> {
-                    tempFile?.let {
-                        if (it.exists()) it.delete()
-                        tempFile = null
-                    }
-                    tempUri = null
-                }
-            }
+            toast(getString(R.string.record_photo_error))
         }
     }
 
@@ -380,17 +394,20 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 val entry = setEntry()
                 val previewEntries = ArrayList<Entry>()
                 previewEntries.add(entry)
-                startActivity(
-                    Intent(this@RegisterActivity, ViewActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .putExtra("PipeView", "Register")
-                        .putExtra("RegisterPreview", previewEntries)
-                        .putExtra("PipeIndex", 0)
-                        .putExtra("fHorizontal", form_horizontal.text.toString())
-                        .putExtra("fVertical", form_vertical.text.toString())
-                        .putExtra("PhotoObj", photoObj)
-                )
+                Intent(this@RegisterActivity, ViewActivity::class.java)
+                    .apply {
+                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        putExtra("PipeView", "Register")
+                        putExtra("RegisterPreview", previewEntries)
+                        putExtra("PipeIndex", 0)
+                        putExtra("fHorizontal", form_horizontal.text.toString())
+                        putExtra("fVertical", form_vertical.text.toString())
+                        putExtra("PhotoObj", photoObj)
+                    }.also {
+                        startActivity(it)
+                    }
             } catch (e: Exception) {
+                e.printStackTrace()
                 messageDialog(0, "다음 단계로 진행할 수 없습니다.\n입력값을 다시 확인해 주세요.")
             }
         }
@@ -418,7 +435,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             var isSpecValid = true
             if (form_spec.inputType == TYPE_CLASS_NUMBER) {
                 isSpecValid = form_spec.text.toString().toDouble() < 9999.9
-                if (!isSpecValid) form_spec.error = "이 범위(0.0 - 9999.9)안에 해당하는 숫자만 입력가능합니다."
+                if (!isSpecValid) form_spec.error = "범위(0.0 - 9999.9)내의 숫자만 입력가능합니다."
             }
             return isSpecValid
         }
@@ -453,6 +470,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 pipeSupervise
             )
             entry.spi_location = spiLocation
+            entry.pipe_location = pipeLocation
             return entry
         }
     }

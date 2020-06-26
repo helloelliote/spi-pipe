@@ -1,7 +1,7 @@
 package kr.djspi.pipe01.geolocation
 
-import kotlin.math.*
 import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
+import kotlin.math.*
 
 /**
  * convert between geodetic coordinates (longitude, latitude, height)
@@ -566,6 +566,29 @@ object GeoTrans {
 
         override fun toString(): String {
             return "Coordinate{EPSLN=$epsln, arMajor=$arMajor, arMinor=$arMinor, arScaleFactor=$arScaleFactor, arLonCenter=$arLonCenter, arLatCenter=$arLatCenter, arFalseNorthing=$arFalseNorthing, arFalseEasting=$arFalseEasting, es=$es, esp=$esp, Ind=$ind, src_m=$src_m, dst_m=$dst_m, datumX=$datumX, datumY=$datumY, datumZ=$datumZ}"
+        }
+    }
+
+    enum class CoodinateName(val alias: String) {
+        GEO(""),
+        KATEC("KATEC"),
+        TM("TM"),
+        UTMK("UMTK"),
+        GRS80("GRS80"),
+        GRS80_EAST("동부원점"),
+        GRS80_WEST("서부원점"),
+        GRS80_MIDDLE_WITH_JEJUDO("중부원점"),
+        GRS80_EASTSEA("동해원점");
+
+        companion object {
+            fun parseCoordinateName(coordinate: String): String {
+                values().forEach {
+                    if (it.name == coordinate) {
+                        return it.alias
+                    }
+                }
+                return ""
+            }
         }
     }
 }

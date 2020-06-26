@@ -1,6 +1,7 @@
 package kr.djspi.pipe01.tab
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,14 +19,14 @@ class PreviewTab : Fragment(), View.OnClickListener {
 
     private lateinit var listener: OnRecordListener
     private lateinit var json: JsonObject
-    private var imageFileUri: String? = null
+    private var imageFileUri: Uri? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnRecordListener) {
             listener = context
             json = listener.jsonObject
-            imageFileUri = listener.uri.toString()
+            imageFileUri = listener.uri
         }
     }
 

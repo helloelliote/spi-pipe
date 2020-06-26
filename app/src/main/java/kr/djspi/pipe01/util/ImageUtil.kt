@@ -1,10 +1,9 @@
 package kr.djspi.pipe01.util
 
+import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Bitmap.createScaledBitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapFactory.decodeFile
 import android.net.Uri
@@ -14,7 +13,6 @@ import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,61 +22,41 @@ object ImageUtil {
     private const val DATE_PATTERN = "yyyyMMdd_HHmmss_SSS"
     private const val REGEX_IMAGE_EXT = "((\\.(?i)(jpg|jpeg|tif|tiff|webp|png|gif|bmp))$)"
 
-    private fun uriToFilePath(context: Context, uri: Uri): String {
-        val cursor = context.contentResolver.query(uri, arrayOf("_data"), null, null, null)
+    fun Activity.uriToFilePath(uri: Uri?): String {
+        val cursor = contentResolver.query(uri!!, arrayOf("_data"), null, null, null)
         var path = ""
-        cursor?.let {
+        cursor?.use {
             it.moveToNext()
-            path = it.getString(cursor.getColumnIndex("_data"))
-            it.close()
+            path = it.getString(it.getColumnIndex("_data"))
         }
-        cursor?.close()
         return path
     }
 
-    fun uriToFile(context: Context, uri: Uri): File = File(uriToFilePath(context, uri))
-
-    @Throws(IOException::class)
-    fun prepareFile(context: Context): File {
-        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "IMG_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        )
-    }
-
-    fun subSample4x(file: File, maxResolution: Int): File {
+    fun File.resizeImageToRes(maxResolution: Int): File {
+        val timeStamp = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(Date())
+        val newFile = File(this.parent, "IMG_$timeStamp.jpg")
         val options = BitmapFactory.Options()
         options.inSampleSize = 4
-        val sourceBitmap = decodeFile(file.path, null)
-        val copyBitmap = sourceBitmap.copy(sourceBitmap.config, true)
-        val width = copyBitmap.width.toFloat()
-        val height = copyBitmap.height.toFloat()
-        val timeStamp = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(Date())
-        val newFile = File(file.parent, "IMG_$timeStamp.jpg")
-        try {
-            FileOutputStream(newFile).use { outputStream ->
-                if (width < maxResolution.toFloat() && height < maxResolution.toFloat()) {
-                    copyBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                    return newFile
+        val bitmap = decodeFile(this.path, options)
+        val width = bitmap.width.toFloat()
+        val height = bitmap.height.toFloat()
+        return FileOutputStream(newFile).use { outputStream ->
+            if (width < maxResolution.toFloat() && height < maxResolution.toFloat()) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                return@use newFile
+            } else {
+                val bitmapRatio = width / height
+                var newWidth = maxResolution
+                var newHeight = maxResolution
+                if (1.0f > bitmapRatio) {
+                    newWidth = (maxResolution.toFloat() * bitmapRatio).toInt()
                 } else {
-                    val bitmapRatio = width / height
-                    var newWidth = maxResolution
-                    var newHeight = maxResolution
-                    if (1.0f > bitmapRatio) {
-                        newWidth = (maxResolution.toFloat() * bitmapRatio).toInt()
-                    } else {
-                        newHeight = (maxResolution.toFloat() / bitmapRatio).toInt()
-                    }
-                    val resizeBitmap = createScaledBitmap(copyBitmap, newWidth, newHeight, true)
-                    resizeBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                    return newFile
+                    newHeight = (maxResolution.toFloat() / bitmapRatio).toInt()
                 }
+                val scaledBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                return@use newFile
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return file
         }
     }
 
@@ -91,7 +69,7 @@ object ImageUtil {
         return newFileName
     }
 
-    fun saveImageToGallery(context: Context, oldFile: File, folderName: String) {
+    fun Activity.saveImageToGallery(oldFile: File, folderName: String) {
         val bitmap = decodeFile(oldFile.path, null)
         val timeStamp = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(Date())
         val fileName = "IMG_$timeStamp.jpg"
@@ -102,34 +80,33 @@ object ImageUtil {
                 put(MediaStore.Images.Media.IS_PENDING, true)
             }
             val uri: Uri? =
-                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
             if (uri != null) {
-                saveImageToStream(bitmap, context.contentResolver.openOutputStream(uri))
+                saveImageToStream(bitmap, contentResolver.openOutputStream(uri))
 //                    .apply {
 //                        // TODO: EXIF 전달 테스트
 //                        uriToFile(context, uri).preserveExifOf(oldFile)
 //                    }
                 values.put(MediaStore.Images.Media.IS_PENDING, false)
-                context.contentResolver.update(uri, values, null, null)
+                contentResolver.update(uri, values, null, null)
             }
         } else {
-            val directory =
-                File(
-                    Environment.getExternalStorageDirectory()
-                        .toString() + File.separator + "Pictures" + File.separator + folderName
-                )
+            val directory = File(
+                Environment.getExternalStorageDirectory()
+                    .toString() + File.separator + "Pictures" + File.separator + folderName
+            )
             if (!directory.exists()) {
                 directory.mkdirs()
             }
             val file = File(directory, fileName)
             saveImageToStream(bitmap, FileOutputStream(file))
                 .apply {
-                    file.preserveExifOf(oldFile)
+                    file.preserveExif(oldFile)
                 }
             Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
                 val f = File(file.absolutePath)
                 mediaScanIntent.data = Uri.fromFile(f)
-                context.sendBroadcast(mediaScanIntent)
+                sendBroadcast(mediaScanIntent)
             }
         }
     }
@@ -144,7 +121,7 @@ object ImageUtil {
         }
     }
 
-    fun File.preserveExifOf(oldFile: File): File {
+    fun File.preserveExif(oldFile: File): File {
         copyExif(oldFile.path, this.absolutePath).also {
             return this
         }
@@ -156,15 +133,15 @@ object ImageUtil {
         val buildVersion = Build.VERSION.SDK_INT
 
         if (buildVersion >= 11) {
-            newExif.copyAttributeOf(oldExif, "FNumber", "ExposureTime", "ISOSpeedRatings")
+            newExif.copyAttribute(oldExif, "FNumber", "ExposureTime", "ISOSpeedRatings")
         }
         if (buildVersion >= 9) {
-            newExif.copyAttributeOf(oldExif, "GPSAltitude", "GPSAltitudeRef")
+            newExif.copyAttribute(oldExif, "GPSAltitude", "GPSAltitudeRef")
         }
         if (buildVersion >= 8) {
-            newExif.copyAttributeOf(oldExif, "FocalLength", "GPSDateStamp", "GPSProcessingMethod")
+            newExif.copyAttribute(oldExif, "FocalLength", "GPSDateStamp", "GPSProcessingMethod")
         }
-        newExif.copyAttributeOf(
+        newExif.copyAttribute(
             oldExif,
             "DateTime",
             "Flash",
@@ -181,7 +158,7 @@ object ImageUtil {
         newExif.saveAttributes()
     }
 
-    private fun ExifInterface.copyAttributeOf(oldExif: ExifInterface, vararg tags: String) {
+    private fun ExifInterface.copyAttribute(oldExif: ExifInterface, vararg tags: String) {
         tags.forEach {
             if (oldExif.getAttribute(it) != null) {
                 this.setAttribute(it, oldExif.getAttribute(it))

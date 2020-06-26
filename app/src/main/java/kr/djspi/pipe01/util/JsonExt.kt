@@ -48,6 +48,8 @@ fun parseServerData(data: JsonObject, serial: String): HashMap<String, DataItem>
         spiLocation.longitude = longitude
         spiLocation.count = count
     }
+    // PipeLocation.class DTO
+    val pipeLocation = PipeLocation()
     // SpiMemo.class DTO
     val spiMemo = SpiMemo()
     if (!data["spi_memo_id"].isJsonNull) {
@@ -73,6 +75,7 @@ fun parseServerData(data: JsonObject, serial: String): HashMap<String, DataItem>
     hashMap["PipeShape"] = pipeShape
     hashMap["PipeSupervise"] = pipeSupervise
     hashMap["SpiLocation"] = spiLocation
+    hashMap["PipeLocation"] = pipeLocation
     hashMap["SpiMemo"] = spiMemo
     hashMap["SpiPhoto"] = spiPhoto
     return hashMap

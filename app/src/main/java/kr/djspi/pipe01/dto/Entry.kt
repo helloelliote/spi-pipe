@@ -21,6 +21,7 @@ class Entry(
 ) : Serializable {
 
     var spi_location: SpiLocation? = null
+    var pipe_location: PipeLocation? = null
 
     companion object {
 
@@ -54,6 +55,9 @@ class Entry(
                 addProperty("file_section", entry.pipe_plan.file_section)
                 addProperty("latitude", entry.spi_location!!.latitude)
                 addProperty("longitude", entry.spi_location!!.longitude)
+                addProperty("coordinate_x", entry.pipe_location!!.coordinate_x)
+                addProperty("coordinate_y", entry.pipe_location!!.coordinate_y)
+                addProperty("origin", entry.pipe_location!!.origin)
             }
         }
     }

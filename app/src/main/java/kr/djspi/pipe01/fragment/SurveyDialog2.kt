@@ -14,13 +14,13 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kr.djspi.pipe01.Const.RESULT_FAIL
 import kr.djspi.pipe01.Const.RESULT_PASS
-import kr.djspi.pipe01.Const.TAG_SURVEY_SPI
+import kr.djspi.pipe01.Const.TAG_SURVEY_PIPE
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.geolocation.GeoTrans
 import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
 import kr.djspi.pipe01.util.DecimalFilter
 
-class SurveyDialog : DialogFragment(), View.OnClickListener {
+class SurveyDialog2 : DialogFragment(), View.OnClickListener {
 
     private var dialogTitle: String? = null
     private var selectIndex: Int = -1
@@ -41,9 +41,9 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            savedCheckedIndex = it.getInt("savedCheckedIndex")
+            savedCheckedIndex = it.getInt("savedCheckedIndex", -1)
         }
-        dialogTitle = getString(R.string.popup_title_survey_spi)
+        dialogTitle = getString(R.string.popup_title_survey_pipe)
     }
 
     override fun onCreateView(
@@ -59,10 +59,10 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
             val checkedRadioButton = group.findViewById<RadioButton>(checkedId)
             selectIndex = group.indexOfChild(checkedRadioButton)
             when (checkedId) {
-                R.id.nmap_radio_central -> originPoint = GRS80_MIDDLE_WITH_JEJUDO
-                R.id.nmap_radio_east -> originPoint = GRS80_EAST
-                R.id.nmap_radio_eastsea -> originPoint = GRS80_EASTSEA
-                R.id.nmap_radio_west -> originPoint = GRS80_WEST
+                R.id.nmap_radio_central -> SurveyDialog.originPoint = GRS80_MIDDLE_WITH_JEJUDO
+                R.id.nmap_radio_east -> SurveyDialog.originPoint = GRS80_EAST
+                R.id.nmap_radio_eastsea -> SurveyDialog.originPoint = GRS80_EASTSEA
+                R.id.nmap_radio_west -> SurveyDialog.originPoint = GRS80_WEST
             }
         }
         if (savedCheckedIndex > -1) {
@@ -94,7 +94,7 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
                 }
                 if (isInputValid()) {
                     listener.onSelect(
-                        TAG_SURVEY_SPI, RESULT_PASS,
+                        TAG_SURVEY_PIPE, RESULT_PASS,
                         selectIndex.toString(),
                         inputX.text.toString(),
                         inputY.text.toString()
@@ -103,7 +103,7 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
                 } else selectIndex = -1
             }
             R.id.button_dismiss -> {
-                listener.onSelect(TAG_SURVEY_SPI, RESULT_FAIL, null)
+                listener.onSelect(TAG_SURVEY_PIPE, RESULT_FAIL, null)
                 dismissAllowingStateLoss()
             }
         }

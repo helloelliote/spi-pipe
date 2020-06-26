@@ -47,7 +47,7 @@ class MainActivity : LocationUpdate(), Serializable {
                 messageDialog(8)
                 progressbar.visibility = View.INVISIBLE
             } else if (currentLocation == null) {
-                startLocationUpdates()
+//                startLocationUpdates()
                 runLocationCounter(this@MainActivity)
             } else {
                 locationFailureCount = 0
@@ -87,6 +87,7 @@ class MainActivity : LocationUpdate(), Serializable {
     override fun onResume() {
         super.onResume()
         MerlinInstance.registerNetworkCallback()
+        startLocationUpdates()
         if (progressbar.visibility == View.VISIBLE) {
             progressbar.visibility = View.GONE
         }

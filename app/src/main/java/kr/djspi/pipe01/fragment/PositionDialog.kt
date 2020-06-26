@@ -102,7 +102,7 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 views[3]!!.setImageDrawable(fromRes(R.drawable.btn_10_9))
                 view.findViewById<FrameLayout>(R.id.lay_4).visibility = GONE
                 views[5]!!.setImageDrawable(fromRes(R.drawable.btn_10_2))
-                view.findViewById<FrameLayout>(R.id.lay_6  ).visibility = GONE
+                view.findViewById<FrameLayout>(R.id.lay_6).visibility = GONE
             }
             TAG_TYPE_COLUMN -> {
                 val params = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER)
@@ -146,7 +146,7 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 listener.onSelect(TAG_POSITION, selectIndex, null)
                 bundle!!.putInt("positionInt", selectIndex)
                 DirectionDialog().apply { arguments = bundle }
-                    .show(fragmentManager!!, TAG_DIRECTION)
+                    .show(parentFragmentManager, TAG_DIRECTION)
                 dismissAllowingStateLoss()
             }
             R.id.lay_1 -> {

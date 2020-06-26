@@ -25,7 +25,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -34,14 +34,17 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
         tools:ignore="DuplicateIds">
 
         <RadioGroup
             android:id="@+id/nmap_radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -100,7 +103,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:hint="@string/map_coord_x"
-                app:errorEnabled="true"
+                app:errorEnabled="false"
                 app:errorTextAppearance="@style/Spi.ErrorText"
                 app:hintAnimationEnabled="true">
 
@@ -121,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/map_coord_y"
-                app:errorEnabled="true"
+                app:errorEnabled="false"
                 app:errorTextAppearance="@style/Spi.ErrorText"
                 app:hintAnimationEnabled="true">
 
@@ -153,7 +156,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/popup_cancel"
+            android:text="@string/popup_none"
             android:textColor="@color/colorAccent"
             android:textSize="18sp" />
 
@@ -168,7 +171,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/popup_ok"
+            android:text="@string/popup_submit"
             android:textColor="@color/blue_bright"
             android:textSize="18sp" />
     </LinearLayout>

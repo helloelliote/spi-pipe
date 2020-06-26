@@ -132,7 +132,7 @@ class InfoTab : Fragment() {
                     val bundle = Bundle(1)
                     bundle.putSerializable("PhotoObj", photoObj)
                     imageDialog.arguments = bundle
-                    imageDialog.show(fragmentManager!!, TAG_PHOTO)
+                    imageDialog.show(parentFragmentManager, TAG_PHOTO)
                 }
             }
         } catch (e: NullPointerException) {

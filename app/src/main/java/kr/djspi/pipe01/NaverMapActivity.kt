@@ -140,8 +140,8 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         toggleSwitch.apply {
             visibility = View.VISIBLE
             isSingleSelection = true
-            val green = resources.getColor(R.color.green)
-            val white = resources.getColor(android.R.color.white)
+            val green = resources.getColor(R.color.green, null)
+            val white = resources.getColor(android.R.color.white, null)
             addOnButtonCheckedListener { group, _, _ ->
                 when (group.checkedButtonId) {
                     R.id.button_hybrid -> {

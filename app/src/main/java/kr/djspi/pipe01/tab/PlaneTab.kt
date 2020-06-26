@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TableLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.gson.JsonObject
@@ -15,6 +16,7 @@ import kr.djspi.pipe01.BaseActivity
 import kr.djspi.pipe01.BaseActivity.Companion.screenRatio
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.PipeShape
+import kr.djspi.pipe01.geolocation.GeoTrans.CoodinateName.Companion.parseCoordinateName
 
 class PlaneTab : Fragment() {
 
@@ -52,6 +54,19 @@ class PlaneTab : Fragment() {
         vertical = view.findViewById(R.id.text_plane_vertical)
         vertical.text = json["vertical"].asString
         setPosition()
+        if (json["origin"] != null) {
+            if (!json["origin"].isJsonNull) {
+                view.findViewById<TableLayout>(R.id.lay_table_survey).apply {
+                    visibility = VISIBLE
+                    findViewById<TextView>(R.id.text_plane_origin).text =
+                        parseCoordinateName(json["origin"].asString)
+                    findViewById<TextView>(R.id.text_plane_x).text =
+                        json["coordinate_x"].asString
+                    findViewById<TextView>(R.id.text_plane_y).text =
+                        json["coordinate_y"].asString
+                }
+            }
+        }
         val textView = view.findViewById<TextView>(R.id.lay_elb)
         if (json["shape"].asString == PipeShape.PipeShapeEnum.엘보형135.type) {
             textView.visibility = VISIBLE
