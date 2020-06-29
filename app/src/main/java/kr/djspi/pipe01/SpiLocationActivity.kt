@@ -48,8 +48,8 @@ class SpiLocationActivity :
     private var mapFragment: MapFragment? = null
     private val spiLocationMap = HashMap<String, Any?>(5)
     private val pipeLocationMap = HashMap<String, Any?>(5)
-    private lateinit var firstLatLng: LatLng
-    private lateinit var secondLatLng: LatLng
+    private lateinit var spiLatLng: LatLng
+    private lateinit var pipeLatLng: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,63 +205,68 @@ class SpiLocationActivity :
             TAG_SURVEY_PIPE -> {
                 if (index == RESULT_PASS) {
                     AppPreference.defaultPrefs(this)["savedCheckedIndex"] = text[0]!!.toInt()
-                    val coordinate_x = text[1]!!.toDouble()
-                    val coordinate_y = text[2]!!.toDouble()
-                    secondLatLng = convertTmToLatLng(coordinate_x, coordinate_y)
-                    pipeLocationMap["latitude"] = secondLatLng.latitude
-                    pipeLocationMap["longitude"] = secondLatLng.longitude
+                    val x = text[1]!!.toDouble()
+                    val y = text[2]!!.toDouble()
+                    pipeLatLng = convertTmToLatLng(x, y)
+                    pipeLocationMap["latitude"] = pipeLatLng.latitude
+                    pipeLocationMap["longitude"] = pipeLatLng.longitude
                     pipeLocationMap["origin"] = originPoint.name
-                    pipeLocationMap["coordinate_x"] = coordinate_x
-                    pipeLocationMap["coordinate_y"] = coordinate_y
+                    pipeLocationMap["coordinate_x"] = x
+                    pipeLocationMap["coordinate_y"] = y
+                    val pipeType = intent.getStringExtra("pipeType")!!
+                    val resId = parsePipeType(pipeType).drawRes
+                    val marker = Marker().apply {
+                        position = pipeLatLng
+                        captionText = "관로"
+                        captionColor = Color.RED
+                        captionHaloColor = Color.rgb(255, 255, 255)
+                        captionTextSize = 16f
+                        setCaptionAligns(Align.Top)
+                        icon = OverlayImage.fromResource(resId)
+                        isHideCollidedSymbols = true
+                        zIndex = 100
+                    }
+                    marker.map = naverMap!!
                     val cameraUpdate = CameraUpdate
-                        .scrollAndZoomTo(secondLatLng, ZOOM_MAX - 1)
+                        .scrollAndZoomTo(pipeLatLng, ZOOM_MAX - 1)
                         .finishCallback {
-                            val pipeType = intent.getStringExtra("pipeType")!!
-                            val resId = parsePipeType(pipeType).drawRes
-                            val marker = Marker().apply {
-                                position = secondLatLng
-                                captionText = "관로"
-                                captionColor = Color.RED
-                                captionHaloColor = Color.rgb(255, 255, 255)
-                                captionTextSize = 16f
-                                setCaptionAligns(Align.Top)
-                                icon = OverlayImage.fromResource(resId)
-                                isHideCollidedSymbols = true
-                                zIndex = 100
-                            }
-                            marker.map = naverMap!!
+                            onRequestPipe()
                         }
                     naverMap!!.moveCamera(cameraUpdate)
                 } else {
-
+                    val cameraUpdate = CameraUpdate.zoomTo(ZOOM_DEFAULT)
+                    naverMap!!.moveCamera(cameraUpdate)
                 }
                 val preferences = AppPreference.defaultPrefs(this)
                 if (preferences["switch_location", false]!!) {
                     onSpiSurveyDialog()
+                } else {
+                    record_gps.visibility = View.VISIBLE
                 }
             }
             TAG_SURVEY_SPI -> {
                 if (index == RESULT_PASS) {
                     AppPreference.defaultPrefs(this)["savedCheckedIndex"] = text[0]!!.toInt()
-                    val coordinate_x = text[1]!!.toDouble()
-                    val coordinate_y = text[2]!!.toDouble()
-                    firstLatLng = convertTmToLatLng(coordinate_x, coordinate_y)
-                    spiLocationMap["latitude"] = firstLatLng.latitude
-                    spiLocationMap["longitude"] = firstLatLng.longitude
+                    val x = text[1]!!.toDouble()
+                    val y = text[2]!!.toDouble()
+                    spiLatLng = convertTmToLatLng(x, y)
+                    spiLocationMap["latitude"] = spiLatLng.latitude
+                    spiLocationMap["longitude"] = spiLatLng.longitude
                     spiLocationMap["origin"] = originPoint.name
-                    spiLocationMap["coordinate_x"] = coordinate_x
-                    spiLocationMap["coordinate_y"] = coordinate_y
+                    spiLocationMap["coordinate_x"] = x
+                    spiLocationMap["coordinate_y"] = y
+                    val marker = Marker().apply {
+                        position = spiLatLng
+                        anchor = DEFAULT_ANCHOR
+                        icon = OverlayImage.fromResource(R.drawable.ic_marker_3_2)
+                        isHideCollidedSymbols = true
+                        zIndex = 100
+                    }
+                    marker.map = naverMap!!
                     val cameraUpdate = CameraUpdate
-                        .scrollAndZoomTo(firstLatLng, ZOOM_MAX - 1)
+                        .scrollAndZoomTo(spiLatLng, ZOOM_MAX - 2)
                         .finishCallback {
-                            val marker = Marker().apply {
-                                position = firstLatLng
-                                anchor = DEFAULT_ANCHOR
-                                icon = OverlayImage.fromResource(R.drawable.ic_marker_3_2)
-                                isHideCollidedSymbols = true
-                                zIndex = 100
-                            }
-                            marker.map = naverMap!!
+                            onRequestPipe()
                         }
                     naverMap!!.moveCamera(cameraUpdate)
                 } else {
