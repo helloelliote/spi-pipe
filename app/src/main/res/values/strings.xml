@@ -159,7 +159,7 @@
     <string name="popup_gps">지도에서 입력</string>
     <string name="popup_title_survey_spi">SPI 설치지점 측량좌표</string>
     <string name="popup_title_survey_pipe">관로의 측량좌표</string>
-    <string name="map_origin">원점</string>
+    <string name="map_origin">원점:</string>
     <string name="map_origin_western">서부</string>
     <string name="map_origin_central">중부</string>
     <string name="map_origin_eastern">동부</string>

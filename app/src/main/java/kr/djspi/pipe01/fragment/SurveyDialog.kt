@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -52,6 +53,8 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_location_survey, container, false)
+        val popupTitleBackground = view.findViewById<LinearLayout>(R.id.popup_title_bg)
+        popupTitleBackground.setBackgroundColor(resources.getColor(R.color.colorAccent, null))
         val popupTitle = view.findViewById<TextView>(R.id.popup_title)
         popupTitle.text = dialogTitle
         val nmapRadiogroup = view.findViewById<RadioGroup>(R.id.nmap_radioGroup)
