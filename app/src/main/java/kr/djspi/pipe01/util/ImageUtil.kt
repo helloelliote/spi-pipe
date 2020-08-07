@@ -16,6 +16,7 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 object ImageUtil {
 
@@ -35,11 +36,16 @@ object ImageUtil {
     fun File.resizeImageToRes(maxResolution: Int): File {
         val timeStamp = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(Date())
         val newFile = File(this.parent, "IMG_$timeStamp.jpg")
-        val options = BitmapFactory.Options()
-        options.inSampleSize = 4
-        val bitmap = decodeFile(this.path, options)
+        var bitmap = decodeFile(this.path)
         val width = bitmap.width.toFloat()
         val height = bitmap.height.toFloat()
+        val options = BitmapFactory.Options()
+        options.inSampleSize = when ((if (width > height) width else height).roundToInt()) {
+            in 1..1536 -> 1
+            in 1537..3072 -> 2
+            else -> 4
+        }
+        bitmap = decodeFile(this.path, options)
         return FileOutputStream(newFile).use { outputStream ->
             if (width < maxResolution.toFloat() && height < maxResolution.toFloat()) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
