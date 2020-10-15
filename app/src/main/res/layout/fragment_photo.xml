@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="240dp"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/dialog_border"
@@ -41,18 +42,16 @@
 
         <TextView
             android:id="@+id/btn_camera"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/ic_photo"
-            android:drawablePadding="10dp"
+            android:drawablePadding="5dp"
             android:gravity="center"
-            android:paddingStart="15dp"
-            android:paddingTop="15dp"
-            android:paddingEnd="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:text="@string/popup_camera"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:drawableTopCompat="@drawable/ic_photo" />
 
         <View
             android:layout_width="2dp"
@@ -61,18 +60,16 @@
 
         <TextView
             android:id="@+id/btn_gallery"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/ic_gallery"
-            android:drawablePadding="10dp"
-            android:paddingStart="15dp"
-            android:paddingTop="15dp"
-            android:paddingEnd="15dp"
-            android:paddingBottom="15dp"
+            android:drawablePadding="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:text="@string/popup_gallery"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:drawableTopCompat="@drawable/ic_gallery" />
 
         <View
             android:layout_width="2dp"
@@ -81,17 +78,15 @@
 
         <TextView
             android:id="@+id/btn_file_viewer"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/ic_folder"
-            android:drawablePadding="10dp"
-            android:paddingStart="15dp"
-            android:paddingTop="15dp"
-            android:paddingEnd="15dp"
-            android:paddingBottom="15dp"
+            android:drawablePadding="5dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:text="@string/popup_file_viewer"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:drawableTopCompat="@drawable/ic_folder" />
     </LinearLayout>
 </LinearLayout>
