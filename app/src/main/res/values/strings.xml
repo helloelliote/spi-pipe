@@ -142,8 +142,11 @@
     <string name="popup_title_select_photo">사진 첨부</string>
     <string name="popup_error_select_position">지중선로의 위치를 선택해주세요.</string>
     <string name="popup_error_input_distance">지중선로의 이격거리(m)를 입력해주세요.</string>
-    <string name="popup_camera">사진 촬영</string>
+    <!--https://www.flaticon.com/packs/ui-interface-22-->
+    <string name="popup_camera">카메라</string>
     <string name="popup_gallery">갤러리</string>
+    <string name="popup_file_viewer">파일</string>
+    <string name="popup_file_viewer_title">파일을 선택하세요…</string>
 
     <string name="shape_name_00">직진형</string>
     <string name="shape_name_01">T분기형</string>
