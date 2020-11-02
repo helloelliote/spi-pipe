@@ -11,7 +11,7 @@ import retrofit2.Call
 
 object Retrofit2x : RequestBody() {
 
-    private const val URL_SPI = "http://35.200.109.228/"
+    private const val URL_SPI = "http://espi.kr/"
     // 2020년 6월 1일 NAVER "Search Places" 서비스 종료로, kakao 의 "키워드로 장소 검색" 서비스로 대체
     // https://developers.kakao.com/docs/latest/ko/local/dev-guide#search-by-keyword
     // App 등록: https://developers.kakao.com/console/app/445410
