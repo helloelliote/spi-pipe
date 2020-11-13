@@ -16,7 +16,7 @@ import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 
-private const val HOST_SPI = "35.200.109.228"
+private const val HOST_SPI = "http://espi.kr"
 
 fun updateLocalSuperviseDatabase(context: Context): Boolean {
     Retrofit2x.getSuperviseDatabase().enqueue(object : RetrofitCallback() {
