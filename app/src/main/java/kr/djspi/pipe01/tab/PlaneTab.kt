@@ -15,7 +15,6 @@ import com.google.gson.JsonObject
 import kr.djspi.pipe01.BaseActivity
 import kr.djspi.pipe01.BaseActivity.Companion.screenRatio
 import kr.djspi.pipe01.R
-import kr.djspi.pipe01.dto.PipeShape
 import kr.djspi.pipe01.geolocation.GeoTrans.CoodinateName.Companion.parseCoordinateName
 
 class PlaneTab : Fragment() {
@@ -67,12 +66,12 @@ class PlaneTab : Fragment() {
                 }
             }
         }
-        val textView = view.findViewById<TextView>(R.id.lay_elb)
-        if (json["shape"].asString == PipeShape.PipeShapeEnum.엘보형135.type) {
-            textView.visibility = VISIBLE
-        } else {
-            textView.visibility = GONE
-        }
+//        val textView = view.findViewById<TextView>(R.id.lay_elb)
+//        if (json["shape"].asString == PipeShape.PipeShapeEnum.엘보형135.type) {
+//            textView.visibility = VISIBLE
+//        } else {
+//            textView.visibility = GONE
+//        }
         return view
     }
 

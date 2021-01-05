@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.telephony.PhoneNumberFormattingTextWatcher
+import android.text.Editable
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NEXT
 import android.view.inputmethod.InputMethodManager
@@ -24,18 +26,17 @@ import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
+import kr.djspi.pipe01.Const.PIPE_DIRECTIONS_ELB135
 import kr.djspi.pipe01.Const.REQUEST_CAPTURE_IMAGE
 import kr.djspi.pipe01.Const.REQUEST_GALLERY
 import kr.djspi.pipe01.Const.TAG_DIRECTION
+import kr.djspi.pipe01.Const.TAG_DIRECTION_ELB135
 import kr.djspi.pipe01.Const.TAG_DISTANCE
 import kr.djspi.pipe01.Const.TAG_PHOTO
 import kr.djspi.pipe01.Const.TAG_POSITION
 import kr.djspi.pipe01.dto.*
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
-import kr.djspi.pipe01.fragment.ImageDialog
-import kr.djspi.pipe01.fragment.OnSelectListener
-import kr.djspi.pipe01.fragment.PhotoDialog
-import kr.djspi.pipe01.fragment.PositionDialog
+import kr.djspi.pipe01.fragment.*
 import kr.djspi.pipe01.util.*
 import kr.djspi.pipe01.util.ImageUtil.preserveExif
 import kr.djspi.pipe01.util.ImageUtil.resizeImageToRes
@@ -93,6 +94,17 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         toolbar.title = "SPI 지중선로 ${spiType.type}"
 
         setOnClickListeners()
+        form_shape.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                pipeShape.shape = s.toString()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
         form_horizontal.isFocusable = false
         form_vertical.isFocusable = false
         form_depth.filters = arrayOf(DecimalFilter(4, 2))
@@ -112,7 +124,8 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         // 초기화 항목 지정
         runOnUiThread {
             form_pipe.setText(pipeType.pipe)
-            form_shape.setText(pipeShape.shape)
+            if (pipeShape.shape == PipeShape.PipeShapeEnum.선택형.type) form_shape.text = null
+            else form_shape.setText(pipeShape.shape)
             val fSpec = findViewById<FormEditText>(R.id.form_spec)
             if (pipeType.unit == "mm") {
                 fSpec.inputType = TYPE_CLASS_NUMBER
@@ -135,6 +148,15 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             lay_photo_desc
         ).forEach {
             it.setOnClickListener(this)
+        }
+
+        if (pipeShape.shape == PipeShape.PipeShapeEnum.선택형.type) {
+            arrayOf(
+                lay_shape,
+                form_shape
+            ).forEach {
+                it.setOnClickListener(this)
+            }
         }
 
         fPhoto = findViewById(R.id.form_photo)
@@ -165,10 +187,19 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     override fun onClick(v: View) {
         when (v.id) {
+            R.id.lay_shape, R.id.form_shape -> {
+                pipeShape.shape = null
+                form_shape.text = null
+                ListDialog().show(supportFragmentManager, Const.TAG_SHAPE)
+            }
             R.id.lay_distance, R.id.form_horizontal, R.id.form_vertical -> {
                 form_horizontal.text = null
                 form_vertical.text = null
-                showPositionDialog()
+                if (form_shape.text.toString() == "") {
+                    ListDialog().show(supportFragmentManager, Const.TAG_SHAPE)
+                } else {
+                    showPositionDialog()
+                }
             }
             R.id.lay_photo, R.id.form_photo -> {
                 lay_photo_desc.visibility = View.VISIBLE
@@ -204,6 +235,12 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         if (index == -1) return
         when (tag) {
+            Const.TAG_SHAPE -> {
+                form_shape.setText(PipeShape.PipeShapeEnum.values()[index].type)
+                form_horizontal.text = null
+                form_vertical.text = null
+                showPositionDialog()
+            }
             TAG_POSITION -> {
                 pipePosition.position = index
                 when (index) {
@@ -259,6 +296,14 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     return
                 }
                 pipePosition.direction = PIPE_DIRECTIONS[index]
+                pipePlan.file_plane = "${text[0]}.png"
+            }
+            TAG_DIRECTION_ELB135 -> {
+                if (index == -2) {
+                    showPositionDialog()
+                    return
+                }
+                pipePosition.direction = PIPE_DIRECTIONS_ELB135[index]
                 pipePlan.file_plane = "${text[0]}.png"
             }
             TAG_DISTANCE -> {
@@ -454,6 +499,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             pipe.supervise_contact = form_supervise_contact.text.toString()
             pipe.construction = form_construction.text.toString()
             pipe.construction_contact = form_construction_contact.text.toString()
+            pipeShape.shape = form_shape.text.toString()
             pipeShape.spec = form_spec.text.toString()
             pipePlan.file_section =
                 "plan_${parseSpiType(spiType.type)}_${pipePosition.position}.png"

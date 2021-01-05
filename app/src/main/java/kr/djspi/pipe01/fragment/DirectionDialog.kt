@@ -2,7 +2,6 @@ package kr.djspi.pipe01.fragment
 
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
 import kr.djspi.pipe01.Const.TAG_DIRECTION
 import kr.djspi.pipe01.Const.TAG_DISTANCE
 import kr.djspi.pipe01.R
-import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum
 import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.Companion.parsePipeShape
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 
@@ -62,16 +60,7 @@ class DirectionDialog : DialogFragment(), OnClickListener {
         val title = view.findViewById<TextView>(R.id.popup_title)
         val titleSub = view.findViewById<TextView>(R.id.popup_title_sub)
         title.text = dialogTitle
-        dialogTitleSub = when (shapeString) {
-            PipeShapeEnum.엘보형135.type -> {
-                titleSub.setTextColor(Color.parseColor("#F24E4E"))
-                getString(R.string.popup_title_select_direction_sub_elb135)
-            }
-            else -> {
-                titleSub.setTextColor(Color.BLACK)
-                getString(R.string.popup_title_select_direction_sub)
-            }
-        }
+        dialogTitleSub = getString(R.string.popup_title_select_direction_sub)
         titleSub.text = dialogTitleSub
         arrayOf<View>(
             view.findViewById(R.id.lay_2),
