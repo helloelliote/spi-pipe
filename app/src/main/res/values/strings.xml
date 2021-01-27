@@ -112,7 +112,7 @@
     <string name="record_input_3">매설심도</string>
     <string name="record_input_3_hint">매설심도 입력</string>
     <string name="record_input_4">관로스펙</string>
-    <string name="record_input_4_hint">관로관경/코어수 등 입력</string>
+    <string name="record_input_4_hint">관로관경/관로수 등 입력</string>
     <string name="record_input_4_hint_2">%1$s 입력</string>
     <string name="record_input_5">관로재질</string>
     <string name="record_input_5_hint">관로재질 입력</string>
