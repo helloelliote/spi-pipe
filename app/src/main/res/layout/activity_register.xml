@@ -260,7 +260,7 @@
                 style="@style/FormEditText"
                 android:hint="@string/record_input_8_hint"
                 android:inputType="textNoSuggestions"
-                android:maxLength="50"
+                android:maxLength="200"
                 app:emptyAllowed="true" />
         </LinearLayout>
 
