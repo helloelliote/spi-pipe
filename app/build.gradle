@@ -10,7 +10,7 @@ android {
         applicationId "kr.djspi.pipe01"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode gitVersionCode + 1
+        versionCode gitVersionCode + 2
         versionName gitVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions.cruncherEnabled = false
