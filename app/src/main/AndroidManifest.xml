@@ -53,8 +53,7 @@
 
         <activity
             android:name=".Intro"
-            android:screenOrientation="portrait"
-            android:theme="@style/Spi.SplashTheme">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

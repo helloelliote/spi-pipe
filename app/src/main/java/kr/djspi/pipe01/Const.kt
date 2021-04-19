@@ -22,6 +22,7 @@ object Const {
     internal const val REQUEST_MAP = 30001
     internal const val REQUEST_CAPTURE_IMAGE = 10001
     internal const val REQUEST_GALLERY = 10002
+    internal const val REQUEST_APP_UPDATE = 40001
 
     const val RESULT_PASS = 200
     const val RESULT_FAIL = 400
