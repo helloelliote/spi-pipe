@@ -30,7 +30,8 @@ data class PipeType(var id: Int = -1) : DataItem, Serializable {
         가로등("가로등", R.drawable.cir_09_map, "코어수", "코어"),
         CCTV("CCTV", R.drawable.cir_10_map, "코어수", "코어"),
         광케이블("광케이블", R.drawable.cir_11_map, "관로수", ""),
-        기타관로("기타관로", R.drawable.cir_12_map, "관경", "mm");
+        기타관로("기타관로", R.drawable.cir_12_map, "관경", "mm"),
+        우수관로("우수관로", R.drawable.cir_12_map, "관경", "mm");
 
         companion object {
             fun parsePipeType(name: String): PipeTypeEnum {

@@ -79,6 +79,7 @@
     <string name="pipe_name_09">CCTV</string>
     <string name="pipe_name_10">광케이블</string>
     <string name="pipe_name_11">기타관로</string>
+    <string name="pipe_name_12">우수관로</string>
 
     <string name="map_search_point">주변관로 정보조회</string>
     <string name="map_search_input">포인트를 선택하시면 상세정보가 제공됩니다.</string>
