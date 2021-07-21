@@ -71,9 +71,9 @@ class InfoTab : Fragment() {
                     R.string.nfc_info_read_contents_alt,
                     json["pipe"].asString,
                     json["shape"].asString,
-                    json["spec"].asString,
+                    json["spec"].asString.replace("^", " "),
                     json["unit"].asString,
-                    json["material"].asString,
+                    json["material"].asString.replace("^", " "),
                     json["spi_type"].asString,
                     json["depth"].asString
                 )
@@ -84,9 +84,9 @@ class InfoTab : Fragment() {
                     R.string.nfc_info_read_contents,
                     json["pipe"].asString,
                     json["shape"].asString,
-                    json["spec"].asString,
+                    json["spec"].asString.replace("^", " "),
                     json["unit"].asString,
-                    json["material"].asString,
+                    json["material"].asString.replace("^", " "),
                     hDirection,
                     vDirection,
                     json["depth"].asString

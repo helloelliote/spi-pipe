@@ -16,6 +16,7 @@ import androidx.annotation.DrawableRes
 import androidx.fragment.app.DialogFragment
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
 import kr.djspi.pipe01.Const.TAG_DIRECTION
+import kr.djspi.pipe01.Const.TAG_DIRECTION_ELB135
 import kr.djspi.pipe01.Const.TAG_POSITION
 import kr.djspi.pipe01.R
 
@@ -145,8 +146,13 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 }
                 listener.onSelect(TAG_POSITION, selectIndex, null)
                 bundle!!.putInt("positionInt", selectIndex)
-                DirectionDialog().apply { arguments = bundle }
-                    .show(parentFragmentManager, TAG_DIRECTION)
+                if (shapeString == "엘보형(135º)") {
+                    DirectionDialogElb135().apply { arguments = bundle }
+                        .show(parentFragmentManager, TAG_DIRECTION_ELB135)
+                } else {
+                    DirectionDialog().apply { arguments = bundle }
+                        .show(parentFragmentManager, TAG_DIRECTION)
+                }
                 dismissAllowingStateLoss()
             }
             R.id.lay_1 -> {

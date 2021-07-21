@@ -79,6 +79,7 @@
     <string name="pipe_name_09">CCTV</string>
     <string name="pipe_name_10">광케이블</string>
     <string name="pipe_name_11">기타관로</string>
+    <string name="pipe_name_12">우수관로</string>
 
     <string name="map_search_point">주변관로 정보조회</string>
     <string name="map_search_input">포인트를 선택하시면 상세정보가 제공됩니다.</string>
@@ -112,7 +113,7 @@
     <string name="record_input_3">매설심도</string>
     <string name="record_input_3_hint">매설심도 입력</string>
     <string name="record_input_4">관로스펙</string>
-    <string name="record_input_4_hint">관로관경/코어수 등 입력</string>
+    <string name="record_input_4_hint">관로관경/관로수 등 입력</string>
     <string name="record_input_4_hint_2">%1$s 입력</string>
     <string name="record_input_5">관로재질</string>
     <string name="record_input_5_hint">관로재질 입력</string>
@@ -250,5 +251,5 @@
         \n
         7. 개발자 및 공급자 정보\n
         1) SPI 제품 및 개발자 : 대진기술정보(주) 053-424-9547\n
-        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3880\n</string>
+        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3800\n</string>
 </resources>

@@ -83,45 +83,62 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
     }
 
     private fun setPosition() {
-        if (shape == "직진형") {
-            when (position) {
-                1 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
-                2 -> {
-                    if (plan == "plan_plate_str_2_out") {
-                        listener.onSelect(TAG_DISTANCE, 0, "0.00", "0.00")
-                        dismissAllowingStateLoss()
-                    } else {
-                        setTranslation(noH = true, vY = -65.0f, hX = 0.0f, hY = 0.0f)
+        when (shape) {
+            "직진형" -> {
+                when (position) {
+                    1 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
+                    2 -> {
+                        if (plan == "plan_plate_str_2_out") {
+                            listener.onSelect(TAG_DISTANCE, 0, "0.00", "0.00")
+                            dismissAllowingStateLoss()
+                        } else {
+                            setTranslation(noH = true, vY = -65.0f, hX = 0.0f, hY = 0.0f)
+                        }
                     }
-                }
-                3 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
-                4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
-                5 -> { // Unreachable case
-                }
-                6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
-                7 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
-                8 -> {
-                    if (plan == "plan_plate_str_8_out") {
-                        listener.onSelect(TAG_DISTANCE, 0, "0.0", "0.0")
-                        dismissAllowingStateLoss()
-                    } else {
-                        setTranslation(noH = true, vY = 65.0f, hX = 0.0f, hY = 0.0f)
+                    3 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
+                    4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
+                    5 -> { // Unreachable case
                     }
+                    6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
+                    7 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
+                    8 -> {
+                        if (plan == "plan_plate_str_8_out") {
+                            listener.onSelect(TAG_DISTANCE, 0, "0.0", "0.0")
+                            dismissAllowingStateLoss()
+                        } else {
+                            setTranslation(noH = true, vY = 65.0f, hX = 0.0f, hY = 0.0f)
+                        }
+                    }
+                    9 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
                 }
-                9 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
             }
-        } else {
-            when (position) {
-                1 -> setTranslation(vY = -90.0f, hX = -150.0f, hY = -280.0f)
-                2 -> setTranslation(noH = true, vY = -90.0f, hX = 0.0f, hY = 0.0f)
-                3 -> setTranslation(vY = -90.0f, hX = 155.0f, hY = -280.0f)
-                4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
-                5 -> { // Unreachable case
+            "십자형" -> {
+                when (position) {
+                    1 -> setTranslation(vY = -90.0f, hX = -150.0f, hY = -280.0f)
+                    2 -> setTranslation(noH = true, vY = -45.0f, hX = 0.0f, hY = 0.0f)
+                    3 -> setTranslation(vY = -90.0f, hX = 155.0f, hY = -280.0f)
+                    4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
+                    5 -> { // Unreachable case
+                    }
+                    6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
+                    7 -> setTranslation(vY = 90.0f, hX = -150.0f, hY = 280.0f)
+                    8 -> setTranslation(noH = true, vY = 45.0f, hX = 0.0f, hY = 0.0f)
+                    9 -> setTranslation(vY = 95.0f, hX = 155.0f, hY = 280.0f)
                 }
-                6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
-                7 -> setTranslation(vY = 90.0f, hX = -150.0f, hY = 280.0f)
-                8 -> setTranslation(noH = true, vY = 95.0f, hX = 0.0f, hY = 0.0f)
-                9 -> setTranslation(vY = 95.0f, hX = 155.0f, hY = 280.0f)
+            }
+            else -> {
+                when (position) {
+                    1 -> setTranslation(vY = -90.0f, hX = -150.0f, hY = -280.0f)
+                    2 -> setTranslation(noH = true, vY = -90.0f, hX = 0.0f, hY = 0.0f)
+                    3 -> setTranslation(vY = -90.0f, hX = 155.0f, hY = -280.0f)
+                    4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
+                    5 -> { // Unreachable case
+                    }
+                    6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
+                    7 -> setTranslation(vY = 90.0f, hX = -150.0f, hY = 280.0f)
+                    8 -> setTranslation(noH = true, vY = 95.0f, hX = 0.0f, hY = 0.0f)
+                    9 -> setTranslation(vY = 95.0f, hX = 155.0f, hY = 280.0f)
+                }
             }
         }
     }

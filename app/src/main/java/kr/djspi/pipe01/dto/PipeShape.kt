@@ -20,7 +20,9 @@ data class PipeShape(var id: Int = -1) : DataItem, Serializable {
         T분기형("T분기형", "tbr"),
         엘보형("엘보형", "elb"),
         엘보형135("엘보형(135º)", "elb135"),
-        관말형("관말형", "end");
+        관말형("관말형", "end"),
+        십자형("십자형", "crs"),
+        선택형("선택형", "none");
 
         companion object {
             fun parsePipeShape(pipeShape: String?): String? {
@@ -32,10 +34,10 @@ data class PipeShape(var id: Int = -1) : DataItem, Serializable {
                 return null
             }
 
-            fun getTypes(): List<String> {
+            fun getSelectableTypes(): List<String> {
                 val array = mutableListOf<String>()
-                values().indices.forEach { i ->
-                   array.add(i, values()[i].type)
+                for (i in 0..values().size - 2) {
+                    array.add(i, values()[i].type)
                 }
                 return array
             }
