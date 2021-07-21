@@ -53,9 +53,9 @@ class SectionTab : Fragment() {
         depth.text = json["depth"].asString
         spec = view.findViewById(R.id.text_spec)
         spec.text =
-            "${json["header"].asString} ${json["spec"].asString} ${json["unit"].asString}"
+            "${json["header"].asString} ${json["spec"].asString.replace("^", " ")} ${json["unit"].asString}"
         material = view.findViewById(R.id.text_material)
-        material.text = json["material"].asString
+        material.text = json["material"].asString.replace("^", " ")
         when (json["position"].asInt) {
             1, 2, 3 -> setTranslation(false, -355.0f)
             4, 5, 6 -> {
