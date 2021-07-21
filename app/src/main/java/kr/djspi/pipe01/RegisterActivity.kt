@@ -127,11 +127,14 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             if (pipeShape.shape == PipeShape.PipeShapeEnum.선택형.type) form_shape.text = null
             else form_shape.setText(pipeShape.shape)
             val fSpec = findViewById<FormEditText>(R.id.form_spec)
-            if (pipeType.unit == "mm") {
-                fSpec.inputType = TYPE_CLASS_NUMBER
-            } else {
-                fSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
-                fSpec.error = null
+            when (pipeType.pipe) {
+                "도시가스", "상수관로", "난방관로", "유류관로", "기타관로" -> {
+                    fSpec.inputType = TYPE_CLASS_NUMBER
+                }
+                else -> {
+                    fSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                    fSpec.error = null
+                }
             }
             header.text = pipeType.header
             unit.text = pipeType.unit
