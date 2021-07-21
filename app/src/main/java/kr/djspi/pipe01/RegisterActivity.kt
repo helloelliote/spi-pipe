@@ -491,19 +491,19 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         private fun setEntry(): Entry {
             val spiId = spi.id
             spiMemo.spi_id = spiId
-            spiMemo.memo = form_memo.text.toString()
+            spiMemo.memo = form_memo.text.toString().trim()
             spiPhoto.spi_id = spiId
             spiLocation.spi_id = spiId
             pipe.spi_id = spiId
             pipe.type_id = pipeType.id
-            pipe.depth = form_depth.text.toString().toDouble()
-            pipe.material = form_material.text.toString()
+            pipe.depth = form_depth.text.toString().trim().toDouble()
+            pipe.material = form_material.text.toString().trim().replace(" ", "^")
             pipe.supervise_id = pipeSupervise.id
-            pipe.supervise_contact = form_supervise_contact.text.toString()
-            pipe.construction = form_construction.text.toString()
-            pipe.construction_contact = form_construction_contact.text.toString()
-            pipeShape.shape = form_shape.text.toString()
-            pipeShape.spec = form_spec.text.toString()
+            pipe.supervise_contact = form_supervise_contact.text.toString().trim()
+            pipe.construction = form_construction.text.toString().trim()
+            pipe.construction_contact = form_construction_contact.text.toString().trim()
+            pipeShape.shape = form_shape.text.toString().trim()
+            pipeShape.spec = form_spec.text.toString().trim().replace(" ", "^")
             pipePlan.file_section =
                 "plan_${parseSpiType(spiType.type)}_${pipePosition.position}.png"
             val entry = Entry(

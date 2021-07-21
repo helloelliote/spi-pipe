@@ -43,9 +43,9 @@ class PreviewTab : Fragment(), View.OnClickListener {
         view.findViewById<TextView>(R.id.text_vertical).text = json["vertical_form"].asString
         view.findViewById<TextView>(R.id.text_depth).text = json["depth"].asString
         view.findViewById<TextView>(R.id.header).text = json["header"].asString
-        view.findViewById<TextView>(R.id.text_spec).text = json["spec"].asString
+        view.findViewById<TextView>(R.id.text_spec).text = json["spec"].asString.replace("^", " ")
         view.findViewById<TextView>(R.id.unit).text = json["unit"].asString
-        view.findViewById<TextView>(R.id.text_material).text = json["material"].asString
+        view.findViewById<TextView>(R.id.text_material).text = json["material"].asString.replace("^", " ")
         view.findViewById<TextView>(R.id.text_supervise).text = json["supervise"].asString
         view.findViewById<TextView>(R.id.text_supervise_contact).text =
             json["supervise_contact"].asString
