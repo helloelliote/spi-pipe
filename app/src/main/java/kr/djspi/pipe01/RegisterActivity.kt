@@ -28,7 +28,6 @@ import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS_ELB135
 import kr.djspi.pipe01.Const.REQUEST_CAPTURE_IMAGE
-import kr.djspi.pipe01.Const.REQUEST_FILE_VIEWER
 import kr.djspi.pipe01.Const.REQUEST_GALLERY
 import kr.djspi.pipe01.Const.TAG_DIRECTION
 import kr.djspi.pipe01.Const.TAG_DIRECTION_ELB135
@@ -44,7 +43,6 @@ import kr.djspi.pipe01.util.ImageUtil.resizeImageToRes
 import kr.djspi.pipe01.util.ImageUtil.saveImageToGallery
 import kr.djspi.pipe01.util.ImageUtil.uriToFilePath
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.Serializable
 import java.util.*
@@ -354,31 +352,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                             }
                         }
                     }
-                    3 -> {
-                        val getIntent = Intent(Intent.ACTION_GET_CONTENT)
-                        getIntent.type = "image/*"
-                        val pickIntent =
-                            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        pickIntent.type = "image/*"
-                        Intent.createChooser(getIntent, getString(R.string.popup_file_viewer_title))
-                            .also { intent ->
-                                intent.resolveActivity(packageManager)?.also {
-                                    intent.putExtra(
-                                        Intent.EXTRA_INITIAL_INTENTS,
-                                        arrayOf(pickIntent)
-                                    )
-                                    val photoFile: File? = try {
-                                        createImageFile()
-                                    } catch (e: IOException) {
-                                        toast(getString(R.string.record_camera_error))
-                                        null
-                                    }
-                                    photoFile?.let {
-                                        startActivityForResult(intent, REQUEST_FILE_VIEWER)
-                                    }
-                                }
-                            }
-                    }
                 }
             }
         }
@@ -431,37 +404,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                             photoObj = SpiPhotoObject()
                             photoObj!!.file = resizeFile
                             photoObj!!.setUri(this)
-                        }).start()
-                    }
-                }
-                REQUEST_FILE_VIEWER -> {
-                    intent?.data.run {
-                        val inputStream = contentResolver.openInputStream(this!!)
-                        val file = File(currentPhotoPath)
-                        // Over minSdkVersion = 26
-//                        Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING)
-                        // OR...
-                        inputStream.use { input ->
-                            val outputStream = FileOutputStream(file)
-                            outputStream.use { output ->
-                                val buffer = ByteArray(4 * 1024) // buffer size
-                                while (true) {
-                                    val byteCount = input!!.read(buffer)
-                                    if (byteCount < 0) break
-                                    output.write(buffer, 0, byteCount)
-                                }
-                                output.flush()
-                            }
-                        }
-                        val resizeFile = file.resizeImageToRes(1024)
-                        Glide.with(applicationContext).load(resizeFile).into(imageThumb)
-                        form_photo_name.setText(resizeFile.name)
-                        form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
-                        fPhoto.setText(getString(R.string.record_photo_ok))
-                        Thread(Runnable {
-                            photoObj = SpiPhotoObject()
-                            photoObj!!.file = resizeFile
-                            photoObj!!.setUri(Uri.fromFile(resizeFile))
                         }).start()
                     }
                 }
