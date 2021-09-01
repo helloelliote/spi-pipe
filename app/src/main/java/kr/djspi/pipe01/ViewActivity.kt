@@ -8,6 +8,7 @@ import android.net.Uri.parse
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.JsonObject
@@ -72,6 +73,23 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         super.setContentView(layoutResID)
         toolbar.title = "SPI ${jsonObj["pipe"].asString}"
         setTabLayout()
+    }
+
+    override fun setSupportActionBar(toolbar: Toolbar?) {
+        super.setSupportActionBar(toolbar)
+        super.nmapFind.text = getString(R.string.btn_current_spi)
+        super.nmapFind.apply {
+            System.err.println("HEY!")
+            setOnClickListener {
+                startActivity(
+                    Intent(context, NaverMapActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("isSpiLocation", true)
+                        .putExtra("spi_latitude", jsonObj["spi_latitude"].asDouble)
+                        .putExtra("spi_longitude", jsonObj["spi_longitude"].asDouble)
+                )
+            }
+        }
     }
 
     private fun setTabLayout() {

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PointF
+import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -50,6 +51,7 @@ import kotlin.collections.HashMap
 
 class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
+    private var spiLocation: Location? = null
     private var placesListAdapter: SetTopSheet.ListViewAdapter? = null
     private var placesArrayList = ArrayList<HashMap<String, String>>(5)
     private var naverMap: NaverMap? = null
@@ -82,6 +84,14 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intent?.let {
+            if (it.getBooleanExtra("isSpiLocation", false)) {
+                spiLocation = Location("spiLocation").apply {
+                    latitude = it.getDoubleExtra("spi_latitude", currentLocation!!.latitude)
+                    longitude = it.getDoubleExtra("spi_longitude", currentLocation!!.longitude)
+                }
+            }
+        }
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
         setContentView(R.layout.activity_navermap)
@@ -99,7 +109,14 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 NaverMapOptions()
                     .locale(Locale.KOREA)
                     .contentPadding(0, 45, 0, 45)
-                    .camera(CameraPosition(LatLng(currentLocation!!), 18.0, 0.0, 0.0))
+                    .camera(
+                        CameraPosition(
+                            LatLng(if (spiLocation === null) currentLocation!! else spiLocation!!),
+                            18.0,
+                            0.0,
+                            0.0
+                        )
+                    )
                     .enabledLayerGroups(LAYER_GROUP_BUILDING)
                     .minZoom(6.0)
                     .maxZoom(21.0)
@@ -118,7 +135,8 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         val fusedLocationSource = FusedLocationSource(this, 100)
         naverMap!!.apply {
             locationSource = fusedLocationSource
-            locationTrackingMode = LocationTrackingMode.Follow
+            locationTrackingMode =
+                if (spiLocation === null) LocationTrackingMode.Follow else LocationTrackingMode.NoFollow
             addOnOptionChangeListener {
                 val mode: LocationTrackingMode = this.locationTrackingMode
                 fusedLocationSource.isCompassEnabled =

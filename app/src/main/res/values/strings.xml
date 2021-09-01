@@ -5,6 +5,7 @@
     <string name="app_title">SPI 지능형지중선로표시기</string>
     <string name="app_title_alt">SPI %1$s %2$s</string>
     <string name="btn_find_spi">주변관로\n정보조회</string>
+    <string name="btn_current_spi">현재관로\n정보조회</string>
     <string name="nav_close">닫\u0020\u0020\u0020기</string>
     <string name="nav_drawer_open">Open</string>
     <string name="nav_drawer_close">Close</string>

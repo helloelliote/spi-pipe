@@ -33,6 +33,7 @@ import kr.djspi.pipe01.util.settingsMenuEnabled
 open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private lateinit var drawer: DrawerLayout
+    lateinit var nmapFind: TextView
     lateinit var nfcUtil: NfcUtil
     var locationFailureCount = 0
 
@@ -61,7 +62,8 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
     override fun setSupportActionBar(toolbar: Toolbar?) {
         super.setSupportActionBar(toolbar)
         toolbar?.setTitleTextAppearance(this, R.style.TitleHeader)
-        nmap_find.apply {
+        nmapFind = findViewById(R.id.nmap_find)
+        nmapFind.apply {
             visibility = View.VISIBLE
             setOnClickListener {
                 when {
