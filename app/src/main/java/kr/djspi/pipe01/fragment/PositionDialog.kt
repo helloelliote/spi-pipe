@@ -75,6 +75,9 @@ class PositionDialog : DialogFragment(), OnClickListener {
         return view
     }
 
+    /**
+     * Adobe Photoshop 도면 추가 단축키(Actions): src/main/assets/plans/앱도면.atn
+     */
     private fun setLayoutVisibility(view: View) {
         val defType = "id"
         val views = arrayOfNulls<ImageView>(10)
@@ -96,14 +99,19 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 views[9]!!.setImageDrawable(fromRes(R.drawable.btn_01_3))
             }
             TAG_TYPE_MARKER -> {
-                background.setImageDrawable(fromRes(R.drawable.bg_m))
-                view.findViewById<LinearLayout>(R.id.lay_row_3).visibility = GONE
+                val params = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER)
+                params.setMargins(0, 60, 0, 0)
+                view.findViewById<LinearLayout>(R.id.lay_rows).layoutParams = params
+                background.setImageDrawable(fromRes(R.drawable.bg_m_2))
                 views[1]!!.setImageDrawable(fromRes(R.drawable.btn_10_7))
                 views[2]!!.setImageDrawable(fromRes(R.drawable.btn_10_8))
                 views[3]!!.setImageDrawable(fromRes(R.drawable.btn_10_9))
                 view.findViewById<FrameLayout>(R.id.lay_4).visibility = GONE
                 views[5]!!.setImageDrawable(fromRes(R.drawable.btn_10_2))
                 view.findViewById<FrameLayout>(R.id.lay_6).visibility = GONE
+                views[7]!!.setImageDrawable(fromRes(R.drawable.btn_11_1))
+                views[8]!!.setImageDrawable(fromRes(R.drawable.btn_11_2))
+                views[9]!!.setImageDrawable(fromRes(R.drawable.btn_11_3))
             }
             TAG_TYPE_COLUMN -> {
                 val params = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER)
