@@ -50,10 +50,16 @@ class InfoTab : Fragment() {
         val hDirection: String = when (json["position"].asInt) {
             1, 2, 3 -> "차도 방향 ${json["vertical"].asString} m"
             7, 8, 9 -> {
-                if (json["spi_type"].asString == "표지주") {
-                    "차도반대측 방향 ${json["vertical"].asString} m"
-                } else {
-                    "보도 방향 ${json["vertical"].asString} m"
+                when (json["spi_type"].asString) {
+                    "표지판" -> {
+                        "보도 방향 ${json["vertical"].asString} m"
+                    }
+                    "표지기" -> {
+                        "도로후면 방향 ${json["vertical"].asString} m"
+                    }
+                    else -> {
+                        "차도반대측 방향 ${json["vertical"].asString} m"
+                    }
                 }
             }
             else -> ""
