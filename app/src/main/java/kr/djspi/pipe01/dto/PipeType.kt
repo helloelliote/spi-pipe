@@ -23,7 +23,7 @@ data class PipeType(var id: Int = -1) : DataItem, Serializable {
         상수관로("상수관로", R.drawable.cir_02_map, "관경", "mm"),
         하수관로("하수관로", R.drawable.cir_03_map, "관경", "mm"),
         오수관로("오수관로", R.drawable.cir_04_map, "관경", "mm"),
-        전기관로("전기관로", R.drawable.cir_05_map, "코어수", "코어"),
+        전기관로("전기관로", R.drawable.cir_05_map, "관경", ""),
         통신관로("통신관로", R.drawable.cir_06_map, "관로수", ""),
         난방관로("난방관로", R.drawable.cir_07_map, "관경", "mm"),
         유류관로("유류관로", R.drawable.cir_08_map, "관경", "mm"),
