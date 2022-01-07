@@ -50,10 +50,16 @@ class InfoTab : Fragment() {
         val hDirection: String = when (json["position"].asInt) {
             1, 2, 3 -> "차도 방향 ${json["vertical"].asString} m"
             7, 8, 9 -> {
-                if (json["spi_type"].asString == "표지주") {
-                    "차도반대측 방향 ${json["vertical"].asString} m"
-                } else {
-                    "보도 방향 ${json["vertical"].asString} m"
+                when (json["spi_type"].asString) {
+                    "표지판" -> {
+                        "보도 방향 ${json["vertical"].asString} m"
+                    }
+                    "표지기" -> {
+                        "도로후면 방향 ${json["vertical"].asString} m"
+                    }
+                    else -> {
+                        "차도반대측 방향 ${json["vertical"].asString} m"
+                    }
                 }
             }
             else -> ""
@@ -71,9 +77,9 @@ class InfoTab : Fragment() {
                     R.string.nfc_info_read_contents_alt,
                     json["pipe"].asString,
                     json["shape"].asString,
-                    json["spec"].asString,
+                    json["spec"].asString.replace("^", " "),
                     json["unit"].asString,
-                    json["material"].asString,
+                    json["material"].asString.replace("^", " "),
                     json["spi_type"].asString,
                     json["depth"].asString
                 )
@@ -84,9 +90,9 @@ class InfoTab : Fragment() {
                     R.string.nfc_info_read_contents,
                     json["pipe"].asString,
                     json["shape"].asString,
-                    json["spec"].asString,
+                    json["spec"].asString.replace("^", " "),
                     json["unit"].asString,
-                    json["material"].asString,
+                    json["material"].asString.replace("^", " "),
                     hDirection,
                     vDirection,
                     json["depth"].asString
@@ -132,7 +138,7 @@ class InfoTab : Fragment() {
                     val bundle = Bundle(1)
                     bundle.putSerializable("PhotoObj", photoObj)
                     imageDialog.arguments = bundle
-                    imageDialog.show(fragmentManager!!, TAG_PHOTO)
+                    imageDialog.show(parentFragmentManager, TAG_PHOTO)
                 }
             }
         } catch (e: NullPointerException) {

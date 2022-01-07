@@ -60,7 +60,7 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
             setPreferencesFromResource(R.xml.preference_settings, rootKey)
             findPreference<Preference>("help")?.let {
                 it.setOnPreferenceClickListener {
-                    AlertDialog.Builder(context!!)
+                    AlertDialog.Builder(requireContext())
                         .setIcon(R.drawable.ic_help)
                         .setTitle("입력내용 일괄적용")
                         .setMessage(getString(R.string.message_preset_help))
@@ -73,7 +73,7 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
             findPreference<Preference>("update_supervise")?.let {
                 it.setOnPreferenceClickListener { preference ->
                     preference.summary = "업데이트중입니다..."
-                    if (updateLocalSuperviseDatabase(context!!)) {
+                    if (updateLocalSuperviseDatabase(requireContext())) {
                         preference.summary = "관리기관 목록을 업데이트하였습니다."
                     } else {
                         preference.summary = "다시 한 번 업데이트해주세요."

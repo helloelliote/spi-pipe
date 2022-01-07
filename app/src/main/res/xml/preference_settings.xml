@@ -47,9 +47,9 @@
 
         <SwitchPreferenceCompat
             app:key="switch_location"
-            app:summaryOff="(기본) 지도에서 입력합니다."
-            app:summaryOn="측량좌표를 직접 입력합니다."
-            app:title="SPI 설치위치(지도/좌표) 입력" />
+            app:summaryOff="지도를 움직여 입력합니다."
+            app:summaryOn="좌표를 입력합니다."
+            app:title="SPI 현장설치지점의 좌표입력" />
     </PreferenceCategory>
 
     <PreferenceCategory

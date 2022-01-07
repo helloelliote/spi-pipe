@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PointF
+import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -50,6 +51,7 @@ import kotlin.collections.HashMap
 
 class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
+    private var spiLocation: Location? = null
     private var placesListAdapter: SetTopSheet.ListViewAdapter? = null
     private var placesArrayList = ArrayList<HashMap<String, String>>(5)
     private var naverMap: NaverMap? = null
@@ -82,6 +84,14 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intent?.let {
+            if (it.getBooleanExtra("isSpiLocation", false)) {
+                spiLocation = Location("spiLocation").apply {
+                    latitude = it.getDoubleExtra("spi_latitude", currentLocation!!.latitude)
+                    longitude = it.getDoubleExtra("spi_longitude", currentLocation!!.longitude)
+                }
+            }
+        }
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
         setContentView(R.layout.activity_navermap)
@@ -99,7 +109,14 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 NaverMapOptions()
                     .locale(Locale.KOREA)
                     .contentPadding(0, 45, 0, 45)
-                    .camera(CameraPosition(LatLng(currentLocation!!), 18.0, 0.0, 0.0))
+                    .camera(
+                        CameraPosition(
+                            LatLng(if (spiLocation === null) currentLocation!! else spiLocation!!),
+                            18.0,
+                            0.0,
+                            0.0
+                        )
+                    )
                     .enabledLayerGroups(LAYER_GROUP_BUILDING)
                     .minZoom(6.0)
                     .maxZoom(21.0)
@@ -113,19 +130,20 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         mapFragment?.getMapAsync(this)
     }
 
-    override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap
+    override fun onMapReady(naverMap0: NaverMap) {
+        this.naverMap = naverMap0
         val fusedLocationSource = FusedLocationSource(this, 100)
-        naverMap.apply {
+        naverMap!!.apply {
             locationSource = fusedLocationSource
-            locationTrackingMode = LocationTrackingMode.Follow
+            locationTrackingMode =
+                if (spiLocation === null) LocationTrackingMode.Follow else LocationTrackingMode.NoFollow
             addOnOptionChangeListener {
-                val mode: LocationTrackingMode = naverMap.locationTrackingMode
+                val mode: LocationTrackingMode = this.locationTrackingMode
                 fusedLocationSource.isCompassEnabled =
                     mode == LocationTrackingMode.Follow || mode == LocationTrackingMode.Face
             }
         }
-        setMapModeSwitch(naverMap)
+        setMapModeSwitch(naverMap0)
         setOverlayListener()
         SetTopSheet()
         SetBottomSheet()
@@ -140,8 +158,8 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         toggleSwitch.apply {
             visibility = View.VISIBLE
             isSingleSelection = true
-            val green = resources.getColor(R.color.green)
-            val white = resources.getColor(android.R.color.white)
+            val green = resources.getColor(R.color.green, null)
+            val white = resources.getColor(android.R.color.white, null)
             addOnButtonCheckedListener { group, _, _ ->
                 when (group.checkedButtonId) {
                     R.id.button_hybrid -> {
@@ -304,31 +322,35 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         private fun setSearchPlaces(query: String) {
             Thread(Runnable {
                 val latLng = LatLng(currentLocation!!)
-                val coordinate = "${latLng.longitude},${latLng.latitude}"
-                Retrofit2x.searchPlaces(query, coordinate).enqueue(object : RetrofitCallback() {
-                    override fun onResponse(response: JsonObject) {
-                        placesArrayList.clear()
-                        behavior.state = STATE_COLLAPSED
-                        val places = response["places"].asJsonArray
-                        if (places == null || places.size() == 0) {
-                            messageDialog(0, getString(R.string.popup_error_noplace))
-                            return
+                val x = "${latLng.longitude}"
+                val y = "${latLng.latitude}"
+                Retrofit2x.searchPlaces(query, x, y)
+                    .enqueue(object : RetrofitCallback() {
+                        override fun onResponse(response: JsonObject) {
+                            placesArrayList.clear()
+                            behavior.state = STATE_COLLAPSED
+                            val metaData = response["meta"].asJsonObject
+                            val totalCount = metaData["total_count"].asInt
+                            if (totalCount == 0) {
+                                messageDialog(0, getString(R.string.popup_error_noplace))
+                                return
+                            }
+                            val places = response["documents"].asJsonArray
+                            places.forEach { place ->
+                                val jsonObject = place.asJsonObject
+                                val hashMap = HashMap<String, String>(3)
+                                hashMap["name"] = jsonObject["place_name"].asString
+                                hashMap["x"] = jsonObject["x"].asString
+                                hashMap["y"] = jsonObject["y"].asString
+                                placesArrayList.add(hashMap)
+                            }
+                            placesListAdapter?.notifyDataSetChanged()
                         }
-                        places.forEach { place ->
-                            val jsonObject = place.asJsonObject
-                            val hashMap = HashMap<String, String>(3)
-                            hashMap["name"] = jsonObject["name"].asString
-                            hashMap["x"] = jsonObject["x"].asString
-                            hashMap["y"] = jsonObject["y"].asString
-                            placesArrayList.add(hashMap)
-                        }
-                        placesListAdapter?.notifyDataSetChanged()
-                    }
 
-                    override fun onFailure(throwable: Throwable) {
-                        messageDialog(8, throwable.message)
-                    }
-                })
+                        override fun onFailure(throwable: Throwable) {
+                            messageDialog(8, throwable.message)
+                        }
+                    })
             }).start()
         }
 

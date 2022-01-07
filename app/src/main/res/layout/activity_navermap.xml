@@ -97,19 +97,24 @@
 
                 <TextView
                     style="@style/Spi.TableRow.Items"
-                    android:drawableStart="@drawable/cir_05"
-                    android:text="@string/pipe_name_04" />
+                    android:drawableStart="@drawable/cir_12"
+                    android:text="@string/pipe_name_12" />
 
                 <TextView
                     style="@style/Spi.TableRow.Items"
-                    android:drawableStart="@drawable/cir_06"
-                    android:text="@string/pipe_name_05" />
+                    android:drawableStart="@drawable/cir_05"
+                    android:text="@string/pipe_name_04" />
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="23dp"
                 tools:ignore="DuplicateIds">
+
+                <TextView
+                    style="@style/Spi.TableRow.Items"
+                    android:drawableStart="@drawable/cir_06"
+                    android:text="@string/pipe_name_05" />
 
                 <TextView
                     style="@style/Spi.TableRow.Items"
@@ -135,11 +140,6 @@
                     style="@style/Spi.TableRow.Items"
                     android:drawableStart="@drawable/cir_11"
                     android:text="@string/pipe_name_10" />
-
-                <TextView
-                    style="@style/Spi.TableRow.Items"
-                    android:drawableStart="@drawable/cir_12"
-                    android:text="@string/pipe_name_11" />
             </TableRow>
         </LinearLayout>
     </LinearLayout>

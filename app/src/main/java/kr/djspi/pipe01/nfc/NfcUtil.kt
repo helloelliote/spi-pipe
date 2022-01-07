@@ -244,7 +244,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     val ndefRecords = arrayOfNulls<NdefRecord>(length)
     ndefRecords[0] = createApplicationRecord(strings[0])
     for (i in 1 until length) {
-    ndefRecords[i] = createTextRecord(null, strings[i])
+    ndefRecords[ i ] = createTextRecord(null, strings[ i ])
     }
     val ndefMessage = NdefMessage(ndefRecords)
 

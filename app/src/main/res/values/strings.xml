@@ -5,6 +5,7 @@
     <string name="app_title">SPI 지능형지중선로표시기</string>
     <string name="app_title_alt">SPI %1$s %2$s</string>
     <string name="btn_find_spi">주변관로\n정보조회</string>
+    <string name="btn_current_spi">현재관로\n정보조회</string>
     <string name="nav_close">닫\u0020\u0020\u0020기</string>
     <string name="nav_drawer_open">Open</string>
     <string name="nav_drawer_close">Close</string>
@@ -17,7 +18,7 @@
     <string name="nav_version_name">버전 %1$s %2$s</string>
     <string name="nav_email">대진기술정보(주) %1$s</string>
     <string name="nav_dj_email">djgis@chol.com</string>
-    <string name="nav_dj_phone">+82–53–424–9547</string>
+    <string name="nav_dj_phone">053–424–9547</string>
     <string name="nav_dj_homepage">http://djspi.kr</string>
     <string name="nav_app">어플리케이션</string>
     <string name="nav_guide">어플리케이션 정보</string>
@@ -40,6 +41,8 @@
     <!--MessageDialog-->
     <string name="popup_ok">확 인</string>
     <string name="popup_cancel">취 소</string>
+    <string name="popup_submit">입력완료</string>
+    <string name="popup_none">입력안함</string>
     <string name="popup_next">다 음</string>
     <string name="popup_pre">이 전</string>
     <string name="popup_nfc_on">폰의 NFC 기능이 꺼져 있어\nNFC 설정창으로 이동합니다.</string>
@@ -77,6 +80,7 @@
     <string name="pipe_name_09">CCTV</string>
     <string name="pipe_name_10">광케이블</string>
     <string name="pipe_name_11">기타관로</string>
+    <string name="pipe_name_12">우수관로</string>
 
     <string name="map_search_point">주변관로 정보조회</string>
     <string name="map_search_input">포인트를 선택하시면 상세정보가 제공됩니다.</string>
@@ -89,13 +93,15 @@
     <!--RegisterActivity-->
     <string name="record_optional">선택입력 사항</string>
     <string name="record_optional_50">선택입력 사항 (50자 이하)</string>
-    <string name="record_location">SPI 위치설정</string>
+    <string name="record_location">위치 입력</string>
     <string name="record_confirm">관로정보 입력완료</string>
     <string name="record_error">필수입력 항목입니다.</string>
     <string name="record_photo_ok">사진이 첨부되었습니다.</string>
-    <string name="record_photo_error">카메라를 준비할 수 없습니다.</string>
-    <string name="record_delete_error">임시파일을 삭제하지 못하였습니다.</string>
+    <string name="record_photo_error">사진을 불러오지 못하였습니다.</string>
+    <string name="record_camera_error">카메라를 준비할 수 없습니다.</string>
+    <string name="record_gallery_error">갤러리를 준비할 수 없습니다.</string>
 
+    <string name="record_input_unit">m</string>
     <string name="record_input_0">관로종류</string>
     <string name="record_input_0_hint">지중선로의 종류 입력</string>
     <string name="record_input_1">관로형태</string>
@@ -108,7 +114,7 @@
     <string name="record_input_3">매설심도</string>
     <string name="record_input_3_hint">매설심도 입력</string>
     <string name="record_input_4">관로스펙</string>
-    <string name="record_input_4_hint">관로관경/코어수 등 입력</string>
+    <string name="record_input_4_hint">관로관경/관로수 등 입력</string>
     <string name="record_input_4_hint_2">%1$s 입력</string>
     <string name="record_input_5">관로재질</string>
     <string name="record_input_5_hint">관로재질 입력</string>
@@ -138,8 +144,11 @@
     <string name="popup_title_select_photo">사진 첨부</string>
     <string name="popup_error_select_position">지중선로의 위치를 선택해주세요.</string>
     <string name="popup_error_input_distance">지중선로의 이격거리(m)를 입력해주세요.</string>
-    <string name="popup_camera">사진 촬영</string>
+    <!--https://www.flaticon.com/packs/ui-interface-22-->
+    <string name="popup_camera">카메라</string>
     <string name="popup_gallery">갤러리</string>
+    <string name="popup_file_viewer">파일</string>
+    <string name="popup_file_viewer_title">파일을 선택하세요…</string>
 
     <string name="shape_name_00">직진형</string>
     <string name="shape_name_01">T분기형</string>
@@ -148,13 +157,14 @@
 
     <!--SpiLocationActivity-->
     <string name="record_location_title">SPI 지중선로 위치설정</string>
-    <string name="record_gps_sub">지도를 움직여 SPI 설치 위치를 확정하시오</string>
-    <string name="record_confirm_location">SPI 위치 저장</string>
+    <string name="record_gps_sub">지도를 움직여 SPI 설치위치를 확정하시오</string>
+    <string name="record_confirm_location">위치 저장</string>
     <string name="popup_title_location">SPI 설치 위치 입력</string>
     <string name="popup_survey">측량좌표 입력</string>
     <string name="popup_gps">지도에서 입력</string>
-    <string name="popup_title_survey">측량좌표를 입력하시오</string>
-    <string name="map_origin">원점</string>
+    <string name="popup_title_survey_spi">SPI 설치지점 측량좌표</string>
+    <string name="popup_title_survey_pipe">관로의 측량좌표</string>
+    <string name="map_origin">원점:</string>
     <string name="map_origin_western">서부</string>
     <string name="map_origin_central">중부</string>
     <string name="map_origin_eastern">동부</string>
@@ -179,15 +189,19 @@
     <string name="pipe_section">단면도</string>
     <string name="pipe_plane">평면도</string>
     <string name="pipe_confirm">정보저장</string>
+    <string name="pipe_plane_survey_title">관로의 측량좌표</string>
+    <string name="pipe_plane_survey_origin">원점</string>
+    <string name="pipe_plane_survey_x">X (m)</string>
+    <string name="pipe_plane_survey_y">Y (m)</string>
 
     <string name="nfc_info_read_contents"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
      로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s %4$s</font><font color="#F24E4E"> %5$s</font>
       관로가 SPI로부터<br> <font color="#F24E4E">%6$s %7$s</font> 이격되어 지표면으로부터 <font color="#F24E4E">%8$s m</font>
-       깊이에 매설되어 있습니다. 굴착 시 주의하여 주십시오.]]></string>
+       깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
     <string name="nfc_info_read_contents_alt"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
      로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s %4$s</font><font color="#F24E4E"> %5$s</font>
       관로가 SPI %6$s 아래 지표면으로부터 <font color="#F24E4E">%7$s m</font>
-       깊이에 매설되어 있습니다. 굴착 시 주의하여 주십시오.]]></string>
+       깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
     <string name="info_company"><![CDATA[본 관로는 <font color="#0077C8">%1$s</font>에서 관리하고 있습니다.]]></string>
     <string name="info_contact"><![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
     <string name="nfc_info_construction"><![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
@@ -195,7 +209,7 @@
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
     <string name="error_load_image_fail">이미지를 불러오지 못하였습니다.</string>
     <string name="error_load_image_retry">새로고침</string>
-    <string name="nfc_info_plane_elb135">굴곡지점의 관로방향은\n표지판의 관로방향을 참조하시오.</string>
+    <string name="nfc_info_plane_elb135">굴곡지점의 관로방향은 표지판을 참조하시오</string>
 
     <!--Preferences -->
     <string name="setting_confirm">저장</string>
@@ -238,5 +252,5 @@
         \n
         7. 개발자 및 공급자 정보\n
         1) SPI 제품 및 개발자 : 대진기술정보(주) 053-424-9547\n
-        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3880\n</string>
+        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3800\n</string>
 </resources>

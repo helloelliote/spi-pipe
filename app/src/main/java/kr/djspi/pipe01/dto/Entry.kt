@@ -21,6 +21,7 @@ class Entry(
 ) : Serializable {
 
     var spi_location: SpiLocation? = null
+    var pipe_location: PipeLocation? = null
 
     companion object {
 
@@ -39,9 +40,9 @@ class Entry(
                 addProperty("pipe", entry.pipe_type.pipe)
                 addProperty("shape", entry.pipe_shape.shape)
                 addProperty("header", entry.pipe_type.header)
-                addProperty("spec", entry.pipe_shape.spec)
+                addProperty("spec", entry.pipe_shape.spec?.trim()?.replace(" ", "^"))
                 addProperty("unit", entry.pipe_type.unit)
-                addProperty("material", entry.pipe.material)
+                addProperty("material", entry.pipe.material?.trim()?.replace(" ", "^"))
                 addProperty("position", entry.pipe_position.position)
                 addProperty("direction", entry.pipe_position.direction)
                 addProperty("horizontal", entry.pipe_position.horizontal)
@@ -54,6 +55,9 @@ class Entry(
                 addProperty("file_section", entry.pipe_plan.file_section)
                 addProperty("latitude", entry.spi_location!!.latitude)
                 addProperty("longitude", entry.spi_location!!.longitude)
+                addProperty("coordinate_x", entry.pipe_location!!.coordinate_x)
+                addProperty("coordinate_y", entry.pipe_location!!.coordinate_y)
+                addProperty("origin", entry.pipe_location!!.origin)
             }
         }
     }
