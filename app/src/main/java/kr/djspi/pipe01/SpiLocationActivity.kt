@@ -37,7 +37,6 @@ import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.HashMap
 
 class SpiLocationActivity :
     LocationUpdate(), OnMapReadyCallback, OnClickListener, OnSelectListener, Serializable {
@@ -227,12 +226,12 @@ class SpiLocationActivity :
                         zIndex = 100
                     }
                     marker.map = naverMap!!
-                    val cameraUpdate = CameraUpdate
-                        .scrollAndZoomTo(pipeLatLng, ZOOM_MAX - 1)
-                        .finishCallback {
-                            onRequestPipe()
-                        }
-                    naverMap!!.moveCamera(cameraUpdate)
+//                    val cameraUpdate = CameraUpdate
+//                        .scrollAndZoomTo(pipeLatLng, ZOOM_MAX - 1)
+//                        .finishCallback {
+//                            onRequestPipe()
+//                        }
+//                    naverMap!!.moveCamera(cameraUpdate)
                 } else {
                     val cameraUpdate = CameraUpdate.zoomTo(ZOOM_DEFAULT)
                     naverMap!!.moveCamera(cameraUpdate)
@@ -269,6 +268,7 @@ class SpiLocationActivity :
                             onRequestPipe()
                         }
                     naverMap!!.moveCamera(cameraUpdate)
+                    naverMap!!.extent = naverMap!!.contentBounds
                 } else {
                     record_gps.visibility = View.VISIBLE
                     ic_marker_3.visibility = View.VISIBLE
