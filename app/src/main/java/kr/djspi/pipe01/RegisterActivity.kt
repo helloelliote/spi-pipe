@@ -45,7 +45,6 @@ import kr.djspi.pipe01.util.ImageUtil.uriToFilePath
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
-import java.util.*
 
 class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener, Serializable {
 
@@ -139,6 +138,20 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             header.text = pipeType.header
             unit.text = pipeType.unit
             form_supervise.setText(pipeSupervise.supervise)
+
+            if (BuildConfig.BUILD_TYPE == "debug") {
+                pipePosition.position = 2
+                form_horizontal.tag = ""
+                form_vertical.tag = "전면"
+                form_horizontal.text = Editable.Factory.getInstance().newEditable("0.00")
+                form_vertical.text = Editable.Factory.getInstance().newEditable("전면 0.00")
+                pipePosition.horizontal = 0.0
+                pipePosition.vertical = 1.0
+                pipePosition.direction = PIPE_DIRECTIONS[2]
+                pipePlan.file_plane = "plan_plate_str_2_out.png"
+                form_depth.text = Editable.Factory.getInstance().newEditable("1.5")
+                form_spec.text = Editable.Factory.getInstance().newEditable("20")
+            }
         }
     }
 

@@ -79,7 +79,6 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         super.setSupportActionBar(toolbar)
         super.nmapFind.text = getString(R.string.btn_current_spi)
         super.nmapFind.apply {
-            System.err.println("HEY!")
             setOnClickListener {
                 startActivity(
                     Intent(context, NaverMapActivity::class.java)
@@ -95,6 +94,10 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     private fun setTabLayout() {
         if (previewEntries == null) {
             tabs.removeTab(tabs.getTabAt(3)!!)
+        } else {
+            if (BuildConfig.BUILD_TYPE == "debug") {
+                tabs.getTabAt(3)?.select()
+            }
         }
         viewPager = findViewById(R.id.container)
         viewPager?.let {
