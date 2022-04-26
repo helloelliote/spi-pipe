@@ -14,6 +14,7 @@
         android:id="@+id/popup_title_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp">
@@ -24,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:text="@string/popup_title_survey"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -93,48 +95,157 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/map_coord_pipe"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lay_x"
-                style="@style/Spi.TextInputLayout"
+                android:id="@+id/lay_x_pipe"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:hint="@string/map_coord_x_pipe"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:boxStrokeWidth="2dp"
                 app:errorEnabled="false"
-                app:errorTextAppearance="@style/Spi.ErrorText"
-                app:hintAnimationEnabled="true">
+                app:errorTextColor="@color/colorPrimary"
+                app:hintAnimationEnabled="true"
+                app:hintTextColor="@color/colorPrimary">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_x"
-                    style="@style/Spi.TextInputLayout"
+                    android:id="@+id/input_x_pipe"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
+                    android:nextFocusRight="@id/input_y_pipe"
+                    android:nextFocusDown="@id/input_y_pipe"
+                    android:nextFocusForward="@id/input_y_pipe"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lay_y"
-                style="@style/Spi.TextInputLayout"
+                android:id="@+id/lay_y_pipe"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/map_coord_y_pipe"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:boxStrokeWidth="2dp"
                 app:errorEnabled="false"
-                app:errorTextAppearance="@style/Spi.ErrorText"
-                app:hintAnimationEnabled="true">
+                app:errorTextColor="@color/colorPrimary"
+                app:hintAnimationEnabled="true"
+                app:hintTextColor="@color/colorPrimary">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_y"
-                    style="@style/Spi.TextInputLayout"
+                    android:id="@+id/input_y_pipe"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
+                    android:nextFocusRight="@id/input_x_spi"
+                    android:nextFocusDown="@id/input_x_spi"
+                    android:nextFocusForward="@id/input_x_spi"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/map_coord_spi"
+                android:textAlignment="center"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lay_x_spi"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:hint="@string/map_coord_x_spi"
+                app:boxStrokeColor="@color/colorAccent"
+                app:boxStrokeWidth="2dp"
+                app:errorEnabled="false"
+                app:errorTextColor="@color/colorAccent"
+                app:hintAnimationEnabled="true"
+                app:hintTextColor="@color/colorAccent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_x_spi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:nextFocusRight="@id/input_y_spi"
+                    android:nextFocusDown="@id/input_y_spi"
+                    android:nextFocusForward="@id/input_y_spi"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lay_y_spi"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/map_coord_y_spi"
+                app:boxStrokeColor="@color/colorAccent"
+                app:boxStrokeWidth="2dp"
+                app:errorEnabled="false"
+                app:errorTextColor="@color/colorAccent"
+                app:hintAnimationEnabled="true"
+                app:hintTextColor="@color/colorAccent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_y_spi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:nextFocusRight="@null"
+                    android:nextFocusDown="@null"
+                    android:nextFocusForward="@null"
+                    android:textColor="@color/colorAccent"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -158,7 +269,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/popup_none"
-            android:textColor="@color/colorAccent"
+            android:textColor="@android:color/black"
             android:textSize="18sp" />
 
         <View
@@ -173,7 +284,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/popup_submit"
-            android:textColor="@color/blue_bright"
+            android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>

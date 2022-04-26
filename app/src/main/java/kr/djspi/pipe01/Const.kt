@@ -13,6 +13,7 @@ object Const {
     const val TAG_LOCATION = "location"
     const val TAG_SURVEY_SPI = "survey"
     const val TAG_SURVEY_PIPE = "survey2"
+    const val TAG_SURVEY = "survey3"
     const val TAG_PREVIEW = "preview"
     const val TAG_PHOTO = "photo"
     val PIPE_DIRECTIONS = arrayOf("", "", "out", "", "outl", "", "outr", "", "in")

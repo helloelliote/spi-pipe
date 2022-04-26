@@ -46,8 +46,6 @@ import kr.djspi.pipe01.util.*
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
@@ -324,7 +322,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 val latLng = LatLng(currentLocation!!)
                 val x = "${latLng.longitude}"
                 val y = "${latLng.latitude}"
-                Retrofit2x.searchPlaces(query, x, y)
+                Retrofit2x.searchKeyword(query, x, y)
                     .enqueue(object : RetrofitCallback() {
                         override fun onResponse(response: JsonObject) {
                             placesArrayList.clear()

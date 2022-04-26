@@ -17,7 +17,7 @@ import kr.djspi.pipe01.Const.RESULT_FAIL
 import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.Const.TAG_SURVEY_SPI
 import kr.djspi.pipe01.R
-import kr.djspi.pipe01.geolocation.GeoTrans
+import kr.djspi.pipe01.SpiLocationActivity.Companion.originPoint
 import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
 import kr.djspi.pipe01.util.DecimalFilter
 
@@ -154,9 +154,5 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
     override fun onDismiss(dialog: DialogInterface) {
         selectIndex = -1
         super.onDismiss(dialog)
-    }
-
-    companion object {
-        lateinit var originPoint: GeoTrans.Coordinate
     }
 }

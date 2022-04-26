@@ -55,7 +55,7 @@
         </FrameLayout>
 
         <TableLayout
-            android:id="@+id/lay_table_survey"
+            android:id="@+id/lay_table_survey_pipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
@@ -122,6 +122,74 @@
             </TableRow>
         </TableLayout>
 
+        <TableLayout
+            android:id="@+id/lay_table_survey_spi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/table_border"
+            android:stretchColumns="*"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/lay_table_survey_pipe">
+
+            <TextView
+                android:background="@drawable/table_border_fill"
+                android:padding="5dp"
+                android:text="@string/pipe_plane_survey_spi_title"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:background="@drawable/table_border_half"
+                    android:padding="5dp"
+                    android:text="@string/pipe_plane_survey_origin"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:background="@drawable/table_border_half"
+                    android:padding="5dp"
+                    android:text="@string/pipe_plane_survey_x"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:background="@drawable/table_border_half"
+                    android:padding="5dp"
+                    android:text="@string/pipe_plane_survey_y"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/table_border_half">
+
+                <TextView
+                    android:id="@+id/text_plane_origin_spi"
+                    android:background="@drawable/table_border_half"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_plane_x_spi"
+                    android:background="@drawable/table_border_half"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/text_plane_y_spi"
+                    android:background="@drawable/table_border_half"
+                    android:padding="5dp"
+                    android:textAlignment="center" />
+            </TableRow>
+        </TableLayout>
+
         <TextView
             android:id="@+id/lay_elb"
             android:layout_width="match_parent"
@@ -136,6 +204,6 @@
             android:textColor="@color/colorAccent"
             android:textSize="14sp"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/lay_table_survey" />
+            app:layout_constraintTop_toBottomOf="@id/lay_table_survey_spi" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

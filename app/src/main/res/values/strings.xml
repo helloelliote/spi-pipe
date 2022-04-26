@@ -164,15 +164,28 @@
     <string name="popup_gps">지도에서 입력</string>
     <string name="popup_title_survey_spi">SPI 설치지점 측량좌표</string>
     <string name="popup_title_survey_pipe">관로의 측량좌표</string>
+    <string name="popup_title_survey">측량좌표 입력</string>
     <string name="map_origin">원점:</string>
     <string name="map_origin_western">서부</string>
     <string name="map_origin_central">중부</string>
     <string name="map_origin_eastern">동부</string>
     <string name="map_origin_eastsea">동해</string>
-    <string name="map_coord_x">X 좌표</string>
-    <string name="map_coord_y">Y 좌표</string>
-    <string name="map_input_error">값을 입력해주세요</string>
+    <string name="map_coord_pipe">관로의 측량좌표</string>
+    <string name="map_coord_spi">SPI 설치지점의 측량좌표</string>
+    <string name="map_coord_x_pipe">관로: X 좌표</string>
+    <string name="map_coord_y_pipe">관로: Y 좌표</string>
+    <string name="map_coord_x_spi">SPI: X 좌표</string>
+    <string name="map_coord_y_spi">SPI: Y 좌표</string>
+    <string name="map_input_error">값을 입력하시오</string>
     <string name="map_coord_error">좌표값 오류</string>
+    <string name="marker_caption_location_spi">SPI 설치지점</string>
+    <string name="marker_caption_location_invalid">유효하지 않은 좌표입니다</string>
+    <string name="marker_caption_sub_location_invalid">좌표값을 확인 후 재입력하십시오</string>
+    <string name="marker_caption_network_invalid">주소를 가져올 수 없습니다</string>
+    <string name="marker_caption_sub_network_invalid">인터넷 연결을 재확인하십시오</string>
+
+    <!--SurveyDialog-->
+    <string name="popup_survey_origin">원점을 선택하세요</string>
 
     <!--SpiPostActivity-->
     <string name="write_instruction"><![CDATA[SPI의 상면을 스마트폰 뒷면의 NFC 안테나 위치에 접촉
@@ -190,6 +203,7 @@
     <string name="pipe_plane">평면도</string>
     <string name="pipe_confirm">정보저장</string>
     <string name="pipe_plane_survey_title">관로의 측량좌표</string>
+    <string name="pipe_plane_survey_spi_title">SPI 설치지점의 측량좌표</string>
     <string name="pipe_plane_survey_origin">원점</string>
     <string name="pipe_plane_survey_x">X (m)</string>
     <string name="pipe_plane_survey_y">Y (m)</string>

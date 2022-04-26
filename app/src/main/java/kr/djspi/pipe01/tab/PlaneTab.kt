@@ -55,7 +55,7 @@ class PlaneTab : Fragment() {
         setPosition()
         if (json["origin"] != null) {
             if (!json["origin"].isJsonNull) {
-                view.findViewById<TableLayout>(R.id.lay_table_survey).apply {
+                view.findViewById<TableLayout>(R.id.lay_table_survey_pipe).apply {
                     visibility = VISIBLE
                     findViewById<TextView>(R.id.text_plane_origin).text =
                         parseCoordinateName(json["origin"].asString)
@@ -63,6 +63,19 @@ class PlaneTab : Fragment() {
                         json["coordinate_x"].asString
                     findViewById<TextView>(R.id.text_plane_y).text =
                         json["coordinate_y"].asString
+                }
+            }
+        }
+        if (json["spi_origin"] != null) {
+            if (!json["spi_origin"].isJsonNull) {
+                view.findViewById<TableLayout>(R.id.lay_table_survey_spi).apply {
+                    visibility = VISIBLE
+                    findViewById<TextView>(R.id.text_plane_origin_spi).text =
+                        parseCoordinateName(json["spi_origin"].asString)
+                    findViewById<TextView>(R.id.text_plane_x_spi).text =
+                        json["spi_coordinate_x"].asString
+                    findViewById<TextView>(R.id.text_plane_y_spi).text =
+                        json["spi_coordinate_y"].asString
                 }
             }
         }
