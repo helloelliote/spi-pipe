@@ -47,29 +47,8 @@ class InfoTab : Fragment() {
     }
 
     private fun setInfo(view: View) {
-        val hDirection: String = when (json["position"].asInt) {
-            1, 2, 3 -> "차도 방향 ${json["vertical"].asString} m"
-            7, 8, 9 -> {
-                when (json["spi_type"].asString) {
-                    "표지판" -> {
-                        "보도 방향 ${json["vertical"].asString} m"
-                    }
-                    "표지기" -> {
-                        "도로후면 방향 ${json["vertical"].asString} m"
-                    }
-                    else -> {
-                        "차도반대측 방향 ${json["vertical"].asString} m"
-                    }
-                }
-            }
-            else -> ""
-        }
-
-        val vDirection: String = when (json["position"].asInt) {
-            1, 4, 7 -> "좌측 ${json["horizontal"].asString} m"
-            3, 6, 9 -> "우측 ${json["horizontal"].asString} m"
-            else -> ""
-        }
+        val hDirection: String = getHorizontalDirection(json)
+        val vDirection: String = getVerticalDirection(json)
 
         if (hDirection == "" && vDirection == "") {
             view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
@@ -143,6 +122,36 @@ class InfoTab : Fragment() {
             }
         } catch (e: NullPointerException) {
             e.printStackTrace()
+        }
+    }
+
+    companion object {
+        fun getHorizontalDirection(json: JsonObject): String {
+            return when (json["position"].asInt) {
+                1, 2, 3 -> "차도 방향 ${json["vertical"].asString} m"
+                7, 8, 9 -> {
+                    when (json["spi_type"].asString) {
+                        "표지판" -> {
+                            "보도 방향 ${json["vertical"].asString} m"
+                        }
+                        "표지기" -> {
+                            "도로후면 방향 ${json["vertical"].asString} m"
+                        }
+                        else -> {
+                            "차도반대측 방향 ${json["vertical"].asString} m"
+                        }
+                    }
+                }
+                else -> ""
+            }
+        }
+
+        fun getVerticalDirection(json: JsonObject): String {
+            return when (json["position"].asInt) {
+                1, 4, 7 -> "좌측 ${json["horizontal"].asString} m"
+                3, 6, 9 -> "우측 ${json["horizontal"].asString} m"
+                else -> ""
+            }
         }
     }
 }

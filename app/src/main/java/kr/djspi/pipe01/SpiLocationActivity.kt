@@ -8,6 +8,7 @@ import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
 import androidx.annotation.UiThread
 import androidx.core.view.get
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.gson.JsonObject
 import com.naver.maps.geometry.LatLng
@@ -54,6 +55,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
     private lateinit var spiLatLng: LatLng
     private lateinit var pipeLatLng: LatLng
     private lateinit var spiMarker: Marker
+    private lateinit var pipeMarker: Marker
     private lateinit var cameraChangeListener: OnCameraChangeListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,6 +123,18 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
         }
         cameraChangeListener = OnCameraChangeListener { _, _ ->
             spiMarker.position = naverMap.cameraPosition.target
+            if (!btn_confirm.isEnabled) {
+                btn_confirm.isEnabled = true
+                btn_confirm.setBackgroundColor(getColor(R.color.colorPrimaryDark))
+            }
+        }
+
+        pipeMarker = Marker().apply {
+            captionColor = Color.BLUE
+            captionHaloColor = Color.WHITE
+            captionTextSize = 16f
+            isHideCollidedMarkers = false
+            isHideCollidedSymbols = true
         }
 
         Thread { onRequestPipe() }.start()
@@ -194,7 +208,17 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
             }
             R.id.btn_confirm -> {
                 try {
-                    if (spiLocationMap["latitude"] == null || spiLocationMap["longitude"] == null) {
+                    if (spiLocationMap["latitude"] == null || spiLocationMap["longitude"] == null) { // SPI 측량좌표가 입력되지 않음
+                        if (!isSpiMarkerPositionValid()) { // SPI 측량좌표가 유효한 값인지를 확인
+                            messageDialog(
+                                13, "${intent.getStringExtra("hDirection")} ${intent.getStringExtra("vDirection")}"
+                            )
+                            (v as MaterialButton).apply {
+                                isEnabled = false
+                                setBackgroundColor(getColor(android.R.color.darker_gray))
+                            }
+                            return // SPI 측량좌표가 유효하지 않을 경우(=관로 이격거리가 존재함에도 SPI 설치지점을 관로 직상에 위치하여 등록하려는 경우) 입력 불가
+                        }
                         val latLng = spiMarker.position.toLatLng()
                         spiLocationMap["latitude"] = latLng.latitude
                         spiLocationMap["longitude"] = latLng.longitude
@@ -236,7 +260,9 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                     val pipeType = intent.getStringExtra("pipeType")!!
                     val resId = parsePipeType(pipeType).drawRes
                     addPipeMarker(pipeLatLng, resId, pipeType)
-                    addSpiMarker(spiLatLng)
+                    addSpiMarker(spiLatLng).run {
+                        this.setMarkerAddress(spiLatLng.longitude, spiLatLng.latitude)
+                    }
                 } else if (index == RESULT_FAIL) {
                     record_gps.visibility = View.VISIBLE
                     naverMap.apply {
@@ -271,8 +297,8 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                         addOnCameraChangeListener(cameraChangeListener)
                         minZoom = ZOOM_MAX - 2
                         maxZoom = ZOOM_MAX
-                    }.moveCamera(CameraUpdate.scrollAndZoomTo(pipeLatLng, ZOOM_MAX - 2)
-                        .finishCallback { onRequestPipe() })
+                    }.moveCamera(
+                        CameraUpdate.scrollAndZoomTo(pipeLatLng, ZOOM_MAX - 2).finishCallback { onRequestPipe() })
 
                     record_gps.visibility = View.VISIBLE
                     spiMarker.apply {
@@ -294,7 +320,9 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                     spiLocationMap["origin"] = originPoint.name
                     spiLocationMap["coordinate_x"] = x
                     spiLocationMap["coordinate_y"] = y
-                    addSpiMarker(spiLatLng)
+                    addSpiMarker(spiLatLng).run {
+                        this.setMarkerAddress(spiLatLng.longitude, spiLatLng.latitude)
+                    }
                 }
             }
         }
@@ -308,28 +336,36 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
         return LatLng(surveyPoint.y, surveyPoint.x)
     }
 
+    private fun isSpiMarkerPositionValid(): Boolean {
+        return when {
+            pipeLocationMap["latitude"] != null || pipeLocationMap["longitude"] != null -> { // 관로 측량좌표가 입력됨
+                val horizontal = intent.getDoubleExtra("horizontal", 0.0)
+                val vertical = intent.getDoubleExtra("vertical", 0.0)
+                if (vertical > 0 || horizontal > 0) { // 사용자 입력값에 관로 이격거리가 존재함
+                    spiMarker.position != pipeMarker.position // 관로 측량좌표가 입력되었고, 이격거리가 존재함에도 SPI 설치지점 마커가 관로위치 좌표 직상에 그대로 위치할 경우 false 리턴
+                } else true
+            }
+            else -> true
+        }
+    }
+
     private fun addPipeMarker(latLng: LatLng, @DrawableRes resId: Int, pipeType: String): Marker {
-        return Marker(latLng, OverlayImage.fromResource(resId)).apply {
-            captionColor = Color.BLUE
-            captionHaloColor = Color.WHITE
+        return pipeMarker.apply {
+            position = latLng
+            icon = OverlayImage.fromResource(resId)
             captionText = parsePipeType(pipeType).pipeName
-            captionTextSize = 16f
-            isHideCollidedMarkers = false
-            isHideCollidedSymbols = true
             map = naverMap
         }
     }
 
-    private fun addSpiMarker(latLng: LatLng) {
+    private fun addSpiMarker(latLng: LatLng): Marker {
         naverMap.apply {
             removeOnCameraChangeListener(cameraChangeListener)
         }.moveCamera(CameraUpdate.scrollAndZoomTo(latLng, ZOOM_MAX - 2).finishCallback { onRequestPipe() })
 
-        spiMarker.apply {
+        return spiMarker.apply {
             position = latLng
             map = naverMap
-        }.run {
-            this.setMarkerAddress(latLng.longitude, latLng.latitude)
         }
     }
 

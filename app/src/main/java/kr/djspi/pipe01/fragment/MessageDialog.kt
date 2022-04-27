@@ -66,7 +66,7 @@ class MessageDialog : DialogFragment(), OnClickListener {
                 dismiss()
             }
             R.id.button_close -> {
-                returnToMain = true
+                returnToMain = false
                 dismiss()
             }
         }
@@ -144,6 +144,11 @@ class MessageDialog : DialogFragment(), OnClickListener {
             }
             12 -> { // (SpiPostActivity.kt) 정보를 등록하려는 태그와 실제 태깅된 태그가 다를 때 등록 거부
                 contentsSub.text = getString(R.string.popup_error_serial_mismatch_sub)
+            }
+            13 -> { // (SpiLocationActivity.kt) 관로 이격거리(수직 또는 수평)가 0 이상임에도 사용자가 SPI 설치지점을 관로위치와 동일한 곳으로 입력을 시도
+                setVisibilityToGone()
+                title.text = "주의"
+                contents.text = fromHtml(getString(R.string.nfc_info_read_contents_distance, tag!!))
             }
         }
     }

@@ -216,6 +216,7 @@
      로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s %4$s</font><font color="#F24E4E"> %5$s</font>
       관로가 SPI %6$s 아래 지표면으로부터 <font color="#F24E4E">%7$s m</font>
        깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
+    <string name="nfc_info_read_contents_distance"><![CDATA[본 관로는 SPI로부터<br> <font color="#F24E4E">%1$s</font> 이격되어 매설되어 있습니다. 지도를 움직여 SPI 설치위치를 확정해주세요.]]></string>
     <string name="info_company"><![CDATA[본 관로는 <font color="#0077C8">%1$s</font>에서 관리하고 있습니다.]]></string>
     <string name="info_contact"><![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
     <string name="nfc_info_construction"><![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>

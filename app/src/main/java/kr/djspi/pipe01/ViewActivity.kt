@@ -20,6 +20,7 @@ import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.dto.Entry
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
+import kr.djspi.pipe01.tab.InfoTab
 import kr.djspi.pipe01.tab.OnRecordListener
 import kr.djspi.pipe01.tab.TabAdapter
 import kr.djspi.pipe01.util.fromHtml
@@ -222,7 +223,11 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
                 this.startActivityForResult(
                     Intent(this, SpiLocationActivity::class.java)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .putExtra("pipeType", jsonObj["pipe"].asString), REQUEST_MAP
+                        .putExtra("pipeType", jsonObj["pipe"].asString)
+                        .putExtra("horizontal", jsonObj["horizontal"].asDouble)
+                        .putExtra("vertical", jsonObj["vertical"].asDouble)
+                        .putExtra("hDirection", InfoTab.getHorizontalDirection(jsonObj))
+                        .putExtra("vDirection", InfoTab.getVerticalDirection(jsonObj)), REQUEST_MAP
                 )
             }
         }
