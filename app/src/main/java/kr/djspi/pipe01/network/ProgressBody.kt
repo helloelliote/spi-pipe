@@ -3,6 +3,7 @@ package kr.djspi.pipe01.network
 import android.os.Handler
 import android.os.Looper
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okio.BufferedSink
 import java.io.File
@@ -20,7 +21,7 @@ class ProgressBody(
     }
 
     override fun contentType(): MediaType? {
-        return MediaType.parse("$contentType/*")
+        return "$contentType/*".toMediaTypeOrNull()
     }
 
     @Throws(IOException::class)

@@ -4,7 +4,8 @@ buildscript {
     ext.kotlin_version = '1.5.30'
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+        gradlePluginPortal()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -26,6 +27,9 @@ allprojects {
         flatDir {
             dirs 'libs'
         }
+        google()
+        mavenCentral()
+        gradlePluginPortal()
         maven {
             url 'https://naver.jfrog.io/artifactory/maven/'
         }
@@ -39,8 +43,6 @@ allprojects {
             }
             url "http://maven.taplinx.nxp.com/nexus/content/repositories/taplinx/"
         }
-        google()
-        jcenter()
     }
 }
 

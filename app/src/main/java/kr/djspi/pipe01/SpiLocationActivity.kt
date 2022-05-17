@@ -3,6 +3,8 @@ package kr.djspi.pipe01
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
@@ -42,6 +44,8 @@ import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
 import java.io.Serializable
 import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListener, OnSelectListener, Serializable {
 
@@ -57,12 +61,17 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
     private lateinit var spiMarker: Marker
     private lateinit var pipeMarker: Marker
     private lateinit var cameraChangeListener: OnCameraChangeListener
+    private lateinit var executor: ExecutorService
+    private lateinit var handler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
         setContentView(R.layout.activity_spi_location)
         setNaverMap()
+
+        executor = Executors.newCachedThreadPool()
+        handler = Handler(Looper.getMainLooper())
     }
 
     override fun setContentView(layoutResID: Int) {
@@ -259,7 +268,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                     spiLocationMap["coordinate_y"] = ySpi
                     val pipeType = intent.getStringExtra("pipeType")!!
                     val resId = parsePipeType(pipeType).drawRes
-                    addPipeMarker(pipeLatLng, resId, pipeType)
+                    addPipeMarker(pipeLatLng, resId, pipeType).apply { this.map = naverMap }
                     addSpiMarker(spiLatLng).run {
                         this.setMarkerAddress(spiLatLng.longitude, spiLatLng.latitude)
                     }
@@ -354,7 +363,6 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
             position = latLng
             icon = OverlayImage.fromResource(resId)
             captionText = parsePipeType(pipeType).pipeName
-            map = naverMap
         }
     }
 
@@ -365,40 +373,51 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
 
         return spiMarker.apply {
             position = latLng
-            map = naverMap
         }
     }
 
     private fun Marker.setMarkerAddress(x: Double, y: Double) {
         val marker = this
-        Retrofit2x.coord2Address(x, y).enqueue(object : RetrofitCallback() {
-            override fun onResponse(response: JsonObject) {
-                val metaData = response["meta"].asJsonObject
-                val totalCount = metaData["total_count"].asInt
-                if (totalCount == 0) {
-                    marker.captionColor = Color.MAGENTA
-                    marker.captionText = getString(R.string.marker_caption_location_invalid)
-                    marker.subCaptionText = getString(R.string.marker_caption_sub_location_invalid)
-                    btn_confirm.apply {
-                        setBackgroundColor(getColor(android.R.color.darker_gray))
+        val xCoords = doubleArrayOf(x, x, x + 0.0001, x, x - 0.0001)
+        val yCoords = doubleArrayOf(y, y + 0.0001, y, y - 0.0001, y)
+        var isValidCoord2Address = false
+        executor.execute {
+            loop@ for (i in 0..5) {
+                try {
+                    if (i == 5) {
+                        marker.captionColor = Color.MAGENTA
+                        marker.captionText = getString(R.string.marker_caption_location_invalid)
+                        marker.subCaptionText = getString(R.string.marker_caption_sub_location_invalid)
+                        break@loop
                     }
-                    return
+                    val call = Retrofit2x.coord2Address(xCoords[i], yCoords[i])
+                    val response = call.execute().body()!!
+                    val metaData = response["meta"].asJsonObject
+                    val totalCount = metaData["total_count"].asInt
+                    if (totalCount == 0) continue@loop
+                    else {
+                        val documents = response["documents"].asJsonArray[0].asJsonObject
+                        val address = documents["address"].asJsonObject
+                        val addressName = address["address_name"]
+                        marker.subCaptionText = addressName.asString
+                        isValidCoord2Address = true
+                        break@loop
+                    }
+                } catch (e: Exception) {
+                    marker.captionColor = Color.MAGENTA
+                    marker.captionText = getString(R.string.marker_caption_network_invalid)
+                    marker.subCaptionText = getString(R.string.marker_caption_sub_network_invalid)
+                    break@loop
                 }
-                val documents = response["documents"].asJsonArray[0].asJsonObject
-                val address = documents["address"].asJsonObject
-                val addressName = address["address_name"]
-                marker.subCaptionText = addressName.asString
+            }
+            handler.post {
+                marker.map = naverMap
                 btn_confirm.apply {
-                    setBackgroundColor(getColor(R.color.colorPrimaryDark))
+                    isEnabled = isValidCoord2Address
+                    setBackgroundColor(getColor(if (isValidCoord2Address) R.color.colorPrimaryDark else android.R.color.darker_gray))
                 }
             }
-
-            override fun onFailure(throwable: Throwable) {
-                marker.captionColor = Color.MAGENTA
-                marker.captionText = getString(R.string.marker_caption_network_invalid)
-                marker.subCaptionText = getString(R.string.marker_caption_sub_network_invalid)
-            }
-        })
+        }
     }
 
     private fun onSurveyDialog() {
