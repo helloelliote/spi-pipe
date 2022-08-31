@@ -46,7 +46,8 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
             position = bundle.getInt("positionInt")
             resId = "${plan}_distance"
         }
-        dialogTitle = getString(R.string.popup_title_input_distance)
+        dialogTitle =
+            if (shape == "제수변") getString(R.string.popup_title_input_distance_valve) else getString(R.string.popup_title_input_distance)
     }
 
     override fun onCreateView(
@@ -56,6 +57,9 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_plot_distance, container, false)
         view.findViewById<TextView>(R.id.popup_title).text = dialogTitle
+        val titleSub = view.findViewById<TextView>(R.id.popup_title_sub)
+        titleSub.text =
+            if (shape == "제수변") getString(R.string.popup_error_input_distance_valve) else getString(R.string.popup_error_input_distance)
         view.findViewById<ImageView>(R.id.lay_background).apply {
             setImageDrawable(fromRes(resId))
             scaleType = ImageView.ScaleType.FIT_CENTER
@@ -95,10 +99,12 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
                             setTranslation(noH = true, vY = -65.0f, hX = 0.0f, hY = 0.0f)
                         }
                     }
+
                     3 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
                     4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
                     5 -> { // Unreachable case
                     }
+
                     6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
                     7 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
                     8 -> {
@@ -109,9 +115,11 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
                             setTranslation(noH = true, vY = 65.0f, hX = 0.0f, hY = 0.0f)
                         }
                     }
+
                     9 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
                 }
             }
+
             "십자형" -> {
                 when (position) {
                     1 -> setTranslation(vY = -90.0f, hX = -150.0f, hY = -280.0f)
@@ -120,12 +128,14 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
                     4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
                     5 -> { // Unreachable case
                     }
+
                     6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
                     7 -> setTranslation(vY = 90.0f, hX = -150.0f, hY = 280.0f)
                     8 -> setTranslation(noH = true, vY = 45.0f, hX = 0.0f, hY = 0.0f)
                     9 -> setTranslation(vY = 95.0f, hX = 155.0f, hY = 280.0f)
                 }
             }
+
             else -> {
                 when (position) {
                     1 -> setTranslation(vY = -90.0f, hX = -150.0f, hY = -280.0f)
@@ -134,6 +144,7 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
                     4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
                     5 -> { // Unreachable case
                     }
+
                     6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
                     7 -> setTranslation(vY = 90.0f, hX = -150.0f, hY = 280.0f)
                     8 -> setTranslation(noH = true, vY = 95.0f, hX = 0.0f, hY = 0.0f)
@@ -156,11 +167,13 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
                 vertical.visibility = GONE
                 horizontal.visibility = VISIBLE
             }
+
             noH -> {
                 horizontal.setText("0.0")
                 horizontal.visibility = GONE
                 vertical.visibility = VISIBLE
             }
+
             else -> {
                 horizontal.visibility = VISIBLE
                 vertical.visibility = VISIBLE
@@ -184,12 +197,14 @@ class DistanceDialog : DialogFragment(), View.OnClickListener {
                 vertical.visibility = VISIBLE
                 dismissAllowingStateLoss()
             } else return
+
             R.id.btn_cancel -> {
                 horizontal.visibility = VISIBLE
                 vertical.visibility = VISIBLE
                 listener.onSelect(TAG_DISTANCE, -2, null)
                 dismissAllowingStateLoss()
             }
+
             R.id.button_close -> dismissAllowingStateLoss()
         }
     }

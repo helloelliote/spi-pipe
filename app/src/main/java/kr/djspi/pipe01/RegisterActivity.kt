@@ -27,10 +27,12 @@ import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS_ELB135
+import kr.djspi.pipe01.Const.PIPE_DIRECTIONS_VALVE
 import kr.djspi.pipe01.Const.REQUEST_CAPTURE_IMAGE
 import kr.djspi.pipe01.Const.REQUEST_GALLERY
 import kr.djspi.pipe01.Const.TAG_DIRECTION
 import kr.djspi.pipe01.Const.TAG_DIRECTION_ELB135
+import kr.djspi.pipe01.Const.TAG_DIRECTION_VALVE
 import kr.djspi.pipe01.Const.TAG_DISTANCE
 import kr.djspi.pipe01.Const.TAG_PHOTO
 import kr.djspi.pipe01.Const.TAG_POSITION
@@ -90,7 +92,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        toolbar.title = "SPI 지중선로 ${spiType.type}"
+        toolbar.title = if (pipeShape.shape == "제수변") "SPI 제수변 ${spiType.type}" else "SPI 지중선로 ${spiType.type}"
 
         setOnClickListeners()
         form_shape.addTextChangedListener(object : TextWatcher {
@@ -130,6 +132,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 "도시가스", "상수관로", "난방관로", "유류관로", "기타관로" -> {
                     fSpec.inputType = TYPE_CLASS_NUMBER
                 }
+
                 else -> {
                     fSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
                     fSpec.error = null
@@ -138,20 +141,6 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             header.text = pipeType.header
             unit.text = pipeType.unit
             form_supervise.setText(pipeSupervise.supervise)
-
-            if (BuildConfig.BUILD_TYPE == "debug") {
-                pipePosition.position = 2
-                form_horizontal.tag = ""
-                form_vertical.tag = "전면"
-                form_horizontal.text = Editable.Factory.getInstance().newEditable("0.00")
-                form_vertical.text = Editable.Factory.getInstance().newEditable("전면 0.00")
-                pipePosition.horizontal = 0.0
-                pipePosition.vertical = 1.0
-                pipePosition.direction = PIPE_DIRECTIONS[2]
-                pipePlan.file_plane = "plan_plate_str_2_out.png"
-                form_depth.text = Editable.Factory.getInstance().newEditable("1.5")
-                form_spec.text = Editable.Factory.getInstance().newEditable("20")
-            }
         }
     }
 
@@ -208,6 +197,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 form_shape.text = null
                 ListDialog().show(supportFragmentManager, Const.TAG_SHAPE)
             }
+
             R.id.lay_distance, R.id.form_horizontal, R.id.form_vertical -> {
                 form_horizontal.text = null
                 form_vertical.text = null
@@ -217,10 +207,12 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     showPositionDialog()
                 }
             }
+
             R.id.lay_photo, R.id.form_photo -> {
                 lay_photo_desc.visibility = View.VISIBLE
                 PhotoDialog().show(supportFragmentManager, TAG_PHOTO)
             }
+
             R.id.form_photo_thumbnail -> {
                 photoObj?.run {
                     val bundle = Bundle()
@@ -230,6 +222,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     }.show(supportFragmentManager, TAG_PHOTO)
                 }
             }
+
             R.id.btn_delete -> {
                 photoObj?.run {
                     form_photo_thumbnail.setImageDrawable(null)
@@ -257,6 +250,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 form_vertical.text = null
                 showPositionDialog()
             }
+
             TAG_POSITION -> {
                 pipePosition.position = index
                 when (index) {
@@ -264,18 +258,22 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         form_horizontal.tag = "좌측"
                         form_vertical.tag = "전면"
                     }
+
                     2 -> {
                         form_horizontal.tag = ""
                         form_vertical.tag = "전면"
                     }
+
                     3 -> {
                         form_horizontal.tag = "우측"
                         form_vertical.tag = "전면"
                     }
+
                     4 -> {
                         form_horizontal.tag = "좌측"
                         form_vertical.tag = ""
                     }
+
                     5 -> {
                         form_horizontal.tag = "직상"
                         form_vertical.tag = "직상"
@@ -284,28 +282,34 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         pipePosition.horizontal = 0.0
                         pipePosition.vertical = 0.0
                     }
+
                     6 -> {
                         form_horizontal.tag = "우측"
                         form_vertical.tag = ""
                     }
+
                     7 -> {
                         form_horizontal.tag = "좌측"
                         form_vertical.tag = "후면"
                     }
+
                     8 -> {
                         form_horizontal.tag = ""
                         form_vertical.tag = "후면"
                     }
+
                     9 -> {
                         form_horizontal.tag = "우측"
                         form_vertical.tag = "후면"
                     }
+
                     else -> {
                         form_horizontal.tag = "수평"
                         form_vertical.tag = "수직"
                     }
                 }
             }
+
             TAG_DIRECTION -> {
                 if (index == -2) { // 사용자가 이전 다이얼로그에서 '취소' 선택
                     showPositionDialog()
@@ -314,6 +318,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 pipePosition.direction = PIPE_DIRECTIONS[index]
                 pipePlan.file_plane = "${text[0]}.png"
             }
+
             TAG_DIRECTION_ELB135 -> {
                 if (index == -2) {
                     showPositionDialog()
@@ -322,6 +327,16 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 pipePosition.direction = PIPE_DIRECTIONS_ELB135[index]
                 pipePlan.file_plane = "${text[0]}.png"
             }
+
+            TAG_DIRECTION_VALVE -> {
+                if (index == -2) {
+                    showPositionDialog()
+                    return
+                }
+                pipePosition.direction = PIPE_DIRECTIONS_VALVE[2]
+                pipePlan.file_plane = "${text[0]}.png"
+            }
+
             TAG_DISTANCE -> {
                 if (index == -2) { // 사용자가 이전 다이얼로그에서 '취소' 선택
                     showPositionDialog()
@@ -334,6 +349,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 pipePosition.vertical = text[1]!!.toDouble()
                 imm.toggleSoftInput(SHOW_IMPLICIT, HIDE_NOT_ALWAYS)
             }
+
             TAG_PHOTO -> {
                 when (index) {
                     1 -> {
@@ -354,6 +370,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                             }
                         }
                     }
+
                     2 -> {
                         Intent(Intent.ACTION_PICK).also { intent ->
                             intent.resolveActivity(packageManager)?.also {
@@ -405,6 +422,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         }
                     }).start()
                 }
+
                 REQUEST_GALLERY -> {
                     intent?.data.run {
                         val file = File(uriToFilePath(this))
@@ -510,7 +528,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             pipeShape.shape = form_shape.text.toString().trim()
             pipeShape.spec = form_spec.text.toString().trim().replace(" ", "^")
             pipePlan.file_section =
-                "plan_${parseSpiType(spiType.type)}_${pipePosition.position}.png"
+                if (pipeShape.shape == "제수변")
+                    "plan_${parseSpiType(spiType.type)}_${pipePosition.position}_valve.png"
+                else "plan_${parseSpiType(spiType.type)}_${pipePosition.position}.png"
             val entry = Entry(
                 spi,
                 spiType,

@@ -55,7 +55,8 @@
     </string>
     <string name="popup_error_comm">서버와의 통신에 실패하였습니다.\n네트워크 연결을 재확인해 주세요.</string>
     <string name="popup_error_not_spi">정품 SPI 확인에 실패하였습니다.\n다시 한번 천천히 태깅해 주세요.</string>
-    <string name="popup_error_not_spi_renewal"><![CDATA[정품 SPI 확인에 실패하였습니다.\n공급처에 연락바랍니다(<font color="#F24E4E">코드 11</font>)]]></string>
+    <string name="popup_error_not_spi_renewal">
+        <![CDATA[정품 SPI 확인에 실패하였습니다.\n공급처에 연락바랍니다(<font color="#F24E4E">코드 11</font>)]]></string>
     <string name="popup_error_offline_read_error">SPI 정보조회에 실패하였습니다.\nSPI를 다시 태깅해 주세요.</string>
     <string name="popup_error_set">SPI 정보 등록에 실패하였습니다.\nSPI를 다시 태깅해 주세요.</string>
     <string name="popup_error_supervise">관리기관 목록을 가져오지 못하였습니다. 다시 시도해주세요.</string>
@@ -136,14 +137,20 @@
     <string name="popup_title_select_pipe">지중선로 종류선택</string>
     <string name="popup_title_select_shape">지중선로 형태선택</string>
     <string name="popup_title_select_position">지중선로 위치선택</string>
+    <string name="popup_title_select_position_valve">제수변 위치선택</string>
     <string name="popup_title_select_direction">지중선로 방향선택</string>
+    <string name="popup_title_select_direction_valve">제수변 방향선택</string>
     <string name="popup_title_select_direction_sub">지중선로의 방향을 선택해주세요.</string>
+    <string name="popup_title_select_direction_sub_valve">제수변의 방향을 선택해주세요.</string>
     <string name="popup_title_select_direction_sub_elb135">굴곡지점의 관로방향과 표지판의 관로방향이 일치하도록 부착해주세요.</string>
     <string name="popup_title_input_distance">지중선로 거리입력</string>
+    <string name="popup_title_input_distance_valve">제수변 거리입력</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>
     <string name="popup_title_select_photo">사진 첨부</string>
     <string name="popup_error_select_position">지중선로의 위치를 선택해주세요.</string>
+    <string name="popup_error_select_position_valve">제수변의 위치를 선택해주세요.</string>
     <string name="popup_error_input_distance">지중선로의 이격거리(m)를 입력해주세요.</string>
+    <string name="popup_error_input_distance_valve">제수변의 이격거리(m)를 입력해주세요.</string>
     <!--https://www.flaticon.com/packs/ui-interface-22-->
     <string name="popup_camera">카메라</string>
     <string name="popup_gallery">갤러리</string>
@@ -216,10 +223,21 @@
      로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s %4$s</font><font color="#F24E4E"> %5$s</font>
       관로가 SPI %6$s 아래 지표면으로부터 <font color="#F24E4E">%7$s m</font>
        깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
-    <string name="nfc_info_read_contents_distance"><![CDATA[본 관로는 SPI로부터<br> <font color="#F24E4E">%1$s</font> 이격되어 매설되어 있습니다. 지도를 움직여 SPI 설치위치를 확정해주세요.]]></string>
+    <string name="nfc_info_read_contents_valve"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
+     로서 <br><font color="#F24E4E">%2$s %3$s</font><font color="#F24E4E"> %4$s</font> 의 <font color="#F24E4E">%5$s</font>이
+     SPI로부터<br> <font color="#F24E4E">%6$s %7$s</font> 이격되어 지표면으로부터 <font color="#F24E4E">%8$s m</font>
+       깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
+    <string name="nfc_info_read_contents_valve_alt"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
+     로서 <br><font color="#F24E4E">%2$s %3$s</font><font color="#F24E4E"> %4$s</font> 의 <font color="#F24E4E">%5$s</font>이
+     SPI %6$s 아래 지표면으로부터 <font color="#F24E4E">%7$s m</font>
+       깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
+    <string name="nfc_info_read_contents_distance">
+        <![CDATA[본 관로는 SPI로부터<br> <font color="#F24E4E">%1$s</font> 이격되어 매설되어 있습니다. 지도를 움직여 SPI 설치위치를 확정해주세요.]]></string>
     <string name="info_company"><![CDATA[본 관로는 <font color="#0077C8">%1$s</font>에서 관리하고 있습니다.]]></string>
-    <string name="info_contact"><![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
-    <string name="nfc_info_construction"><![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
+    <string name="info_contact">
+        <![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
+    <string name="nfc_info_construction">
+        <![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
     <string name="nfc_info_id"><![CDATA[관로 ID는 <font color="#0077C8">%1$s</font> 입니다.]]></string>
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
     <string name="error_load_image_fail">이미지를 불러오지 못하였습니다.</string>
@@ -229,7 +247,8 @@
     <!--Preferences -->
     <string name="setting_confirm">저장</string>
     <string name="message_preset_help">반복되는 입력내용을 미리 지정하여, 관로정보를 등록하는 과정에서 불러와 사용할 수 있는 편의기능입니다.
-        \n\n별도로 지정하지 않은 정보는 관로정보를 등록하는 과정에서 개별적으로 입력할 수 있습니다.</string>
+        \n\n별도로 지정하지 않은 정보는 관로정보를 등록하는 과정에서 개별적으로 입력할 수 있습니다.
+    </string>
     <string name="nav_guide_content">
         1. 앱의 용도\n
         본 SPI 앱은 지중선로에 대한 정보를 지능형 지중선로 표시기(SPI)에 기록, 저장하고 저장된 정보를 읽기 위한 애플리케이션입니다.\n
@@ -267,5 +286,6 @@
         \n
         7. 개발자 및 공급자 정보\n
         1) SPI 제품 및 개발자 : 대진기술정보(주) 053-424-9547\n
-        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3800\n</string>
+        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3800\n
+    </string>
 </resources>

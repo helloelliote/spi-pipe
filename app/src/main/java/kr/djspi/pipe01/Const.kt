@@ -9,6 +9,7 @@ object Const {
     const val TAG_POSITION = "position"
     const val TAG_DIRECTION = "direction"
     const val TAG_DIRECTION_ELB135 = "direction2"
+    const val TAG_DIRECTION_VALVE = "direction3"
     const val TAG_DISTANCE = "distance"
     const val TAG_LOCATION = "location"
     const val TAG_SURVEY_SPI = "survey"
@@ -18,6 +19,7 @@ object Const {
     const val TAG_PHOTO = "photo"
     val PIPE_DIRECTIONS = arrayOf("", "", "out", "", "outl", "", "outr", "", "in")
     val PIPE_DIRECTIONS_ELB135 = arrayOf("", "snw", "sne", "nsw", "nse", "esw", "enw", "wne", "wse")
+    val PIPE_DIRECTIONS_VALVE = arrayOf("", "", "point")
     val PIPE_TYPE_ENUMS = PipeTypeEnum.values()
 
     internal const val REQUEST_MAP = 30001

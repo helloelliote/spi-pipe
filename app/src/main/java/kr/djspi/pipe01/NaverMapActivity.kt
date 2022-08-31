@@ -63,6 +63,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     infoWindows.open(it)
                 }
             }
+
             is InfoWindow -> {
                 infoWindows.marker?.let { marker ->
                     val jsonObject = marker.tag as JsonObject
@@ -165,6 +166,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                         group[0].setBackgroundColor(white)
                         group[1].setBackgroundColor(green)
                     }
+
                     R.id.button_basic -> {
                         naverMap.mapType = NaverMap.MapType.Basic
                         group[1].setBackgroundColor(white)
@@ -182,8 +184,12 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     val jsonObject = (infoWindow.marker)?.tag as JsonObject
                     val pipe = jsonObject["pipe"].asString
                     val id = jsonObject["id"].asString
-//                    "$pipe $id"
-                    val spannable: Spannable = SpannableString("$pipe $id")
+                    val source = if (jsonObject["shape"].asString == "제수변") {
+                        "$pipe 제수변 $id"
+                    } else {
+                        "$pipe $id"
+                    }
+                    val spannable: Spannable = SpannableString(source)
                     spannable.setSpan(
                         ForegroundColorSpan(Color.BLACK),
                         0,
@@ -223,7 +229,11 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                             val jsonObject = element.asJsonObject
                             val lat = jsonObject["spi_latitude"].asDouble
                             val lng = jsonObject["spi_longitude"].asDouble
-                            val resId = parsePipeType(jsonObject["pipe"].asString).drawRes
+                            val resId = if (jsonObject["shape"].asString == "제수변") {
+                                parsePipeType(jsonObject["pipe"].asString).drawResValve
+                            } else {
+                                parsePipeType(jsonObject["pipe"].asString).drawRes
+                            }
                             markers += Marker().apply {
                                 position = LatLng(lat, lng)
                                 icon = OverlayImage.fromResource(resId)
@@ -254,11 +264,13 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 behavior.state = STATE_COLLAPSED
                 return
             }
+
             placesArrayList.size != 0 -> {
                 placesArrayList.clear()
                 placesListAdapter?.notifyDataSetChanged()
                 return
             }
+
             else -> {
 
                 super.onBackPressed()
@@ -422,6 +434,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     STATE_EXPANDED -> {
                         behavior.state = STATE_COLLAPSED
                     }
+
                     STATE_COLLAPSED -> {
                         if (naverMap?.cameraPosition!!.zoom < 12.0) {
                             messageDialog(0, getString(R.string.popup_error_zoom))
@@ -443,11 +456,13 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                             naverMap?.setContentPadding(0, 45, 0, bottomSheetHeight)
                             onRequestPipe()
                         }
+
                         STATE_COLLAPSED -> {
                             nmap_bottom_sheet_text.text = textCollapsed
                             naverMap?.setContentPadding(0, 45, 0, 45)
                             clearMarker()
                         }
+
                         else -> {
                         }
                     }

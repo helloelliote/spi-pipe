@@ -72,7 +72,11 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        toolbar.title = "SPI ${jsonObj["pipe"].asString}"
+        toolbar.title = if (jsonObj["shape"].asString == "제수변") {
+            "SPI ${jsonObj["pipe"].asString} 제수변"
+        } else {
+            "SPI ${jsonObj["pipe"].asString}"
+        }
         setTabLayout()
     }
 

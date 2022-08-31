@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment
 import kr.djspi.pipe01.BaseActivity.Companion.defPackage
 import kr.djspi.pipe01.Const.TAG_DIRECTION
 import kr.djspi.pipe01.Const.TAG_DIRECTION_ELB135
+import kr.djspi.pipe01.Const.TAG_DIRECTION_VALVE
 import kr.djspi.pipe01.Const.TAG_POSITION
 import kr.djspi.pipe01.R
 
@@ -44,7 +45,8 @@ class PositionDialog : DialogFragment(), OnClickListener {
             typeString = it.getString("typeString")
             shapeString = it.getString("shapeString")
         }
-        dialogTitle = getString(R.string.popup_title_select_position)
+        dialogTitle =
+            if (shapeString == "제수변") getString(R.string.popup_title_select_position_valve) else getString(R.string.popup_title_select_position)
     }
 
     override fun onCreateView(
@@ -54,7 +56,10 @@ class PositionDialog : DialogFragment(), OnClickListener {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_plot_position, container, false)
         val title = view.findViewById<TextView>(R.id.popup_title)
+        val titleSub = view.findViewById<TextView>(R.id.popup_title_sub)
         title.text = dialogTitle
+        titleSub.text =
+            if (shapeString == "제수변") getString(R.string.popup_error_select_position_valve) else getString(R.string.popup_error_select_position)
         arrayOf<View>(
             view.findViewById(R.id.lay_1),
             view.findViewById(R.id.lay_2),
@@ -98,6 +103,7 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 views[8]!!.setImageDrawable(fromRes(R.drawable.btn_01_2))
                 views[9]!!.setImageDrawable(fromRes(R.drawable.btn_01_3))
             }
+
             TAG_TYPE_MARKER -> {
                 val params = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER)
                 params.setMargins(0, 60, 0, 0)
@@ -113,6 +119,7 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 views[8]!!.setImageDrawable(fromRes(R.drawable.btn_11_2))
                 views[9]!!.setImageDrawable(fromRes(R.drawable.btn_11_3))
             }
+
             TAG_TYPE_COLUMN -> {
                 val params = LayoutParams(WRAP_CONTENT, WRAP_CONTENT, CENTER)
                 params.setMargins(0, 60, 0, 0)
@@ -154,51 +161,70 @@ class PositionDialog : DialogFragment(), OnClickListener {
                 }
                 listener.onSelect(TAG_POSITION, selectIndex, null)
                 bundle!!.putInt("positionInt", selectIndex)
-                if (shapeString == "엘보형(135º)") {
-                    DirectionDialogElb135().apply { arguments = bundle }
-                        .show(parentFragmentManager, TAG_DIRECTION_ELB135)
-                } else {
-                    DirectionDialog().apply { arguments = bundle }
-                        .show(parentFragmentManager, TAG_DIRECTION)
+                when (shapeString) {
+                    "엘보형(135º)" -> {
+                        DirectionDialogElb135().apply { arguments = bundle }
+                            .show(parentFragmentManager, TAG_DIRECTION_ELB135)
+                    }
+
+                    "제수변" -> {
+                        DirectionDialogValve().apply { arguments = bundle }
+                            .show(parentFragmentManager, TAG_DIRECTION_VALVE)
+                    }
+
+                    else -> {
+                        DirectionDialog().apply { arguments = bundle }
+                            .show(parentFragmentManager, TAG_DIRECTION)
+                    }
                 }
                 dismissAllowingStateLoss()
             }
+
             R.id.lay_1 -> {
                 selectIndex = 1
                 setFocus(v, selectIndex)
             }
+
             R.id.lay_2 -> {
                 selectIndex = 2
                 setFocus(v, selectIndex)
             }
+
             R.id.lay_3 -> {
                 selectIndex = 3
                 setFocus(v, selectIndex)
             }
+
             R.id.lay_4 -> {
                 selectIndex = 4
                 setFocus(v, selectIndex)
             }
+
             R.id.lay_5 -> {
                 selectIndex = 5
                 setFocus(v, selectIndex)
             }
+
             R.id.lay_6 -> {
                 selectIndex = 6
                 setFocus(v, selectIndex)
             }
+
             R.id.lay_7 -> {
                 selectIndex = 7
                 setFocus(v, selectIndex)
             }
+
             R.id.lay_8 -> {
                 selectIndex = 8
                 setFocus(v, selectIndex)
             }
+
             R.id.lay_9 -> {
                 selectIndex = 9
                 setFocus(v, selectIndex)
             }
+
             R.id.btn_cancel, R.id.button_close -> dismissAllowingStateLoss()
         }
     }

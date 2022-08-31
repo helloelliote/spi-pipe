@@ -22,6 +22,7 @@ data class PipeShape(var id: Int = -1) : DataItem, Serializable {
         엘보형135("엘보형(135º)", "elb135"),
         관말형("관말형", "end"),
         십자형("십자형", "crs"),
+        제수변("제수변", "val"),
         선택형("선택형", "none");
 
         companion object {
