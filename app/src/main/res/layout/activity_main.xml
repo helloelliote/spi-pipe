@@ -8,18 +8,19 @@
     tools:ignore="ContentDescription, UseCompoundDrawables">
 
     <LinearLayout
+        android:id="@+id/lay_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/lay_main1"
+            android:id="@+id/lay_main_menu1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/lay_main2"
+            app:layout_constraintBottom_toTopOf="@+id/lay_main_menu2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="parent">
@@ -45,7 +46,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/lay_main2"
+            android:id="@+id/lay_main_menu2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -54,7 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lay_main1">
+            app:layout_constraintTop_toBottomOf="@id/lay_main_menu1">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -75,4 +76,28 @@
                 android:text="@string/lay_main3_sub" />
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/lay_main_debug_1"
+        style="@style/NotifyDebug"
+        app:layout_constraintEnd_toEndOf="@id/lay_main"
+        app:layout_constraintTop_toTopOf="@id/lay_main" />
+
+    <TextView
+        android:id="@+id/lay_main_debug_2"
+        style="@style/NotifyDebug"
+        app:layout_constraintStart_toStartOf="@id/lay_main"
+        app:layout_constraintTop_toTopOf="@id/lay_main" />
+
+    <TextView
+        android:id="@+id/lay_main_debug_3"
+        style="@style/NotifyDebug"
+        app:layout_constraintBottom_toBottomOf="@id/lay_main"
+        app:layout_constraintEnd_toEndOf="@id/lay_main" />
+
+    <TextView
+        android:id="@+id/lay_main_debug_4"
+        style="@style/NotifyDebug"
+        app:layout_constraintBottom_toBottomOf="@id/lay_main"
+        app:layout_constraintStart_toStartOf="@id/lay_main" />
 </androidx.constraintlayout.widget.ConstraintLayout>

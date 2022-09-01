@@ -11,7 +11,7 @@
     </style>
 
     <style name="Spi.SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/background_splash</item>
+<!--        <item name="android:windowBackground">@drawable/background_splash</item>-->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
@@ -78,7 +78,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
         <item name="backgroundTint">@color/colorPrimaryDark</item>
-        <item name="cornerRadius">40dp</item>
+        <item name="cornerRadius">30dp</item>
     </style>
 
     <style name="Spi.Tab" parent="Widget.AppCompat.Toolbar">
@@ -110,6 +110,16 @@
     <style name="TextAppearance20sp">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="NotifyDebug">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:text">@string/lay_notify_debug</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:visibility">gone</item>
         <item name="android:textStyle">bold</item>
     </style>
 </resources>

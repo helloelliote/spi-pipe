@@ -4,12 +4,15 @@
     tools:showIn="navigation_view">
 
     <item
-        android:id="@+id/title_app"
+        android:id="@+id/nav_apptitle"
         android:title="@string/nav_app">
         <menu>
             <item
                 android:id="@+id/nav_guide"
                 android:title="@string/nav_guide" />
+            <item
+                android:id="@+id/nav_manual_video"
+                android:title="@string/nav_manual_video" />
             <item
                 android:id="@+id/nav_homepage"
                 android:title="@string/nav_homepage" />
@@ -17,7 +20,7 @@
     </item>
 
     <item
-        android:id="@+id/title_setting"
+        android:id="@+id/nav_settingtitle"
         android:title="@string/nav_settings">
         <menu>
             <item

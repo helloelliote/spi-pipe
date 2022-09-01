@@ -18,7 +18,7 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/popup_title"
+            android:id="@+id/popup_list_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -26,7 +26,7 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/btn_close"
+            android:id="@+id/button_close"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/btn_close_black" />

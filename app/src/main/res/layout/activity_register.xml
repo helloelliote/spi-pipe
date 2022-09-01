@@ -84,7 +84,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.20"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
 
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_horizontal"
@@ -97,7 +97,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.20"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
         </LinearLayout>
 
         <View
@@ -131,7 +131,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.50"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
         </LinearLayout>
 
         <View
@@ -156,7 +156,7 @@
                 android:layout_weight="2.5"
                 android:hint="@string/record_input_4_hint"
                 android:inputType="number|textNoSuggestions"
-                app:maxNumber="1000"
+                app:maxNumber="9999"
                 app:minNumber="0"
                 app:testType="nocheck" />
 
@@ -212,8 +212,7 @@
                 android:id="@+id/form_supervise"
                 style="@style/FormEditText"
                 android:focusable="false"
-                android:hint="@string/record_input_6_hint"
-                android:imeOptions="actionNext" />
+                android:hint="@string/record_input_6_hint" />
         </LinearLayout>
 
         <View
@@ -260,6 +259,8 @@
                 android:id="@+id/form_memo"
                 style="@style/FormEditText"
                 android:hint="@string/record_input_8_hint"
+                android:inputType="textNoSuggestions"
+                android:maxLength="200"
                 app:emptyAllowed="true" />
         </LinearLayout>
 
@@ -384,7 +385,7 @@
             android:background="@color/line_d" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_confirm"
+            android:id="@+id/button_next"
             style="@style/Spi.Button"
             android:layout_width="200dp"
             android:layout_height="60dp"

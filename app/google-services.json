@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "213257183765",
+    "firebase_url": "https://spi-pipe.firebaseio.com",
+    "project_id": "spi-pipe",
+    "storage_bucket": "spi-pipe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:213257183765:android:c07341c798d681da5f641c",
+        "android_client_info": {
+          "package_name": "kr.djspi.pipe01"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "213257183765-535vdnho7jq8n9hvt63fgr8oduq5ngg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdHlA2Q0CzZ-RPhCPeSxMTZJxXRUY_zts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "213257183765-535vdnho7jq8n9hvt63fgr8oduq5ngg7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

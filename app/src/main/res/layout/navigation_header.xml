@@ -31,14 +31,18 @@
         android:layout_marginTop="8dp" />
 
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/contact_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp" />
+        android:layout_marginTop="3dp"
+        android:autoLink="email"
+        android:textColor="@android:color/white" />
 
     <TextView
-        android:id="@+id/phone"
+        android:id="@+id/contact_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp" />
+        android:layout_marginTop="3dp"
+        android:autoLink="phone"
+        android:textColor="@android:color/white" />
 </LinearLayout>

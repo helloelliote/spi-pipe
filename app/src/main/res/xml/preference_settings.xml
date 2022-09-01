@@ -20,18 +20,10 @@
         app:key="category_default"
         app:title="입력내용">
 
-        <Preference
-            app:key="pipe_type"
-            app:title="관로종류" />
-
         <EditTextPreference
             app:key="material"
             app:title="관로재질"
             app:useSimpleSummaryProvider="true" />
-
-        <Preference
-            app:key="supervise"
-            app:title="관리기관" />
 
         <EditTextPreference
             app:key="supervise_contact"
@@ -49,16 +41,16 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:key="category_location"
-        app:title="위치정보">
+<!--    <PreferenceCategory-->
+<!--        app:key="category_location"-->
+<!--        app:title="위치 정보">-->
 
-        <SwitchPreferenceCompat
-            app:key="switch_location"
-            app:summaryOff="(기본) 지도에서 입력합니다."
-            app:summaryOn="측량좌표를 직접 입력합니다."
-            app:title="SPI 설치위치(지도/좌표) 입력" />
-    </PreferenceCategory>
+<!--        <SwitchPreferenceCompat-->
+<!--            app:key="switch_location"-->
+<!--            app:summaryOff="지도를 움직여 입력합니다."-->
+<!--            app:summaryOn="좌표를 입력합니다."-->
+<!--            app:title="SPI 현장설치지점의 좌표입력" />-->
+<!--    </PreferenceCategory>-->
 
     <PreferenceCategory
         app:key="category_update"
