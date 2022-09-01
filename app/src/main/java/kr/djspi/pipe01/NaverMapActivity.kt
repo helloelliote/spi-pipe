@@ -330,7 +330,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         }
 
         private fun setSearchPlaces(query: String) {
-            Thread(Runnable {
+            Thread {
                 val latLng = LatLng(currentLocation!!)
                 val x = "${latLng.longitude}"
                 val y = "${latLng.latitude}"
@@ -361,7 +361,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                             messageDialog(8, throwable.message)
                         }
                     })
-            }).start()
+            }.start()
         }
 
         inner class ListViewAdapter(
@@ -398,7 +398,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                                 searchView.clearFocus()
                             }
                     )
-                    placesList.clear()
+//                    placesList.clear()
                     placesListAdapter?.notifyDataSetChanged()
                 }
                 return view!!
@@ -442,6 +442,14 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                         }
                         behavior.state = STATE_EXPANDED
                     }
+
+                    STATE_DRAGGING -> {}
+
+                    STATE_HALF_EXPANDED -> {}
+
+                    STATE_HIDDEN -> {}
+
+                    STATE_SETTLING -> {}
                 }
             }
             val textExpanded = getString(R.string.map_search_input)

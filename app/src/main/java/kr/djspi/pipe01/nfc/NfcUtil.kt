@@ -162,7 +162,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
         for (i in 0 until length) {
             texts[i] = records[i]!!.toByteArray(encoding)
             data[i] = ByteArray(langBytesLength + texts[i]!!.size + 1) // 0번 레코드를 위해 1자리 추가
-            data[i]!![0] = status.toByte()
+            data[i]!![0] = status.code.toByte()
             System.arraycopy(langBytes, 0, data[i]!!, 1, langBytesLength)
             System.arraycopy(texts[i] as Any, 0, data[i]!!, 1 + langBytesLength, texts[i]!!.size)
             wrappers[i + 1] = NdefRecordWrapper(

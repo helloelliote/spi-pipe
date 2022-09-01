@@ -30,9 +30,9 @@ class ImageDialog : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, android.R.style.Theme_Black_NoTitleBar)
-        arguments?.let { it ->
-            val photoObj: SpiPhotoObject? = it.getSerializable("PhotoObj") as SpiPhotoObject
-            return@let photoObj?.let { photoObject ->
+        arguments?.let {
+            val photoObj: SpiPhotoObject = it.getSerializable("PhotoObj") as SpiPhotoObject
+            return@let photoObj.let { photoObject ->
                 imageUri = photoObject.getUri()
                 imageUrl = photoObject.url
             }

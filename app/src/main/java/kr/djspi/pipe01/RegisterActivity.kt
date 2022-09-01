@@ -240,7 +240,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "QueryPermissionsNeeded")
     override fun onSelect(tag: String?, index: Int, vararg text: String?) {
         if (index == -1) return
         when (tag) {
@@ -413,14 +413,14 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     form_photo_name.setText(resizeFile.name)
                     form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
                     fPhoto.setText(getString(R.string.record_photo_ok))
-                    Thread(Runnable {
+                    Thread {
                         photoObj = SpiPhotoObject()
                         photoObj!!.file = resizeFile
                         photoObj!!.setUri(Uri.fromFile(resizeFile))
                         saveImageToGallery(file, "SPI").also {
                             if (file.exists()) file.delete()
                         }
-                    }).start()
+                    }.start()
                 }
 
                 REQUEST_GALLERY -> {
@@ -431,11 +431,11 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         form_photo_name.setText(resizeFile.name)
                         form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
                         fPhoto.setText(getString(R.string.record_photo_ok))
-                        Thread(Runnable {
+                        Thread {
                             photoObj = SpiPhotoObject()
                             photoObj!!.file = resizeFile
                             photoObj!!.setUri(this)
-                        }).start()
+                        }.start()
                     }
                 }
             }

@@ -117,9 +117,9 @@ abstract class LocationUpdate : BaseActivity() {
      */
     private fun createLocationCallback() {
         locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
+            override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                locationResult?.let {
+                locationResult.let {
                     currentLocation = it.lastLocation
                 }
             }

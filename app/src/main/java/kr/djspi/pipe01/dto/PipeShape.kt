@@ -13,7 +13,7 @@ data class PipeShape(var id: Int = -1) : DataItem, Serializable {
     /**
      * 새 관로형태를 목록에 추가하려면 아래의 Enum 에 항목을 추가해준다 (추가 수정 불필요)
      */
-    @Suppress("NonAsciiCharacters", "EnumEntryName", "unused")
+    @Suppress("NonAsciiCharacters", "EnumEntryName")
     enum class PipeShapeEnum(internal var type: String, internal var code: String) {
 
         직진형("직진형", "str"),

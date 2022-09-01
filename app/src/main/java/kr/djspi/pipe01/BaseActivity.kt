@@ -83,7 +83,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
     }
 
     private fun setNavigationBarDrawer() {
-        Thread(Runnable {
+        Thread {
             ActionBarDrawerToggle(
                 this@BaseActivity,
                 drawer,
@@ -131,7 +131,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             menu.findItem(R.id.nav_settingtitle).isVisible = settingsMenuEnabled()
 
             nav_close.setOnClickListener { drawer.closeDrawer(GravityCompat.START) }
-        }).start()
+        }.start()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

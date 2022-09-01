@@ -5,7 +5,6 @@ import kr.djspi.pipe01.dto.PipeShape.PipeShapeEnum.Companion.parsePipeShape
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import java.util.*
 
-@Suppress("unused")
 enum class StringParser(
     private val property: String,
     private val label: String

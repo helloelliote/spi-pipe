@@ -21,7 +21,7 @@ private const val HOST_SPI = "espi.kr"
 fun updateLocalSuperviseDatabase(context: Context): Boolean {
     Retrofit2x.getSuperviseDatabase().enqueue(object : RetrofitCallback() {
         override fun onResponse(response: JsonObject) {
-            Thread(Runnable {
+            Thread {
                 val superviseDao = superviseDb!!.dao()
                 superviseDb!!.dao().all
                 if (superviseDb?.isOpen!!) {
@@ -34,7 +34,7 @@ fun updateLocalSuperviseDatabase(context: Context): Boolean {
                 } else {
                     AppPreference.defaultPrefs(context)["isSuperviseDbValid"] = false
                 }
-            }).start()
+            }.start()
         }
     })
     return AppPreference.defaultPrefs(context)["isSuperviseDbValid"]!!
@@ -53,7 +53,7 @@ private fun isServerReachable(): Boolean {
 }
 
 fun MainActivity.getOnlineServerData(intent: Intent) {
-    Thread(Runnable {
+    Thread({
         if (!isServerReachable()) {
             getOfflineTagData(intent, 0, false)
         } else {
@@ -97,7 +97,7 @@ fun MainActivity.processServerData(response: JsonObject, jsonQuery: JsonObject, 
         if (jsonObject.get("spi_count").isJsonNull) {
             messageDialog(3, getString(R.string.popup_error_not_spi), false)
         } else {
-            Thread(Runnable {
+            Thread({
                 Retrofit2x.getSpi("pipe-get", jsonQuery).enqueue(object : RetrofitCallback() {
                     override fun onResponse(response: JsonObject) {
                         val elements = response["data"].asJsonArray

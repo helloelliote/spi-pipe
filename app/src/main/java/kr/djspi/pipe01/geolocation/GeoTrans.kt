@@ -19,7 +19,7 @@ object GeoTrans {
 
     // following constants from geocent.c
     private const val HALF_PI = 0.5 * Math.PI
-    private const val COS_67P5 = 0.38268343236508977 /* cosine of 67.5 degrees */
+    private const val COS_67P5 = 0.3826834323650898 /* cosine of 67.5 degrees */
     private const val AD_C = 1.0026000
 
     private fun D2R(degree: Double): Double = degree * Math.PI / 180.0
@@ -454,7 +454,7 @@ object GeoTrans {
         ),
         KATEC(
             6377397.155,
-            6356078.9633422494,
+            6356078.963342249,
             0.9999,
             2.23402144255274,
             0.663225115757845,
@@ -463,7 +463,7 @@ object GeoTrans {
         ),
         TM(
             6377397.155,
-            6356078.9633422494,
+            6356078.963342249,
             1.0,
             2.21661859489671,
             0.663225115757845,
@@ -472,7 +472,7 @@ object GeoTrans {
         ),
         UTMK(
             6378137.0,
-            6356752.3141403558,
+            6356752.314140356,
             0.9996,
             2.22529479629277,
             0.663225115757845,

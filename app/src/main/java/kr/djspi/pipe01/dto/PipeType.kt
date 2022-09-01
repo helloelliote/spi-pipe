@@ -12,7 +12,7 @@ data class PipeType(var id: Int = -1) : DataItem, Serializable {
     /**
      * Enum 목록의 순서는 변경하지 않는다.
      */
-    @Suppress("NonAsciiCharacters", "EnumEntryName", "unused")
+    @Suppress("NonAsciiCharacters", "EnumEntryName")
     enum class PipeTypeEnum(
         internal val pipeName: String,
         internal val drawRes: Int,

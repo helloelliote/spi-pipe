@@ -54,7 +54,7 @@ class ProgressBody(
         fun onFinish(percentage: Int)
     }
 
-    private inner class ProgressUpdater internal constructor(
+    private inner class ProgressUpdater(
         private val uploadSize: Long,
         private val totalSize: Long
     ) :
@@ -69,4 +69,3 @@ class ProgressBody(
         private const val DEFAULT_BUFFER_SIZE = 2048
     }
 }
-

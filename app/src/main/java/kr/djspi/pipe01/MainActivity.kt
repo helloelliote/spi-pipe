@@ -23,18 +23,18 @@ class MainActivity : LocationUpdate(), Serializable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Thread(Runnable {
+        Thread {
             checkPowerSaveMode()
             MerlinInstance.initiateNetworkMonitor(this)
-        }).start()
-        Thread(Runnable {
+        }.start()
+        Thread {
             superviseDb = Room.databaseBuilder(
                 this,
                 SuperviseDatabase::class.java,
                 "db_supervise"
             ).build()
             checkLocalSuperviseDatabase()
-        }).start()
+        }.start()
         setContentView(R.layout.activity_main)
     }
 

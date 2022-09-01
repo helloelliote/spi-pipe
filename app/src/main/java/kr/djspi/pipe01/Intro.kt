@@ -16,6 +16,7 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.android.synthetic.main.activity_intro.*
 import kr.djspi.pipe01.Const.REQUEST_APP_UPDATE
 import java.lang.Math.round
+import kotlin.math.roundToLong
 import kotlin.system.exitProcess
 
 class Intro : AppCompatActivity() {
@@ -72,9 +73,9 @@ class Intro : AppCompatActivity() {
             when (state.installStatus()) {
                 InstallStatus.DOWNLOADING -> {
                     val megabytesDownloaded =
-                        round((state.bytesDownloaded() / 1e6) * 10.0) / 10.0
+                        ((state.bytesDownloaded() / 1e6) * 10.0).roundToLong() / 10.0
                     val totalMegabytesToDownload =
-                        round((state.totalBytesToDownload() / 1e6) * 10.0) / 10.0
+                        ((state.totalBytesToDownload() / 1e6) * 10.0).roundToLong() / 10.0
                     val percentage =
                         (state.bytesDownloaded() * 100 / state.totalBytesToDownload()).toString()
                     val progress =
