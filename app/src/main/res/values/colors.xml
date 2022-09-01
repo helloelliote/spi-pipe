@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#002be6</color>
-    <color name="colorPrimaryDark">#002be6</color>
-    <color name="colorAccent">#f24e4e</color>
+    <color name="colorPrimaryDark">#002BE6</color>
+    <color name="colorAccent">#F24E4E</color>
     <color name="colorFontDark">#0d2c54</color>
 
     <!--BaseActivity-->
@@ -14,9 +14,6 @@
 
     <!--ListDialog-->
     <color name="popup_color_bg_title">#ebebeb</color>
-
-    <!--PositionDialog-->
-    <color name="common_color_gray_popup">#020202</color>
 
     <!--RecordInputActivity-->
     <color name="blue_bright">#1c73e8</color>

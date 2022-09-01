@@ -18,13 +18,15 @@
         android:id="@+id/tabs"
         style="@style/Spi.Tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_max="150dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top"
         app:tabGravity="fill"
         app:tabMaxWidth="0dp"
+        app:tabIndicatorGravity="bottom"
         app:tabMode="fixed">
 
         <com.google.android.material.tabs.TabItem

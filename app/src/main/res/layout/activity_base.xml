@@ -44,19 +44,33 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
+            <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/nmap_mapmode_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="5dp"
-                android:visibility="gone"
-                app:checkedBackgroundColor="@color/green"
-                app:checkedTextColor="@android:color/black"
-                app:textToggleLeft="@string/map_mode_basic"
-                app:textToggleRight="@string/map_mode_hybrid"
-                app:toggleWidth="45dp"
-                app:uncheckedBackgroundColor="@android:color/white" />
+                app:singleSelection="true"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_basic"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp"
+                    app:backgroundTint="@color/green"
+                    android:textColor="@android:color/black"
+                    android:text="@string/map_mode_basic" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_hybrid"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp"
+                    app:backgroundTint="@android:color/white"
+                    android:textColor="@android:color/black"
+                    android:text="@string/map_mode_hybrid" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
         </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
@@ -78,7 +92,7 @@
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
+        android:id="@+id/navView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
