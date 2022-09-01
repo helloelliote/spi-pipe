@@ -1,105 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:ignore="ContentDescription,DuplicateIds">
 
-    <FrameLayout
-        android:id="@+id/lay_0"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:ignore="ContentDescription,DuplicateIds">
 
-        <ImageView
-            android:id="@+id/planeImageView"
+        <FrameLayout
+            android:id="@+id/lay_0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/text_plane_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/edittext_border"
-            android:gravity="center"
-            android:minEms="4"
-            android:padding="3dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/planeImageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
 
-        <TextView
-            android:id="@+id/text_depth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/edittext_border"
-            android:gravity="center"
-            android:minEms="4"
-            android:padding="3dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/text_plane_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext_border"
+                android:gravity="center"
+                android:minEms="4"
+                android:padding="3dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/text_spec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:minEms="4"
-            android:padding="3dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/text_depth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext_border"
+                android:gravity="center"
+                android:minEms="4"
+                android:padding="3dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/text_material"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:minEms="4"
-            android:padding="3dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-    </FrameLayout>
+            <TextView
+                android:id="@+id/text_spec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:minEms="4"
+                android:padding="3dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
-    <!--<LinearLayout-->
-    <!--android:id="@+id/lay_empty"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_margin="20dp"-->
-    <!--android:layout_weight="1"-->
-    <!--android:gravity="center"-->
-    <!--android:orientation="vertical"-->
-    <!--android:visibility="gone"-->
-    <!--app:layout_constraintTop_toBottomOf="@+id/lay_0">-->
+            <TextView
+                android:id="@+id/text_material"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:minEms="4"
+                android:padding="3dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </FrameLayout>
 
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="15dp"-->
-    <!--android:text="@string/error_load_image_fail"-->
-    <!--android:textColor="@color/gray"-->
-    <!--android:textSize="15sp" />-->
+        <!--<LinearLayout-->
+        <!--android:id="@+id/lay_empty"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_margin="20dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/lay_0">-->
 
-    <!--<android.support.design.button.MaterialButton-->
-    <!--android:id="@+id/btn_photo"-->
-    <!--style="@style/Spi.Button"-->
-    <!--android:layout_width="83.67dp"-->
-    <!--android:layout_height="33dp"-->
-    <!--android:layout_gravity="bottom|center"-->
-    <!--android:visibility="invisible" />-->
-    <!--</LinearLayout>-->
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="15dp"-->
+        <!--android:text="@string/error_load_image_fail"-->
+        <!--android:textColor="@color/gray"-->
+        <!--android:textSize="15sp" />-->
+
+        <!--<android.support.design.button.MaterialButton-->
+        <!--android:id="@+id/btn_photo"-->
+        <!--style="@style/Spi.Button"-->
+        <!--android:layout_width="83.67dp"-->
+        <!--android:layout_height="33dp"-->
+        <!--android:layout_gravity="bottom|center"-->
+        <!--android:visibility="invisible" />-->
+        <!--</LinearLayout>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,11 +1,13 @@
 package kr.djspi.pipe01.nfc
 
+import android.annotation.SuppressLint
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import androidx.core.util.Preconditions.checkArgument
 import java.util.*
 import kotlin.experimental.and
 
+@SuppressLint("RestrictedApi")
 object NdefMessageParser {
 
     fun parse(message: NdefMessage): List<ParsedRecord> {

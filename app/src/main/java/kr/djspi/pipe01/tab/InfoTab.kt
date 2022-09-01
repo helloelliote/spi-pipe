@@ -47,56 +47,72 @@ class InfoTab : Fragment() {
     }
 
     private fun setInfo(view: View) {
-        val hDirection: String = when (json["position"].asInt) {
-            1, 2, 3 -> "차도 방향 ${json["vertical"].asString} m"
-            7, 8, 9 -> {
-                if (json["spi_type"].asString == "표지주") {
-                    "차도반대측 방향 ${json["vertical"].asString} m"
-                } else {
-                    "보도 방향 ${json["vertical"].asString} m"
-                }
+        val hDirection: String = getHorizontalDirection(json)
+        val vDirection: String = getVerticalDirection(json)
+
+        if (json["shape"].asString == "제수변") {
+            if (hDirection == "" && vDirection == "") {
+                view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
+                    getString(
+                        R.string.nfc_info_read_contents_valve_alt,
+                        json["pipe"].asString,
+                        json["spec"].asString.replace("^", " "),
+                        json["unit"].asString,
+                        json["material"].asString.replace("^", " "),
+                        json["shape"].asString,
+                        json["spi_type"].asString,
+                        json["depth"].asString
+                    )
+                )
+            } else {
+                view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
+                    getString(
+                        R.string.nfc_info_read_contents_valve,
+                        json["pipe"].asString,
+                        json["spec"].asString.replace("^", " "),
+                        json["unit"].asString,
+                        json["material"].asString.replace("^", " "),
+                        json["shape"].asString,
+                        hDirection,
+                        vDirection,
+                        json["depth"].asString
+                    )
+                )
             }
-            else -> ""
-        }
-
-        val vDirection: String = when (json["position"].asInt) {
-            1, 4, 7 -> "좌측 ${json["horizontal"].asString} m"
-            3, 6, 9 -> "우측 ${json["horizontal"].asString} m"
-            else -> ""
-        }
-
-        if (hDirection == "" && vDirection == "") {
-            view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
-                getString(
-                    R.string.nfc_info_read_contents_alt,
-                    json["pipe"].asString,
-                    json["shape"].asString,
-                    json["spec"].asString,
-                    json["unit"].asString,
-                    json["material"].asString,
-                    json["spi_type"].asString,
-                    json["depth"].asString
-                )
-            )
         } else {
-            view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
-                getString(
-                    R.string.nfc_info_read_contents,
-                    json["pipe"].asString,
-                    json["shape"].asString,
-                    json["spec"].asString,
-                    json["unit"].asString,
-                    json["material"].asString,
-                    hDirection,
-                    vDirection,
-                    json["depth"].asString
+            if (hDirection == "" && vDirection == "") {
+                view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
+                    getString(
+                        R.string.nfc_info_read_contents_alt,
+                        json["pipe"].asString,
+                        json["shape"].asString,
+                        json["spec"].asString.replace("^", " "),
+                        json["unit"].asString,
+                        json["material"].asString.replace("^", " "),
+                        json["spi_type"].asString,
+                        json["depth"].asString
+                    )
                 )
-            )
+            } else {
+                view.findViewById<TextView>(R.id.txt_contents).text = fromHtml(
+                    getString(
+                        R.string.nfc_info_read_contents,
+                        json["pipe"].asString,
+                        json["shape"].asString,
+                        json["spec"].asString.replace("^", " "),
+                        json["unit"].asString,
+                        json["material"].asString.replace("^", " "),
+                        hDirection,
+                        vDirection,
+                        json["depth"].asString
+                    )
+                )
+            }
         }
 
         try {
             if (json.get("spi_memo") != JsonNull.INSTANCE) {
-                if (json.get("spi_memo") != null){
+                if (json.get("spi_memo") != null) {
                     view.findViewById<TextView>(R.id.txt_memo)
                         .setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                     view.findViewById<TextView>(R.id.txt_memo).text = json["spi_memo"].asString
@@ -117,8 +133,7 @@ class InfoTab : Fragment() {
             } else {
                 if (json.get("spi_photo_url") != null) {
                     if (!json.get("spi_photo_url").isJsonNull) {
-                        requestBuilder = Glide.with(view)
-                            .load(json["spi_photo_url"].asString)
+                        requestBuilder = Glide.with(view).load(json["spi_photo_url"].asString)
                         photoObj.url = json["spi_photo_url"].asString
                     }
                 }
@@ -128,17 +143,49 @@ class InfoTab : Fragment() {
                     .error(R.drawable.ic_photo_error)
                     .dontAnimate()
                     .into(imageView)
-                imageView.setOnClickListener { v: View? ->
-                    val imageDialog =
-                        ImageDialog()
+                imageView.setOnClickListener {
+                    val imageDialog = ImageDialog()
                     val bundle = Bundle(1)
                     bundle.putSerializable("PhotoObj", photoObj)
                     imageDialog.arguments = bundle
-                    imageDialog.show(fragmentManager!!, TAG_PHOTO)
+                    imageDialog.show(parentFragmentManager, TAG_PHOTO)
                 }
             }
         } catch (e: NullPointerException) {
             e.printStackTrace()
+        }
+    }
+
+    companion object {
+        fun getHorizontalDirection(json: JsonObject): String {
+            return when (json["position"].asInt) {
+                1, 2, 3 -> "차도 방향 ${json["vertical"].asString} m"
+                7, 8, 9 -> {
+                    when (json["spi_type"].asString) {
+                        "표지판" -> {
+                            "보도 방향 ${json["vertical"].asString} m"
+                        }
+
+                        "표지기" -> {
+                            "도로후면 방향 ${json["vertical"].asString} m"
+                        }
+
+                        else -> {
+                            "차도반대측 방향 ${json["vertical"].asString} m"
+                        }
+                    }
+                }
+
+                else -> ""
+            }
+        }
+
+        fun getVerticalDirection(json: JsonObject): String {
+            return when (json["position"].asInt) {
+                1, 4, 7 -> "좌측 ${json["horizontal"].asString} m"
+                3, 6, 9 -> "우측 ${json["horizontal"].asString} m"
+                else -> ""
+            }
         }
     }
 }

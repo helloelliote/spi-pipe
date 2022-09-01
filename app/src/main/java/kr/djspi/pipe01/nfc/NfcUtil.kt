@@ -21,14 +21,15 @@ import com.nxp.nfclib.ndef.NdefMessageWrapper
 import com.nxp.nfclib.ndef.NdefRecordWrapper
 import com.nxp.nfclib.ntag.INTag213215216
 import com.nxp.nfclib.ntag.NTagFactory
+import kr.djspi.pipe01.BuildConfig.*
 import java.nio.charset.Charset
 import java.util.*
-import kr.djspi.pipe01.BuildConfig.*
 
 class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
 
     private lateinit var intentFilters: Array<IntentFilter>
     private var nxpNfcLib: NxpNfcLib? = null
+
     /**
      * 아래의 변수들은 반드시 final 선언해야만 하며, 그렇지 않을 경우 intent 들 간의 간섭이 발생하여
      * NFC 태그를 태깅하면 이전 액티비티 인텐트를 실행하기도 한다.
@@ -40,8 +41,8 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
 
     init {
         try {
-            intentFilters = arrayOf(IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED, "text/plain"))
-            intentFilters[0].addDataType("application/kr.djspi.pipe01")
+            intentFilters = arrayOf(IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED))
+//            intentFilters[0].addDataType("application/kr.djspi.pipe01")
         } catch (ignore: MalformedMimeTypeException) {
         }
 
@@ -66,7 +67,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     private fun initializeLibrary(activity: Activity) {
         try {
             nxpNfcLib = NxpNfcLib.getInstance()
-            nxpNfcLib?.registerActivity(activity, NFC_APP_KEY)
+            nxpNfcLib?.registerActivity(activity, NFC_APP_KEY, NFC_OFFLINE_KEY)
         } catch (e: Exception) {
         }
     }
@@ -78,7 +79,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
      * @param intent 발생한 NTAG 인텐트
      * @return objNtag 인식된 NTAG 216 태그 객체
      */
-    private fun getTagType(intent: Intent): INTag213215216? {
+    private fun getNtag(intent: Intent): INTag213215216? {
         try {
             objNtag = when {
                 nxpNfcLib?.getCardType(intent) == NTag216
@@ -107,7 +108,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
     fun writeTag(intent: Intent, strings: Array<String?>): Boolean {
         var isSuccess = false
         try {
-            objNtag = getTagType(intent)
+            objNtag = getNtag(intent)
             objNtag?.let {
                 it.reader.connect()
                 it.reader.timeout = 2000
@@ -132,49 +133,6 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
         }
         objNtag?.reader?.close()
         return isSuccess
-    }
-
-    fun readTag(tag: Tag): String {
-        val ret = StringBuilder()
-        try {
-            val ndefTag = Ndef.get(tag)
-            val ndefMessage = ndefTag.cachedNdefMessage
-            val ndefRecords = ndefMessage.records
-            if (ndefRecords.isNotEmpty()) {
-                ndefRecords.forEach {
-                    when {
-                        String(it.type) == String(RTD_TEXT)
-                        -> ret.append(String(it.payload, Charsets.UTF_8).substring("\nko".length))
-                        String(it.type) == String(RTD_URI)
-                        -> ret.append(String(it.payload, Charsets.UTF_8))
-                        String(it.type) == "android.com:pkg"
-                        -> ret.append(String(it.payload))
-                    }
-                }
-            }
-        } catch (ignore: Exception) {
-        }
-        return ret.toString()
-    }
-
-    /**
-     * NFC 기능 동작 확인
-     * (NFC 꺼짐) 사용자가 NFC 기능을 켤 수 있게 팝업 생성
-     */
-    fun isNfcEnabled(): Boolean {
-        return nfcAdapter != null && nfcAdapter!!.isEnabled
-    }
-
-    fun onNewTagIntent(intent: Intent): Tag {
-        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)!!
-    }
-
-    fun onResume() {
-        nfcAdapter?.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists)
-    }
-
-    fun onPause() {
-        nfcAdapter?.disableForegroundDispatch(activity)
     }
 
     /**
@@ -204,7 +162,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
         for (i in 0 until length) {
             texts[i] = records[i]!!.toByteArray(encoding)
             data[i] = ByteArray(langBytesLength + texts[i]!!.size + 1) // 0번 레코드를 위해 1자리 추가
-            data[i]!![0] = status.toByte()
+            data[i]!![0] = status.code.toByte()
             System.arraycopy(langBytes, 0, data[i]!!, 1, langBytesLength)
             System.arraycopy(texts[i] as Any, 0, data[i]!!, 1 + langBytesLength, texts[i]!!.size)
             wrappers[i + 1] = NdefRecordWrapper(
@@ -240,4 +198,142 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
         }
         return recordList
     }
+
+    @Throws(NullPointerException::class)
+    fun getSerial(intent: Intent): String {
+        val tag: Tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+            ?: throw NullPointerException("Not Found")
+        val bytes: ByteArray = tag.id
+        val stringBuilder = StringBuilder(0)
+        for (byte in bytes) {
+            stringBuilder.append(String.format("%02X", byte))
+        }
+        val serial = stringBuilder.toString().replace("(..)".toRegex(), "$1:")
+        return serial.substring(0, serial.length - 1)
+    }
+
+    /**
+     * NFC 기능 동작 확인
+     * (NFC 꺼짐) 사용자가 NFC 기능을 켤 수 있게 팝업 생성
+     */
+    fun isNfcEnabled(): Boolean {
+        return nfcAdapter != null && nfcAdapter!!.isEnabled
+    }
+
+    fun onNewTagIntent(intent: Intent): Tag {
+        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)!!
+    }
+
+    fun onResume() {
+        nfcAdapter?.enableForegroundDispatch(activity, pendingIntent, intentFilters, techLists)
+    }
+
+    fun onPause() {
+        nfcAdapter?.disableForegroundDispatch(activity)
+    }
+
+    /**
+     * Reserved for spi-init
+     *
+    @Throws(IOException::class, FormatException::class)
+    fun writeInitTag(
+    intent: Intent,
+    strings: Array<String?>
+    ): Boolean {
+    val length = strings.size
+    val ndefRecords = arrayOfNulls<NdefRecord>(length)
+    ndefRecords[0] = createApplicationRecord(strings[0])
+    for (i in 1 until length) {
+    ndefRecords[ i ] = createTextRecord(null, strings[ i ])
+    }
+    val ndefMessage = NdefMessage(ndefRecords)
+
+    // 초기화 정보를 기록
+    val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+    val ndef = Ndef.get(tag)
+    if (ndef != null) {
+    ndef.connect()
+    if (ndef.isWritable && ndef.maxSize >= ndefMessage.toByteArray().size) {
+    ndef.writeNdefMessage(ndefMessage)
+    ndef.close()
+    return true
+    }
+    } else {
+    val format = NdefFormatable.get(tag)
+    if (format != null) {
+    format.connect()
+    format.format(ndefMessage)
+    format.close()
+    return true
+    }
+    }
+    return false
+    }
+
+    fun readTag(tag: Tag): String {
+    val ret = StringBuilder()
+    try {
+    val ndefTag = Ndef.get(tag)
+    val ndefMessage = ndefTag.cachedNdefMessage
+    val ndefRecords = ndefMessage.records
+    if (ndefRecords.isNotEmpty()) {
+    ndefRecords.forEach {
+    when {
+    String(it.type) == String(RTD_TEXT)
+    -> ret.append(String(it.payload, Charsets.UTF_8).substring("\nko".length))
+    String(it.type) == String(RTD_URI)
+    -> ret.append(String(it.payload, Charsets.UTF_8))
+    String(it.type) == "android.com:pkg"
+    -> ret.append(String(it.payload))
+    }
+    }
+    }
+    } catch (ignore: Exception) {
+    }
+    return ret.toString()
+    }
+
+    fun setNtagPwdProtection(intent: Intent, setReadOnly: Boolean): Boolean {
+    return try {
+    val tag: INTag213215216? = getNtag(intent)
+    tag?.programPWDPack(k, a)
+    tag?.enablePasswordProtection(false, 4)
+    if (setReadOnly) {
+    tag?.makeCardReadOnly()
+    }
+    true
+    } catch (e: Exception) {
+    false
+    }
+    }
+
+    @Throws(NullPointerException::class, NxpNfcLibException::class)
+    fun clearTag(tag: INTag213215216?): Boolean {
+    if (tag == null) {
+    throw NullPointerException("Not Found")
+    }
+    tag.authenticatePwd(k, a)
+    return if (tag.isPwdAuthenticated) {
+    tag.enablePasswordProtection(false, 255)
+    tag.clear()
+    true
+    } else {
+    throw NxpNfcLibException("Auth Fail")
+    }
+    }
+
+    @Throws(NullPointerException::class, NxpNfcLibException::class)
+    fun getCardType(intent: Intent): CardType? {
+    val type = nxpNfcLib?.getCardType(intent)
+    if (type == CardType.UnknownCard) {
+    throw NxpNfcLibException("Bad Type")
+    }
+    return when (type) {
+    NTag213 -> NTag213
+    NTag216 -> NTag216
+    else -> throw IllegalArgumentException("Bad Type")
+    }
+    }
+     *
+     */
 }

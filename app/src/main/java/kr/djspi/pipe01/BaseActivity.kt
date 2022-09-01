@@ -1,10 +1,13 @@
 package kr.djspi.pipe01
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.MenuItem
@@ -19,17 +22,20 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import com.naver.maps.map.NaverMapSdk
 import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.sql.SuperviseDatabase
+import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.screenScale
 import kr.djspi.pipe01.util.settingsMenuEnabled
-import kr.djspi.pipe01.util.toast
 
 open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     private lateinit var drawer: DrawerLayout
+    lateinit var nmapFind: TextView
     lateinit var nfcUtil: NfcUtil
+    var locationFailureCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,24 +62,28 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
     override fun setSupportActionBar(toolbar: Toolbar?) {
         super.setSupportActionBar(toolbar)
         toolbar?.setTitleTextAppearance(this, R.style.TitleHeader)
-        nmap_find.apply {
+        nmapFind = findViewById(R.id.nmap_find)
+        nmapFind.apply {
             visibility = View.VISIBLE
             setOnClickListener {
                 when {
                     currentLocation != null -> {
+                        locationFailureCount = 0
                         startActivity(
                             Intent(context, NaverMapActivity::class.java)
                                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         )
                     }
-                    else -> toast(getString(R.string.toast_error_location))
+                    else -> {
+                        runLocationCounter(this@BaseActivity)
+                    }
                 }
             }
         }
     }
 
     private fun setNavigationBarDrawer() {
-        Thread(Runnable {
+        Thread {
             ActionBarDrawerToggle(
                 this@BaseActivity,
                 drawer,
@@ -96,31 +106,16 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             navigationView.setNavigationItemSelectedListener(this@BaseActivity)
 
             val version = headerView.findViewById<TextView>(R.id.versionName)
+            val buildType: String = if (BuildConfig.BUILD_TYPE == "debug") "(DEBUG)" else ""
             version.text = getString(
                 R.string.nav_version_name,
                 BuildConfig.VERSION_NAME,
-                BuildConfig.BUILD_TYPE
+                buildType
             )
-            val email = headerView.findViewById<TextView>(R.id.email)
-            email.text = getString(R.string.nav_email, "djgis@chol.com")
-            email.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_SENDTO,
-                        Uri.fromParts("mailto", "djgis@chol.com", null)
-                    )
-                )
-            }
-            val phone = headerView.findViewById<TextView>(R.id.phone)
+            val email = headerView.findViewById<TextView>(R.id.contact_email)
+            email.text = getString(R.string.nav_email, getString(R.string.nav_dj_email))
+            val phone = headerView.findViewById<TextView>(R.id.contact_phone)
             phone.text = getString(R.string.nav_dj_phone)
-            phone.setOnClickListener {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_DIAL,
-                        Uri.parse("tel:${phone.text}")
-                    )
-                )
-            }
             val what: Any = TextAppearanceSpan(this@BaseActivity, R.style.TextAppearance20sp)
 
             val titleApp = menu.findItem(R.id.nav_apptitle)
@@ -136,7 +131,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             menu.findItem(R.id.nav_settingtitle).isVisible = settingsMenuEnabled()
 
             nav_close.setOnClickListener { drawer.closeDrawer(GravityCompat.START) }
-        }).start()
+        }.start()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -153,6 +148,19 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                         it.show()
                     }
             }
+            R.id.nav_manual_video -> {
+                val appIntent = Intent(
+                    Intent.ACTION_VIEW, Uri.parse("vnd.youtube:6Ttio_ff3n8")
+                )
+                val webIntent = Intent(
+                    Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=6Ttio_ff3n8")
+                )
+                try {
+                    startActivity(appIntent)
+                } catch (e: ActivityNotFoundException) {
+                    startActivity(webIntent)
+                }
+            }
             R.id.nav_homepage -> startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
@@ -168,10 +176,37 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         return true
     }
 
+    fun runLocationCounter(context: Context) {
+        when {
+            locationFailureCount == 1 -> {
+                NaverMapSdk.getInstance(context).flushCache {}
+            }
+            locationFailureCount >= 2 -> {
+                locationFailureCount++
+                progressbar.visibility = View.INVISIBLE
+                messageDialog(10, getString(R.string.popup_fail_location), false)
+                return
+            }
+        }
+        object : CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                locationFailureCount++
+                progressbar.visibility = View.INVISIBLE
+                messageDialog(0, getString(R.string.popup_error_location))
+            }
+        }.start()
+    }
+
     companion object {
         lateinit var defPackage: String
+        lateinit var currentSerial: String
         var currentLocation: Location? = null
         var superviseDb: SuperviseDatabase? = null
         var screenRatio: Float = 0.0f
+        var isReadyForPost: Boolean =
+            false // (SpiPostActivity.class) 원치 않은 시점에서 태깅 동작이 발생하지 않도록 한다.
     }
 }

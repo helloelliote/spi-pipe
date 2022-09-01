@@ -8,6 +8,7 @@ import android.net.Uri.parse
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.JsonObject
@@ -19,6 +20,7 @@ import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.dto.Entry
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
+import kr.djspi.pipe01.tab.InfoTab
 import kr.djspi.pipe01.tab.OnRecordListener
 import kr.djspi.pipe01.tab.TabAdapter
 import kr.djspi.pipe01.util.fromHtml
@@ -70,8 +72,28 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        toolbar.title = "SPI ${jsonObj["pipe"].asString}"
+        toolbar.title = if (jsonObj["shape"].asString == "제수변") {
+            "SPI ${jsonObj["pipe"].asString} 제수변"
+        } else {
+            "SPI ${jsonObj["pipe"].asString}"
+        }
         setTabLayout()
+    }
+
+    override fun setSupportActionBar(toolbar: Toolbar?) {
+        super.setSupportActionBar(toolbar)
+        super.nmapFind.text = getString(R.string.btn_current_spi)
+        super.nmapFind.apply {
+            setOnClickListener {
+                startActivity(
+                    Intent(context, NaverMapActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("isSpiLocation", true)
+                        .putExtra("spi_latitude", jsonObj["spi_latitude"].asDouble)
+                        .putExtra("spi_longitude", jsonObj["spi_longitude"].asDouble)
+                )
+            }
+        }
     }
 
     private fun setTabLayout() {
@@ -88,7 +110,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         linearLayout.apply {
             showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
             dividerDrawable = GradientDrawable().apply {
-                setColor(resources.getColor(R.color.yellow))
+                setColor(resources.getColor(R.color.yellow, null))
                 setSize(8, 1)
             }
         }
@@ -150,13 +172,38 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null) {
             if (requestCode == REQUEST_MAP) {
-                val locations: DoubleArray = data.getDoubleArrayExtra("locations")!!
+//                val locations: DoubleArray = data.getDoubleArrayExtra("locations")!!
+//                spiLocation?.latitude = locations[0]
+//                spiLocation?.longitude = locations[1]
+
+                val spiLocations =
+                    data.getSerializableExtra("spiLocations") as HashMap<*, *>
+                val pipeLocations =
+                    data.getSerializableExtra("pipeLocations") as HashMap<*, *>
                 val currentEntry = previewEntries!![pipeIndex]
-                val location = currentEntry.spi_location
-                location?.latitude = locations[0]
-                location?.longitude = locations[1]
-                location?.count = 0
-                currentEntry.spi_location = location
+
+                if (spiLocations.isNotEmpty()) {
+                    val spiLocation = currentEntry.spi_location
+                    spiLocation?.latitude = spiLocations["latitude"] as Double?
+                    spiLocation?.longitude = spiLocations["longitude"] as Double?
+                    spiLocation?.coordinate_x = spiLocations["coordinate_x"] as Double?
+                    spiLocation?.coordinate_y = spiLocations["coordinate_y"] as Double?
+                    spiLocation?.origin = spiLocations["origin"] as String?
+                    spiLocation?.count = 0
+                    currentEntry.spi_location = spiLocation
+                }
+
+                if (pipeLocations.isNotEmpty()) {
+                    val pipeLocation = currentEntry.pipe_location
+                    pipeLocation?.latitude = pipeLocations["latitude"] as Double?
+                    pipeLocation?.longitude = pipeLocations["longitude"] as Double?
+                    pipeLocation?.coordinate_x = pipeLocations["coordinate_x"] as Double?
+                    pipeLocation?.coordinate_y = pipeLocations["coordinate_y"] as Double?
+                    pipeLocation?.origin = pipeLocations["origin"] as String?
+                    pipeLocation?.count = 0
+                    currentEntry.pipe_location = pipeLocation
+                }
+
                 previewEntries!![pipeIndex] = currentEntry
                 startActivity(
                     Intent(this, SpiPostActivity::class.java)
@@ -179,7 +226,12 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             RESULT_PASS -> {
                 this.startActivityForResult(
                     Intent(this, SpiLocationActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), REQUEST_MAP
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("pipeType", jsonObj["pipe"].asString)
+                        .putExtra("horizontal", jsonObj["horizontal"].asDouble)
+                        .putExtra("vertical", jsonObj["vertical"].asDouble)
+                        .putExtra("hDirection", InfoTab.getHorizontalDirection(jsonObj))
+                        .putExtra("vDirection", InfoTab.getVerticalDirection(jsonObj)), REQUEST_MAP
                 )
             }
         }

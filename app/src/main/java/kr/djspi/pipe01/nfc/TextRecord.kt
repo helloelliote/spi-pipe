@@ -1,7 +1,9 @@
 package kr.djspi.pipe01.nfc
 
+import android.annotation.SuppressLint
 import androidx.core.util.Preconditions
 
+@SuppressLint("RestrictedApi")
 class TextRecord(languageCode: String, text: String) : ParsedRecord {
 
     /**

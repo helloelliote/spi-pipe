@@ -11,6 +11,9 @@
                 android:id="@+id/nav_guide"
                 android:title="@string/nav_guide" />
             <item
+                android:id="@+id/nav_manual_video"
+                android:title="@string/nav_manual_video" />
+            <item
                 android:id="@+id/nav_homepage"
                 android:title="@string/nav_homepage" />
         </menu>

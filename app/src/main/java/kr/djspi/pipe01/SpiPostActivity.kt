@@ -20,6 +20,7 @@ import kr.djspi.pipe01.nfc.StringParser.Companion.parseToStringArray
 import kr.djspi.pipe01.util.RetrofitCallback
 import kr.djspi.pipe01.util.fromHtml
 import kr.djspi.pipe01.util.messageDialog
+import kr.djspi.pipe01.util.onNewIntentIgnore
 import okhttp3.MultipartBody
 import java.io.File
 import java.io.Serializable
@@ -31,17 +32,19 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
     private lateinit var progressBar: ProgressBar
     private lateinit var progressDrawable: Drawable
     private var file: File? = null
+    private var uri: String? = null
     private var part: MultipartBody.Part? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isReadyForPost = false
         entries = intent.getSerializableExtra("entry") as ArrayList<*>
         jsonObject = parseEntry(entries, 0, "", "")
         intent.getSerializableExtra("Photos")?.let {
             if (it is SpiPhotoObject) {
                 file = it.file
+                uri = it.uri
                 part = getMultipart(file!!, "image")
-                System.err.println(file!!.length())
             }
         }
         setContentView(R.layout.activity_spi_post)
@@ -66,7 +69,6 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
                 file.name,
                 ProgressBody(file, fileType, this)
             )
-            System.err.println(part!!.body().contentLength())
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
             return null
@@ -75,11 +77,15 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
     }
 
     override fun onNewIntent(intent: Intent?) {
+        if (!isReadyForPost) {
+            onNewIntentIgnore()
+            return
+        }
         super.onNewIntent(intent)
         if (intent == null) return
         if (processTag(intent, jsonObject, 0)) {
             setSpiAndPipe()
-        } else messageDialog(0, getString(R.string.popup_write_retry), false)
+        }
     }
 
     /**
@@ -91,12 +97,17 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
      * @see NfcUtil.writeTag
      */
     private fun processTag(intent: Intent, json: JsonObject, index: Int): Boolean {
-        var isWriteSuccess = false
-        val strings = parseToStringArray(json, index)
-        if (nfcUtil.writeTag(intent, strings)) {
-            isWriteSuccess = true
+        if (nfcUtil.getSerial(intent) != currentSerial) {
+            messageDialog(12, getString(R.string.popup_error_serial_mismatch), false)
+            return false
         }
-        return isWriteSuccess
+        val strings = parseToStringArray(json, index)
+        return if (nfcUtil.writeTag(intent, strings)) {
+            true
+        } else {
+            messageDialog(0, getString(R.string.popup_write_retry), false)
+            false
+        }
     }
 
     private fun setSpiAndPipe() {
@@ -109,6 +120,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
                 messageDialog(6, getString(R.string.popup_write_success), false)
                 file?.let {
                     if (it.exists()) it.delete()
+                    uri = null
                 }
             }
 

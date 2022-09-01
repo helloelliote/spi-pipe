@@ -21,14 +21,14 @@ class CustomSection(indexer: Indexer) : Section(indexer) {
             when (section) {
                 0 -> { // For numeric section
                     for (j in 0..9) {
-                        val value = indexer.getComponentName(j).toUpperCase(Locale.getDefault())
+                        val value = indexer.getComponentName(j).uppercase(Locale.getDefault())
                         if (match(value[0].toString(), j.toString())) {
                             return j
                         }
                     }
                 }
                 else -> {
-                    val value = indexer.getComponentName(i).toUpperCase(Locale.getDefault())
+                    val value = indexer.getComponentName(i).uppercase(Locale.getDefault())
                     if (match(value[0].toString(), sections[section].toString())) {
                         return i
                     }

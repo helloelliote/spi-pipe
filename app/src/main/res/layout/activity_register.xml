@@ -84,7 +84,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.20"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
 
             <com.andreabaccega.widget.FormEditText
                 android:id="@+id/form_horizontal"
@@ -97,7 +97,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.20"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
         </LinearLayout>
 
         <View
@@ -131,7 +131,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.50"
                 android:gravity="center_vertical|end"
-                android:text="m" />
+                android:text="@string/record_input_unit" />
         </LinearLayout>
 
         <View
@@ -212,8 +212,7 @@
                 android:id="@+id/form_supervise"
                 style="@style/FormEditText"
                 android:focusable="false"
-                android:hint="@string/record_input_6_hint"
-                android:imeOptions="actionNext" />
+                android:hint="@string/record_input_6_hint" />
         </LinearLayout>
 
         <View
@@ -260,9 +259,9 @@
                 android:id="@+id/form_memo"
                 style="@style/FormEditText"
                 android:hint="@string/record_input_8_hint"
-                app:emptyAllowed="true"
                 android:inputType="textNoSuggestions"
-                android:maxLength="50" />
+                android:maxLength="200"
+                app:emptyAllowed="true" />
         </LinearLayout>
 
         <View

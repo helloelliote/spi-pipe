@@ -17,13 +17,9 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.sylversky.indexablelistview.scroller.Indexer
 import com.sylversky.indexablelistview.widget.IndexableListView
-import kr.djspi.pipe01.BaseActivity.Companion.superviseDb
-import kr.djspi.pipe01.Const.PIPE_SHAPES
-import kr.djspi.pipe01.Const.PIPE_TYPE_ENUMS
-import kr.djspi.pipe01.Const.TAG_PIPE
 import kr.djspi.pipe01.Const.TAG_SHAPE
-import kr.djspi.pipe01.Const.TAG_SUPERVISE
 import kr.djspi.pipe01.R
+import kr.djspi.pipe01.dto.PipeShape
 
 class ListDialog : DialogFragment(), OnClickListener {
 
@@ -49,24 +45,24 @@ class ListDialog : DialogFragment(), OnClickListener {
         super.onCreate(savedInstanceState)
 
         when (listTag) {
-            TAG_PIPE -> {
-                PIPE_TYPE_ENUMS.forEach {
-                    listItem.add(it.name)
-                }
-                dialogTitle = getString(R.string.popup_title_select_pipe)
-            }
+//            TAG_PIPE -> {
+//                Const.PIPE_TYPE_ENUMS.forEach {
+//                    listItem.add(it.name)
+//                }
+//                dialogTitle = getString(R.string.popup_title_select_pipe)
+//            }
             TAG_SHAPE -> {
-                listItem.addAll(listOf(*PIPE_SHAPES))
+                listItem.addAll(PipeShape.PipeShapeEnum.getSelectableTypes())
                 dialogTitle = getString(R.string.popup_title_select_shape)
             }
-            TAG_SUPERVISE -> {
-                Thread(Runnable {
-                    superviseDb!!.dao().all.forEach {
-                        listItem.add(it.supervise)
-                    }
-                }).start()
-                dialogTitle = getString(R.string.popup_title_select_supervise)
-            }
+//            TAG_SUPERVISE -> {
+//                Thread(Runnable {
+//                    BaseActivity.superviseDb!!.dao().all.forEach {
+//                        listItem.add(it.supervise)
+//                    }
+//                }).start()
+//                dialogTitle = getString(R.string.popup_title_select_supervise)
+//            }
         }
     }
 
@@ -79,12 +75,8 @@ class ListDialog : DialogFragment(), OnClickListener {
         val titleView = view.findViewById<TextView>(R.id.popup_list_title)
         titleView.text = dialogTitle
         listView = view.findViewById(R.id.list_common)
-        if (listTag == TAG_SUPERVISE) {
-            listView.adapter = ListAdapter(context, listItem, true)
-        } else {
-            listView.adapter = ListAdapter(context, listItem, false)
-            listView.isFastScrollEnabled = false
-        }
+        listView.adapter = ListAdapter(context, listItem, false)
+        listView.isFastScrollEnabled = false
         listView.setOnItemClickListener { _, _, position, _ ->
             componentName = listItem[position]
             selectIndex = position

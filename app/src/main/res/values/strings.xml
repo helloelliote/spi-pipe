@@ -2,9 +2,10 @@
     <string name="app_name">SPI</string>
 
     <!--BaseActivity-->
-    <string name="app_title">SPI 지능형매설관로인식표지</string>
+    <string name="app_title">SPI 지능형지중선로표시기</string>
     <string name="app_title_alt">SPI %1$s %2$s</string>
     <string name="btn_find_spi">주변관로\n정보조회</string>
+    <string name="btn_current_spi">현재관로\n정보조회</string>
     <string name="nav_close">닫\u0020\u0020\u0020기</string>
     <string name="nav_drawer_open">Open</string>
     <string name="nav_drawer_close">Close</string>
@@ -14,14 +15,15 @@
 
     <!--NavigationView-->
     <string name="nav_title">SPI(Smart Pipe Indicator)</string>
-    <string name="nav_version_name">버전 %1$s (%2$s)</string>
+    <string name="nav_version_name">버전 %1$s %2$s</string>
     <string name="nav_email">대진기술정보(주) %1$s</string>
     <string name="nav_dj_email">djgis@chol.com</string>
-    <string name="nav_dj_phone">+82–53–424–9547</string>
+    <string name="nav_dj_phone">053–424–9547</string>
     <string name="nav_dj_homepage">http://djspi.kr</string>
     <string name="nav_app">어플리케이션</string>
     <string name="nav_guide">어플리케이션 정보</string>
     <string name="nav_homepage">홈페이지</string>
+    <string name="nav_manual_video">사용법 보기(YouTube)</string>
     <string name="nav_settings">환경설정</string>
     <string name="nav_preference">설정</string>
 
@@ -31,6 +33,7 @@
     <string name="lay_main3_title">SPI 조회ㆍ등록</string>
     <string name="lay_main3_sub">SPI를 태깅하여 관로정보를 조회하거나\n새로운 관로정보를 등록합니다.\nSPI를 태깅하시오.</string>
     <string name="toast_spi_tag">SPI를 태깅하시오.</string>
+    <string name="lay_notify_debug">디버그 모드</string>
 
     <!--NfcUtil-->
     <string name="toast_error">입력값을 확인해주세요</string>
@@ -38,6 +41,8 @@
     <!--MessageDialog-->
     <string name="popup_ok">확 인</string>
     <string name="popup_cancel">취 소</string>
+    <string name="popup_submit">입력완료</string>
+    <string name="popup_none">입력안함</string>
     <string name="popup_next">다 음</string>
     <string name="popup_pre">이 전</string>
     <string name="popup_nfc_on">폰의 NFC 기능이 꺼져 있어\nNFC 설정창으로 이동합니다.</string>
@@ -49,12 +54,19 @@
     </font><font color="#F24E4E"> GPS 기능을 활성화 하십시오.</font>]]>
     </string>
     <string name="popup_error_comm">서버와의 통신에 실패하였습니다.\n네트워크 연결을 재확인해 주세요.</string>
-    <string name="popup_error_not_spi">본 제품은 정품 SPI가 아니므로\n사용이 불가능합니다.\n구입처에 문의바랍니다.</string>
+    <string name="popup_error_not_spi">정품 SPI 확인에 실패하였습니다.\n다시 한번 천천히 태깅해 주세요.</string>
+    <string name="popup_error_not_spi_renewal">
+        <![CDATA[정품 SPI 확인에 실패하였습니다.\n공급처에 연락바랍니다(<font color="#F24E4E">코드 11</font>)]]></string>
     <string name="popup_error_offline_read_error">SPI 정보조회에 실패하였습니다.\nSPI를 다시 태깅해 주세요.</string>
     <string name="popup_error_set">SPI 정보 등록에 실패하였습니다.\nSPI를 다시 태깅해 주세요.</string>
     <string name="popup_error_supervise">관리기관 목록을 가져오지 못하였습니다. 다시 시도해주세요.</string>
     <string name="popup_power_save">시스템 절전모드 실행중에는\n일부 기능이 제한될 수 있습니다.\n절전모드를 해제해 주세요.</string>
     <string name="popup_power_save_sub">절전모드에서는 네트워크 속도가 저하되거나, 내 위치 확인이 제한될 수 있습니다.</string>
+    <string name="popup_error_location">위치 정보를 불러오지 못했습니다.\n잠시후에 다시 시도해주세요.</string>
+    <string name="popup_fail_location">위치 정보를 불러오지 못했습니다.\n네트워크 연결을 재확인해 주세요.</string>
+    <string name="popup_error_location_count_exceed_sub">와이파이를 재시작하거나 LTE/5G 데이터 통신으로 변경 후 앱을 재실행해 주세요.</string>
+    <string name="popup_error_serial_mismatch">SPI 정보 등록에 실패하였습니다.\nSPI를 재확인해 주세요.</string>
+    <string name="popup_error_serial_mismatch_sub">기존에 태깅한 SPI와 다른 장치가 감지되었습니다. 올바른 SPI가 태깅되었는지 재확인해 주세요.</string>
 
     <!--NaverMapActivity-->
     <string name="pipe_name_00">도시가스</string>
@@ -69,6 +81,7 @@
     <string name="pipe_name_09">CCTV</string>
     <string name="pipe_name_10">광케이블</string>
     <string name="pipe_name_11">기타관로</string>
+    <string name="pipe_name_12">우수관로</string>
 
     <string name="map_search_point">주변관로 정보조회</string>
     <string name="map_search_input">포인트를 선택하시면 상세정보가 제공됩니다.</string>
@@ -81,17 +94,19 @@
     <!--RegisterActivity-->
     <string name="record_optional">선택입력 사항</string>
     <string name="record_optional_50">선택입력 사항 (50자 이하)</string>
-    <string name="record_location">SPI 위치설정</string>
+    <string name="record_location">위치 입력</string>
     <string name="record_confirm">관로정보 입력완료</string>
     <string name="record_error">필수입력 항목입니다.</string>
     <string name="record_photo_ok">사진이 첨부되었습니다.</string>
-    <string name="record_photo_error">카메라를 준비할 수 없습니다.</string>
-    <string name="record_delete_error">임시파일을 삭제하지 못하였습니다.</string>
+    <string name="record_photo_error">사진을 불러오지 못하였습니다.</string>
+    <string name="record_camera_error">카메라를 준비할 수 없습니다.</string>
+    <string name="record_gallery_error">갤러리를 준비할 수 없습니다.</string>
 
+    <string name="record_input_unit">m</string>
     <string name="record_input_0">관로종류</string>
-    <string name="record_input_0_hint">매설관로의 종류 입력</string>
+    <string name="record_input_0_hint">지중선로의 종류 입력</string>
     <string name="record_input_1">관로형태</string>
-    <string name="record_input_1_hint">매설관로의 형태 선택</string>
+    <string name="record_input_1_hint">지중선로의 형태 선택</string>
     <string name="record_input_2">이격거리</string>
     <string name="record_input_2_vertical">수직</string>
     <string name="record_input_2_horizontal">수평</string>
@@ -100,7 +115,7 @@
     <string name="record_input_3">매설심도</string>
     <string name="record_input_3_hint">매설심도 입력</string>
     <string name="record_input_4">관로스펙</string>
-    <string name="record_input_4_hint">관로관경/코어수 등 입력</string>
+    <string name="record_input_4_hint">관로관경/관로수 등 입력</string>
     <string name="record_input_4_hint_2">%1$s 입력</string>
     <string name="record_input_5">관로재질</string>
     <string name="record_input_5_hint">관로재질 입력</string>
@@ -119,18 +134,28 @@
     <string name="record_input_photo_delete">사진이 삭제되었습니다.</string>
 
     <!--RegisterActivity: Dialog-->
-    <string name="popup_title_select_pipe">매설관로 종류선택</string>
-    <string name="popup_title_select_shape">매설관로 형태선택</string>
-    <string name="popup_title_select_position">매설관로 위치선택</string>
-    <string name="popup_title_select_direction">매설관로 방향선택</string>
-    <string name="popup_title_input_distance">매설관로 거리입력</string>
+    <string name="popup_title_select_pipe">지중선로 종류선택</string>
+    <string name="popup_title_select_shape">지중선로 형태선택</string>
+    <string name="popup_title_select_position">지중선로 위치선택</string>
+    <string name="popup_title_select_position_valve">제수변 위치선택</string>
+    <string name="popup_title_select_direction">지중선로 방향선택</string>
+    <string name="popup_title_select_direction_valve">제수변 방향선택</string>
+    <string name="popup_title_select_direction_sub">지중선로의 방향을 선택해주세요.</string>
+    <string name="popup_title_select_direction_sub_valve">제수변의 방향을 선택해주세요.</string>
+    <string name="popup_title_select_direction_sub_elb135">굴곡지점의 관로방향과 표지판의 관로방향이 일치하도록 부착해주세요.</string>
+    <string name="popup_title_input_distance">지중선로 거리입력</string>
+    <string name="popup_title_input_distance_valve">제수변 거리입력</string>
     <string name="popup_title_select_supervise">관리기관 선택</string>
     <string name="popup_title_select_photo">사진 첨부</string>
-    <string name="popup_error_select_position">매설관로의 위치를 선택해주세요.</string>
-    <string name="popup_error_select_direction">매설관로의 방향을 선택해주세요.</string>
-    <string name="popup_error_input_distance">매설관로의 이격거리(m)를 입력해주세요.</string>
-    <string name="popup_camera">사진 촬영</string>
+    <string name="popup_error_select_position">지중선로의 위치를 선택해주세요.</string>
+    <string name="popup_error_select_position_valve">제수변의 위치를 선택해주세요.</string>
+    <string name="popup_error_input_distance">지중선로의 이격거리(m)를 입력해주세요.</string>
+    <string name="popup_error_input_distance_valve">제수변의 이격거리(m)를 입력해주세요.</string>
+    <!--https://www.flaticon.com/packs/ui-interface-22-->
+    <string name="popup_camera">카메라</string>
     <string name="popup_gallery">갤러리</string>
+    <string name="popup_file_viewer">파일</string>
+    <string name="popup_file_viewer_title">파일을 선택하세요…</string>
 
     <string name="shape_name_00">직진형</string>
     <string name="shape_name_01">T분기형</string>
@@ -138,22 +163,36 @@
     <string name="shape_name_03">관말형</string>
 
     <!--SpiLocationActivity-->
-    <string name="record_location_title">SPI 매설관로 위치설정</string>
-    <string name="record_gps_sub">지도를 움직여 SPI 설치 위치를 확정하시오</string>
-    <string name="record_confirm_location">SPI 위치 저장</string>
+    <string name="record_location_title">SPI 지중선로 위치설정</string>
+    <string name="record_gps_sub">지도를 움직여 SPI 설치위치를 확정하시오</string>
+    <string name="record_confirm_location">위치 저장</string>
     <string name="popup_title_location">SPI 설치 위치 입력</string>
     <string name="popup_survey">측량좌표 입력</string>
     <string name="popup_gps">지도에서 입력</string>
-    <string name="popup_title_survey">측량좌표를 입력하시오</string>
-    <string name="map_origin">원점</string>
+    <string name="popup_title_survey_spi">SPI 설치지점 측량좌표</string>
+    <string name="popup_title_survey_pipe">관로의 측량좌표</string>
+    <string name="popup_title_survey">측량좌표 입력</string>
+    <string name="map_origin">원점:</string>
     <string name="map_origin_western">서부</string>
     <string name="map_origin_central">중부</string>
     <string name="map_origin_eastern">동부</string>
     <string name="map_origin_eastsea">동해</string>
-    <string name="map_coord_x">X 좌표</string>
-    <string name="map_coord_y">Y 좌표</string>
-    <string name="map_input_error">값을 입력해주세요</string>
+    <string name="map_coord_pipe">관로의 측량좌표</string>
+    <string name="map_coord_spi">SPI 설치지점의 측량좌표</string>
+    <string name="map_coord_x_pipe">관로: X 좌표</string>
+    <string name="map_coord_y_pipe">관로: Y 좌표</string>
+    <string name="map_coord_x_spi">SPI: X 좌표</string>
+    <string name="map_coord_y_spi">SPI: Y 좌표</string>
+    <string name="map_input_error">값을 입력하시오</string>
     <string name="map_coord_error">좌표값 오류</string>
+    <string name="marker_caption_location_spi">SPI 설치지점</string>
+    <string name="marker_caption_location_invalid">유효하지 않은 좌표입니다</string>
+    <string name="marker_caption_sub_location_invalid">좌표값을 확인 후 재입력하십시오</string>
+    <string name="marker_caption_network_invalid">주소를 가져올 수 없습니다</string>
+    <string name="marker_caption_sub_network_invalid">인터넷 연결을 재확인하십시오</string>
+
+    <!--SurveyDialog-->
+    <string name="popup_survey_origin">원점을 선택하세요</string>
 
     <!--SpiPostActivity-->
     <string name="write_instruction"><![CDATA[SPI의 상면을 스마트폰 뒷면의 NFC 안테나 위치에 접촉
@@ -170,30 +209,49 @@
     <string name="pipe_section">단면도</string>
     <string name="pipe_plane">평면도</string>
     <string name="pipe_confirm">정보저장</string>
+    <string name="pipe_plane_survey_title">관로의 측량좌표</string>
+    <string name="pipe_plane_survey_spi_title">SPI 설치지점의 측량좌표</string>
+    <string name="pipe_plane_survey_origin">원점</string>
+    <string name="pipe_plane_survey_x">X (m)</string>
+    <string name="pipe_plane_survey_y">Y (m)</string>
 
     <string name="nfc_info_read_contents"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
      로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s %4$s</font><font color="#F24E4E"> %5$s</font>
       관로가 SPI로부터<br> <font color="#F24E4E">%6$s %7$s</font> 이격되어 지표면으로부터 <font color="#F24E4E">%8$s m</font>
-       깊이에 매설되어 있습니다. 굴착 시 주의하여 주십시오.]]></string>
+       깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
     <string name="nfc_info_read_contents_alt"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
      로서 <br><font color="#F24E4E">%2$s</font>의 <font color="#F24E4E">%3$s %4$s</font><font color="#F24E4E"> %5$s</font>
       관로가 SPI %6$s 아래 지표면으로부터 <font color="#F24E4E">%7$s m</font>
-       깊이에 매설되어 있습니다. 굴착 시 주의하여 주십시오.]]></string>
+       깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
+    <string name="nfc_info_read_contents_valve"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
+     로서 <br><font color="#F24E4E">%2$s %3$s</font><font color="#F24E4E"> %4$s</font> 의 <font color="#F24E4E">%5$s</font>이
+     SPI로부터<br> <font color="#F24E4E">%6$s %7$s</font> 이격되어 지표면으로부터 <font color="#F24E4E">%8$s m</font>
+       깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
+    <string name="nfc_info_read_contents_valve_alt"><![CDATA[본 관로는 <font color="#F24E4E">%1$s</font>
+     로서 <br><font color="#F24E4E">%2$s %3$s</font><font color="#F24E4E"> %4$s</font> 의 <font color="#F24E4E">%5$s</font>이
+     SPI %6$s 아래 지표면으로부터 <font color="#F24E4E">%7$s m</font>
+       깊이에 매설되어 있습니다. 굴착 전 관리기관에 확인 후 굴착하여 주시기 바랍니다.]]></string>
+    <string name="nfc_info_read_contents_distance">
+        <![CDATA[본 관로는 SPI로부터<br> <font color="#F24E4E">%1$s</font> 이격되어 매설되어 있습니다. 지도를 움직여 SPI 설치위치를 확정해주세요.]]></string>
     <string name="info_company"><![CDATA[본 관로는 <font color="#0077C8">%1$s</font>에서 관리하고 있습니다.]]></string>
-    <string name="info_contact"><![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
-    <string name="nfc_info_construction"><![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
+    <string name="info_contact">
+        <![CDATA[통화 필요시에는 <font color="#0077C8"><a href="tel:%1$s">%1$s</a></font> 로 연락주십시오.]]></string>
+    <string name="nfc_info_construction">
+        <![CDATA[관로의 시공업체는 <font color="#0077C8">%1$s</font>(<font color="#0077C8"><a href="tel:%2$s">%2$s</a></font>)입니다.]]></string>
     <string name="nfc_info_id"><![CDATA[관로 ID는 <font color="#0077C8">%1$s</font> 입니다.]]></string>
     <string name="nfc_info_memo"><![CDATA[<font color="#0077C8">%1$s </font>]]></string>
     <string name="error_load_image_fail">이미지를 불러오지 못하였습니다.</string>
     <string name="error_load_image_retry">새로고침</string>
+    <string name="nfc_info_plane_elb135">굴곡지점의 관로방향은 표지판을 참조하시오</string>
 
     <!--Preferences -->
     <string name="setting_confirm">저장</string>
     <string name="message_preset_help">반복되는 입력내용을 미리 지정하여, 관로정보를 등록하는 과정에서 불러와 사용할 수 있는 편의기능입니다.
-        \n\n별도로 지정하지 않은 정보는 관로정보를 등록하는 과정에서 개별적으로 입력할 수 있습니다.</string>
+        \n\n별도로 지정하지 않은 정보는 관로정보를 등록하는 과정에서 개별적으로 입력할 수 있습니다.
+    </string>
     <string name="nav_guide_content">
         1. 앱의 용도\n
-        본 SPI 앱은 지하매설관로에 대한 정보를 지능형 매설관로 인식표지(SPI)에 기록, 저장하고 저장된 정보를 읽기 위한 애플리케이션입니다.\n
+        본 SPI 앱은 지중선로에 대한 정보를 지능형 지중선로 표시기(SPI)에 기록, 저장하고 저장된 정보를 읽기 위한 애플리케이션입니다.\n
         \n
         2. 앱 개발의 법적 근거\n
         도로법, 동법시행령, 동법시행규칙 별표4에 규정된 매설물 인식표지 제작 규정 및 방법에 의하여 세계 최초로 개발된 제품입니다.\n
@@ -207,26 +265,27 @@
         앱을 실행시키면 자동으로 기능을 체크하여 활성화하도록 요구합니다.\n
         \n
         4. 앱의 주요 기능\n
-        1) SPI에 매설관로에 대한 정보를 기록 저장합니다.\n
-        2) SPI에 저장된 매설관로의 정보를 읽어 사용자에게 제공합니다.\n
-        3) 현재 위치 주변의 SPI, 매설관로 위치 및 정보를 제공합니다.\n
-        4) 특정 위치로 지도를 이동시킨 후 정보조회를 선택하시면 주변에 대한 매설관로 정보를 조회가 가능합니다.\n
+        1) SPI에 지중선로에 대한 정보를 기록 저장합니다.\n
+        2) SPI에 저장된 지중선로의 정보를 읽어 사용자에게 제공합니다.\n
+        3) 현재 위치 주변의 SPI, 지중선로 위치 및 정보를 제공합니다.\n
+        4) 특정 위치로 지도를 이동시킨 후 정보조회를 선택하시면 주변에 대한 지중선로 정보를 조회가 가능합니다.\n
         \n
         5. 앱의 특수기능\n
         1) SPI 앱이 없는 스마트폰도 NFC를 설정하시고 태깅하시면 SPI 앱이 자동으로 설치됩니다\n
-        2) 매설관로 정보가 저장된 SPI를 태깅 시는 앱이 자동으로 실행됩니다.\n
-        3) 매설관로 정보가 없는 SPI를 태깅 시에도 앱은 자동으로 실행되어 정보 입력을 대기합니다.\n
+        2) 지중선로 정보가 저장된 SPI를 태깅 시는 앱이 자동으로 실행됩니다.\n
+        3) 지중선로 정보가 없는 SPI를 태깅 시에도 앱은 자동으로 실행되어 정보 입력을 대기합니다.\n
         4) 정품 SPI가 아닌 NFC태그는 정보입력이 불가능 합니다. 정품을 구매하여 사용 하십시오\n
         5) 재난이나 사고로 공중망(통신)이 두절되어도 SPI에 저장된 정보는 파악이 가능 합니다.\n
         \n
         6. 사용상 주의사항\n
         1) 스마트폰은 각 기종별로 NFC안테나의 위치가 상이합니다. 폰 뒷면의 안테나 부분을 미리 파악하시고 사용하십시오.\n
         2) SPI에 정보를 한번 저장 하시면 지우거나 새로 기록하실 수 없도록 되어 있으며 영원히 지워지지 않습니다. 정확하게 내용을 확인하시고 저장 하십시오.\n
-        3) 매설관로에 대한 필수사항은 SPI에 직접 저장되나 선택사항은 서버에 저장됩니다.\n
+        3) 지중선로에 대한 필수사항은 SPI에 직접 저장되나 선택사항은 서버에 저장됩니다.\n
         4) 선택사항에 대하여는 내용을 입력하지 않아도 됩니다.\n
         5) 측량된 SPI위치를 입력시에는 원점을 반드시 선택하시고 TM직각좌표를 입력하신 후 지도상에 나타나는 위치를 확인 후 저장 하십시오.\n
         \n
         7. 개발자 및 공급자 정보\n
         1) SPI 제품 및 개발자 : 대진기술정보(주) 053-424-9547\n
-        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3880\n</string>
+        2) SPI 제품 공급자 : 태후안전시스템(주) 053-951-3800\n
+    </string>
 </resources>

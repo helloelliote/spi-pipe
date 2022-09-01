@@ -40,7 +40,8 @@ class PhotoDialog : DialogFragment(), View.OnClickListener {
         arrayOf<View>(
             view.findViewById(R.id.button_close),
             view.findViewById(R.id.btn_camera),
-            view.findViewById(R.id.btn_gallery)
+            view.findViewById(R.id.btn_gallery),
+            view.findViewById(R.id.btn_file_viewer)
         ).forEach {
             it.setOnClickListener(this)
         }
@@ -56,6 +57,11 @@ class PhotoDialog : DialogFragment(), View.OnClickListener {
             }
             R.id.btn_gallery -> {
                 selectIndex = 2
+                listener.onSelect(TAG_PHOTO, selectIndex, null)
+                dismissAllowingStateLoss()
+            }
+            R.id.btn_file_viewer -> {
+                selectIndex = 3
                 listener.onSelect(TAG_PHOTO, selectIndex, null)
                 dismissAllowingStateLoss()
             }

@@ -10,12 +10,12 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.room.Room
 import kotlinx.android.synthetic.main.activity_base.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.getOnlineServerData
 import kr.djspi.pipe01.util.messageDialog
-import kr.djspi.pipe01.util.toast
 import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
 import java.io.Serializable
 
@@ -23,18 +23,18 @@ class MainActivity : LocationUpdate(), Serializable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Thread(Runnable {
+        Thread {
             checkPowerSaveMode()
             MerlinInstance.initiateNetworkMonitor(this)
-        }).start()
-        Thread(Runnable {
+        }.start()
+        Thread {
             superviseDb = Room.databaseBuilder(
                 this,
                 SuperviseDatabase::class.java,
                 "db_supervise"
             ).build()
             checkLocalSuperviseDatabase()
-        }).start()
+        }.start()
         setContentView(R.layout.activity_main)
     }
 
@@ -47,8 +47,10 @@ class MainActivity : LocationUpdate(), Serializable {
                 messageDialog(8)
                 progressbar.visibility = View.INVISIBLE
             } else if (currentLocation == null) {
-                toast(getString(R.string.toast_error_location))
+//                startLocationUpdates()
+                runLocationCounter(this@MainActivity)
             } else {
+                locationFailureCount = 0
                 startActivity(
                     Intent(this, NaverMapActivity::class.java)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -60,6 +62,16 @@ class MainActivity : LocationUpdate(), Serializable {
             Toast.makeText(this, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT).apply {
                 setGravity(Gravity.CENTER, 0, 0)
             }.show()
+        }
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            arrayOf(
+                lay_main_debug_1,
+                lay_main_debug_2,
+                lay_main_debug_3,
+                lay_main_debug_4
+            ).forEach {
+                it.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -75,6 +87,7 @@ class MainActivity : LocationUpdate(), Serializable {
     override fun onResume() {
         super.onResume()
         MerlinInstance.registerNetworkCallback()
+        startLocationUpdates()
         if (progressbar.visibility == View.VISIBLE) {
             progressbar.visibility = View.GONE
         }
@@ -115,15 +128,16 @@ class MainActivity : LocationUpdate(), Serializable {
         super.onNewIntent(intent)
         intent?.let {
             progressbar.visibility = View.VISIBLE
-            when {
-                MerlinInstance.isConnected -> getOnlineServerData(it)
-                else -> getOfflineTagData(it, 0)
+            if (MerlinInstance.isConnected) {
+                getOnlineServerData(it)
+            } else {
+                getOfflineTagData(it, 0, true)
             }
         }
     }
 
-    private fun getOfflineTagData(intent: Intent, index: Int) {
-        try {
+    fun getOfflineTagData(intent: Intent, index: Int, isOfflineMode: Boolean = true) {
+        return try {
             val stringArrayList = nfcUtil.getRecord(intent)
             stringArrayList.removeAt(0)
             val data = parseToJsonObject(stringArrayList, index)
@@ -133,7 +147,13 @@ class MainActivity : LocationUpdate(), Serializable {
                     .putExtra("PipeView", data.toString())
             )
         } catch (e: Exception) {
-            messageDialog(4, getString(R.string.popup_error_offline_read_error), true)
+            if (isOfflineMode) {
+                messageDialog(4, getString(R.string.popup_error_offline_read_error), true)
+            } else {
+                messageDialog(3, getString(R.string.popup_error_not_spi), false)
+            }
         }
     }
 }
+
+// TODO: Merlin Leak 연구, 지도보기 터치 후 무한 루프, 위치찾기 실패, 사진방향 가로눕기

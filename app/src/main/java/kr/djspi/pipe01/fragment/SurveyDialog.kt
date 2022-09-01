@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -14,9 +15,9 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kr.djspi.pipe01.Const.RESULT_FAIL
 import kr.djspi.pipe01.Const.RESULT_PASS
-import kr.djspi.pipe01.Const.TAG_SURVEY
+import kr.djspi.pipe01.Const.TAG_SURVEY_SPI
 import kr.djspi.pipe01.R
-import kr.djspi.pipe01.geolocation.GeoTrans
+import kr.djspi.pipe01.SpiLocationActivity.Companion.originPoint
 import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
 import kr.djspi.pipe01.util.DecimalFilter
 
@@ -24,7 +25,7 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
 
     private var dialogTitle: String? = null
     private var selectIndex: Int = -1
-    private var checkeId: Int = -1
+    private var savedCheckedIndex: Int = -1
     private lateinit var inputX: TextInputEditText
     private lateinit var inputY: TextInputEditText
     private lateinit var layX: TextInputLayout
@@ -40,7 +41,10 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dialogTitle = getString(R.string.popup_title_survey)
+        arguments?.let {
+            savedCheckedIndex = it.getInt("savedCheckedIndex")
+        }
+        dialogTitle = getString(R.string.popup_title_survey_spi)
     }
 
     override fun onCreateView(
@@ -49,12 +53,13 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_location_survey, container, false)
+        val popupTitleBackground = view.findViewById<LinearLayout>(R.id.popup_title_bg)
+        popupTitleBackground.setBackgroundColor(resources.getColor(R.color.colorAccent, null))
         val popupTitle = view.findViewById<TextView>(R.id.popup_title)
         popupTitle.text = dialogTitle
         val nmapRadiogroup = view.findViewById<RadioGroup>(R.id.nmap_radioGroup)
         nmapRadiogroup.setOnCheckedChangeListener { group, checkedId ->
             val checkedRadioButton = group.findViewById<RadioButton>(checkedId)
-            checkeId = checkedId
             selectIndex = group.indexOfChild(checkedRadioButton)
             when (checkedId) {
                 R.id.nmap_radio_central -> originPoint = GRS80_MIDDLE_WITH_JEJUDO
@@ -62,6 +67,10 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
                 R.id.nmap_radio_eastsea -> originPoint = GRS80_EASTSEA
                 R.id.nmap_radio_west -> originPoint = GRS80_WEST
             }
+        }
+        if (savedCheckedIndex > -1) {
+            val checkedRadioButton = nmapRadiogroup.getChildAt(savedCheckedIndex) as RadioButton
+            checkedRadioButton.isChecked = true
         }
         inputX = view.findViewById(R.id.input_x)
         inputY = view.findViewById(R.id.input_y)
@@ -81,22 +90,23 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.btn_ok -> {
-                if (checkeId == -1) {
+                if (selectIndex == -1) {
                     layX.error = "원점을 선택해주세요."
                     layY.error = "원점을 선택해주세요."
                     return
                 }
                 if (isInputValid()) {
                     listener.onSelect(
-                        TAG_SURVEY, RESULT_PASS,
+                        TAG_SURVEY_SPI, RESULT_PASS,
+                        selectIndex.toString(),
                         inputX.text.toString(),
                         inputY.text.toString()
                     )
-                    dismiss()
+                    dismissAllowingStateLoss()
                 } else selectIndex = -1
             }
             R.id.button_dismiss -> {
-                listener.onSelect(TAG_SURVEY, RESULT_FAIL, null)
+                listener.onSelect(TAG_SURVEY_SPI, RESULT_FAIL, null)
                 dismissAllowingStateLoss()
             }
         }
@@ -143,11 +153,6 @@ class SurveyDialog : DialogFragment(), View.OnClickListener {
 
     override fun onDismiss(dialog: DialogInterface) {
         selectIndex = -1
-        checkeId = -1
         super.onDismiss(dialog)
-    }
-
-    companion object {
-        lateinit var originPoint: GeoTrans.Coordinate
     }
 }

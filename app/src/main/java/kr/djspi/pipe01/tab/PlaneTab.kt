@@ -8,12 +8,14 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TableLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.BaseActivity
 import kr.djspi.pipe01.BaseActivity.Companion.screenRatio
 import kr.djspi.pipe01.R
+import kr.djspi.pipe01.geolocation.GeoTrans.CoodinateName.Companion.parseCoordinateName
 
 class PlaneTab : Fragment() {
 
@@ -51,52 +53,103 @@ class PlaneTab : Fragment() {
         vertical = view.findViewById(R.id.text_plane_vertical)
         vertical.text = json["vertical"].asString
         setPosition()
+        if (json["origin"] != null) {
+            if (!json["origin"].isJsonNull) {
+                view.findViewById<TableLayout>(R.id.lay_table_survey_pipe).apply {
+                    visibility = VISIBLE
+                    findViewById<TextView>(R.id.text_plane_origin).text =
+                        parseCoordinateName(json["origin"].asString)
+                    findViewById<TextView>(R.id.text_plane_x).text =
+                        json["coordinate_x"].asString
+                    findViewById<TextView>(R.id.text_plane_y).text =
+                        json["coordinate_y"].asString
+                }
+            }
+        }
+        if (json["spi_origin"] != null) {
+            if (!json["spi_origin"].isJsonNull) {
+                view.findViewById<TableLayout>(R.id.lay_table_survey_spi).apply {
+                    visibility = VISIBLE
+                    findViewById<TextView>(R.id.text_plane_origin_spi).text =
+                        parseCoordinateName(json["spi_origin"].asString)
+                    findViewById<TextView>(R.id.text_plane_x_spi).text =
+                        json["spi_coordinate_x"].asString
+                    findViewById<TextView>(R.id.text_plane_y_spi).text =
+                        json["spi_coordinate_y"].asString
+                }
+            }
+        }
+//        val textView = view.findViewById<TextView>(R.id.lay_elb)
+//        if (json["shape"].asString == PipeShape.PipeShapeEnum.엘보형135.type) {
+//            textView.visibility = VISIBLE
+//        } else {
+//            textView.visibility = GONE
+//        }
         return view
     }
 
     private fun setPosition() {
         val positionInt = json["position"].asInt
-        if (json["shape"].asString == "직진형") {
-            when (positionInt) {
-                1 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
-                2 -> {
-                    if (resId == "plan_plate_str_2_out_distance") {
-                        setTranslation(noV = true, noH = true, vY = 0.0f, hX = 0.0f, hY = 0.0f)
-                    } else {
-                        setTranslation(noH = true, vY = -50.0f, hX = 0.0f, hY = 0.0f)
+        when (json["shape"].asString) {
+            "직진형" -> {
+                when (positionInt) {
+                    1 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
+                    2 -> {
+                        if (resId == "plan_plate_str_2_out_distance") {
+                            setTranslation(noV = true, noH = true, vY = 0.0f, hX = 0.0f, hY = 0.0f)
+                        } else {
+                            setTranslation(noH = true, vY = -50.0f, hX = 0.0f, hY = 0.0f)
+                        }
                     }
-                }
-                3 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
-                4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
-                5 -> {
-                    horizontal.visibility = GONE
-                    vertical.visibility = GONE
-                }
-                6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
-                7 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
-                8 -> {
-                    if (resId == "plan_plate_str_8_out_distance") {
-                        setTranslation(noV = true, noH = true, vY = 0.0f, hX = 0.0f, hY = 0.0f)
-                    } else {
-                        setTranslation(noH = true, vY = 50.0f, hX = 0.0f, hY = 0.0f)
+                    3 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
+                    4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
+                    5 -> {
+                        horizontal.visibility = GONE
+                        vertical.visibility = GONE
                     }
+                    6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
+                    7 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
+                    8 -> {
+                        if (resId == "plan_plate_str_8_out_distance") {
+                            setTranslation(noV = true, noH = true, vY = 0.0f, hX = 0.0f, hY = 0.0f)
+                        } else {
+                            setTranslation(noH = true, vY = 50.0f, hX = 0.0f, hY = 0.0f)
+                        }
+                    }
+                    9 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
                 }
-                9 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
             }
-        } else {
-            when (positionInt) {
-                1 -> setTranslation(vY = -100.0f, hX = -170.0f, hY = -350.0f)
-                2 -> setTranslation(noH = true, vY = -100.0f, hX = 0.0f, hY = 0.0f)
-                3 -> setTranslation(vY = -100.0f, hX = 175.0f, hY = -350.0f)
-                4 -> setTranslation(noV = true, vY = 0.0f, hX = -90.0f, hY = 0.0f)
-                5 -> {
-                    horizontal.visibility = GONE
-                    vertical.visibility = GONE
+            "십자형" -> {
+                when (positionInt) {
+                    1 -> setTranslation(vY = -100.0f, hX = -170.0f, hY = -350.0f)
+                    2 -> setTranslation(noH = true, vY = -50.0f, hX = 0.0f, hY = 0.0f)
+                    3 -> setTranslation(vY = -100.0f, hX = 175.0f, hY = -350.0f)
+                    4 -> setTranslation(noV = true, vY = 0.0f, hX = -90.0f, hY = 0.0f)
+                    5 -> {
+                        horizontal.visibility = GONE
+                        vertical.visibility = GONE
+                    }
+                    6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
+                    7 -> setTranslation(vY = 90.0f, hX = -170.0f, hY = 350.0f)
+                    8 -> setTranslation(noH = true, vY = 50.0f, hX = 0.0f, hY = 0.0f)
+                    9 -> setTranslation(vY = 95.0f, hX = 175.0f, hY = 350.0f)
                 }
-                6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
-                7 -> setTranslation(vY = 90.0f, hX = -170.0f, hY = 350.0f)
-                8 -> setTranslation(noH = true, vY = 95.0f, hX = 0.0f, hY = 0.0f)
-                9 -> setTranslation(vY = 95.0f, hX = 175.0f, hY = 350.0f)
+            }
+            else -> {
+                when (positionInt) {
+                    1 -> setTranslation(vY = -100.0f, hX = -170.0f, hY = -350.0f)
+                    2 -> setTranslation(noH = true, vY = -100.0f, hX = 0.0f, hY = 0.0f)
+                    3 -> setTranslation(vY = -100.0f, hX = 175.0f, hY = -350.0f)
+                    4 -> setTranslation(noV = true, vY = 0.0f, hX = -90.0f, hY = 0.0f)
+                    5 -> {
+                        horizontal.visibility = GONE
+                        vertical.visibility = GONE
+                    }
+                    6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
+                    7 -> setTranslation(vY = 90.0f, hX = -170.0f, hY = 350.0f)
+                    8 -> setTranslation(noH = true, vY = 95.0f, hX = 0.0f, hY = 0.0f)
+                    9 -> setTranslation(vY = 95.0f, hX = 175.0f, hY = 350.0f)
+                }
             }
         }
     }
