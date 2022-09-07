@@ -9,7 +9,8 @@ android {
     defaultConfig {
         applicationId "kr.djspi.pipe01"
         minSdkVersion 23
-        targetSdkVersion 32
+        targetSdkVersion 30
+        // NFC 모듈 교체 전까지 31 이상으로 업그레이드하지 않을 것
         versionCode gitVersionCode + 4
         versionName gitVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -79,7 +80,7 @@ dependencies {
     implementation 'com.google.android.play:core:1.10.3'
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'androidx.room:room-runtime:2.4.3'
-    implementation 'com.google.android.gms:play-services-analytics:18.0.1'
+    implementation 'com.google.android.gms:play-services-analytics:18.0.2'
     kapt 'androidx.room:room-compiler:2.4.3' // For Kotlin use kapt instead of annotationProcessor
 
     // optional - Kotlin Extensions and Coroutines support for Room

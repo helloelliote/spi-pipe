@@ -2,7 +2,6 @@ package kr.djspi.pipe01.util
 
 import android.app.Activity
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.text.Spanned
@@ -49,7 +48,7 @@ fun Activity.screenSize(): Int {
 fun Activity.onResumeNfc() {
     val pendingIntent = PendingIntent.getActivity(
         this, 0, Intent(this, javaClass)
-            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), FLAG_IMMUTABLE
+            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0
     )
     NfcAdapter.getDefaultAdapter(this).enableForegroundDispatch(this, pendingIntent, null, null)
 }
