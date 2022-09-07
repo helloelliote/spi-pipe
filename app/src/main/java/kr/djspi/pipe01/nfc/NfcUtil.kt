@@ -2,6 +2,7 @@ package kr.djspi.pipe01.nfc
 
 import android.app.Activity
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.IntentFilter.MalformedMimeTypeException
@@ -50,7 +51,7 @@ class NfcUtil(private val activity: Activity, useActivityClass: Class<*>) {
             this.activity,
             0,
             Intent(this.activity, useActivityClass).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
-            0
+            FLAG_IMMUTABLE
         )
         techLists = arrayOf(
             arrayOf(NfcA::class.java.name),
