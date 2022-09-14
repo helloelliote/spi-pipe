@@ -398,7 +398,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                                 searchView.clearFocus()
                             }
                     )
-//                    placesList.clear()
+                    placesList.clear()
                     placesListAdapter?.notifyDataSetChanged()
                 }
                 return view!!
