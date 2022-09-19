@@ -20,7 +20,7 @@ data class PipeType(var id: Int = -1) : DataItem, Serializable {
         internal val header: String,
         internal val unit: String
     ) : Serializable {
-        도시가스("도시가스", R.drawable.cir_01_map, R.drawable.cir_01_map_valve, "관경", "mm"),
+        가스관로("가스관로", R.drawable.cir_01_map, R.drawable.cir_01_map_valve, "관경", "mm"),
         상수관로("상수관로", R.drawable.cir_02_map, R.drawable.cir_02_map_valve, "관경", "mm"),
         하수관로("하수관로", R.drawable.cir_03_map, R.drawable.cir_03_map_valve, "관경", "mm"),
         오수관로("오수관로", R.drawable.cir_04_map, R.drawable.cir_04_map_valve, "관경", "mm"),

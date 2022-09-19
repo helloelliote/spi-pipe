@@ -129,7 +129,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             else form_shape.setText(pipeShape.shape)
             val fSpec = findViewById<FormEditText>(R.id.form_spec)
             when (pipeType.pipe) {
-                "도시가스", "상수관로", "난방관로", "유류관로", "기타관로" -> {
+                "도시가스", "가스관로", "상수관로", "난방관로", "유류관로", "기타관로" -> {
                     fSpec.inputType = TYPE_CLASS_NUMBER
                 }
 

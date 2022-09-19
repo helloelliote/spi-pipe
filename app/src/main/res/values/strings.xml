@@ -69,7 +69,7 @@
     <string name="popup_error_serial_mismatch_sub">기존에 태깅한 SPI와 다른 장치가 감지되었습니다. 올바른 SPI가 태깅되었는지 재확인해 주세요.</string>
 
     <!--NaverMapActivity-->
-    <string name="pipe_name_00">도시가스</string>
+    <string name="pipe_name_00">가스관로</string>
     <string name="pipe_name_01">상수관로</string>
     <string name="pipe_name_02">하수관로</string>
     <string name="pipe_name_03">오수관로</string>
