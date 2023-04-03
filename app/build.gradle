@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "kr.djspi.pipe01"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 31
         // NFC 모듈 교체 전까지 31 이상으로 업그레이드하지 않을 것
         versionCode gitVersionCode + 4
         versionName gitVersionName
