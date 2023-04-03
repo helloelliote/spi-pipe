@@ -16,7 +16,6 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.ortiz.touchview.TouchImageView
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import java.nio.charset.Charset
@@ -52,7 +51,7 @@ class ImageDialog : DialogFragment() {
         } else if (imageUrl != null) {
             requestBuilder = Glide.with(view).load(imageUrl)
         }
-        val imageView = view.findViewById<TouchImageView>(R.id.image_view)
+        val imageView = view.findViewById<ImageView>(R.id.image_view)
         if (transformation == null) transformation = RotateTransformation(90f)
         requestBuilder?.transform(CenterInside(), transformation)?.into(imageView)?.clearOnDetach()
         return view
