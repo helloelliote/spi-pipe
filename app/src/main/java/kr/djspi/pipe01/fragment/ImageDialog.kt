@@ -16,6 +16,7 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import java.nio.charset.Charset
@@ -47,9 +48,9 @@ class ImageDialog : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_photo_view, container, false)
         var requestBuilder: RequestBuilder<Drawable>? = null
         if (imageUri != null) {
-            requestBuilder = Glide.with(view).load(imageUri)
+            requestBuilder = Glide.with(view).load(imageUri).override(SIZE_ORIGINAL, SIZE_ORIGINAL)
         } else if (imageUrl != null) {
-            requestBuilder = Glide.with(view).load(imageUrl)
+            requestBuilder = Glide.with(view).load(imageUrl).override(SIZE_ORIGINAL, SIZE_ORIGINAL)
         }
         val imageView = view.findViewById<ImageView>(R.id.image_view)
         if (transformation == null) transformation = RotateTransformation(90f)
