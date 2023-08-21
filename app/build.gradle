@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
         applicationId "kr.djspi.pipe01"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 33
         // NFC 모듈 교체 전까지 31 이상으로 업그레이드하지 않을 것
         versionCode gitVersionCode + 4
         versionName gitVersionName
