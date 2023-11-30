@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.LocationManager
 import android.location.LocationManager.GPS_PROVIDER
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import com.google.android.gms.location.*
@@ -61,7 +62,14 @@ abstract class LocationUpdate : BaseActivity() {
     @SuppressLint("MissingPermission")
     private fun requestAllPermissions(context: Context) {
         val permissions =
-            arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arrayOf(ACCESS_FINE_LOCATION, READ_MEDIA_IMAGES, CAMERA)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                arrayOf(ACCESS_FINE_LOCATION, READ_EXTERNAL_STORAGE, CAMERA)
+            } else {
+                arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA)
+            }
+
         Permissions.check(
             context/*context*/,
             permissions,
