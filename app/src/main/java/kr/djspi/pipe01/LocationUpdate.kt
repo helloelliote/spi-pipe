@@ -62,10 +62,12 @@ abstract class LocationUpdate : BaseActivity() {
     @SuppressLint("MissingPermission")
     private fun requestAllPermissions(context: Context) {
         val permissions =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                arrayOf(ACCESS_FINE_LOCATION, READ_MEDIA_IMAGES, READ_MEDIA_VISUAL_USER_SELECTED, CAMERA)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arrayOf(ACCESS_FINE_LOCATION, READ_MEDIA_IMAGES, CAMERA)
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-                arrayOf(ACCESS_FINE_LOCATION, READ_EXTERNAL_STORAGE, CAMERA)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                arrayOf(ACCESS_FINE_LOCATION, READ_EXTERNAL_STORAGE, ACCESS_MEDIA_LOCATION, CAMERA)
             } else {
                 arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA)
             }
@@ -90,7 +92,7 @@ abstract class LocationUpdate : BaseActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             return

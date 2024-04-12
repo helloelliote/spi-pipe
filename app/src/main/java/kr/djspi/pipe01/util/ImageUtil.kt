@@ -1,7 +1,9 @@
 package kr.djspi.pipe01.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -23,6 +25,7 @@ object ImageUtil {
     private const val DATE_PATTERN = "yyyyMMdd_HHmmss_SSS"
     private const val REGEX_IMAGE_EXT = "((\\.(?i)(jpg|jpeg|tif|tiff|webp|png|gif|bmp))$)"
 
+    @SuppressLint("Range")
     fun Activity.uriToFilePath(uri: Uri?): String {
         val cursor = contentResolver.query(uri!!, arrayOf("_data"), null, null, null)
         var path = ""
@@ -33,9 +36,12 @@ object ImageUtil {
         return path
     }
 
-    fun File.resizeImageToRes(maxResolution: Int): File {
+    fun File.resizeImageToRes(context: Context, maxResolution: Int): File {
+        val filesDir = context.applicationContext.filesDir
+        println("filesDir: $filesDir")
         val timeStamp = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(Date())
-        val newFile = File(this.parent, "IMG_$timeStamp.jpg")
+        val newFile = File(filesDir, "IMG_$timeStamp.jpg")
+        println("newFile: ${newFile.absolutePath}")
         var bitmap = decodeFile(this.path)
         val width = bitmap.width.toFloat()
         val height = bitmap.height.toFloat()

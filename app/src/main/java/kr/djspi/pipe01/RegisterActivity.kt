@@ -12,6 +12,7 @@ import android.text.Editable
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NEXT
 import android.view.inputmethod.InputMethodManager
@@ -19,6 +20,7 @@ import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.andreabaccega.widget.FormEditText
 import com.bumptech.glide.Glide
@@ -408,7 +410,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             when (requestCode) {
                 REQUEST_CAPTURE_IMAGE -> {
                     val file = File(currentPhotoPath)
-                    val resizeFile = file.resizeImageToRes(1024).preserveExif(file)
+                    val resizeFile = file.resizeImageToRes(this, 1024).preserveExif(file)
                     Glide.with(this).load(resizeFile).into(imageThumb)
                     form_photo_name.setText(resizeFile.name)
                     form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
@@ -424,17 +426,19 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 }
 
                 REQUEST_GALLERY -> {
-                    intent?.data.run {
-                        val file = File(uriToFilePath(this))
-                        val resizeFile = file.resizeImageToRes(1024)
+                    intent?.data.let { uri ->
+                        val file = File(uriToFilePath(uri))
+                        val resizeFile = file.resizeImageToRes(this, 1024)
                         Glide.with(applicationContext).load(resizeFile).into(imageThumb)
                         form_photo_name.setText(resizeFile.name)
-                        form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
+                        form_photo_name.setTextColor(
+                            ContextCompat.getColor(this@RegisterActivity, R.color.colorPrimary)
+                        )
                         fPhoto.setText(getString(R.string.record_photo_ok))
                         Thread {
                             photoObj = SpiPhotoObject()
                             photoObj!!.file = resizeFile
-                            photoObj!!.setUri(this)
+                            photoObj!!.setUri(uri)
                         }.start()
                     }
                 }
