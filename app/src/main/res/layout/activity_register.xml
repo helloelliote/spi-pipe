@@ -363,8 +363,8 @@
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
                 android:src="@drawable/ic_edit_2"
-                android:tint="@color/colorPrimary"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:tint="@color/colorPrimary" />
 
             <ImageView
                 android:id="@+id/btn_delete"
@@ -376,7 +376,7 @@
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
                 android:src="@drawable/ic_delete"
-                android:tint="@color/colorAccent" />
+                app:tint="@color/colorAccent" />
         </LinearLayout>
 
         <View

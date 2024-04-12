@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="375dp"
     android:layout_height="wrap_content"
@@ -55,7 +56,7 @@
                 android:background="@android:color/transparent"
                 android:rotation="180"
                 android:src="@drawable/ic_fast_forward"
-                android:tint="@android:color/holo_red_dark" />
+                app:tint="@android:color/holo_red_dark" />
 
             <TextView
                 android:id="@+id/popup_title_sub"
@@ -72,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_fast_forward"
-                android:tint="@android:color/holo_red_dark" />
+                app:tint="@android:color/holo_red_dark" />
         </LinearLayout>
 
         <HorizontalScrollView
