@@ -80,6 +80,7 @@ abstract class LocationUpdate : BaseActivity() {
             object : PermissionHandler() {
                 override fun onGranted() {
                     requestingLocationUpdates = true
+                    println("Granted: ${permissions.toList().joinToString(",")}")
                 }
 
                 override fun onDenied(context: Context, deniedPermissions: ArrayList<String>) {

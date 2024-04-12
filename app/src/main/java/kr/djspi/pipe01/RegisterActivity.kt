@@ -427,14 +427,18 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
                 REQUEST_GALLERY -> {
                     intent?.data.let { uri ->
+                        println("intent: $intent")
+                        println("intent.data: ${intent?.data}")
+                        println("?this?: $uri")
                         val file = File(uriToFilePath(uri))
+                        println("file: ${file.absolutePath}")
+                        println("file: ${file.parent}")
                         val resizeFile = file.resizeImageToRes(this, 1024)
                         Glide.with(applicationContext).load(resizeFile).into(imageThumb)
                         form_photo_name.setText(resizeFile.name)
                         form_photo_name.setTextColor(
                             ContextCompat.getColor(this@RegisterActivity, R.color.colorPrimary)
                         )
-                        fPhoto.setText(getString(R.string.record_photo_ok))
                         Thread {
                             photoObj = SpiPhotoObject()
                             photoObj!!.file = resizeFile
@@ -489,28 +493,38 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
         private fun isAllValid(): Boolean {
             var allValid = true
-            val validateFields = arrayOf<FormEditText>(
-                form_pipe,
-                form_shape,
-                form_horizontal,
-                form_vertical,
-                form_depth,
-                form_spec,
-                form_material,
-                form_supervise,
-                form_supervise_contact
-            )
-            for (field in validateFields) {
-                allValid = field.testValidity() && allValid
+            try {
+                val validateFields = arrayOf<FormEditText>(
+                    form_pipe,
+                    form_shape,
+                    form_horizontal,
+                    form_vertical,
+                    form_depth,
+                    form_spec,
+                    form_material,
+                    form_supervise,
+                    form_supervise_contact
+                )
+                for (field in validateFields) {
+                    allValid = field.testValidity() && allValid
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e("INVALID: isAllValid()", "Required fields have not been completed yet!")
             }
             return allValid
         }
 
         private fun isSpecValid(): Boolean {
             var isSpecValid = true
-            if (form_spec.inputType == TYPE_CLASS_NUMBER) {
-                isSpecValid = form_spec.text.toString().toDouble() < 9999.9
-                if (!isSpecValid) form_spec.error = "범위(0.0 - 9999.9)내의 숫자만 입력가능합니다."
+            try {
+                if (form_spec.inputType == TYPE_CLASS_NUMBER) {
+                    isSpecValid = form_spec.text.toString().toDouble() < 9999.9
+                    if (!isSpecValid) form_spec.error = "범위(0.0 - 9999.9)내의 숫자만 입력가능합니다."
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e("INVALID: isSpecValid()", "Required fields have not been completed yet!")
             }
             return isSpecValid
         }
