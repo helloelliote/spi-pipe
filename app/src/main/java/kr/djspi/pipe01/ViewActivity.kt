@@ -13,10 +13,11 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser.parseString
-import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_pipe_view.*
+//import kotlinx.android.synthetic.main.activity_base.*
+//import kotlinx.android.synthetic.main.activity_pipe_view.*
 import kr.djspi.pipe01.Const.REQUEST_MAP
 import kr.djspi.pipe01.Const.RESULT_PASS
+import kr.djspi.pipe01.databinding.ActivityPipeViewBinding
 import kr.djspi.pipe01.dto.Entry
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
@@ -31,6 +32,7 @@ import java.io.Serializable
 
 class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
+    private lateinit var pipeViewBinding: ActivityPipeViewBinding
     private var pipeIndex: Int = 0
     private var photoObject: SpiPhotoObject? = null
     private var previewEntries: ArrayList<Entry>? = null
@@ -39,6 +41,9 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        pipeViewBinding = ActivityPipeViewBinding.inflate(layoutInflater)
+        setContentView(pipeViewBinding.root)
 
         intent?.let {
             val jsonString = intent.getStringExtra("PipeView")
@@ -61,18 +66,13 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             photoObject = classSerializable as SpiPhotoObject
         }
 
-        setContentView(R.layout.activity_pipe_view)
-
         runOnUiThread {
             setSpiIdInfo()
             setSuperviseInfo()
             setConstructionInfo()
         }
-    }
 
-    override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-        toolbar.title = if (jsonObj["shape"].asString == "제수변") {
+        binding.toolbar.title = if (jsonObj["shape"].asString == "제수변") {
             "SPI ${jsonObj["pipe"].asString} 제수변"
         } else {
             "SPI ${jsonObj["pipe"].asString}"
@@ -98,15 +98,15 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     private fun setTabLayout() {
         if (previewEntries == null) {
-            tabs.removeTab(tabs.getTabAt(3)!!)
+            pipeViewBinding.tabs.removeTab(pipeViewBinding.tabs.getTabAt(3)!!)
         }
-        viewPager = findViewById(R.id.container)
+        viewPager = pipeViewBinding.container
         viewPager?.let {
-            it.adapter = TabAdapter(supportFragmentManager, tabs.tabCount)
-            it.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+            it.adapter = TabAdapter(supportFragmentManager, pipeViewBinding.tabs.tabCount)
+            it.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(pipeViewBinding.tabs))
         }
-        tabs.addOnTabSelectedListener(TabSelected())
-        val linearLayout: LinearLayout = tabs.getChildAt(0) as LinearLayout
+        pipeViewBinding.tabs.addOnTabSelectedListener(TabSelected())
+        val linearLayout: LinearLayout = pipeViewBinding.tabs.getChildAt(0) as LinearLayout
         linearLayout.apply {
             showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
             dividerDrawable = GradientDrawable().apply {
@@ -118,22 +118,22 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     private fun setSpiIdInfo() {
         if (jsonObj["id"] == null) {
-            txt_id.visibility = View.GONE
+            pipeViewBinding.txtId.visibility = View.GONE
         } else {
-            txt_id.text = fromHtml(getString(R.string.nfc_info_id, jsonObj["id"].asString))
+            pipeViewBinding.txtId.text = fromHtml(getString(R.string.nfc_info_id, jsonObj["id"].asString))
         }
     }
 
     private fun setSuperviseInfo() {
         if (jsonObj["supervise"] == null) {
-            txt_company.visibility = View.GONE
-            txt_contact.visibility = View.GONE
+            pipeViewBinding.txtCompany.visibility = View.GONE
+            pipeViewBinding.txtContact.visibility = View.GONE
         } else {
-            txt_company.text =
+            pipeViewBinding.txtCompany.text =
                 fromHtml(getString(R.string.info_company, jsonObj["supervise"].asString))
-            txt_contact.text =
+            pipeViewBinding.txtContact.text =
                 fromHtml(getString(R.string.info_contact, jsonObj["supervise_contact"].asString))
-            txt_contact.setOnClickListener {
+            pipeViewBinding.txtContact.setOnClickListener {
                 startActivity(
                     Intent(
                         ACTION_DIAL,
@@ -146,13 +146,13 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     private fun setConstructionInfo() {
         if (jsonObj["construction"] == null) {
-            txt_construction.visibility = View.GONE
+            pipeViewBinding.txtConstruction.visibility = View.GONE
         } else {
             val construction = jsonObj["construction"].asString
             val constructionContact = jsonObj["construction_contact"].asString
             if (construction.isNotEmpty() || constructionContact.isNotEmpty()) {
-                txt_construction.visibility = View.VISIBLE
-                txt_construction.text = fromHtml(
+                pipeViewBinding.txtConstruction.visibility = View.VISIBLE
+                pipeViewBinding.txtConstruction.text = fromHtml(
                     getString(
                         R.string.nfc_info_construction,
                         construction,
@@ -160,7 +160,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
                     )
                 )
                 if (constructionContact.isNotEmpty()) {
-                    txt_construction.setOnClickListener {
+                    pipeViewBinding.txtConstruction.setOnClickListener {
                         startActivity(Intent(ACTION_DIAL, parse("tel:$constructionContact")))
                     }
                 }
@@ -260,8 +260,8 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     private inner class TabSelected : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             viewPager?.currentItem = tab.position
-            if (tab.position == 3) lay_bottom.visibility = View.GONE
-            else lay_bottom.visibility = View.VISIBLE
+            if (tab.position == 3) pipeViewBinding.layBottom.visibility = View.GONE
+            else pipeViewBinding.layBottom.visibility = View.VISIBLE
         }
 
         override fun onTabReselected(tab: TabLayout.Tab?) {

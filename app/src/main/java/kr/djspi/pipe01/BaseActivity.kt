@@ -1,6 +1,5 @@
 package kr.djspi.pipe01
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -12,7 +11,6 @@ import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -20,10 +18,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import com.naver.maps.map.BuildConfig
 import com.naver.maps.map.NaverMapSdk
-import kotlinx.android.synthetic.main.activity_base.*
+import kr.djspi.pipe01.databinding.ActivityBaseBinding
+//import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.messageDialog
@@ -32,6 +31,7 @@ import kr.djspi.pipe01.util.settingsMenuEnabled
 
 open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
+    lateinit var binding: ActivityBaseBinding
     private lateinit var drawer: DrawerLayout
     lateinit var nmapFind: TextView
     lateinit var nfcUtil: NfcUtil
@@ -39,6 +39,15 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding = ActivityBaseBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val toolbar = binding.toolbar
+        setSupportActionBar(toolbar)
+        drawer = binding.drawerLayout
+        setNavigationBarDrawer()
+
         nfcUtil = NfcUtil(this, javaClass)
         defPackage = this@BaseActivity.packageName
         if (screenRatio == 0.0f) {
@@ -46,23 +55,10 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         }
     }
 
-    @SuppressLint("InflateParams")
-    override fun setContentView(layoutResID: Int) {
-        val view = layoutInflater.inflate(R.layout.activity_base, null)
-        val activityContainer = view.findViewById<FrameLayout>(R.id.activity_content)
-        layoutInflater.inflate(layoutResID, activityContainer, true)
-        super.setContentView(view)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        drawer = findViewById(R.id.drawer_layout)
-        setNavigationBarDrawer()
-    }
-
     override fun setSupportActionBar(toolbar: Toolbar?) {
         super.setSupportActionBar(toolbar)
         toolbar?.setTitleTextAppearance(this, R.style.TitleHeader)
-        nmapFind = findViewById(R.id.nmap_find)
+        nmapFind = binding.nmapFind
         nmapFind.apply {
             visibility = View.VISIBLE
             setOnClickListener {
@@ -74,6 +70,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         )
                     }
+
                     else -> {
                         runLocationCounter(this@BaseActivity)
                     }
@@ -87,7 +84,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             ActionBarDrawerToggle(
                 this@BaseActivity,
                 drawer,
-                toolbar,
+                binding.toolbar,
                 R.string.nav_drawer_open,
                 R.string.nav_drawer_close
             ).apply {
@@ -100,7 +97,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                 syncState()
             }
 
-            val navigationView = drawer.findViewById<NavigationView>(R.id.navView)
+            val navigationView = binding.navView
             val menu = navigationView.menu
             val headerView = navigationView.getHeaderView(0)
             navigationView.setNavigationItemSelectedListener(this@BaseActivity)
@@ -130,7 +127,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
 
             menu.findItem(R.id.nav_settingtitle).isVisible = settingsMenuEnabled()
 
-            nav_close.setOnClickListener { drawer.closeDrawer(GravityCompat.START) }
+            binding.navClose.setOnClickListener { drawer.closeDrawer(GravityCompat.START) }
         }.start()
     }
 
@@ -148,6 +145,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                         it.show()
                     }
             }
+
             R.id.nav_manual_video -> {
                 val appIntent = Intent(
                     Intent.ACTION_VIEW, Uri.parse("vnd.youtube:6Ttio_ff3n8")
@@ -161,12 +159,14 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
                     startActivity(webIntent)
                 }
             }
+
             R.id.nav_homepage -> startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse(getString(R.string.nav_dj_homepage))
                 )
             )
+
             R.id.nav_settings -> startActivity(
                 Intent(this, SettingsActivity::class.java)
                     .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -181,9 +181,10 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
             locationFailureCount == 1 -> {
                 NaverMapSdk.getInstance(context).flushCache {}
             }
+
             locationFailureCount >= 2 -> {
                 locationFailureCount++
-                progressbar.visibility = View.INVISIBLE
+                binding.progressbar.visibility = View.INVISIBLE
                 messageDialog(10, getString(R.string.popup_fail_location), false)
                 return
             }
@@ -194,7 +195,7 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
 
             override fun onFinish() {
                 locationFailureCount++
-                progressbar.visibility = View.INVISIBLE
+                binding.progressbar.visibility = View.INVISIBLE
                 messageDialog(0, getString(R.string.popup_error_location))
             }
         }.start()

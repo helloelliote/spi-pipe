@@ -9,7 +9,8 @@ import android.view.View
 import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.activity_spi_post.*
+import kr.djspi.pipe01.databinding.ActivitySpiPostBinding
+//import kotlinx.android.synthetic.main.activity_spi_post.*
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.network.ProgressBody
@@ -27,6 +28,7 @@ import java.io.Serializable
 
 class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
+    private lateinit var postBinding: ActivitySpiPostBinding
     private lateinit var entries: ArrayList<*>
     private lateinit var jsonObject: JsonObject
     private lateinit var progressBar: ProgressBar
@@ -37,6 +39,10 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        postBinding = ActivitySpiPostBinding.inflate(layoutInflater)
+        setContentView(postBinding.root)
+
         isReadyForPost = false
         entries = intent.getSerializableExtra("entry") as ArrayList<*>
         jsonObject = parseEntry(entries, 0, "", "")
@@ -47,13 +53,9 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
                 part = getMultipart(file!!, "image")
             }
         }
-        setContentView(R.layout.activity_spi_post)
-    }
 
-    override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-        txt_write.text = fromHtml(getString(R.string.write_instruction))
-        progressBar = findViewById(R.id.progressBar)
+        postBinding.txtWrite.text = fromHtml(getString(R.string.write_instruction))
+        progressBar = binding.progressbar
         progressDrawable = ((progressBar.progressDrawable) as LayerDrawable).getDrawable(1)
         progressDrawable.setTint(YELLOW)
 
@@ -111,12 +113,12 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
     }
 
     private fun setSpiAndPipe() {
-        progressBar_text.visibility = View.VISIBLE
+        postBinding.progressBarText.visibility = View.VISIBLE
         onInitiate(0)
         Retrofit2x.postSpi(Gson().toJson(entries), part).enqueue(object : RetrofitCallback() {
             override fun onResponse(response: JsonObject) {
                 onFinish(100)
-                progressBar_text.visibility = View.INVISIBLE
+                postBinding.progressBarText.visibility = View.INVISIBLE
                 messageDialog(6, getString(R.string.popup_write_success), false)
                 file?.let {
                     if (it.exists()) it.delete()
@@ -126,7 +128,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
             override fun onFailure(throwable: Throwable) {
                 onError()
-                progressBar_text.visibility = View.INVISIBLE
+                postBinding.progressBarText.visibility = View.INVISIBLE
                 messageDialog(7, throwable.message, false)
                 throwable.printStackTrace()
             }

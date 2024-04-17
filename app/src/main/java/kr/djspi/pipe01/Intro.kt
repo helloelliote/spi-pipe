@@ -13,14 +13,15 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import kotlinx.android.synthetic.main.activity_intro.*
+//import kotlinx.android.synthetic.main.activity_intro.*
 import kr.djspi.pipe01.Const.REQUEST_APP_UPDATE
-import java.lang.Math.round
+import kr.djspi.pipe01.databinding.ActivityIntroBinding
 import kotlin.math.roundToLong
 import kotlin.system.exitProcess
 
 class Intro : AppCompatActivity() {
 
+    private lateinit var introBinding: ActivityIntroBinding
     private lateinit var appUpdateManager: AppUpdateManager
     private var listener: InstallStateUpdatedListener? = null
 
@@ -31,6 +32,9 @@ class Intro : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        introBinding = ActivityIntroBinding.inflate(layoutInflater)
+        setContentView(introBinding.root)
+
         if (BuildConfig.BUILD_TYPE == "release") {
             val installer = packageManager.getInstallerPackageName(packageName)
             if (!installer!!.startsWith("com.android.vending")) {
@@ -40,10 +44,9 @@ class Intro : AppCompatActivity() {
             }
         }
 
-        setContentView(R.layout.activity_intro)
-
         appUpdateManager = AppUpdateManagerFactory.create(this)
-        checkUpdate()
+//        checkUpdate()
+        runMainActivity()
     }
 
     private fun checkUpdate() {
@@ -80,8 +83,9 @@ class Intro : AppCompatActivity() {
                         (state.bytesDownloaded() * 100 / state.totalBytesToDownload()).toString()
                     val progress =
                         "업데이트 중입니다...\n$megabytesDownloaded / $totalMegabytesToDownload ($percentage %)"
-                    update_text.text = progress
+                    introBinding.updateText.text = progress
                 }
+
                 InstallStatus.DOWNLOADED -> {
                     // After the update is downloaded, show a notification
                     // and request user confirmation to restart the app.
@@ -120,6 +124,8 @@ class Intro : AppCompatActivity() {
                 Toast.makeText(this, "플레이스토어에서 앱을 업데이트해주세요.", Toast.LENGTH_LONG).show()
                 runMainActivity()
             }
+        } else {
+            runMainActivity()
         }
     }
 

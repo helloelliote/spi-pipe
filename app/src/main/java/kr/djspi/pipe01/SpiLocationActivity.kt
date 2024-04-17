@@ -11,7 +11,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.UiThread
 import androidx.core.view.get
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.gson.JsonObject
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
@@ -22,8 +21,8 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MapConstants
 import com.naver.maps.map.util.MarkerIcons
-import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_spi_location.*
+//import kotlinx.android.synthetic.main.activity_base.*
+//import kotlinx.android.synthetic.main.activity_spi_location.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.AppPreference.set
 import kr.djspi.pipe01.BuildConfig.CLIENT_ID
@@ -32,6 +31,7 @@ import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.Const.TAG_SURVEY
 import kr.djspi.pipe01.Const.TAG_SURVEY_PIPE
 import kr.djspi.pipe01.Const.TAG_SURVEY_SPI
+import kr.djspi.pipe01.databinding.ActivitySpiLocationBinding
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum.Companion.parsePipeType
 import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.fragment.SurveyDialog
@@ -49,6 +49,7 @@ import java.util.concurrent.Executors
 
 class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListener, OnSelectListener, Serializable {
 
+    private lateinit var locationBinding: ActivitySpiLocationBinding
     private var surveyDialog: SurveyDialog = SurveyDialog()
     private var surveyDialog2: SurveyDialog2 = SurveyDialog2()
     private var surveyDialog3: SurveyDialog3 = SurveyDialog3()
@@ -66,21 +67,22 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        locationBinding = ActivitySpiLocationBinding.inflate(layoutInflater)
+        setContentView(locationBinding.root)
+
         NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
-        setContentView(R.layout.activity_spi_location)
+
         setNaverMap()
 
         executor = Executors.newCachedThreadPool()
         handler = Handler(Looper.getMainLooper())
-    }
 
-    override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-        record_gps.setOnClickListener(this)
-        btn_confirm.setOnClickListener(this)
+        locationBinding.recordGps.setOnClickListener(this)
+        locationBinding.btnConfirm.setOnClickListener(this)
 
-        toolbar.title = getString(R.string.record_location_title)
-        nmap_find.visibility = View.GONE
+        binding.toolbar.title = getString(R.string.record_location_title)
+        binding.nmapFind.visibility = View.GONE
 
         onSurveyDialog()
     }
@@ -91,15 +93,18 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
     @UiThread
     private fun setNaverMap() {
         mapFragment =
-            supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment? ?: MapFragment.newInstance(
-                NaverMapOptions().locale(Locale.KOREA)
-                    .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
-                    .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING).minZoom(ZOOM_MIN).maxZoom(ZOOM_MAX)
-                    .extent(MapConstants.EXTENT_KOREA).compassEnabled(true).locationButtonEnabled(true)
-                    .zoomGesturesEnabled(true)
-            ).also {
-                supportFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
-            }
+            supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
+                ?: MapFragment.newInstance(
+                    NaverMapOptions().locale(Locale.KOREA)
+                        .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
+                        .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING).minZoom(ZOOM_MIN)
+                        .maxZoom(ZOOM_MAX)
+                        .extent(MapConstants.EXTENT_KOREA).compassEnabled(true)
+                        .locationButtonEnabled(true)
+                        .zoomGesturesEnabled(true)
+                ).also {
+                    supportFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
+                }
         mapFragment?.getMapAsync(this)
     }
 
@@ -132,9 +137,9 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
         }
         cameraChangeListener = OnCameraChangeListener { _, _ ->
             spiMarker.position = naverMap.cameraPosition.target
-            if (!btn_confirm.isEnabled) {
-                btn_confirm.isEnabled = true
-                btn_confirm.setBackgroundColor(getColor(R.color.colorPrimaryDark))
+            if (!locationBinding.btnConfirm.isEnabled) {
+                locationBinding.btnConfirm.isEnabled = true
+                locationBinding.btnConfirm.setBackgroundColor(getColor(R.color.colorPrimaryDark))
             }
         }
 
@@ -155,7 +160,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
     private fun setMapModeSwitch(naverMap: NaverMap) {
-        val toggleSwitch = findViewById<MaterialButtonToggleGroup>(R.id.nmap_mapmode_switch)
+        val toggleSwitch = binding.nmapMapmodeSwitch
         toggleSwitch.apply {
             visibility = View.VISIBLE
             isSingleSelection = true
@@ -168,6 +173,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                         group[0].setBackgroundColor(white)
                         group[1].setBackgroundColor(green)
                     }
+
                     R.id.button_basic -> {
                         naverMap.mapType = NaverMap.MapType.Basic
                         group[1].setBackgroundColor(white)
@@ -215,12 +221,14 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
             R.id.record_gps -> {
                 v.alpha = 1.0f
             }
+
             R.id.btn_confirm -> {
                 try {
                     if (spiLocationMap["latitude"] == null || spiLocationMap["longitude"] == null) { // SPI 측량좌표가 입력되지 않음
                         if (!isSpiMarkerPositionValid()) { // SPI 측량좌표가 유효한 값인지를 확인
                             messageDialog(
-                                13, "${intent.getStringExtra("hDirection")} ${intent.getStringExtra("vDirection")}"
+                                13,
+                                "${intent.getStringExtra("hDirection")} ${intent.getStringExtra("vDirection")}"
                             )
                             (v as MaterialButton).apply {
                                 isEnabled = false
@@ -234,7 +242,9 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                     }
                     setResult(
                         RESULT_OK,
-                        Intent().putExtra("spiLocations", spiLocationMap).putExtra("pipeLocations", pipeLocationMap)
+                        Intent()
+                            .putExtra("spiLocations", spiLocationMap)
+                            .putExtra("pipeLocations", pipeLocationMap)
                     )
                     finish()
                 } catch (e: Exception) {
@@ -273,7 +283,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                         this.setMarkerAddress(spiLatLng.longitude, spiLatLng.latitude)
                     }
                 } else if (index == RESULT_FAIL) {
-                    record_gps.visibility = View.VISIBLE
+                    locationBinding.recordGps.visibility = View.VISIBLE
                     naverMap.apply {
                         addOnCameraChangeListener(cameraChangeListener)
                         minZoom = ZOOM_MAX - 2
@@ -285,6 +295,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                     }
                 }
             }
+
             TAG_SURVEY_PIPE -> {
                 if (index == RESULT_PASS) {
                     AppPreference.defaultPrefs(this)["savedCheckedIndex"] = text[0]!!.toInt()
@@ -307,9 +318,12 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                         minZoom = ZOOM_MAX - 2
                         maxZoom = ZOOM_MAX
                     }.moveCamera(
-                        CameraUpdate.scrollAndZoomTo(pipeLatLng, ZOOM_MAX - 2).finishCallback { onRequestPipe() })
+                        CameraUpdate
+                            .scrollAndZoomTo(pipeLatLng, ZOOM_MAX - 2)
+                            .finishCallback { onRequestPipe() }
+                    )
 
-                    record_gps.visibility = View.VISIBLE
+                    locationBinding.recordGps.visibility = View.VISIBLE
                     spiMarker.apply {
                         captionColor = Color.BLUE
                         iconTintColor = Color.BLUE
@@ -318,6 +332,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                     }
                 }
             }
+
             TAG_SURVEY_SPI -> {
                 if (index == RESULT_PASS) {
                     AppPreference.defaultPrefs(this)["savedCheckedIndex"] = text[0]!!.toInt()
@@ -354,6 +369,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                     spiMarker.position != pipeMarker.position // 관로 측량좌표가 입력되었고, 이격거리가 존재함에도 SPI 설치지점 마커가 관로위치 좌표 직상에 그대로 위치할 경우 false 리턴
                 } else true
             }
+
             else -> true
         }
     }
@@ -387,7 +403,8 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
                     if (i == 5) {
                         marker.captionColor = Color.MAGENTA
                         marker.captionText = getString(R.string.marker_caption_location_invalid)
-                        marker.subCaptionText = getString(R.string.marker_caption_sub_location_invalid)
+                        marker.subCaptionText =
+                            getString(R.string.marker_caption_sub_location_invalid)
                         break@loop
                     }
                     val call = Retrofit2x.coord2Address(xCoords[i], yCoords[i])
@@ -412,7 +429,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
             }
             handler.post {
                 marker.map = naverMap
-                btn_confirm.apply {
+                locationBinding.btnConfirm.apply {
                     isEnabled = isValidCoord2Address
                     setBackgroundColor(getColor(if (isValidCoord2Address) R.color.colorPrimaryDark else android.R.color.darker_gray))
                 }
@@ -421,7 +438,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
     }
 
     private fun onSurveyDialog() {
-        record_gps.visibility = View.INVISIBLE
+        locationBinding.recordGps.visibility = View.INVISIBLE
         Thread {
             val bundle = Bundle()
             val checkedIndex: Int? = AppPreference.defaultPrefs(this)["savedCheckedIndex"]
@@ -454,7 +471,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
     }
 
     private fun onSpiSurveyDialog() {
-        record_gps.visibility = View.GONE
+        locationBinding.recordGps.visibility = View.GONE
         Thread {
             val bundle = Bundle()
             val checkedIndex: Int? = AppPreference.defaultPrefs(this)["savedCheckedIndex"]

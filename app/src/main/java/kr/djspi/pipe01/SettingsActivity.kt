@@ -7,7 +7,8 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import kotlinx.android.synthetic.main.activity_base.*
+//import kotlinx.android.synthetic.main.activity_base.*
+import kr.djspi.pipe01.databinding.ActivitySettingsBinding
 import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.util.onNewIntentIgnore
 import kr.djspi.pipe01.util.onPauseNfc
@@ -16,6 +17,7 @@ import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
 
 class SettingsActivity : BaseActivity(), OnSelectListener {
 
+    private lateinit var settingsBinding: ActivitySettingsBinding
     private lateinit var preferences: SharedPreferences
     private var settingsFragment: SettingsFragment
 
@@ -25,12 +27,15 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+
+        settingsBinding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(settingsBinding.root)
+
         supportFragmentManager.beginTransaction().replace(R.id.settings, settingsFragment).commit()
         preferences = AppPreference.defaultPrefs(this)
-        nmap_find.visibility = View.GONE
-        setting_confirm.visibility = View.VISIBLE
-        setting_confirm.setOnClickListener {
+        binding.nmapFind.visibility = View.GONE
+        binding.settingConfirm.visibility = View.VISIBLE
+        binding.settingConfirm.setOnClickListener {
             onBackPressed()
         }
     }

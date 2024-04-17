@@ -7,13 +7,16 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.fragment_location.*
+//import kotlinx.android.synthetic.main.fragment_location.*
 import kr.djspi.pipe01.Const.RESULT_FAIL
 import kr.djspi.pipe01.Const.TAG_LOCATION
 import kr.djspi.pipe01.R
+import kr.djspi.pipe01.databinding.FragmentLocationBinding
 
 class LocationDialog : DialogFragment(), OnClickListener {
 
+    private var _binding: FragmentLocationBinding? = null
+    val binding get() = _binding!!
     private var selectIndex = -1
     private var dialogTitle: String? = null
     private lateinit var listener: OnSelectListener
@@ -33,14 +36,18 @@ class LocationDialog : DialogFragment(), OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_location, container, false)
-        popup_title.text = dialogTitle
-        arrayOf<View>(btn_survey, btn_gps, button_dismiss).forEach {
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentLocationBinding.inflate(layoutInflater, container, false)
+        binding.popupTitle.text = dialogTitle
+        arrayOf(
+            binding.btnSurvey,
+            binding.btnGps,
+            binding.buttonDismiss
+        ).forEach {
             it.setOnClickListener(this)
         }
-        return view
+        return binding.root
     }
 
     override fun onClick(v: View) {

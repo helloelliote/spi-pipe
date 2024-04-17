@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.room.Room
-import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_main.*
+//import kotlinx.android.synthetic.main.activity_base.*
+//import kotlinx.android.synthetic.main.activity_main.*
 import kr.djspi.pipe01.AppPreference.get
+import kr.djspi.pipe01.databinding.ActivityMainBinding
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.getOnlineServerData
@@ -21,12 +21,19 @@ import java.io.Serializable
 
 class MainActivity : LocationUpdate(), Serializable {
 
+    private lateinit var mainBinding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainBinding.root)
+
         Thread {
             checkPowerSaveMode()
             MerlinInstance.initiateNetworkMonitor(this)
         }.start()
+
         Thread {
             superviseDb = Room.databaseBuilder(
                 this,
@@ -35,17 +42,12 @@ class MainActivity : LocationUpdate(), Serializable {
             ).build()
             checkLocalSuperviseDatabase()
         }.start()
-        setContentView(R.layout.activity_main)
-    }
 
-    override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-        val layMain1 = findViewById<LinearLayout>(R.id.lay_main_menu1)
-        layMain1?.setOnClickListener {
-            progressbar.visibility = View.VISIBLE
+        mainBinding.layMainMenu1.setOnClickListener {
+            binding.progressbar.visibility = View.VISIBLE
             if (!MerlinInstance.isConnected) {
                 messageDialog(8)
-                progressbar.visibility = View.INVISIBLE
+                binding.progressbar.visibility = View.INVISIBLE
             } else if (currentLocation == null) {
 //                startLocationUpdates()
                 runLocationCounter(this@MainActivity)
@@ -57,18 +59,18 @@ class MainActivity : LocationUpdate(), Serializable {
                 )
             }
         }
-        val layMain2 = findViewById<LinearLayout>(R.id.lay_main_menu2)
-        layMain2?.setOnClickListener {
+
+        mainBinding.layMainMenu2.setOnClickListener {
             Toast.makeText(this, getString(R.string.toast_spi_tag), Toast.LENGTH_SHORT).apply {
                 setGravity(Gravity.CENTER, 0, 0)
             }.show()
         }
         if (BuildConfig.BUILD_TYPE == "debug") {
             arrayOf(
-                lay_main_debug_1,
-                lay_main_debug_2,
-                lay_main_debug_3,
-                lay_main_debug_4
+                mainBinding.layMainDebug1,
+                mainBinding.layMainDebug2,
+                mainBinding.layMainDebug3,
+                mainBinding.layMainDebug4
             ).forEach {
                 it.visibility = View.VISIBLE
             }
@@ -88,8 +90,8 @@ class MainActivity : LocationUpdate(), Serializable {
         super.onResume()
         MerlinInstance.registerNetworkCallback()
         startLocationUpdates()
-        if (progressbar.visibility == View.VISIBLE) {
-            progressbar.visibility = View.GONE
+        if (binding.progressbar.visibility == View.VISIBLE) {
+            binding.progressbar.visibility = View.GONE
         }
         if (!nfcUtil.isNfcEnabled()) {
             messageDialog(2, getString(R.string.popup_nfc_on), false)
@@ -115,7 +117,7 @@ class MainActivity : LocationUpdate(), Serializable {
 
     override fun onDestroy() {
         super.onDestroy()
-        progressbar.visibility = View.INVISIBLE
+        binding.progressbar.visibility = View.INVISIBLE
     }
 
     private fun checkLocalSuperviseDatabase() {
@@ -127,7 +129,7 @@ class MainActivity : LocationUpdate(), Serializable {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.let {
-            progressbar.visibility = View.VISIBLE
+            binding.progressbar.visibility = View.VISIBLE
             if (MerlinInstance.isConnected) {
                 getOnlineServerData(it)
             } else {

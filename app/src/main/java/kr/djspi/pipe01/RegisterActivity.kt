@@ -18,14 +18,12 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NEXT
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.andreabaccega.widget.FormEditText
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_register.*
+//import kotlinx.android.synthetic.main.activity_base.*
+//import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS_ELB135
@@ -38,6 +36,7 @@ import kr.djspi.pipe01.Const.TAG_DIRECTION_VALVE
 import kr.djspi.pipe01.Const.TAG_DISTANCE
 import kr.djspi.pipe01.Const.TAG_PHOTO
 import kr.djspi.pipe01.Const.TAG_POSITION
+import kr.djspi.pipe01.databinding.ActivityRegisterBinding
 import kr.djspi.pipe01.dto.*
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import kr.djspi.pipe01.fragment.*
@@ -52,6 +51,7 @@ import java.io.Serializable
 
 class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener, Serializable {
 
+    private lateinit var registerBinding: ActivityRegisterBinding
     private lateinit var spi: Spi
     private lateinit var spiType: SpiType
     private lateinit var pipeType: PipeType
@@ -67,12 +67,13 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
     private val pipe: Pipe = Pipe()
     private val pipePosition = PipePosition()
     private val pipePlan = PipePlan()
-    private lateinit var lPhotoDesc: LinearLayout
-    private lateinit var imageThumb: ImageView
-    private lateinit var fPhoto: FormEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        registerBinding = ActivityRegisterBinding.inflate(layoutInflater)
+        setContentView(registerBinding.root)
+
         if (intent != null) {
             val extra = intent.getSerializableExtra("RegisterActivity")
             if (extra is HashMap<*, *>) {
@@ -88,16 +89,15 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             }
         }
         imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        setContentView(R.layout.activity_register)
-        restoreInstanceState()
-    }
 
-    override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-        toolbar.title = if (pipeShape.shape == "제수변") "SPI 제수변 ${spiType.type}" else "SPI 지중선로 ${spiType.type}"
+        restoreInstanceState()
+
+        binding.toolbar.title =
+            if (pipeShape.shape == "제수변") "SPI 제수변 ${spiType.type}" else "SPI 지중선로 ${spiType.type}"
 
         setOnClickListeners()
-        form_shape.addTextChangedListener(object : TextWatcher {
+
+        registerBinding.formShape.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 pipeShape.shape = s.toString()
             }
@@ -108,27 +108,28 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
-        form_horizontal.isFocusable = false
-        form_vertical.isFocusable = false
-        form_depth.filters = arrayOf(DecimalFilter(4, 2))
-        form_supervise_contact.addTextChangedListener(
+        registerBinding.formHorizontal.isFocusable = false
+        registerBinding.formVertical.isFocusable = false
+        registerBinding.formDepth.filters = arrayOf(DecimalFilter(4, 2))
+        registerBinding.formSuperviseContact.addTextChangedListener(
             object : PhoneNumberFormattingTextWatcher() {})
-        form_material.setOnEditorActionListener { v, actionId, _ ->
+        registerBinding.formMaterial.setOnEditorActionListener { v, actionId, _ ->
             var isHandled = false
-            if (actionId == IME_ACTION_NEXT && form_supervise_contact.text.toString() == "") {
+            if (actionId == IME_ACTION_NEXT && registerBinding.formSuperviseContact.text.toString() == "") {
                 imm.toggleSoftInputFromWindow(v.windowToken, 0, 0)
-                form_supervise_contact.requestFocus()
+                registerBinding.formSuperviseContact.requestFocus()
                 isHandled = true
             }
             return@setOnEditorActionListener isHandled
         }
-        form_construction_contact.addTextChangedListener(
+        registerBinding.formConstructionContact.addTextChangedListener(
             object : PhoneNumberFormattingTextWatcher() {})
         // 초기화 항목 지정
         runOnUiThread {
-            form_pipe.setText(pipeType.pipe)
-            if (pipeShape.shape == PipeShape.PipeShapeEnum.선택형.type) form_shape.text = null
-            else form_shape.setText(pipeShape.shape)
+            registerBinding.formPipe.setText(pipeType.pipe)
+            if (pipeShape.shape == PipeShape.PipeShapeEnum.선택형.type) registerBinding.formShape.text =
+                null
+            else registerBinding.formShape.setText(pipeShape.shape)
             val fSpec = findViewById<FormEditText>(R.id.form_spec)
             when (pipeType.pipe) {
                 "도시가스", "가스관로", "상수관로", "난방관로", "유류관로", "기타관로" -> {
@@ -140,54 +141,51 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     fSpec.error = null
                 }
             }
-            header.text = pipeType.header
-            unit.text = pipeType.unit
-            form_supervise.setText(pipeSupervise.supervise)
+            registerBinding.header.text = pipeType.header
+            registerBinding.unit.text = pipeType.unit
+            registerBinding.formSupervise.setText(pipeSupervise.supervise)
         }
     }
 
     private fun setOnClickListeners() {
         arrayOf(
-            lay_distance,
-            form_horizontal,
-            form_vertical,
-            lay_photo,
-            lay_photo_desc
+            registerBinding.layDistance,
+            registerBinding.formHorizontal,
+            registerBinding.formVertical,
+            registerBinding.layPhoto,
+            registerBinding.layPhotoDesc
         ).forEach {
             it.setOnClickListener(this)
         }
 
         if (pipeShape.shape == PipeShape.PipeShapeEnum.선택형.type) {
             arrayOf(
-                lay_shape,
-                form_shape
+                registerBinding.layShape,
+                registerBinding.formShape
             ).forEach {
                 it.setOnClickListener(this)
             }
         }
 
-        fPhoto = findViewById(R.id.form_photo)
-        fPhoto.setOnClickListener(this)
-        lPhotoDesc = findViewById(R.id.lay_photo_desc)
-        lPhotoDesc.setOnClickListener(this)
-        lPhotoDesc.visibility = View.GONE
-        imageThumb = lPhotoDesc.findViewById(R.id.form_photo_thumbnail)
-        imageThumb.setOnClickListener(this)
-        val fPhotoName = lPhotoDesc.findViewById<FormEditText>(R.id.form_photo_name)
-        fPhotoName.isFocusable = false
-        val buttonDelete = lPhotoDesc.findViewById<ImageView>(R.id.btn_delete)
-        buttonDelete.setOnClickListener(this)
-        button_next.setOnClickListener(OnNextButtonClick())
+        registerBinding.formPhoto.setOnClickListener(this)
+        registerBinding.layPhotoDesc.setOnClickListener(this)
+        registerBinding.layPhotoDesc.visibility = View.GONE
+        registerBinding.formPhotoThumbnail.setOnClickListener(this)
+        registerBinding.formPhotoName.isFocusable = false
+        registerBinding.btnDelete.setOnClickListener(this)
+        registerBinding.buttonNext.setOnClickListener(OnNextButtonClick())
     }
 
     private fun restoreInstanceState() {
         val pref = AppPreference.defaultPrefs(this)
         if (pref["switch_preset", false]!!) {
             runOnUiThread {
-                form_material.setText(pref["material", ""])
-                form_supervise_contact.setText(pref["supervise_contact", ""])
-                form_construction.setText(pref["construction", ""])
-                form_construction_contact.setText(pref["construction_contact", ""])
+                registerBinding.apply {
+                    formMaterial.setText(pref["material", ""])
+                    formSuperviseContact.setText(pref["supervise_contact", ""])
+                    formConstruction.setText(pref["construction", ""])
+                    formConstructionContact.setText(pref["construction_contact", ""])
+                }
             }
         }
     }
@@ -196,14 +194,14 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         when (v.id) {
             R.id.lay_shape, R.id.form_shape -> {
                 pipeShape.shape = null
-                form_shape.text = null
+                registerBinding.formShape.text = null
                 ListDialog().show(supportFragmentManager, Const.TAG_SHAPE)
             }
 
             R.id.lay_distance, R.id.form_horizontal, R.id.form_vertical -> {
-                form_horizontal.text = null
-                form_vertical.text = null
-                if (form_shape.text.toString() == "") {
+                registerBinding.formHorizontal.text = null
+                registerBinding.formVertical.text = null
+                if (registerBinding.formShape.text.toString() == "") {
                     ListDialog().show(supportFragmentManager, Const.TAG_SHAPE)
                 } else {
                     showPositionDialog()
@@ -211,7 +209,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             }
 
             R.id.lay_photo, R.id.form_photo -> {
-                lay_photo_desc.visibility = View.VISIBLE
+                registerBinding.layPhotoDesc.visibility = View.VISIBLE
                 PhotoDialog().show(supportFragmentManager, TAG_PHOTO)
             }
 
@@ -227,13 +225,13 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
             R.id.btn_delete -> {
                 photoObj?.run {
-                    form_photo_thumbnail.setImageDrawable(null)
-                    form_photo_name.apply {
+                    registerBinding.formPhotoThumbnail.setImageDrawable(null)
+                    registerBinding.formPhotoName.apply {
                         isFocusable = false
                         setText(getString(R.string.record_input_photo_delete))
                         setTextColor(resources.getColor(R.color.colorAccent, null))
                     }
-                    form_photo.text = null
+                    registerBinding.formPhoto.text = null
                     uri = null
                     file?.delete()
                     file = null
@@ -247,9 +245,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         if (index == -1) return
         when (tag) {
             Const.TAG_SHAPE -> {
-                form_shape.setText(PipeShape.PipeShapeEnum.values()[index].type)
-                form_horizontal.text = null
-                form_vertical.text = null
+                registerBinding.formShape.setText(PipeShape.PipeShapeEnum.values()[index].type)
+                registerBinding.formHorizontal.text = null
+                registerBinding.formVertical.text = null
                 showPositionDialog()
             }
 
@@ -257,57 +255,57 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                 pipePosition.position = index
                 when (index) {
                     1 -> {
-                        form_horizontal.tag = "좌측"
-                        form_vertical.tag = "전면"
+                        registerBinding.formHorizontal.tag = "좌측"
+                        registerBinding.formVertical.tag = "전면"
                     }
 
                     2 -> {
-                        form_horizontal.tag = ""
-                        form_vertical.tag = "전면"
+                        registerBinding.formHorizontal.tag = ""
+                        registerBinding.formVertical.tag = "전면"
                     }
 
                     3 -> {
-                        form_horizontal.tag = "우측"
-                        form_vertical.tag = "전면"
+                        registerBinding.formHorizontal.tag = "우측"
+                        registerBinding.formVertical.tag = "전면"
                     }
 
                     4 -> {
-                        form_horizontal.tag = "좌측"
-                        form_vertical.tag = ""
+                        registerBinding.formHorizontal.tag = "좌측"
+                        registerBinding.formVertical.tag = ""
                     }
 
                     5 -> {
-                        form_horizontal.tag = "직상"
-                        form_vertical.tag = "직상"
-                        form_horizontal.setText("0.0")
-                        form_vertical.setText("0.0")
+                        registerBinding.formHorizontal.tag = "직상"
+                        registerBinding.formVertical.tag = "직상"
+                        registerBinding.formHorizontal.setText("0.0")
+                        registerBinding.formVertical.setText("0.0")
                         pipePosition.horizontal = 0.0
                         pipePosition.vertical = 0.0
                     }
 
                     6 -> {
-                        form_horizontal.tag = "우측"
-                        form_vertical.tag = ""
+                        registerBinding.formHorizontal.tag = "우측"
+                        registerBinding.formVertical.tag = ""
                     }
 
                     7 -> {
-                        form_horizontal.tag = "좌측"
-                        form_vertical.tag = "후면"
+                        registerBinding.formHorizontal.tag = "좌측"
+                        registerBinding.formVertical.tag = "후면"
                     }
 
                     8 -> {
-                        form_horizontal.tag = ""
-                        form_vertical.tag = "후면"
+                        registerBinding.formHorizontal.tag = ""
+                        registerBinding.formVertical.tag = "후면"
                     }
 
                     9 -> {
-                        form_horizontal.tag = "우측"
-                        form_vertical.tag = "후면"
+                        registerBinding.formHorizontal.tag = "우측"
+                        registerBinding.formVertical.tag = "후면"
                     }
 
                     else -> {
-                        form_horizontal.tag = "수평"
-                        form_vertical.tag = "수직"
+                        registerBinding.formHorizontal.tag = "수평"
+                        registerBinding.formVertical.tag = "수직"
                     }
                 }
             }
@@ -344,9 +342,9 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                     showPositionDialog()
                     return
                 }
-                form_horizontal.setText("${form_horizontal.tag} ${text[0]}")
-                form_vertical.setText("${form_vertical.tag} ${text[1]}")
-                form_depth.requestFocus()
+                registerBinding.formHorizontal.setText("${registerBinding.formHorizontal.tag} ${text[0]}")
+                registerBinding.formVertical.setText("${registerBinding.formVertical.tag} ${text[1]}")
+                registerBinding.formDepth.requestFocus()
                 pipePosition.horizontal = text[0]!!.toDouble()
                 pipePosition.vertical = text[1]!!.toDouble()
                 imm.toggleSoftInput(SHOW_IMPLICIT, HIDE_NOT_ALWAYS)
@@ -401,7 +399,10 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         val bundle = Bundle()
         bundle.putString("typeString", spiType.type)
         bundle.putString("shapeString", pipeShape.shape)
-        PositionDialog().apply { arguments = bundle }.show(supportFragmentManager, TAG_POSITION)
+        PositionDialog().apply {
+            arguments = bundle
+        }
+            .show(supportFragmentManager, TAG_POSITION)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -410,11 +411,21 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             when (requestCode) {
                 REQUEST_CAPTURE_IMAGE -> {
                     val file = File(currentPhotoPath)
-                    val resizeFile = file.resizeImageToRes(this, 1024).preserveExif(file)
-                    Glide.with(this).load(resizeFile).into(imageThumb)
-                    form_photo_name.setText(resizeFile.name)
-                    form_photo_name.setTextColor(resources.getColor(R.color.colorPrimary, null))
-                    fPhoto.setText(getString(R.string.record_photo_ok))
+                    val resizeFile = file
+                        .resizeImageToRes(this, 1024)
+                        .preserveExif(file)
+                    Glide
+                        .with(this)
+                        .load(resizeFile)
+                        .into(registerBinding.formPhotoThumbnail)
+                    registerBinding.formPhotoName.setText(resizeFile.name)
+                    registerBinding.formPhotoName.setTextColor(
+                        resources.getColor(
+                            R.color.colorPrimary,
+                            null,
+                        )
+                    )
+                    registerBinding.formPhoto.setText(getString(R.string.record_photo_ok))
                     Thread {
                         photoObj = SpiPhotoObject()
                         photoObj!!.file = resizeFile
@@ -433,11 +444,20 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         val file = File(uriToFilePath(uri))
                         println("file: ${file.absolutePath}")
                         println("file: ${file.parent}")
-                        val resizeFile = file.resizeImageToRes(this, 1024)
-                        Glide.with(applicationContext).load(resizeFile).into(imageThumb)
-                        form_photo_name.setText(resizeFile.name)
-                        form_photo_name.setTextColor(
-                            ContextCompat.getColor(this@RegisterActivity, R.color.colorPrimary)
+                        val resizeFile = file.resizeImageToRes(
+                            this,
+                            1024,
+                        )
+                        Glide
+                            .with(applicationContext)
+                            .load(resizeFile)
+                            .into(registerBinding.formPhotoThumbnail)
+                        registerBinding.formPhotoName.setText(resizeFile.name)
+                        registerBinding.formPhotoName.setTextColor(
+                            ContextCompat.getColor(
+                                this@RegisterActivity,
+                                R.color.colorPrimary
+                            )
                         )
                         Thread {
                             photoObj = SpiPhotoObject()
@@ -479,8 +499,8 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
                         putExtra("PipeView", "Register")
                         putExtra("RegisterPreview", previewEntries)
                         putExtra("PipeIndex", 0)
-                        putExtra("fHorizontal", form_horizontal.text.toString())
-                        putExtra("fVertical", form_vertical.text.toString())
+                        putExtra("fHorizontal", registerBinding.formHorizontal.text.toString())
+                        putExtra("fVertical", registerBinding.formVertical.text.toString())
                         putExtra("PhotoObj", photoObj)
                     }.also {
                         startActivity(it)
@@ -494,19 +514,21 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         private fun isAllValid(): Boolean {
             var allValid = true
             try {
-                val validateFields = arrayOf<FormEditText>(
-                    form_pipe,
-                    form_shape,
-                    form_horizontal,
-                    form_vertical,
-                    form_depth,
-                    form_spec,
-                    form_material,
-                    form_supervise,
-                    form_supervise_contact
-                )
-                for (field in validateFields) {
-                    allValid = field.testValidity() && allValid
+                registerBinding.apply {
+                    val validateFields = arrayOf<FormEditText>(
+                        formPipe,
+                        formShape,
+                        formHorizontal,
+                        formVertical,
+                        formDepth,
+                        formSpec,
+                        formMaterial,
+                        formSupervise,
+                        formSuperviseContact
+                    )
+                    for (field in validateFields) {
+                        allValid = field.testValidity() && allValid
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -518,9 +540,10 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         private fun isSpecValid(): Boolean {
             var isSpecValid = true
             try {
-                if (form_spec.inputType == TYPE_CLASS_NUMBER) {
-                    isSpecValid = form_spec.text.toString().toDouble() < 9999.9
-                    if (!isSpecValid) form_spec.error = "범위(0.0 - 9999.9)내의 숫자만 입력가능합니다."
+                if (registerBinding.formSpec.inputType == TYPE_CLASS_NUMBER) {
+                    isSpecValid = registerBinding.formSpec.text.toString().toDouble() < 9999.9
+                    if (!isSpecValid) registerBinding.formSpec.error =
+                        "범위(0.0 - 9999.9)내의 숫자만 입력가능합니다."
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -532,19 +555,20 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         private fun setEntry(): Entry {
             val spiId = spi.id
             spiMemo.spi_id = spiId
-            spiMemo.memo = form_memo.text.toString().trim()
+            spiMemo.memo = registerBinding.formMemo.text.toString().trim()
             spiPhoto.spi_id = spiId
             spiLocation.spi_id = spiId
             pipe.spi_id = spiId
             pipe.type_id = pipeType.id
-            pipe.depth = form_depth.text.toString().trim().toDouble()
-            pipe.material = form_material.text.toString().trim().replace(" ", "^")
+            pipe.depth = registerBinding.formDepth.text.toString().trim().toDouble()
+            pipe.material = registerBinding.formMaterial.text.toString().trim().replace(" ", "^")
             pipe.supervise_id = pipeSupervise.id
-            pipe.supervise_contact = form_supervise_contact.text.toString().trim()
-            pipe.construction = form_construction.text.toString().trim()
-            pipe.construction_contact = form_construction_contact.text.toString().trim()
-            pipeShape.shape = form_shape.text.toString().trim()
-            pipeShape.spec = form_spec.text.toString().trim().replace(" ", "^")
+            pipe.supervise_contact = registerBinding.formSuperviseContact.text.toString().trim()
+            pipe.construction = registerBinding.formConstruction.text.toString().trim()
+            pipe.construction_contact =
+                registerBinding.formConstructionContact.text.toString().trim()
+            pipeShape.shape = registerBinding.formShape.text.toString().trim()
+            pipeShape.spec = registerBinding.formSpec.text.toString().trim().replace(" ", "^")
             pipePlan.file_section =
                 if (pipeShape.shape == "제수변")
                     "plan_${parseSpiType(spiType.type)}_${pipePosition.position}_valve.png"
