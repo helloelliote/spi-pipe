@@ -92,7 +92,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
         restoreInstanceState()
 
-        binding.toolbar.title =
+        registerBinding.layAppbar.toolbar.title =
             if (pipeShape.shape == "제수변") "SPI 제수변 ${spiType.type}" else "SPI 지중선로 ${spiType.type}"
 
         setOnClickListeners()

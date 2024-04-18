@@ -4,11 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/lay_appbar"
+        layout="@layout/toolbar" />
+
     <View
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/yellow"
+        android:layout_marginTop="?attr/actionBarSize"
         app:layout_constraintBottom_toTopOf="@id/tabs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

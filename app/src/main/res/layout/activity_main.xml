@@ -7,10 +7,15 @@
     tools:context=".MainActivity"
     tools:ignore="ContentDescription, UseCompoundDrawables">
 
+    <include
+        android:id="@+id/lay_appbar"
+        layout="@layout/toolbar" />
+
     <LinearLayout
         android:id="@+id/lay_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:orientation="vertical">
 
         <LinearLayout

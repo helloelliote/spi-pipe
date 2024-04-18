@@ -81,8 +81,8 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
         locationBinding.recordGps.setOnClickListener(this)
         locationBinding.btnConfirm.setOnClickListener(this)
 
-        binding.toolbar.title = getString(R.string.record_location_title)
-        binding.nmapFind.visibility = View.GONE
+        locationBinding.layAppbar.toolbar.title = getString(R.string.record_location_title)
+        locationBinding.layAppbar.nmapFind.visibility = View.GONE
 
         onSurveyDialog()
     }
@@ -160,7 +160,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
      * @param naverMap API 를 호출하는 인터페이스 역할을 하는 NaverMapActivity 객체
      */
     private fun setMapModeSwitch(naverMap: NaverMap) {
-        val toggleSwitch = binding.nmapMapmodeSwitch
+        val toggleSwitch = locationBinding.layAppbar.nmapMapmodeSwitch
         toggleSwitch.apply {
             visibility = View.VISIBLE
             isSingleSelection = true

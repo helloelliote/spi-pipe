@@ -15,7 +15,6 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
@@ -43,8 +42,6 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         binding = ActivityBaseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val toolbar = binding.toolbar
-        setSupportActionBar(toolbar)
         drawer = binding.drawerLayout
         setNavigationBarDrawer()
 
@@ -55,36 +52,11 @@ open class BaseActivity : AppCompatActivity(), OnNavigationItemSelectedListener 
         }
     }
 
-    override fun setSupportActionBar(toolbar: Toolbar?) {
-        super.setSupportActionBar(toolbar)
-        toolbar?.setTitleTextAppearance(this, R.style.TitleHeader)
-        nmapFind = binding.nmapFind
-        nmapFind.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                when {
-                    currentLocation != null -> {
-                        locationFailureCount = 0
-                        startActivity(
-                            Intent(context, NaverMapActivity::class.java)
-                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        )
-                    }
-
-                    else -> {
-                        runLocationCounter(this@BaseActivity)
-                    }
-                }
-            }
-        }
-    }
-
     private fun setNavigationBarDrawer() {
         Thread {
             ActionBarDrawerToggle(
                 this@BaseActivity,
                 drawer,
-                binding.toolbar,
                 R.string.nav_drawer_open,
                 R.string.nav_drawer_close
             ).apply {

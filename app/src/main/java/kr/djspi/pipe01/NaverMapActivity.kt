@@ -101,7 +101,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
         setNaverMap()
 
-        binding.nmapFind.visibility = View.GONE
+        mapBinding.layAppbar.nmapFind.visibility = View.GONE
     }
 
     private fun setNaverMap() {
@@ -155,7 +155,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
      * Toolbar 에서 지도 모드 전환 스위치 구현
      */
     private fun setMapModeSwitch(naverMap: NaverMap) {
-        binding.nmapMapmodeSwitch.apply {
+        mapBinding.layAppbar.nmapMapmodeSwitch.apply {
             visibility = View.VISIBLE
             isSingleSelection = true
             val green = resources.getColor(R.color.green, null)

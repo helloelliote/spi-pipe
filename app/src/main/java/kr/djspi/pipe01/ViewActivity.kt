@@ -71,8 +71,8 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             setSuperviseInfo()
             setConstructionInfo()
         }
-
-        binding.toolbar.title = if (jsonObj["shape"].asString == "제수변") {
+        setSupportActionBar(pipeViewBinding.layAppbar.toolbar)
+        pipeViewBinding.layAppbar.toolbar.title = if (jsonObj["shape"].asString == "제수변") {
             "SPI ${jsonObj["pipe"].asString} 제수변"
         } else {
             "SPI ${jsonObj["pipe"].asString}"

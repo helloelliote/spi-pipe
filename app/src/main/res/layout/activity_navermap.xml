@@ -8,15 +8,20 @@
     tools:context=".NaverMapActivity"
     tools:ignore="ContentDescription">
 
+    <include
+        android:id="@+id/lay_appbar"
+        layout="@layout/toolbar" />
+
     <FrameLayout
         android:id="@+id/map_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"/>
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/nmap_searchView"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="?attr/actionBarSize"
         android:alpha="0.9"
         android:background="#FFFFFF"
         android:focusable="false"

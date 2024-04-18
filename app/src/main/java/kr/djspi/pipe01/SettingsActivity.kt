@@ -33,9 +33,9 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
 
         supportFragmentManager.beginTransaction().replace(R.id.settings, settingsFragment).commit()
         preferences = AppPreference.defaultPrefs(this)
-        binding.nmapFind.visibility = View.GONE
-        binding.settingConfirm.visibility = View.VISIBLE
-        binding.settingConfirm.setOnClickListener {
+        settingsBinding.layAppbar.nmapFind.visibility = View.GONE
+        settingsBinding.layAppbar.settingConfirm.visibility = View.VISIBLE
+        settingsBinding.layAppbar.settingConfirm.setOnClickListener {
             onBackPressed()
         }
     }

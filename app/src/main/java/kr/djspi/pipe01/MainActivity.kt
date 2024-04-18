@@ -29,6 +29,8 @@ class MainActivity : LocationUpdate(), Serializable {
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
+        setSupportActionBar(mainBinding.layAppbar.toolbar)
+
         Thread {
             checkPowerSaveMode()
             MerlinInstance.initiateNetworkMonitor(this)
