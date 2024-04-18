@@ -6,17 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.google.android.material.button.MaterialButton
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.Const.RESULT_FAIL
 import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.Const.TAG_PREVIEW
 import kr.djspi.pipe01.R
+import kr.djspi.pipe01.databinding.TabPreviewBinding
 
 class PreviewTab : Fragment(), View.OnClickListener {
 
+    private var _binding: TabPreviewBinding? = null
+    private val binding get() = _binding!!
     private lateinit var listener: OnRecordListener
     private lateinit var json: JsonObject
     private var imageFileUri: Uri? = null
@@ -30,38 +31,36 @@ class PreviewTab : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.tab_preview, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = TabPreviewBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        view.findViewById<TextView>(R.id.text_pipe).text = json["pipe"].asString
-        view.findViewById<TextView>(R.id.text_shape).text = json["shape"].asString
-        view.findViewById<TextView>(R.id.text_horizontal).text = json["horizontal_form"].asString
-        view.findViewById<TextView>(R.id.text_vertical).text = json["vertical_form"].asString
-        view.findViewById<TextView>(R.id.text_depth).text = json["depth"].asString
-        view.findViewById<TextView>(R.id.header).text = json["header"].asString
-        view.findViewById<TextView>(R.id.text_spec).text = json["spec"].asString.replace("^", " ")
-        view.findViewById<TextView>(R.id.unit).text = json["unit"].asString
-        view.findViewById<TextView>(R.id.text_material).text = json["material"].asString.replace("^", " ")
-        view.findViewById<TextView>(R.id.text_supervise).text = json["supervise"].asString
-        view.findViewById<TextView>(R.id.text_supervise_contact).text =
-            json["supervise_contact"].asString
-        view.findViewById<TextView>(R.id.text_memo).text = json["spi_memo"].asString
-        view.findViewById<TextView>(R.id.text_construction).text = json["construction"].asString
-        view.findViewById<TextView>(R.id.text_construction_contact).text =
-            json["construction_contact"].asString
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.textPipe.text = json["pipe"].asString
+        binding.textShape.text = json["shape"].asString
+        binding.textHorizontal.text = json["horizontal_form"].asString
+        binding.textVertical.text = json["vertical_form"].asString
+        binding.textDepth.text = json["depth"].asString
+        binding.header.text = json["header"].asString
+        binding.textSpec.text = json["spec"].asString.replace("^", " ")
+        binding.unit.text = json["unit"].asString
+        binding.textMaterial.text = json["material"].asString.replace("^", " ")
+        binding.textSupervise.text = json["supervise"].asString
+        binding.textSuperviseContact.text = json["supervise_contact"].asString
+        binding.textMemo.text = json["spi_memo"].asString
+        binding.textConstruction.text = json["construction"].asString
+        binding.textConstructionContact.text = json["construction_contact"].asString
 
         if (imageFileUri != null) {
-            view.findViewById<TextView>(R.id.text_photo).text = getString(R.string.record_photo_ok)
+            binding.textPhoto.text = getString(R.string.record_photo_ok)
         } else {
-            view.findViewById<TextView>(R.id.text_photo).text = null
+            binding.textPhoto.text = null
         }
 
-        view.findViewById<MaterialButton>(R.id.button_next).setOnClickListener(this)
-        return view
+        binding.buttonNext.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {

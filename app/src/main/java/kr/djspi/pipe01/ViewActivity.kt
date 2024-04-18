@@ -8,9 +8,9 @@ import android.net.Uri.parse
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import androidx.appcompat.widget.Toolbar
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser.parseString
 //import kotlinx.android.synthetic.main.activity_base.*
@@ -21,9 +21,7 @@ import kr.djspi.pipe01.databinding.ActivityPipeViewBinding
 import kr.djspi.pipe01.dto.Entry
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
-import kr.djspi.pipe01.tab.InfoTab
-import kr.djspi.pipe01.tab.OnRecordListener
-import kr.djspi.pipe01.tab.TabAdapter
+import kr.djspi.pipe01.tab.*
 import kr.djspi.pipe01.util.fromHtml
 import kr.djspi.pipe01.util.onNewIntentIgnore
 import kr.djspi.pipe01.util.onPauseNfc
@@ -36,7 +34,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     private var pipeIndex: Int = 0
     private var photoObject: SpiPhotoObject? = null
     private var previewEntries: ArrayList<Entry>? = null
-    private var viewPager: ViewPager? = null
+    private var viewPager: ViewPager2? = null
     private lateinit var jsonObj: JsonObject
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,18 +70,8 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             setConstructionInfo()
         }
         setSupportActionBar(pipeViewBinding.layAppbar.toolbar)
-        pipeViewBinding.layAppbar.toolbar.title = if (jsonObj["shape"].asString == "제수변") {
-            "SPI ${jsonObj["pipe"].asString} 제수변"
-        } else {
-            "SPI ${jsonObj["pipe"].asString}"
-        }
-        setTabLayout()
-    }
-
-    override fun setSupportActionBar(toolbar: Toolbar?) {
-        super.setSupportActionBar(toolbar)
-        super.nmapFind.text = getString(R.string.btn_current_spi)
-        super.nmapFind.apply {
+        pipeViewBinding.layAppbar.nmapFind.text = getString(R.string.btn_current_spi)
+        pipeViewBinding.layAppbar.nmapFind.apply {
             setOnClickListener {
                 startActivity(
                     Intent(context, NaverMapActivity::class.java)
@@ -94,17 +82,37 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
                 )
             }
         }
+        pipeViewBinding.layAppbar.toolbar.title = if (jsonObj["shape"].asString == "제수변") {
+            "SPI ${jsonObj["pipe"].asString} 제수변"
+        } else {
+            "SPI ${jsonObj["pipe"].asString}"
+        }
+        setTabLayout()
     }
 
     private fun setTabLayout() {
-        if (previewEntries == null) {
-            pipeViewBinding.tabs.removeTab(pipeViewBinding.tabs.getTabAt(3)!!)
+        val tabList = mutableListOf(
+            InfoTab(),
+            SectionTab(),
+            PlaneTab(),
+            PreviewTab()
+        ).also {
+            if (previewEntries == null) it.removeLast()
         }
+
         viewPager = pipeViewBinding.container
-        viewPager?.let {
-            it.adapter = TabAdapter(supportFragmentManager, pipeViewBinding.tabs.tabCount)
-            it.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(pipeViewBinding.tabs))
+        viewPager?.let { pager ->
+            pager.adapter = TabAdapter(this, tabList)
+            TabLayoutMediator(pipeViewBinding.tabs, pager) { tab, position ->
+                when (position) {
+                    0 -> tab.text = resources.getString(R.string.pipe_info)
+                    1 -> tab.text = resources.getString(R.string.pipe_section)
+                    2 -> tab.text = resources.getString(R.string.pipe_plane)
+                    3 -> tab.text = resources.getString(R.string.pipe_confirm)
+                }
+            }.attach()
         }
+
         pipeViewBinding.tabs.addOnTabSelectedListener(TabSelected())
         val linearLayout: LinearLayout = pipeViewBinding.tabs.getChildAt(0) as LinearLayout
         linearLayout.apply {

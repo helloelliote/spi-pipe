@@ -1,21 +1,12 @@
 package kr.djspi.pipe01.tab
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class TabAdapter(fragmentManager: FragmentManager, private val numOfTabs: Int) :
-    FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class TabAdapter(activity: AppCompatActivity, private val tabList: List<Fragment>) : FragmentStateAdapter(activity) {
 
-    override fun getItem(position: Int): Fragment {
-        return when (position) {
-            0 -> InfoTab()
-            1 -> SectionTab()
-            2 -> PlaneTab()
-            3 -> PreviewTab()
-            else -> InfoTab()
-        }
-    }
+    override fun getItemCount(): Int = tabList.size
 
-    override fun getCount(): Int = numOfTabs
+    override fun createFragment(position: Int): Fragment = tabList[position]
 }

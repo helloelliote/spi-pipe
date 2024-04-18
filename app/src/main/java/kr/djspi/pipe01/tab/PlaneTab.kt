@@ -7,22 +7,19 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TableLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.BaseActivity
 import kr.djspi.pipe01.BaseActivity.Companion.screenRatio
-import kr.djspi.pipe01.R
+import kr.djspi.pipe01.databinding.TabPlaneBinding
 import kr.djspi.pipe01.geolocation.GeoTrans.CoodinateName.Companion.parseCoordinateName
 
 class PlaneTab : Fragment() {
 
+    private var _binding: TabPlaneBinding? = null
+    private val binding get() = _binding!!
     private lateinit var json: JsonObject
     private lateinit var resId: String
-    private lateinit var horizontal: TextView
-    private lateinit var vertical: TextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -31,15 +28,16 @@ class PlaneTab : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.tab_plane, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = TabPlaneBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         json["file_plane"].asString?.let {
             resId = it.replace(".png", "_distance")
-            val imageView = view.findViewById<ImageView>(R.id.planeImageView)
+            val imageView = binding.planeImageView
             imageView.setImageResource(
                 resources.getIdentifier(
                     resId,
@@ -48,34 +46,26 @@ class PlaneTab : Fragment() {
                 )
             )
         }
-        horizontal = view.findViewById(R.id.text_plane_horizontal)
-        horizontal.text = json["horizontal"].asString
-        vertical = view.findViewById(R.id.text_plane_vertical)
-        vertical.text = json["vertical"].asString
+        binding.textPlaneHorizontal.text = json["horizontal"].asString
+        binding.textPlaneVertical.text = json["vertical"].asString
         setPosition()
         if (json["origin"] != null) {
             if (!json["origin"].isJsonNull) {
-                view.findViewById<TableLayout>(R.id.lay_table_survey_pipe).apply {
+                binding.layTableSurveyPipe.apply {
                     visibility = VISIBLE
-                    findViewById<TextView>(R.id.text_plane_origin).text =
-                        parseCoordinateName(json["origin"].asString)
-                    findViewById<TextView>(R.id.text_plane_x).text =
-                        json["coordinate_x"].asString
-                    findViewById<TextView>(R.id.text_plane_y).text =
-                        json["coordinate_y"].asString
+                    binding.textPlaneOrigin.text = parseCoordinateName(json["origin"].asString)
+                    binding.textPlaneX.text = json["coordinate_x"].asString
+                    binding.textPlaneY.text = json["coordinate_y"].asString
                 }
             }
         }
         if (json["spi_origin"] != null) {
             if (!json["spi_origin"].isJsonNull) {
-                view.findViewById<TableLayout>(R.id.lay_table_survey_spi).apply {
+                binding.layTableSurveySpi.apply {
                     visibility = VISIBLE
-                    findViewById<TextView>(R.id.text_plane_origin_spi).text =
-                        parseCoordinateName(json["spi_origin"].asString)
-                    findViewById<TextView>(R.id.text_plane_x_spi).text =
-                        json["spi_coordinate_x"].asString
-                    findViewById<TextView>(R.id.text_plane_y_spi).text =
-                        json["spi_coordinate_y"].asString
+                    binding.textPlaneOriginSpi.text = parseCoordinateName(json["spi_origin"].asString)
+                    binding.textPlaneXSpi.text = json["spi_coordinate_x"].asString
+                    binding.textPlaneYSpi.text = json["spi_coordinate_y"].asString
                 }
             }
         }
@@ -85,7 +75,6 @@ class PlaneTab : Fragment() {
 //        } else {
 //            textView.visibility = GONE
 //        }
-        return view
     }
 
     private fun setPosition() {
@@ -101,12 +90,14 @@ class PlaneTab : Fragment() {
                             setTranslation(noH = true, vY = -50.0f, hX = 0.0f, hY = 0.0f)
                         }
                     }
+
                     3 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
                     4 -> setTranslation(noV = true, vY = 0.0f, hX = -100.0f, hY = 0.0f)
                     5 -> {
-                        horizontal.visibility = GONE
-                        vertical.visibility = GONE
+                        binding.textPlaneHorizontal.visibility = GONE
+                        binding.textPlaneVertical.visibility = GONE
                     }
+
                     6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
                     7 -> setTranslation(noV = true, vY = 0.0f, hX = -50.0f, hY = 0.0f)
                     8 -> {
@@ -116,9 +107,11 @@ class PlaneTab : Fragment() {
                             setTranslation(noH = true, vY = 50.0f, hX = 0.0f, hY = 0.0f)
                         }
                     }
+
                     9 -> setTranslation(noV = true, vY = 0.0f, hX = 50.0f, hY = 0.0f)
                 }
             }
+
             "십자형" -> {
                 when (positionInt) {
                     1 -> setTranslation(vY = -100.0f, hX = -170.0f, hY = -350.0f)
@@ -126,15 +119,17 @@ class PlaneTab : Fragment() {
                     3 -> setTranslation(vY = -100.0f, hX = 175.0f, hY = -350.0f)
                     4 -> setTranslation(noV = true, vY = 0.0f, hX = -90.0f, hY = 0.0f)
                     5 -> {
-                        horizontal.visibility = GONE
-                        vertical.visibility = GONE
+                        binding.textPlaneHorizontal.visibility = GONE
+                        binding.textPlaneVertical.visibility = GONE
                     }
+
                     6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
                     7 -> setTranslation(vY = 90.0f, hX = -170.0f, hY = 350.0f)
                     8 -> setTranslation(noH = true, vY = 50.0f, hX = 0.0f, hY = 0.0f)
                     9 -> setTranslation(vY = 95.0f, hX = 175.0f, hY = 350.0f)
                 }
             }
+
             else -> {
                 when (positionInt) {
                     1 -> setTranslation(vY = -100.0f, hX = -170.0f, hY = -350.0f)
@@ -142,9 +137,10 @@ class PlaneTab : Fragment() {
                     3 -> setTranslation(vY = -100.0f, hX = 175.0f, hY = -350.0f)
                     4 -> setTranslation(noV = true, vY = 0.0f, hX = -90.0f, hY = 0.0f)
                     5 -> {
-                        horizontal.visibility = GONE
-                        vertical.visibility = GONE
+                        binding.textPlaneHorizontal.visibility = GONE
+                        binding.textPlaneVertical.visibility = GONE
                     }
+
                     6 -> setTranslation(noV = true, vY = 0.0f, hX = 100.0f, hY = 0.0f)
                     7 -> setTranslation(vY = 90.0f, hX = -170.0f, hY = 350.0f)
                     8 -> setTranslation(noH = true, vY = 95.0f, hX = 0.0f, hY = 0.0f)
@@ -162,19 +158,19 @@ class PlaneTab : Fragment() {
         hY: Float
     ) {
         if (noV) {
-            vertical.visibility = GONE
-            horizontal.visibility = VISIBLE
+            binding.textPlaneVertical.visibility = GONE
+            binding.textPlaneHorizontal.visibility = VISIBLE
         }
         if (noH) {
-            horizontal.visibility = GONE
-            vertical.visibility = VISIBLE
+            binding.textPlaneHorizontal.visibility = GONE
+            binding.textPlaneVertical.visibility = VISIBLE
         }
         if (noV && noH) {
-            horizontal.visibility = GONE
-            vertical.visibility = GONE
+            binding.textPlaneHorizontal.visibility = GONE
+            binding.textPlaneVertical.visibility = GONE
         }
-        horizontal.translationX = hX * screenRatio
-        horizontal.translationY = hY * screenRatio
-        vertical.translationY = vY * screenRatio
+        binding.textPlaneHorizontal.translationX = hX * screenRatio
+        binding.textPlaneHorizontal.translationY = hY * screenRatio
+        binding.textPlaneVertical.translationY = vY * screenRatio
     }
 }

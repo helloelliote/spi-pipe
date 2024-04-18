@@ -32,34 +32,9 @@
         app:tabGravity="fill"
         app:tabMaxWidth="0dp"
         app:tabIndicatorGravity="bottom"
-        app:tabMode="fixed">
+        app:tabMode="fixed" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabItem"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/pipe_info" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabItem2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/pipe_section" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabItem3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/pipe_plane" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabItem4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/pipe_confirm" />
-    </com.google.android.material.tabs.TabLayout>
-
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
