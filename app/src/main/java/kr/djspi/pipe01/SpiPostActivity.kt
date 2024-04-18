@@ -55,7 +55,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
         }
 
         postBinding.txtWrite.text = fromHtml(getString(R.string.write_instruction))
-        progressBar = binding.progressbar
+        progressBar = postBinding.progressBar
         progressDrawable = ((progressBar.progressDrawable) as LayerDrawable).getDrawable(1)
         progressDrawable.setTint(YELLOW)
 

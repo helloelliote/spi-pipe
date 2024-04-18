@@ -46,10 +46,10 @@ class MainActivity : LocationUpdate(), Serializable {
         }.start()
 
         mainBinding.layMainMenu1.setOnClickListener {
-            binding.progressbar.visibility = View.VISIBLE
+            mainBinding.progressbar.visibility = View.VISIBLE
             if (!MerlinInstance.isConnected) {
                 messageDialog(8)
-                binding.progressbar.visibility = View.INVISIBLE
+                mainBinding.progressbar.visibility = View.INVISIBLE
             } else if (currentLocation == null) {
 //                startLocationUpdates()
                 runLocationCounter(this@MainActivity)
@@ -92,8 +92,8 @@ class MainActivity : LocationUpdate(), Serializable {
         super.onResume()
         MerlinInstance.registerNetworkCallback()
         startLocationUpdates()
-        if (binding.progressbar.visibility == View.VISIBLE) {
-            binding.progressbar.visibility = View.GONE
+        if (mainBinding.progressbar.visibility == View.VISIBLE) {
+            mainBinding.progressbar.visibility = View.GONE
         }
         if (!nfcUtil.isNfcEnabled()) {
             messageDialog(2, getString(R.string.popup_nfc_on), false)
@@ -119,7 +119,7 @@ class MainActivity : LocationUpdate(), Serializable {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.progressbar.visibility = View.INVISIBLE
+        mainBinding.progressbar.visibility = View.INVISIBLE
     }
 
     private fun checkLocalSuperviseDatabase() {
@@ -131,7 +131,7 @@ class MainActivity : LocationUpdate(), Serializable {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.let {
-            binding.progressbar.visibility = View.VISIBLE
+            mainBinding.progressbar.visibility = View.VISIBLE
             if (MerlinInstance.isConnected) {
                 getOnlineServerData(it)
             } else {
