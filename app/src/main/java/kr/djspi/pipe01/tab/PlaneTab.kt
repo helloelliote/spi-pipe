@@ -77,6 +77,11 @@ class PlaneTab : Fragment() {
 //        }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setPosition() {
         val positionInt = json["position"].asInt
         when (json["shape"].asString) {

@@ -47,6 +47,11 @@ class InfoTab : Fragment() {
         setPhoto()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setInfo() {
         val hDirection: String = getHorizontalDirection(json)
         val vDirection: String = getVerticalDirection(json)

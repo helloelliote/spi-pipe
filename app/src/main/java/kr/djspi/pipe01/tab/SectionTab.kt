@@ -60,6 +60,11 @@ class SectionTab : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setTranslation(noV: Boolean, dX: Float = 0.0f) {
         if (noV) binding.textPlaneVertical.visibility = View.GONE
         binding.textDepth.translationX = dX * screenRatio

@@ -63,6 +63,11 @@ class PreviewTab : Fragment(), View.OnClickListener {
         binding.buttonNext.setOnClickListener(this)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onClick(v: View) {
         when (v.id) {
             R.id.button_next -> listener.onRecord(TAG_PREVIEW, RESULT_PASS)

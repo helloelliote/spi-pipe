@@ -16,7 +16,7 @@ import kr.djspi.pipe01.databinding.FragmentLocationBinding
 class LocationDialog : DialogFragment(), OnClickListener {
 
     private var _binding: FragmentLocationBinding? = null
-    val binding get() = _binding!!
+    private val binding get() = _binding!!
     private var selectIndex = -1
     private var dialogTitle: String? = null
     private lateinit var listener: OnSelectListener
@@ -50,6 +50,11 @@ class LocationDialog : DialogFragment(), OnClickListener {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onClick(v: View) {
         when (v.id) {
             R.id.btn_survey -> {
@@ -57,11 +62,13 @@ class LocationDialog : DialogFragment(), OnClickListener {
                 listener.onSelect(TAG_LOCATION, selectIndex, null)
                 dismissAllowingStateLoss()
             }
+
             R.id.btn_gps -> {
                 selectIndex = 2
                 listener.onSelect(TAG_LOCATION, selectIndex, null)
                 dismissAllowingStateLoss()
             }
+
             R.id.button_dismiss -> {
                 listener.onSelect(TAG_LOCATION, RESULT_FAIL, null)
                 dismissAllowingStateLoss()
