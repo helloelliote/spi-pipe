@@ -1,4 +1,4 @@
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         app:key="category_switch"
@@ -61,4 +61,4 @@
             app:summary="터치하여 업데이트하세요."
             app:title="관리기관 목록 업데이트" />
     </PreferenceCategory>
-</androidx.preference.PreferenceScreen>
+</PreferenceScreen>
