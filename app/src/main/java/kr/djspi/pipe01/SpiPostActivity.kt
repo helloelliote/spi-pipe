@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.databinding.ActivitySpiPostBinding
@@ -28,7 +27,6 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
     private lateinit var postBinding: ActivitySpiPostBinding
     private lateinit var entries: ArrayList<*>
     private lateinit var jsonObject: JsonObject
-    private lateinit var progressBar: ProgressBar
     private lateinit var progressDrawable: Drawable
     private var file: File? = null
     private var uri: String? = null
@@ -76,9 +74,9 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
         postBinding.navView.navClose.setOnClickListener { postBinding.drawerLayout.close() }
 
         postBinding.txtWrite.text = fromHtml(getString(R.string.write_instruction))
-        progressBar = postBinding.progressBar
-        progressDrawable = ((progressBar.progressDrawable) as LayerDrawable).getDrawable(1)
-        progressDrawable.setTint(YELLOW)
+        (postBinding.progressBar.progressDrawable as LayerDrawable)
+            .getDrawable(1)
+            .setTint(YELLOW)
 
         runOnUiThread {
             messageDialog(5, getString(R.string.popup_read_only), false)
@@ -167,12 +165,12 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
     }
 
     override fun onInitiate(percentage: Int) {
-        progressBar.progress = percentage
+        postBinding.progressBar.progress = percentage
         progressDrawable.setTint(YELLOW)
     }
 
     override fun onProgress(percentage: Int) {
-        progressBar.progress = percentage
+        postBinding.progressBar.progress = percentage
     }
 
     override fun onError() {
@@ -180,7 +178,7 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
     }
 
     override fun onFinish(percentage: Int) {
-        progressBar.progress = percentage
+        postBinding.progressBar.progress = percentage
         progressDrawable.setTint(GREEN)
     }
 }
