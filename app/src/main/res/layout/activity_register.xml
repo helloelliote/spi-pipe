@@ -1,407 +1,417 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/lay_appbar"
+            layout="@layout/toolbar" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:scrollbarDefaultDelayBeforeFade="3000"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:ignore="ContentDescription, DuplicateIds">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                tools:ignore="RtlSymmetry">
+
+                <LinearLayout
+                    android:id="@+id/lay_pipe"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_0" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_pipe"
+                        style="@style/FormEditText"
+                        android:focusable="false"
+                        android:hint="@string/record_input_0_hint" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_shape"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_1" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_shape"
+                        style="@style/FormEditText"
+                        android:focusable="false"
+                        android:hint="@string/record_input_1_hint" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_2" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_vertical"
+                        style="@style/FormEditText"
+                        android:layout_weight="1.3"
+                        android:hint="@string/record_input_2_vertical" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.20"
+                        android:gravity="center_vertical|end"
+                        android:text="@string/record_input_unit" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_horizontal"
+                        style="@style/FormEditText"
+                        android:layout_weight="1.3"
+                        android:hint="@string/record_input_2_horizontal" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.20"
+                        android:gravity="center_vertical|end"
+                        android:text="@string/record_input_unit" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_depth"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txt_input_name"
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_3" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_depth"
+                        style="@style/FormEditText"
+                        android:layout_weight="2.5"
+                        android:hint="@string/record_input_3_hint"
+                        android:inputType="numberDecimal"
+                        app:floatmaxNumber="100.0"
+                        app:floatminNumber="0.0"
+                        app:testType="floatNumericRange" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.50"
+                        android:gravity="center_vertical|end"
+                        android:text="@string/record_input_unit" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_spec"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/header"
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_4" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_spec"
+                        style="@style/FormEditText"
+                        android:layout_weight="2.5"
+                        android:hint="@string/record_input_4_hint"
+                        android:inputType="number|textNoSuggestions"
+                        app:maxNumber="9999"
+                        app:minNumber="0"
+                        app:testType="nocheck" />
+
+                    <TextView
+                        android:id="@+id/unit"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.50"
+                        android:gravity="center_vertical|end"
+                        android:maxLines="1" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_material"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_5" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_material"
+                        style="@style/FormEditText"
+                        android:hint="@string/record_input_5_hint"
+                        android:imeOptions="actionNext"
+                        android:inputType="textNoSuggestions"
+                        android:lines="1" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_supervise"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_6" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_supervise"
+                        style="@style/FormEditText"
+                        android:focusable="false"
+                        android:hint="@string/record_input_6_hint" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_supervise_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_7" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_supervise_contact"
+                        style="@style/FormEditText"
+                        android:hint="@string/record_input_7_hint"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone"
+                        app:testErrorString="유효한 전화번호가 아닙니다"
+                        app:testType="phone" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_memo"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_8" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_memo"
+                        style="@style/FormEditText"
+                        android:hint="@string/record_input_8_hint"
+                        android:inputType="textNoSuggestions"
+                        android:maxLength="200"
+                        app:emptyAllowed="true" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_construction"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_9" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_construction"
+                        style="@style/FormEditText"
+                        android:hint="@string/record_input_9_hint"
+                        app:emptyAllowed="true" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_construction_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_10" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_construction_contact"
+                        style="@style/FormEditText"
+                        android:hint="@string/record_input_10_hint"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone"
+                        app:emptyAllowed="true"
+                        app:testErrorString="유효한 전화번호가 아닙니다" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <LinearLayout
+                    android:id="@+id/lay_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/FormEditText.Title"
+                        android:text="@string/record_input_photo" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_photo"
+                        style="@style/FormEditText"
+                        android:focusable="false"
+                        android:hint="@string/record_input_photo_hint" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lay_photo_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/form_photo_thumbnail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.75"
+                        android:adjustViewBounds="true" />
+
+                    <com.andreabaccega.widget.FormEditText
+                        android:id="@+id/form_photo_name"
+                        style="@style/FormEditText"
+                        android:textAlignment="center"
+                        app:testType="nocheck" />
+
+                    <ImageView
+                        android:id="@+id/btn_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.25"
+                        android:adjustViewBounds="true"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="20dp"
+                        android:src="@drawable/ic_edit_2"
+                        android:visibility="gone"
+                        app:tint="@color/colorPrimary" />
+
+                    <ImageView
+                        android:id="@+id/btn_delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.25"
+                        android:adjustViewBounds="true"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="20dp"
+                        android:src="@drawable/ic_delete"
+                        app:tint="@color/colorAccent" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:background="@color/line_d" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_next"
+                    style="@style/Spi.Button"
+                    android:layout_width="200dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:text="@string/record_confirm" />
+            </LinearLayout>
+        </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include
-        android:id="@+id/lay_appbar"
-        layout="@layout/toolbar" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:scrollbarDefaultDelayBeforeFade="3000"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:ignore="ContentDescription, DuplicateIds">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="10dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            tools:ignore="RtlSymmetry">
-
-            <LinearLayout
-                android:id="@+id/lay_pipe"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_0" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_pipe"
-                    style="@style/FormEditText"
-                    android:focusable="false"
-                    android:hint="@string/record_input_0_hint" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_shape"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_1" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_shape"
-                    style="@style/FormEditText"
-                    android:focusable="false"
-                    android:hint="@string/record_input_1_hint" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_distance"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_2" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_vertical"
-                    style="@style/FormEditText"
-                    android:layout_weight="1.3"
-                    android:hint="@string/record_input_2_vertical" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.20"
-                    android:gravity="center_vertical|end"
-                    android:text="@string/record_input_unit" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_horizontal"
-                    style="@style/FormEditText"
-                    android:layout_weight="1.3"
-                    android:hint="@string/record_input_2_horizontal" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.20"
-                    android:gravity="center_vertical|end"
-                    android:text="@string/record_input_unit" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_depth"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txt_input_name"
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_3" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_depth"
-                    style="@style/FormEditText"
-                    android:layout_weight="2.5"
-                    android:hint="@string/record_input_3_hint"
-                    android:inputType="numberDecimal"
-                    app:floatmaxNumber="100.0"
-                    app:floatminNumber="0.0"
-                    app:testType="floatNumericRange" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.50"
-                    android:gravity="center_vertical|end"
-                    android:text="@string/record_input_unit" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_spec"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/header"
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_4" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_spec"
-                    style="@style/FormEditText"
-                    android:layout_weight="2.5"
-                    android:hint="@string/record_input_4_hint"
-                    android:inputType="number|textNoSuggestions"
-                    app:maxNumber="9999"
-                    app:minNumber="0"
-                    app:testType="nocheck" />
-
-                <TextView
-                    android:id="@+id/unit"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.50"
-                    android:gravity="center_vertical|end"
-                    android:maxLines="1" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_material"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_5" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_material"
-                    style="@style/FormEditText"
-                    android:hint="@string/record_input_5_hint"
-                    android:imeOptions="actionNext"
-                    android:inputType="textNoSuggestions"
-                    android:lines="1" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_supervise"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_6" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_supervise"
-                    style="@style/FormEditText"
-                    android:focusable="false"
-                    android:hint="@string/record_input_6_hint" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_supervise_contact"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_7" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_supervise_contact"
-                    style="@style/FormEditText"
-                    android:hint="@string/record_input_7_hint"
-                    android:imeOptions="actionDone"
-                    android:inputType="phone"
-                    app:testErrorString="유효한 전화번호가 아닙니다"
-                    app:testType="phone" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_memo"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_8" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_memo"
-                    style="@style/FormEditText"
-                    android:hint="@string/record_input_8_hint"
-                    android:inputType="textNoSuggestions"
-                    android:maxLength="200"
-                    app:emptyAllowed="true" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_construction"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_9" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_construction"
-                    style="@style/FormEditText"
-                    android:hint="@string/record_input_9_hint"
-                    app:emptyAllowed="true" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_construction_contact"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_10" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_construction_contact"
-                    style="@style/FormEditText"
-                    android:hint="@string/record_input_10_hint"
-                    android:imeOptions="actionDone"
-                    android:inputType="phone"
-                    app:emptyAllowed="true"
-                    app:testErrorString="유효한 전화번호가 아닙니다" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <LinearLayout
-                android:id="@+id/lay_photo"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/FormEditText.Title"
-                    android:text="@string/record_input_photo" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_photo"
-                    style="@style/FormEditText"
-                    android:focusable="false"
-                    android:hint="@string/record_input_photo_hint" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/lay_photo_desc"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/form_photo_thumbnail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.75"
-                    android:adjustViewBounds="true" />
-
-                <com.andreabaccega.widget.FormEditText
-                    android:id="@+id/form_photo_name"
-                    style="@style/FormEditText"
-                    android:textAlignment="center"
-                    app:testType="nocheck" />
-
-                <ImageView
-                    android:id="@+id/btn_edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.25"
-                    android:adjustViewBounds="true"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:src="@drawable/ic_edit_2"
-                    android:visibility="gone"
-                    app:tint="@color/colorPrimary" />
-
-                <ImageView
-                    android:id="@+id/btn_delete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.25"
-                    android:adjustViewBounds="true"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:src="@drawable/ic_delete"
-                    app:tint="@color/colorAccent" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.4dp"
-                android:background="@color/line_d" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_next"
-                style="@style/Spi.Button"
-                android:layout_width="200dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:text="@string/record_confirm" />
-        </LinearLayout>
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:id="@+id/navView"
+        layout="@layout/navigation_view" />
+</androidx.drawerlayout.widget.DrawerLayout>

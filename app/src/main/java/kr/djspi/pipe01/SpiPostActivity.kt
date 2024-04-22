@@ -18,10 +18,7 @@ import kr.djspi.pipe01.network.ProgressBody.UploadCallback
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToStringArray
-import kr.djspi.pipe01.util.RetrofitCallback
-import kr.djspi.pipe01.util.fromHtml
-import kr.djspi.pipe01.util.messageDialog
-import kr.djspi.pipe01.util.onNewIntentIgnore
+import kr.djspi.pipe01.util.*
 import okhttp3.MultipartBody
 import java.io.File
 import java.io.Serializable
@@ -43,6 +40,12 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
         postBinding = ActivitySpiPostBinding.inflate(layoutInflater)
         setContentView(postBinding.root)
 
+        setNavigationDrawer(
+            postBinding.layAppbar.toolbar,
+            postBinding.navView.navView,
+            postBinding.drawerLayout
+        )
+
         isReadyForPost = false
         entries = intent.getSerializableExtra("entry") as ArrayList<*>
         jsonObject = parseEntry(entries, 0, "", "")
@@ -53,6 +56,24 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
                 part = getMultipart(file!!, "image")
             }
         }
+
+        postBinding.layAppbar.nmapFind.setOnClickListener {
+            when {
+                currentLocation != null -> {
+                    locationFailureCount = 0
+                    startActivity(
+                        Intent(this, NaverMapActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    )
+                }
+
+                else -> {
+                    runLocationCounter(this)
+                }
+            }
+        }
+
+        postBinding.navView.navClose.setOnClickListener { postBinding.drawerLayout.close() }
 
         postBinding.txtWrite.text = fromHtml(getString(R.string.write_instruction))
         progressBar = postBinding.progressBar

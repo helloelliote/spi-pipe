@@ -16,6 +16,7 @@ import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.getOnlineServerData
 import kr.djspi.pipe01.util.messageDialog
+import kr.djspi.pipe01.util.setNavigationDrawer
 import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
 import java.io.Serializable
 
@@ -29,7 +30,23 @@ class MainActivity : LocationUpdate(), Serializable {
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
-        setSupportActionBar(mainBinding.layAppbar.toolbar)
+        setNavigationDrawer(mainBinding.layAppbar.toolbar, mainBinding.navView.navView, mainBinding.drawerLayout)
+
+        mainBinding.layAppbar.nmapFind.setOnClickListener {
+            when {
+                currentLocation != null -> {
+                    locationFailureCount = 0
+                    startActivity(
+                        Intent(this, NaverMapActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    )
+                }
+
+                else -> {
+                    runLocationCounter(this)
+                }
+            }
+        }
 
         Thread {
             checkPowerSaveMode()
@@ -67,6 +84,9 @@ class MainActivity : LocationUpdate(), Serializable {
                 setGravity(Gravity.CENTER, 0, 0)
             }.show()
         }
+
+        mainBinding.navView.navClose.setOnClickListener { mainBinding.drawerLayout.close() }
+
         if (BuildConfig.BUILD_TYPE == "debug") {
             arrayOf(
                 mainBinding.layMainDebug1,

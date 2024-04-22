@@ -88,6 +88,8 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         mapBinding = ActivityNavermapBinding.inflate(layoutInflater)
         setContentView(mapBinding.root)
 
+        setNavigationDrawer(mapBinding.layAppbar.toolbar, mapBinding.navView.navView, mapBinding.drawerLayout)
+
         intent?.let {
             if (it.getBooleanExtra("isSpiLocation", false)) {
                 spiLocation = Location("spiLocation").apply {
@@ -102,6 +104,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         setNaverMap()
 
         mapBinding.layAppbar.nmapFind.visibility = View.GONE
+        mapBinding.navView.navClose.setOnClickListener { mapBinding.drawerLayout.close() }
     }
 
     private fun setNaverMap() {

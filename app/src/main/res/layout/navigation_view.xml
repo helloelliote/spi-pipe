@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.navigation.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true"
+    app:headerLayout="@layout/navigation_header"
+    app:itemTextColor="@android:color/black"
+    app:menu="@menu/drawer_main">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/nav_close"
+        style="@style/Spi.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="15dp"
+        android:padding="5dp"
+        android:text="@string/nav_close" />
+</com.google.android.material.navigation.NavigationView>

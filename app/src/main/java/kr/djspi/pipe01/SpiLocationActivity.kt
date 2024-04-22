@@ -71,6 +71,12 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
         locationBinding = ActivitySpiLocationBinding.inflate(layoutInflater)
         setContentView(locationBinding.root)
 
+        setNavigationDrawer(
+            locationBinding.layAppbar.toolbar,
+            locationBinding.navView.navView,
+            locationBinding.drawerLayout
+        )
+
         NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
 
         setNaverMap()
@@ -83,6 +89,8 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
 
         locationBinding.layAppbar.toolbar.title = getString(R.string.record_location_title)
         locationBinding.layAppbar.nmapFind.visibility = View.GONE
+
+        locationBinding.navView.navClose.setOnClickListener { locationBinding.drawerLayout.close() }
 
         onSurveyDialog()
     }

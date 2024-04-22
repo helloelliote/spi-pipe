@@ -74,6 +74,28 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         registerBinding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(registerBinding.root)
 
+        setNavigationDrawer(
+            registerBinding.layAppbar.toolbar,
+            registerBinding.navView.navView,
+            registerBinding.drawerLayout
+        )
+
+        registerBinding.layAppbar.nmapFind.setOnClickListener {
+            when {
+                currentLocation != null -> {
+                    locationFailureCount = 0
+                    startActivity(
+                        Intent(this, NaverMapActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    )
+                }
+
+                else -> {
+                    runLocationCounter(this)
+                }
+            }
+        }
+
         if (intent != null) {
             val extra = intent.getSerializableExtra("RegisterActivity")
             if (extra is HashMap<*, *>) {
@@ -127,24 +149,24 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         // 초기화 항목 지정
         runOnUiThread {
             registerBinding.formPipe.setText(pipeType.pipe)
-            if (pipeShape.shape == PipeShape.PipeShapeEnum.선택형.type) registerBinding.formShape.text =
-                null
+            if (pipeShape.shape == PipeShape.PipeShapeEnum.선택형.type) registerBinding.formShape.text = null
             else registerBinding.formShape.setText(pipeShape.shape)
-            val fSpec = findViewById<FormEditText>(R.id.form_spec)
             when (pipeType.pipe) {
                 "도시가스", "가스관로", "상수관로", "난방관로", "유류관로", "기타관로" -> {
-                    fSpec.inputType = TYPE_CLASS_NUMBER
+                    registerBinding.formSpec.inputType = TYPE_CLASS_NUMBER
                 }
 
                 else -> {
-                    fSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
-                    fSpec.error = null
+                    registerBinding.formSpec.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                    registerBinding.formSpec.error = null
                 }
             }
             registerBinding.header.text = pipeType.header
             registerBinding.unit.text = pipeType.unit
             registerBinding.formSupervise.setText(pipeSupervise.supervise)
         }
+
+        registerBinding.navView.navClose.setOnClickListener { registerBinding.drawerLayout.close() }
     }
 
     private fun setOnClickListeners() {

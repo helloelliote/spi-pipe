@@ -22,10 +22,7 @@ import kr.djspi.pipe01.dto.Entry
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.tab.*
-import kr.djspi.pipe01.util.fromHtml
-import kr.djspi.pipe01.util.onNewIntentIgnore
-import kr.djspi.pipe01.util.onPauseNfc
-import kr.djspi.pipe01.util.onResumeNfc
+import kr.djspi.pipe01.util.*
 import java.io.Serializable
 
 class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
@@ -43,12 +40,19 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         pipeViewBinding = ActivityPipeViewBinding.inflate(layoutInflater)
         setContentView(pipeViewBinding.root)
 
+        setNavigationDrawer(
+            pipeViewBinding.layAppbar.toolbar,
+            pipeViewBinding.navView.navView,
+            pipeViewBinding.drawerLayout
+        )
+
         intent?.let {
             val jsonString = intent.getStringExtra("PipeView")
             if (jsonString != "Register") {
                 jsonObj = parseString(jsonString).asJsonObject
+            } else {
+                pipeViewBinding.layAppbar.nmapFind.visibility = View.INVISIBLE
             }
-
             val preview = it.getSerializableExtra("RegisterPreview")
             val fHorizontal = it.getStringExtra("fHorizontal")
             val fVertical = it.getStringExtra("fVertical")
@@ -69,17 +73,18 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             setSuperviseInfo()
             setConstructionInfo()
         }
-        setSupportActionBar(pipeViewBinding.layAppbar.toolbar)
-        pipeViewBinding.layAppbar.nmapFind.text = getString(R.string.btn_current_spi)
         pipeViewBinding.layAppbar.nmapFind.apply {
-            setOnClickListener {
-                startActivity(
-                    Intent(context, NaverMapActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                        .putExtra("isSpiLocation", true)
-                        .putExtra("spi_latitude", jsonObj["spi_latitude"].asDouble)
-                        .putExtra("spi_longitude", jsonObj["spi_longitude"].asDouble)
-                )
+            if (visibility == View.VISIBLE) {
+                text = getString(R.string.btn_current_spi)
+                setOnClickListener {
+                    startActivity(
+                        Intent(context, NaverMapActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                            .putExtra("isSpiLocation", true)
+                            .putExtra("spi_latitude", jsonObj["spi_latitude"].asDouble)
+                            .putExtra("spi_longitude", jsonObj["spi_longitude"].asDouble)
+                    )
+                }
             }
         }
         pipeViewBinding.layAppbar.toolbar.title = if (jsonObj["shape"].asString == "제수변") {
@@ -88,6 +93,8 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             "SPI ${jsonObj["pipe"].asString}"
         }
         setTabLayout()
+
+        pipeViewBinding.navView.navClose.setOnClickListener { pipeViewBinding.drawerLayout.close() }
     }
 
     private fun setTabLayout() {
