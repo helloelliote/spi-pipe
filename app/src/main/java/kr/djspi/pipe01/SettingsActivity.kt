@@ -54,6 +54,11 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
         onPauseNfc()
     }
 
+    override fun onBackPressed() {
+        if (settingsBinding.drawerLayout.isOpen) settingsBinding.drawerLayout.close()
+        else super.onBackPressed()
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         onNewIntentIgnore()

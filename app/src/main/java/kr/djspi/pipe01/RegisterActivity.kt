@@ -504,6 +504,11 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         onPauseNfc()
     }
 
+    override fun onBackPressed() {
+        if (registerBinding.drawerLayout.isOpen) registerBinding.drawerLayout.close()
+        else super.onBackPressed()
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         onNewIntentIgnore()

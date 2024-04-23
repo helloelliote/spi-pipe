@@ -507,7 +507,9 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
 
     override fun onBackPressed() {
         if (surveyDialog.isAdded || surveyDialog2.isAdded || surveyDialog3.isAdded) return
-        super.onBackPressed()
+
+        if (locationBinding.drawerLayout.isOpen) locationBinding.drawerLayout.close()
+        else super.onBackPressed()
     }
 
     override fun onNewIntent(intent: Intent?) {

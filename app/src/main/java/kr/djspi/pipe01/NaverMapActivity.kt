@@ -276,6 +276,8 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 return
             }
 
+            mapBinding.drawerLayout.isOpen -> mapBinding.drawerLayout.close()
+
             else -> {
 
                 super.onBackPressed()

@@ -142,6 +142,11 @@ class MainActivity : LocationUpdate(), Serializable {
         mainBinding.progressbar.visibility = View.INVISIBLE
     }
 
+    override fun onBackPressed() {
+        if (mainBinding.drawerLayout.isOpen) mainBinding.drawerLayout.close()
+        else super.onBackPressed()
+    }
+
     private fun checkLocalSuperviseDatabase() {
         if (!AppPreference.defaultPrefs(this)["isSuperviseDbValid", false]!!) {
             updateLocalSuperviseDatabase(this)

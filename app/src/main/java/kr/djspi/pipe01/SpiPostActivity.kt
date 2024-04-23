@@ -164,6 +164,11 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
         onInitiate(0)
     }
 
+    override fun onBackPressed() {
+        if (postBinding.drawerLayout.isOpen) postBinding.drawerLayout.close()
+        else super.onBackPressed()
+    }
+
     override fun onInitiate(percentage: Int) {
         postBinding.progressBar.progress = percentage
         progressDrawable.setTint(YELLOW)

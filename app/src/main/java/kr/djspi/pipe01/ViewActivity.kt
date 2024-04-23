@@ -267,6 +267,11 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
         viewPager = null
     }
 
+    override fun onBackPressed() {
+        if (pipeViewBinding.drawerLayout.isOpen) pipeViewBinding.drawerLayout.close()
+        else super.onBackPressed()
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         onNewIntentIgnore()
