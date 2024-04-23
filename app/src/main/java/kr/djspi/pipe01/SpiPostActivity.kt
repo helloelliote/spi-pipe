@@ -74,9 +74,8 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
         postBinding.navView.navClose.setOnClickListener { postBinding.drawerLayout.close() }
 
         postBinding.txtWrite.text = fromHtml(getString(R.string.write_instruction))
-        (postBinding.progressBar.progressDrawable as LayerDrawable)
-            .getDrawable(1)
-            .setTint(YELLOW)
+        progressDrawable = ((postBinding.progressBar.progressDrawable) as LayerDrawable).getDrawable(1)
+        progressDrawable.setTint(YELLOW)
 
         runOnUiThread {
             messageDialog(5, getString(R.string.popup_read_only), false)
