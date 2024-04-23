@@ -2,6 +2,7 @@ package kr.djspi.pipe01
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PointF
@@ -310,7 +311,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         private val searchView: SearchView
 
         init {
-            placesListAdapter = ListViewAdapter(placesArrayList)
+            placesListAdapter = ListViewAdapter(this@NaverMapActivity, placesArrayList)
             searchView = mapBinding.nmapSearchView
             setContentView()
         }
@@ -369,6 +370,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         }
 
         inner class ListViewAdapter(
+            val context: Context,
             placesArrayList: ArrayList<HashMap<String, String>>
         ) : BaseAdapter() {
 
@@ -379,8 +381,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                 var view: View? = convertView
                 val holder: ItemHolder
                 if (view == null) {
-                    view = LayoutInflater.from(applicationContext)
-                        .inflate(R.layout.list_searchplaces, null)
+                    view = LayoutInflater.from(context).inflate(R.layout.list_searchplaces, null)
                     holder = ItemHolder()
                     holder.name = view.findViewById(R.id.name)
                     view.tag = holder
