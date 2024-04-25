@@ -3,6 +3,9 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="kr.djspi.pipe01">
 
+    <!--android:required="true"(default): 지정된 기능이 기기에 없으면 앱이 작동할 수 없음
+        android:required="false": 지정된 기능이 기기에 있는 경우 기능을 사용, 지정된 기능 없이도 앱은 작동
+        (ref: https://developer.android.com/guide/topics/manifest/uses-feature-element?hl=ko#market-feature-filtering)-->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false"/>
@@ -13,23 +16,26 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.NFC"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!--정확한 위치 권한 부여-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--대략적인 위치 권한 부여-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!--TargetSdk28(P) 이하-->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28"/>
+    <!--TargetSdk32(S_V2) 이하-->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"/>
-    <uses-permission
-        android:name="android.permission.ACCESS_MEDIA_LOCATION"
-        android:minSdkVersion="29"/>
+    <!--TargetSdk33(TIRAMISU) 이상-->
+    <!--READ_EXTERNAL_STORAGE 권한 세분화
+        (ref: https://developer.android.com/about/versions/13/behavior-changes-13?hl=ko#granular-media-permissions)-->
     <uses-permission
         android:name="android.permission.READ_MEDIA_IMAGES"
         android:minSdkVersion="33"/>
-    <uses-permission
-        android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
-        android:minSdkVersion="34"/>
+    <!--알림 런타임 권한
+        (ref: https://developer.android.com/about/versions/13/changes/notification-permission?hl=ko)-->
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"
         android:minSdkVersion="33"/>
