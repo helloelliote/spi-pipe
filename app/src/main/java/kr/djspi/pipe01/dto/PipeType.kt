@@ -31,7 +31,7 @@ data class PipeType(var id: Int = -1) : DataItem, Serializable {
         가로등("가로등", R.drawable.cir_09_map, R.drawable.cir_09_map_valve, "코어수", "코어"),
         CCTV("CCTV", R.drawable.cir_10_map, R.drawable.cir_10_map_valve, "코어수", "코어"),
         광케이블("광케이블", R.drawable.cir_11_map, R.drawable.cir_11_map_valve, "관로수", ""),
-        기타관로("기타관로", R.drawable.cir_12_map, R.drawable.cir_12_map_valve, "관경", "mm"),
+        기타관로("기타관로", R.drawable.cir_13_map, R.drawable.cir_12_map_valve, "관경", "mm"),
         우수관로("우수관로", R.drawable.cir_12_map, R.drawable.cir_12_map_valve, "관경", "mm");
 
         companion object {
