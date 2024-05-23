@@ -39,6 +39,12 @@
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"
         android:minSdkVersion="33"/>
+    <!--TargetSdk34(UPSIDE_DOWN_CAKE) 이상-->
+    <!--사진 및 동영상 액세스 권한 업데이트
+        (ref: https://developer.android.com/about/versions/14/changes/partial-photo-video-access?hl=ko)-->
+    <!--<uses-permission
+        android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
+        android:minSdkVersion="34"/>-->
 
     <application
         android:allowBackup="true"
