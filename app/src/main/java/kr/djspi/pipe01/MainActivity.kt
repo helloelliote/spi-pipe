@@ -8,8 +8,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.room.Room
-//import kotlinx.android.synthetic.main.activity_base.*
-//import kotlinx.android.synthetic.main.activity_main.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.databinding.ActivityMainBinding
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject

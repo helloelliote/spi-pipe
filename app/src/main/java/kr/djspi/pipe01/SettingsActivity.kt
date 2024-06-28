@@ -7,7 +7,6 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-//import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.databinding.ActivitySettingsBinding
 import kr.djspi.pipe01.fragment.OnSelectListener
 import kr.djspi.pipe01.util.onNewIntentIgnore

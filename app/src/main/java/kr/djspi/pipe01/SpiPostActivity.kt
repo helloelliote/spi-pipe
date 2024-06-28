@@ -9,7 +9,6 @@ import android.view.View
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kr.djspi.pipe01.databinding.ActivitySpiPostBinding
-//import kotlinx.android.synthetic.main.activity_spi_post.*
 import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.network.ProgressBody

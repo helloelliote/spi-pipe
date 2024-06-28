@@ -13,8 +13,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser.parseString
-//import kotlinx.android.synthetic.main.activity_base.*
-//import kotlinx.android.synthetic.main.activity_pipe_view.*
 import kr.djspi.pipe01.Const.REQUEST_MAP
 import kr.djspi.pipe01.Const.RESULT_PASS
 import kr.djspi.pipe01.databinding.ActivityPipeViewBinding

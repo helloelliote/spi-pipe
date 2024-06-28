@@ -21,8 +21,6 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MapConstants
 import com.naver.maps.map.util.MarkerIcons
-//import kotlinx.android.synthetic.main.activity_base.*
-//import kotlinx.android.synthetic.main.activity_spi_location.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.AppPreference.set
 import kr.djspi.pipe01.BuildConfig.CLIENT_ID

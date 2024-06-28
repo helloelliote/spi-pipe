@@ -8,7 +8,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.naver.maps.map.NaverMapSdk
 import kr.djspi.pipe01.databinding.ActivityBaseBinding
-//import kotlinx.android.synthetic.main.activity_base.*
 import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.sql.SuperviseDatabase
 import kr.djspi.pipe01.util.messageDialog

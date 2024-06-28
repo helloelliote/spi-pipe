@@ -22,8 +22,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.andreabaccega.widget.FormEditText
 import com.bumptech.glide.Glide
-//import kotlinx.android.synthetic.main.activity_base.*
-//import kotlinx.android.synthetic.main.activity_register.*
 import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS
 import kr.djspi.pipe01.Const.PIPE_DIRECTIONS_ELB135
