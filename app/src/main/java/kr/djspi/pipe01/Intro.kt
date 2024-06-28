@@ -47,7 +47,7 @@ class Intro : AppCompatActivity() {
                 packageManager.getInstallerPackageName(packageName)
             }
             Log.d("SPI", "IntroActivity\nPackageName: $installer")
-            if (!installer!!.startsWith("com.android.vending")) {
+            if (installer == "com.android.vending") {
                 finishAffinity()
                 System.runFinalization()
                 exitProcess(0)
