@@ -1,17 +1,19 @@
 package kr.djspi.pipe01
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -20,6 +22,7 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import kotlin.math.ceil
 import kotlin.math.roundToLong
 import kotlin.system.exitProcess
 
@@ -34,7 +37,7 @@ class Intro : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("SPI", "IntroActivity\nonCreate() start")
+        Log.d("SPI", "IntroActivity\nonCreate()")
 
         setContentView(R.layout.activity_intro)
 
@@ -45,20 +48,25 @@ class Intro : AppCompatActivity() {
                 packageManager.getInstallerPackageName(packageName)
             }
             Log.d("SPI", "IntroActivity\nPackageName: $installer")
-            if (installer == "com.android.vending") {
+            if (installer != "com.android.vending") {
                 finishAffinity()
                 System.runFinalization()
                 exitProcess(0)
             }
-            // ref: 인앱 업데이트 지원 (https://developer.android.com/guide/playcore/in-app-updates/kotlin-java?hl=ko)
-            appUpdateManager = AppUpdateManagerFactory.create(this)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("SPI", "IntroActivity\nonResume()")
+        // ref: 인앱 업데이트 지원 (https://developer.android.com/guide/playcore/in-app-updates/kotlin-java?hl=ko)
+        appUpdateManager = AppUpdateManagerFactory.create(this)
         checkUpdate()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("SPI", "IntroActivity\nonDestroy() start")
+        Log.d("SPI", "IntroActivity\nonDestroy()")
         // When status updates are no longer needed, unregister the listener.
         if (listener != null) {
             Log.d("SPI", "IntroActivity\nonDestroy(): listener unregister")
@@ -67,7 +75,7 @@ class Intro : AppCompatActivity() {
     }
 
     private fun runMainActivity() {
-        Log.d("SPI", "IntroActivity\nrunMainActivity() start")
+        Log.d("SPI", "IntroActivity\nrunMainActivity()")
         Handler(
             Looper.getMainLooper()
         ).postDelayed({
@@ -77,7 +85,7 @@ class Intro : AppCompatActivity() {
     }
 
     private fun checkUpdate() {
-        Log.d("SPI", "IntroActivity\ncheckUpdate() start")
+        Log.d("SPI", "IntroActivity\ncheckUpdate()")
         // Checks that the platform will allow the specified type of update.
         try {
             appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
@@ -131,6 +139,30 @@ class Intro : AppCompatActivity() {
 
     private fun AppUpdateInfo.flexibleUpdate() {
         Log.d("SPI", "IntroActivity\ncheckUpdate: Flexible update")
+        // Create a listener to track request state updates.
+        listener = InstallStateUpdatedListener { state ->
+            // (Optional) Provide a download progress bar.
+            when (state.installStatus()) {
+                InstallStatus.DOWNLOADING -> {
+                    val bytes = state.bytesDownloaded()
+                    val totalBytes = state.totalBytesToDownload()
+                    val bytesToMegaBytes = ceil((bytes / 1e6) * 10.0).toLong() / 10.0
+                    val totalBytesToMegabytes = ceil((totalBytes / 1e6) * 10.0).toLong() / 10.0
+                    // Show update progress bar.
+                    val percentage = bytes * 100 / totalBytes
+                    val progress = "다운로드 중... $percentage% (${bytesToMegaBytes}MB / ${totalBytesToMegabytes}MB)"
+                    findViewById<TextView>(R.id.update_text).text = progress
+                    findViewById<LinearLayout>(R.id.lay_update).visibility = View.VISIBLE
+                }
+
+                InstallStatus.DOWNLOADED -> {
+                    popupSnackbarForCompleteUpdate()
+                }
+
+                else -> {}
+            }
+
+        }
         appUpdateManager.registerListener(listener!!)
         appUpdateManager.startUpdateFlowForResult(
             this,
@@ -140,7 +172,6 @@ class Intro : AppCompatActivity() {
         )
     }
 
-    @SuppressLint("SwitchIntDef")
     private fun AppUpdateInfo.immediateUpdate() {
         Log.d("SPI", "IntroActivity\ncheckUpdate: Immediate update")
 
@@ -167,6 +198,8 @@ class Intro : AppCompatActivity() {
                 InstallStatus.DOWNLOADED -> {
                     popupToastForCompleteUpdate()
                 }
+
+                else -> {}
             }
             // Log state or install the update.
         }
@@ -181,6 +214,17 @@ class Intro : AppCompatActivity() {
             // immediate update
             AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build()
         )
+    }
+
+    private fun popupSnackbarForCompleteUpdate() {
+        Log.d("SPI", "IntroActivity\nCompleteUpdate: 업데이트 설치")
+        Snackbar.make(
+            findViewById(R.id.update_text), "An update has just been downloaded.", Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction("재실행") { appUpdateManager.completeUpdate() }
+            setActionTextColor(resources.getColor(R.color.material_dynamic_primary70))
+            show()
+        }
     }
 
     private fun popupToastForCompleteUpdate() {
