@@ -52,6 +52,7 @@
 
     <application
         android:allowBackup="true"
+        android:exported="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -59,7 +60,6 @@
         android:supportsRtl="true"
         android:theme="@style/Spi.Theme"
         android:usesCleartextTraffic="true"
-        android:exported="false"
         tools:ignore="AllowBackup,UnusedAttribute,LockedOrientationActivity"
         tools:replace="android:allowBackup">
 

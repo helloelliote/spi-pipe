@@ -62,15 +62,33 @@ abstract class LocationUpdate : BaseActivity() {
     @SuppressLint("MissingPermission")
     private fun requestAllPermissions(context: Context) {
         val permissions =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                arrayOf(ACCESS_FINE_LOCATION, READ_MEDIA_IMAGES, CAMERA)
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, READ_MEDIA_IMAGES, CAMERA)
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                arrayOf(ACCESS_FINE_LOCATION, READ_EXTERNAL_STORAGE, CAMERA)
-            } else {
-                arrayOf(ACCESS_FINE_LOCATION, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, CAMERA)
-            }
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+              arrayOf(
+                  ACCESS_FINE_LOCATION,
+                  CAMERA,
+                  READ_MEDIA_IMAGES,
+              )
+          } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+              arrayOf(
+                  ACCESS_COARSE_LOCATION,
+                  ACCESS_FINE_LOCATION,
+                  CAMERA,
+                  READ_MEDIA_IMAGES,
+              )
+          } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+              arrayOf(
+                  ACCESS_FINE_LOCATION,
+                  CAMERA,
+                  READ_EXTERNAL_STORAGE,
+              )
+          } else {
+              arrayOf(
+                  ACCESS_FINE_LOCATION,
+                  CAMERA,
+                  READ_EXTERNAL_STORAGE,
+                  WRITE_EXTERNAL_STORAGE,
+              )
+          }
 
         Permissions.check(
             context/*context*/,
