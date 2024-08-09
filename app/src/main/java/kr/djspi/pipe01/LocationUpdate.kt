@@ -67,6 +67,7 @@ abstract class LocationUpdate : BaseActivity() {
                   ACCESS_FINE_LOCATION,
                   CAMERA,
                   READ_MEDIA_IMAGES,
+                  // READ_MEDIA_VISUAL_USER_SELECTED,
               )
           } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
               arrayOf(
