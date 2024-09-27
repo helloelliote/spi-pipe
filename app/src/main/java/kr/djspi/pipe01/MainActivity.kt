@@ -21,6 +21,8 @@ import java.io.Serializable
 class MainActivity : LocationUpdate(), Serializable {
 
     private lateinit var mainBinding: ActivityMainBinding
+    private lateinit var networkManager: NetworkConnectionLiveData
+    private var isConnected: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +48,14 @@ class MainActivity : LocationUpdate(), Serializable {
             }
         }
 
+        networkManager = NetworkConnectionLiveData(this)
+        if (!networkManager.isAvailable()) {
+            messageDialog(8)
+        }
+        isConnected = networkManager.isAvailable()
+
         Thread {
             checkPowerSaveMode()
-            MerlinInstance.initiateNetworkMonitor(this)
         }.start()
 
         Thread {
@@ -62,7 +69,7 @@ class MainActivity : LocationUpdate(), Serializable {
 
         mainBinding.layMainMenu1.setOnClickListener {
             mainBinding.progressbar.visibility = View.VISIBLE
-            if (!MerlinInstance.isConnected) {
+            if (!isConnected) {
                 messageDialog(8)
                 mainBinding.progressbar.visibility = View.INVISIBLE
             } else if (currentLocation == null) {
@@ -108,7 +115,6 @@ class MainActivity : LocationUpdate(), Serializable {
 
     override fun onResume() {
         super.onResume()
-        MerlinInstance.registerNetworkCallback()
         startLocationUpdates()
         if (mainBinding.progressbar.visibility == View.VISIBLE) {
             mainBinding.progressbar.visibility = View.GONE
@@ -127,12 +133,17 @@ class MainActivity : LocationUpdate(), Serializable {
 
     override fun onStart() {
         super.onStart()
-        MerlinInstance.bind()
+        networkManager.observe(this@MainActivity) { connectState ->
+            if (!connectState) {
+                messageDialog(8)
+            }
+            isConnected = connectState
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        MerlinInstance.unbind()
+        networkManager.removeObservers(this@MainActivity)
     }
 
     override fun onDestroy() {
@@ -155,7 +166,7 @@ class MainActivity : LocationUpdate(), Serializable {
         super.onNewIntent(intent)
         intent?.let {
             mainBinding.progressbar.visibility = View.VISIBLE
-            if (MerlinInstance.isConnected) {
+            if (isConnected) {
                 getOnlineServerData(it)
             } else {
                 getOfflineTagData(it, 0, true)
