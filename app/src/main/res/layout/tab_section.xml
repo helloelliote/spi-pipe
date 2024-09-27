@@ -27,6 +27,21 @@
                 android:adjustViewBounds="true" />
 
             <TextView
+                android:id="@+id/text_plane_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext_border"
+                android:gravity="center"
+                android:minEms="4"
+                android:padding="3dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+            <TextView
                 android:id="@+id/text_plane_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

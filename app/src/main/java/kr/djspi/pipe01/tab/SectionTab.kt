@@ -50,10 +50,28 @@ class SectionTab : Fragment() {
         binding.textMaterial.text = json["material"].asString.replace("^", " ")
         when (json["position"].asInt) {
             1, 2, 3 -> setTranslation(false, -355.0f)
-            4, 5, 6 -> {
+            4 -> {
+                binding.textPlaneHorizontal.apply {
+                    text = json["horizontal"].asString
+                    translationY = -475.0f * screenRatio
+                    visibility = View.VISIBLE
+                }
+                setTranslation(true, -355.0f)
+            }
+
+            5 -> {
                 binding.textSpec.translationX = 175.0f
                 binding.textMaterial.translationX = 175.0f
                 setTranslation(true)
+            }
+
+            6 -> {
+                binding.textPlaneHorizontal.apply {
+                    text = json["horizontal"].asString
+                    translationY = -475.0f * screenRatio
+                    visibility = View.VISIBLE
+                }
+                setTranslation(true, 355.0f)
             }
 
             7, 8, 9 -> setTranslation(false, 355.0f)
