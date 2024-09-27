@@ -32,18 +32,11 @@
             android:src="@drawable/btn_close_black" />
     </LinearLayout>
 
-    <com.sylversky.indexablelistview.widget.IndexableListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_common"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:choiceMode="singleChoice"
-        android:divider="@color/line_a"
-        android:dividerHeight="0.35dp"
-        android:fastScrollAlwaysVisible="false"
-        android:fastScrollEnabled="true"
-        android:listSelector="#ffccbc"
-        android:scrollbarStyle="insideOverlay" />
+        android:layout_weight="1" />
 
     <View
         android:layout_width="match_parent"

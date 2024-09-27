@@ -1,22 +1,20 @@
 package kr.djspi.pipe01.fragment
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.View.TEXT_ALIGNMENT_CENTER
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import com.sylversky.indexablelistview.scroller.Indexer
-import com.sylversky.indexablelistview.widget.IndexableListView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kr.djspi.pipe01.Const.TAG_SHAPE
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.dto.PipeShape
@@ -27,8 +25,8 @@ class ListDialog : DialogFragment(), OnClickListener {
     private var dialogTitle: String? = null
     private var componentName: String? = null
     private var selectIndex: Int = -1
-    private var state: Parcelable? = null
-    private lateinit var listView: IndexableListView
+    private lateinit var listView: RecyclerView
+    private lateinit var adapter: MyAdapter
     private lateinit var listItem: ArrayList<String>
     private lateinit var listener: OnSelectListener
 
@@ -75,15 +73,11 @@ class ListDialog : DialogFragment(), OnClickListener {
         val titleView = view.findViewById<TextView>(R.id.popup_list_title)
         titleView.text = dialogTitle
         listView = view.findViewById(R.id.list_common)
-        listView.adapter = ListAdapter(context, listItem, false)
-        listView.isFastScrollEnabled = false
-        listView.setOnItemClickListener { _, _, position, _ ->
-            componentName = listItem[position]
-            selectIndex = position
-        }
-        state?.let {
-            listView.requestFocus()
-            listView.onRestoreInstanceState(it)
+        listView.layoutManager = LinearLayoutManager(view.context)
+        adapter = MyAdapter(listItem)
+        { selectedItem ->
+            this.componentName = selectedItem
+            this.selectIndex = listItem.indexOf(componentName)
         }
         view.findViewById<TextView>(R.id.btn_ok).setOnClickListener(this)
         view.findViewById<TextView>(R.id.btn_cancel).setOnClickListener(this)
@@ -107,59 +101,60 @@ class ListDialog : DialogFragment(), OnClickListener {
     }
 
     override fun onPause() {
-        state = listView.onSaveInstanceState()
         super.onPause()
+        listView.adapter = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        listView.adapter = adapter
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         selectIndex = -1
         super.onDismiss(dialog)
     }
+}
 
-    inner class ListAdapter(
-        val context: Context?,
-        private val listItem: ArrayList<String>,
-        private val isListSupervise: Boolean
-    ) : BaseAdapter(), Indexer {
+class MyAdapter(
+    private val dataSet: ArrayList<String>,
+    private val onItemSelected: (String) -> Unit,
+): RecyclerView.Adapter<MyAdapter.ViewHolder>() {
 
-        private val customSection: CustomSection? =
-            if (isListSupervise) CustomSection(this) else null
+    private var selectedItemPosition = -1
+    private var selectedLayout: LinearLayout? = null
 
-        @SuppressLint("InflateParams")
-        override fun getView(position: Int, convertView: View?, container: ViewGroup): View {
-            var view = convertView
-            if (view == null) {
-                view = LayoutInflater.from(context).inflate(R.layout.fragment_list_item, null)
-            }
-            val textView = view!!.findViewById<TextView>(R.id.txt_name)
-            textView.apply {
-                text = listItem[position]
-                textAlignment =
-                    if (isListSupervise) View.TEXT_ALIGNMENT_TEXT_START else TEXT_ALIGNMENT_CENTER
-                setOnFocusChangeListener { _, _ -> }
-            }
-            return view
-        }
+    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        val itemLayout: LinearLayout = view.findViewById(R.id.item_root)
+        val itemText: TextView = view.findViewById(R.id.item_text)
 
-        override fun getItem(position: Int): Any = listItem[position]
-
-        override fun getItemId(position: Int): Long = position.toLong()
-
-        override fun getCount(): Int = listItem.size
-
-        override fun getComponentName(position: Int): String = listItem[position]
-
-        override fun getSectionForPosition(position: Int): Int = 0
-
-        override fun getSections(): Array<String?>? {
-            return if (isListSupervise) customSection?.arraySections else null
-        }
-
-        override fun getPositionForSection(sectionIndex: Int): Int {
-            return if (isListSupervise) customSection?.getPositionForSection(
-                sectionIndex,
-                count
-            )!! else 0
+        fun bind(item: String) {
+            itemText.text = item
         }
     }
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.fragment_list_item, viewGroup, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val item = dataSet[position]
+        val layout = viewHolder.itemLayout
+        viewHolder.bind(item)
+
+        layout.setOnClickListener {
+            val currentPosition = viewHolder.adapterPosition
+            if (selectedItemPosition >= 0 || selectedLayout != null) {
+                selectedLayout?.setBackgroundColor(Color.TRANSPARENT)
+            }
+
+            selectedItemPosition = currentPosition
+            selectedLayout = layout
+            selectedLayout?.setBackgroundColor(Color.parseColor("#ffccbc"))
+            onItemSelected(item)
+        }
+    }
+
+    override fun getItemCount(): Int = dataSet.size
 }
