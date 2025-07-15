@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.Editable
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
@@ -132,8 +131,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
         registerBinding.formHorizontal.isFocusable = false
         registerBinding.formVertical.isFocusable = false
         registerBinding.formDepth.filters = arrayOf(DecimalFilter(4, 2))
-        registerBinding.formSuperviseContact.addTextChangedListener(
-            object : PhoneNumberFormattingTextWatcher() {})
+        registerBinding.formSuperviseContact.addTextChangedListener(PhoneHyphenTextWatcher())
         registerBinding.formMaterial.setOnEditorActionListener { v, actionId, _ ->
             var isHandled = false
             if (actionId == IME_ACTION_NEXT && registerBinding.formSuperviseContact.text.toString() == "") {
@@ -143,8 +141,7 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
             }
             return@setOnEditorActionListener isHandled
         }
-        registerBinding.formConstructionContact.addTextChangedListener(
-            object : PhoneNumberFormattingTextWatcher() {})
+        registerBinding.formConstructionContact.addTextChangedListener(PhoneHyphenTextWatcher())
         // 초기화 항목 지정
         runOnUiThread {
             registerBinding.formPipe.setText(pipeType.pipe)
