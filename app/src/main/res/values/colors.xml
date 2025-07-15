@@ -21,4 +21,6 @@
     <!--SpiLocationActivity-->
     <color name="yellow">#ffed66</color>
 
+    <color name="material_dynamic_primary70">#4F56C3</color>
+
 </resources>

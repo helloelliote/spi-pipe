@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -222,7 +223,7 @@ class Intro : AppCompatActivity() {
             findViewById(R.id.update_text), "An update has just been downloaded.", Snackbar.LENGTH_INDEFINITE
         ).apply {
             setAction("재실행") { appUpdateManager.completeUpdate() }
-            setActionTextColor(resources.getColor(R.color.material_dynamic_primary70))
+            setActionTextColor(ContextCompat.getColor(this@Intro, R.color.material_dynamic_primary70))
             show()
         }
     }

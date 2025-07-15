@@ -3,12 +3,16 @@ package kr.djspi.pipe01
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import kr.djspi.pipe01.databinding.ActivitySettingsBinding
 import kr.djspi.pipe01.fragment.OnSelectListener
+import kr.djspi.pipe01.util.PhoneHyphenTextWatcher
+import kr.djspi.pipe01.util.applySystemBarInsets
 import kr.djspi.pipe01.util.onNewIntentIgnore
 import kr.djspi.pipe01.util.onPauseNfc
 import kr.djspi.pipe01.util.onResumeNfc
@@ -45,6 +49,12 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
 
     override fun onResume() {
         super.onResume()
+
+        settingsBinding.drawerLayout.applySystemBarInsets(
+            settingsBinding.navView.navView.getHeaderView(0),
+            settingsBinding.layAppbar.root
+        )
+
         onResumeNfc()
     }
 
@@ -89,6 +99,18 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
                     }
                     return@setOnPreferenceClickListener false
                 }
+            }
+
+            val superviseContactPref = findPreference<EditTextPreference>("supervise_contact")
+            superviseContactPref?.setOnBindEditTextListener { editText ->
+                editText.inputType = InputType.TYPE_CLASS_PHONE
+                editText.addTextChangedListener(PhoneHyphenTextWatcher())
+            }
+
+            val constructionContactPref = findPreference<EditTextPreference>("construction_contact")
+            constructionContactPref?.setOnBindEditTextListener { editText ->
+                editText.inputType = InputType.TYPE_CLASS_PHONE
+                editText.addTextChangedListener(PhoneHyphenTextWatcher())
             }
         }
     }

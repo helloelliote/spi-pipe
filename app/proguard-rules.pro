@@ -96,3 +96,6 @@
 -keepclassmembers class kr.djspi.pipe01.sql.** {
   !transient <fields>;
 }
+# Please add these rules to your existing keep rules in order to suppress warnings.
+# This is generated automatically by the Android Gradle plugin.
+-dontwarn com.google.protobuf.java_com_google_android_gmscore_sdk_target_granule__proguard_group_gtm_N1281923064GeneratedExtensionRegistryLite$Loader

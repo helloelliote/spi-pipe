@@ -17,6 +17,7 @@ import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.nfc.NfcUtil
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToStringArray
 import kr.djspi.pipe01.util.*
+import kr.djspi.pipe01.util.applySystemBarInsets
 import okhttp3.MultipartBody
 import java.io.File
 import java.io.Serializable
@@ -154,6 +155,12 @@ class SpiPostActivity : BaseActivity(), UploadCallback, Serializable {
 
     override fun onResume() {
         super.onResume()
+
+        postBinding.drawerLayout.applySystemBarInsets(
+            postBinding.navView.navView.getHeaderView(0),
+            postBinding.layAppbar.root
+        )
+
         nfcUtil.onResume()
     }
 

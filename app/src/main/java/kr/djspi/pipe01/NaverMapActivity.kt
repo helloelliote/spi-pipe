@@ -42,6 +42,7 @@ import kr.djspi.pipe01.databinding.ActivityNavermapBinding
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum.Companion.parsePipeType
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
+import kr.djspi.pipe01.util.applySystemBarInsets
 import java.io.Serializable
 import java.util.Locale
 import java.util.concurrent.Executors
@@ -54,6 +55,8 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
     private var placesArrayList = ArrayList<HashMap<String, String>>(5)
     private var naverMap: NaverMap? = null
     private var mapFragment: MapFragment? = null
+    private var collapsedHeight = 0
+    private var searchViewHeight = 0
     private val overlayOnclickListener = Overlay.OnClickListener {
         when (it) {
             is Marker -> {
@@ -100,7 +103,11 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
         // https://console.ncloud.com/mc/solution/naverService/application 에서 클라이언트 ID 발급
         NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(CLIENT_ID)
 
-        setNaverMap()
+        mapBinding.nmapBottomSheetText.post {
+            searchViewHeight = mapBinding.nmapSearchView.height
+            collapsedHeight = mapBinding.nmapBottomSheetText.height
+            setNaverMap()
+        }
 
         mapBinding.layAppbar.nmapFind.visibility = View.GONE
         mapBinding.navView.navClose.setOnClickListener { mapBinding.drawerLayout.close() }
@@ -111,7 +118,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
             ?: MapFragment.newInstance(
                 NaverMapOptions()
                     .locale(Locale.KOREA)
-                    .contentPadding(0, 45, 0, 45)
+                    .contentPadding(0, searchViewHeight, 0, collapsedHeight)
                     .camera(
                         CameraPosition(
                             LatLng(if (spiLocation === null) currentLocation!! else spiLocation!!),
@@ -285,6 +292,12 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
     override fun onResume() {
         super.onResume()
+
+        mapBinding.drawerLayout.applySystemBarInsets(
+            mapBinding.navView.navView.getHeaderView(0),
+            mapBinding.layAppbar.root
+        )
+
         onResumeNfc()
     }
 
@@ -466,13 +479,13 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
                     when (newState) {
                         STATE_EXPANDED -> {
                             mapBinding.nmapBottomSheetText.text = textExpanded
-                            naverMap?.setContentPadding(0, 45, 0, bottomSheetHeight)
+                            naverMap?.setContentPadding(0, searchViewHeight, 0, bottomSheetHeight)
                             onRequestPipe()
                         }
 
                         STATE_COLLAPSED -> {
                             mapBinding.nmapBottomSheetText.text = textCollapsed
-                            naverMap?.setContentPadding(0, 45, 0, 45)
+                            naverMap?.setContentPadding(0, searchViewHeight, 0, collapsedHeight)
                             clearMarker()
                         }
 

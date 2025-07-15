@@ -12,6 +12,7 @@ import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.databinding.ActivityMainBinding
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.sql.SuperviseDatabase
+import kr.djspi.pipe01.util.applySystemBarInsets
 import kr.djspi.pipe01.util.getOnlineServerData
 import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.setNavigationDrawer
@@ -119,6 +120,12 @@ class MainActivity : LocationUpdate(), Serializable {
         if (mainBinding.progressbar.visibility == View.VISIBLE) {
             mainBinding.progressbar.visibility = View.GONE
         }
+
+        mainBinding.drawerLayout.applySystemBarInsets(
+            mainBinding.navView.navView.getHeaderView(0),
+            mainBinding.layAppbar.root
+        )
+
         if (!nfcUtil.isNfcEnabled()) {
             messageDialog(2, getString(R.string.popup_nfc_on), false)
             return
