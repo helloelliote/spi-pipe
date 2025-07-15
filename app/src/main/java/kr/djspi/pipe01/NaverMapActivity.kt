@@ -42,6 +42,7 @@ import kr.djspi.pipe01.databinding.ActivityNavermapBinding
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum.Companion.parsePipeType
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
+import kr.djspi.pipe01.util.applySystemBarInsets
 import java.io.Serializable
 import java.util.Locale
 import java.util.concurrent.Executors
@@ -285,6 +286,12 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
     override fun onResume() {
         super.onResume()
+
+        mapBinding.drawerLayout.applySystemBarInsets(
+            mapBinding.navView.navView.getHeaderView(0),
+            mapBinding.layAppbar.root
+        )
+
         onResumeNfc()
     }
 

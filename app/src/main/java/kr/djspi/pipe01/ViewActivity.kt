@@ -21,6 +21,7 @@ import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.tab.*
 import kr.djspi.pipe01.util.*
+import kr.djspi.pipe01.util.applySystemBarInsets
 import java.io.Serializable
 
 class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
@@ -252,6 +253,12 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
 
     override fun onResume() {
         super.onResume()
+
+        pipeViewBinding.drawerLayout.applySystemBarInsets(
+            pipeViewBinding.navView.navView.getHeaderView(0),
+            pipeViewBinding.layAppbar.root
+        )
+
         onResumeNfc()
     }
 

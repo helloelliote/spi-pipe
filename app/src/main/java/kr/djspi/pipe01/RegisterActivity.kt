@@ -39,6 +39,7 @@ import kr.djspi.pipe01.dto.*
 import kr.djspi.pipe01.dto.SpiType.SpiTypeEnum.Companion.parseSpiType
 import kr.djspi.pipe01.fragment.*
 import kr.djspi.pipe01.util.*
+import kr.djspi.pipe01.util.applySystemBarInsets
 import kr.djspi.pipe01.util.ImageUtil.preserveExif
 import kr.djspi.pipe01.util.ImageUtil.resizeImageToRes
 import kr.djspi.pipe01.util.ImageUtil.saveImageToGallery
@@ -494,6 +495,12 @@ class RegisterActivity : BaseActivity(), OnSelectListener, View.OnClickListener,
 
     override fun onResume() {
         super.onResume()
+
+        registerBinding.drawerLayout.applySystemBarInsets(
+            registerBinding.navView.navView.getHeaderView(0),
+            registerBinding.layAppbar.root
+        )
+
         onResumeNfc()
     }
 

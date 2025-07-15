@@ -9,6 +9,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import kr.djspi.pipe01.databinding.ActivitySettingsBinding
 import kr.djspi.pipe01.fragment.OnSelectListener
+import kr.djspi.pipe01.util.applySystemBarInsets
 import kr.djspi.pipe01.util.onNewIntentIgnore
 import kr.djspi.pipe01.util.onPauseNfc
 import kr.djspi.pipe01.util.onResumeNfc
@@ -45,6 +46,12 @@ class SettingsActivity : BaseActivity(), OnSelectListener {
 
     override fun onResume() {
         super.onResume()
+
+        settingsBinding.drawerLayout.applySystemBarInsets(
+            settingsBinding.navView.navView.getHeaderView(0),
+            settingsBinding.layAppbar.root
+        )
+
         onResumeNfc()
     }
 

@@ -40,6 +40,7 @@ import kr.djspi.pipe01.geolocation.GeoTrans
 import kr.djspi.pipe01.geolocation.GeoTrans.convert
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
+import kr.djspi.pipe01.util.applySystemBarInsets
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -495,6 +496,12 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
 
     override fun onResume() {
         super.onResume()
+
+        locationBinding.drawerLayout.applySystemBarInsets(
+            locationBinding.navView.navView.getHeaderView(0),
+            locationBinding.layAppbar.root
+        )
+
         onResumeNfc()
     }
 
