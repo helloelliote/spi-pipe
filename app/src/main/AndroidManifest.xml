@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="kr.djspi.pipe01">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!--android:required="true"(default): 지정된 기능이 기기에 없으면 앱이 작동할 수 없음
         android:required="false": 지정된 기능이 기기에 있는 경우 기능을 사용, 지정된 기능 없이도 앱은 작동
