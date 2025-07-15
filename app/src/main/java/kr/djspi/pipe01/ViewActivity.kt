@@ -103,7 +103,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
             PlaneTab(),
             PreviewTab()
         ).also {
-            if (previewEntries == null) it.removeLast()
+            if (previewEntries == null) it.removeAt(it.lastIndex)
         }
 
         viewPager = pipeViewBinding.container
