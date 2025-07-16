@@ -101,11 +101,21 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
         mapFragment =
             supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
                 ?: MapFragment.newInstance(
-                    NaverMapOptions().locale(Locale.KOREA)
-                        .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
-                        .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING).minZoom(ZOOM_MIN)
+                    NaverMapOptions()
+                        .locale(Locale.KOREA)
+                        .camera(
+                            CameraPosition(
+                                LatLng(currentLocation!!),
+                                ZOOM_DEFAULT,
+                                0.0,
+                                0.0
+                            )
+                        )
+                        .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING)
+                        .minZoom(ZOOM_MIN)
                         .maxZoom(ZOOM_MAX)
-                        .extent(MapConstants.EXTENT_KOREA).compassEnabled(true)
+                        .extent(MapConstants.EXTENT_KOREA)
+                        .compassEnabled(true)
                         .locationButtonEnabled(true)
                         .zoomGesturesEnabled(true)
                 ).also {

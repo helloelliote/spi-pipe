@@ -27,7 +27,8 @@ class ZoomableImageView : AppCompatImageView {
     init {
         isClickable = true
         scaleType = ScaleType.MATRIX
-        imageMatrix = matrix/*setOnTouchListener { _, event ->
+        imageMatrix = matrix
+        /*setOnTouchListener { _, event ->
             when (event.action and MotionEvent.ACTION_MASK) {
                 MotionEvent.ACTION_DOWN -> {
                     last.set(event.x, event.y)
