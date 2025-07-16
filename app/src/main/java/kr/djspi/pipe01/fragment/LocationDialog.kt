@@ -12,6 +12,7 @@ import kr.djspi.pipe01.Const.TAG_LOCATION
 import kr.djspi.pipe01.R
 import kr.djspi.pipe01.databinding.FragmentLocationBinding
 
+// not used
 class LocationDialog : DialogFragment(), OnClickListener {
 
     private var _binding: FragmentLocationBinding? = null
