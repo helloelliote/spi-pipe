@@ -10,7 +10,7 @@ fun parseServerData(data: JsonObject, serial: String): HashMap<String, DataItem>
     currentSerial = serial
     val pipeType = PipeType(-1)
     val pipeShape = PipeShape()
-    val pipeSupervise= PipeSupervise(-1)
+    val pipeSupervise = PipeSupervise(-1)
     try {
         // PipeType.class DTO
         val pipeTypeId = data["pipe_type_id"].asInt

@@ -18,7 +18,7 @@ import kr.djspi.pipe01.databinding.NavigationHeaderBinding
 fun Activity.setNavigationDrawer(
     toolbar: androidx.appcompat.widget.Toolbar,
     navigationView: NavigationView,
-    drawerLayout: DrawerLayout
+    drawerLayout: DrawerLayout,
 ) {
     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     setNavHeader(navigationView)

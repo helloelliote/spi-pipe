@@ -7,8 +7,8 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         style="@style/Spi.Toolbar"
-        app:title="@string/app_title"
-        app:navigationIcon="@drawable/ic_drawer">
+        app:navigationIcon="@drawable/ic_drawer"
+        app:title="@string/app_title">
 
         <TextView
             android:id="@+id/setting_confirm"
@@ -44,26 +44,26 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="5dp"
-            app:singleSelection="true"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:singleSelection="true">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_basic"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:padding="0dp"
-                app:backgroundTint="@color/green"
+                android:text="@string/map_mode_basic"
                 android:textColor="@android:color/black"
-                android:text="@string/map_mode_basic" />
+                app:backgroundTint="@color/green" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_hybrid"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:padding="0dp"
-                app:backgroundTint="@android:color/white"
+                android:text="@string/map_mode_hybrid"
                 android:textColor="@android:color/black"
-                android:text="@string/map_mode_hybrid" />
+                app:backgroundTint="@android:color/white" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
     </androidx.appcompat.widget.Toolbar>
 </com.google.android.material.appbar.AppBarLayout>

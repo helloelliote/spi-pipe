@@ -21,7 +21,6 @@ import kr.djspi.pipe01.dto.Entry.Companion.parseEntry
 import kr.djspi.pipe01.dto.SpiPhotoObject
 import kr.djspi.pipe01.tab.*
 import kr.djspi.pipe01.util.*
-import kr.djspi.pipe01.util.applySystemBarInsets
 import java.io.Serializable
 
 class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
@@ -234,7 +233,6 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     override val uri: Uri?
         get() = if (photoObject == null) null else photoObject!!.getUri()
 
-
     override fun onRecord(tag: String, result: Int) {
         when (result) {
             RESULT_PASS -> {
@@ -283,6 +281,7 @@ class ViewActivity : BaseActivity(), Serializable, OnRecordListener {
     }
 
     private inner class TabSelected : TabLayout.OnTabSelectedListener {
+
         override fun onTabSelected(tab: TabLayout.Tab) {
             viewPager?.currentItem = tab.position
             if (tab.position == 3) pipeViewBinding.layBottom.visibility = View.GONE

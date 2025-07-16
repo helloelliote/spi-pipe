@@ -12,11 +12,7 @@ import kr.djspi.pipe01.AppPreference.get
 import kr.djspi.pipe01.databinding.ActivityMainBinding
 import kr.djspi.pipe01.nfc.StringParser.Companion.parseToJsonObject
 import kr.djspi.pipe01.sql.SuperviseDatabase
-import kr.djspi.pipe01.util.applySystemBarInsets
-import kr.djspi.pipe01.util.getOnlineServerData
-import kr.djspi.pipe01.util.messageDialog
-import kr.djspi.pipe01.util.setNavigationDrawer
-import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
+import kr.djspi.pipe01.util.*
 import java.io.Serializable
 
 class MainActivity : LocationUpdate(), Serializable {

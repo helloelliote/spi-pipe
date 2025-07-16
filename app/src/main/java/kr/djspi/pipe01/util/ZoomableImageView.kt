@@ -14,6 +14,7 @@ import kotlin.math.sqrt
 
 @SuppressLint("ClickableViewAccessibility")
 class ZoomableImageView : AppCompatImageView {
+
     private val matrix = Matrix()
     private val last = PointF()
     private val start = PointF()

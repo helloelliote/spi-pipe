@@ -98,6 +98,7 @@ class ListDialog : DialogFragment(), OnClickListener {
                 listener.onSelect(listTag, selectIndex, componentName)
                 dismissAllowingStateLoss()
             }
+
             R.id.btn_cancel, R.id.button_close -> dismissAllowingStateLoss()
         }
     }

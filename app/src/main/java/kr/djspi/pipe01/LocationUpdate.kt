@@ -15,7 +15,6 @@ import com.naver.maps.map.util.FusedLocationSource
 import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.toast
 
-
 abstract class LocationUpdate : BaseActivity() {
 
     /**

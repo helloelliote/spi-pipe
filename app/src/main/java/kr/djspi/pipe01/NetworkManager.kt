@@ -12,7 +12,7 @@ class NetworkConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    private val networkCallback = object: ConnectivityManager.NetworkCallback() {
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             Log.d("Network", "onAvailable")
             postValue(true)

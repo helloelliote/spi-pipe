@@ -3,7 +3,7 @@ package kr.djspi.pipe01.util
 import android.text.Editable
 import android.text.TextWatcher
 
-class PhoneHyphenTextWatcher: TextWatcher {
+class PhoneHyphenTextWatcher : TextWatcher {
 
     private var isFormatting = false
     private var previousText = ""
