@@ -52,7 +52,8 @@
                 app:layout_anchor="@id/nmap_searchView"
                 app:layout_anchorGravity="bottom"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/nmap_searchView" />
+                app:layout_constraintTop_toBottomOf="@id/nmap_searchView"
+                tools:listitem="@layout/list_searchplaces" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
