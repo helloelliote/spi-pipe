@@ -3,6 +3,7 @@ package kr.djspi.pipe01
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum
 
 object Const {
+
 //    const val TAG_PIPE = "pipe"
     const val TAG_SHAPE = "shape"
 //    const val TAG_SUPERVISE = "supervise"

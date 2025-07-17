@@ -15,7 +15,6 @@ import com.naver.maps.map.util.FusedLocationSource
 import kr.djspi.pipe01.util.messageDialog
 import kr.djspi.pipe01.util.toast
 
-
 abstract class LocationUpdate : BaseActivity() {
 
     /**
@@ -91,12 +90,7 @@ abstract class LocationUpdate : BaseActivity() {
               )
           }
 
-        Permissions.check(
-            context/*context*/,
-            permissions,
-            null,
-            null,
-            object : PermissionHandler() {
+        Permissions.check(context, permissions, null, null, object : PermissionHandler() {
                 override fun onGranted() {
                     requestingLocationUpdates = true
                     println("Granted: ${permissions.toList().joinToString(",")}")
@@ -106,7 +100,7 @@ abstract class LocationUpdate : BaseActivity() {
                     requestingLocationUpdates = false
                     toast("위치 정보를 사용할 수 없습니다")
                 }
-            })/*rationale*//*options*/
+            })
     }
 
     override fun onRequestPermissionsResult(

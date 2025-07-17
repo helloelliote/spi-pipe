@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -17,9 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kr.djspi.pipe01.Const.TAG_SHAPE
 import kr.djspi.pipe01.R
+import kr.djspi.pipe01.databinding.FragmentListBinding
 import kr.djspi.pipe01.dto.PipeShape
 
 class ListDialog : DialogFragment(), OnClickListener {
+
+    private var _binding: FragmentListBinding? = null
+    private val binding get() = _binding!!
 
     private var listTag: String? = null
     private var dialogTitle: String? = null
@@ -64,26 +67,25 @@ class ListDialog : DialogFragment(), OnClickListener {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_list, container, false)
-        val titleView = view.findViewById<TextView>(R.id.popup_list_title)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val titleView = binding.popupListTitle
         titleView.text = dialogTitle
-        listView = view.findViewById(R.id.list_common)
-        listView.layoutManager = LinearLayoutManager(view.context)
-        adapter = MyAdapter(listItem)
-        { selectedItem ->
+        listView = binding.listCommon
+        listView.layoutManager = LinearLayoutManager(context)
+        adapter = MyAdapter(listItem) { selectedItem ->
             this.componentName = selectedItem
             this.selectIndex = listItem.indexOf(componentName)
         }
-        view.findViewById<TextView>(R.id.btn_ok).setOnClickListener(this)
-        view.findViewById<TextView>(R.id.btn_cancel).setOnClickListener(this)
-        view.findViewById<ImageView>(R.id.button_close).setOnClickListener(this)
-
-        return view
+        binding.btnOk.setOnClickListener(this)
+        binding.btnCancel.setOnClickListener(this)
+        binding.buttonClose.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -96,6 +98,7 @@ class ListDialog : DialogFragment(), OnClickListener {
                 listener.onSelect(listTag, selectIndex, componentName)
                 dismissAllowingStateLoss()
             }
+
             R.id.btn_cancel, R.id.button_close -> dismissAllowingStateLoss()
         }
     }

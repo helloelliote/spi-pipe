@@ -40,9 +40,8 @@ import kr.djspi.pipe01.geolocation.GeoTrans
 import kr.djspi.pipe01.geolocation.GeoTrans.convert
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
-import kr.djspi.pipe01.util.applySystemBarInsets
 import java.io.Serializable
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -102,11 +101,21 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
         mapFragment =
             supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
                 ?: MapFragment.newInstance(
-                    NaverMapOptions().locale(Locale.KOREA)
-                        .camera(CameraPosition(LatLng(currentLocation!!), ZOOM_DEFAULT, 0.0, 0.0))
-                        .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING).minZoom(ZOOM_MIN)
+                    NaverMapOptions()
+                        .locale(Locale.KOREA)
+                        .camera(
+                            CameraPosition(
+                                LatLng(currentLocation!!),
+                                ZOOM_DEFAULT,
+                                0.0,
+                                0.0
+                            )
+                        )
+                        .enabledLayerGroups(NaverMap.LAYER_GROUP_BUILDING)
+                        .minZoom(ZOOM_MIN)
                         .maxZoom(ZOOM_MAX)
-                        .extent(MapConstants.EXTENT_KOREA).compassEnabled(true)
+                        .extent(MapConstants.EXTENT_KOREA)
+                        .compassEnabled(true)
                         .locationButtonEnabled(true)
                         .zoomGesturesEnabled(true)
                 ).also {
@@ -523,6 +532,7 @@ class SpiLocationActivity : LocationUpdate(), OnMapReadyCallback, OnClickListene
     }
 
     companion object {
+
         private const val ZOOM_DEFAULT = 18.0 // 기본 줌레벨
         private const val ZOOM_MIN = 6.0 // 최소 줌레벨
         private const val ZOOM_GET = 12.0

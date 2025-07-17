@@ -11,12 +11,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import kr.djspi.pipe01.databinding.ActivitySettingsBinding
 import kr.djspi.pipe01.fragment.OnSelectListener
-import kr.djspi.pipe01.util.PhoneHyphenTextWatcher
-import kr.djspi.pipe01.util.applySystemBarInsets
-import kr.djspi.pipe01.util.onNewIntentIgnore
-import kr.djspi.pipe01.util.onPauseNfc
-import kr.djspi.pipe01.util.onResumeNfc
-import kr.djspi.pipe01.util.updateLocalSuperviseDatabase
+import kr.djspi.pipe01.util.*
 
 class SettingsActivity : BaseActivity(), OnSelectListener {
 

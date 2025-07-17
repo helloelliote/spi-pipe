@@ -1,7 +1,6 @@
 package kr.djspi.pipe01
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -42,7 +41,6 @@ import kr.djspi.pipe01.databinding.ActivityNavermapBinding
 import kr.djspi.pipe01.dto.PipeType.PipeTypeEnum.Companion.parsePipeType
 import kr.djspi.pipe01.network.Retrofit2x
 import kr.djspi.pipe01.util.*
-import kr.djspi.pipe01.util.applySystemBarInsets
 import java.io.Serializable
 import java.util.Locale
 import java.util.concurrent.Executors
@@ -331,7 +329,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
         private fun setContentView() {
             mapBinding.nmapListView.adapter = placesListAdapter
-            setDefaultKeyMode(Activity.DEFAULT_KEYS_SEARCH_GLOBAL)
+            setDefaultKeyMode(DEFAULT_KEYS_SEARCH_GLOBAL)
             searchView.apply {
                 isSubmitButtonEnabled = true
                 setOnQueryTextListener(object : OnQueryTextListener {
@@ -384,7 +382,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
 
         inner class ListViewAdapter(
             val context: Context,
-            placesArrayList: ArrayList<HashMap<String, String>>
+            placesArrayList: ArrayList<HashMap<String, String>>,
         ) : BaseAdapter() {
 
             private var placesList: ArrayList<HashMap<String, String>> = placesArrayList
@@ -431,6 +429,7 @@ class NaverMapActivity : LocationUpdate(), OnMapReadyCallback, Serializable {
             private fun HashMap<*, *>.getFor(key: String): String? = this[key] as String?
 
             private inner class ItemHolder {
+
                 lateinit var name: TextView
             }
         }

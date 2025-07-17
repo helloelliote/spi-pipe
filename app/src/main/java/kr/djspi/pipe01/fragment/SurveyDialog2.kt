@@ -21,6 +21,7 @@ import kr.djspi.pipe01.SpiLocationActivity.Companion.originPoint
 import kr.djspi.pipe01.geolocation.GeoTrans.Coordinate.*
 import kr.djspi.pipe01.util.DecimalFilter
 
+// not used
 class SurveyDialog2 : DialogFragment(), View.OnClickListener {
 
     private var dialogTitle: String? = null

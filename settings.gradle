@@ -1,2 +1,10 @@
+pluginManagement {
+    repositories {
+        google()
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
 include ':nxpnfcandroidlib-1.7'
 include ':app'
