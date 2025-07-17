@@ -43,7 +43,7 @@ class Intro : AppCompatActivity() {
 
         setContentView(R.layout.activity_intro)
 
-        if (BuildConfig.BUILD_TYPE == "release") {
+        if (!BuildConfig.DEBUG) {
             val installer = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 packageManager.getInstallSourceInfo(packageName).installingPackageName
             } else {
