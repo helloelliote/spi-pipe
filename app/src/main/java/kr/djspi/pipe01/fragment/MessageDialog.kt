@@ -150,6 +150,16 @@ class MessageDialog : DialogFragment(), OnClickListener {
                 title.text = "주의"
                 contents.text = fromHtml(getString(R.string.nfc_info_read_contents_distance, tag!!))
             }
+            14 -> { // (Intro.kt) Google Play Store 가 아닌 다른 경로로 설치된 앱 실행 거부
+                setVisibilityToGone()
+                title.text = "오류"
+                buttonOk.text = "앱 종료"
+                buttonOk.setOnClickListener {
+                    dismiss()
+                    activity?.finishAffinity()
+                    exitProcess(0)
+                }
+            }
         }
     }
 

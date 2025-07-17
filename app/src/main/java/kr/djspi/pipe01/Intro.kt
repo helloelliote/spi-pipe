@@ -23,14 +23,15 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import kr.djspi.pipe01.util.messageDialog
 import kotlin.math.ceil
 import kotlin.math.roundToLong
-import kotlin.system.exitProcess
 
 class Intro : AppCompatActivity() {
 
     private lateinit var appUpdateManager: AppUpdateManager
     private var listener: InstallStateUpdatedListener? = null
+    private var isBlockedByDialog = false
 
     /**
      * (isDelayed) 지정 시간 후 전환되는 스플래시 화면
@@ -49,10 +50,12 @@ class Intro : AppCompatActivity() {
                 packageManager.getInstallerPackageName(packageName)
             }
             Log.d("SPI", "IntroActivity\nPackageName: $installer")
+
             if (installer != "com.android.vending") {
-                finishAffinity()
-                System.runFinalization()
-                exitProcess(0)
+                // Google Play Store 에서 앱 다운로드하도록 유도
+                isBlockedByDialog = true
+                messageDialog(14, getString(R.string.popup_error_unknown_path_installed), false)
+                return
             }
         }
     }
@@ -60,6 +63,12 @@ class Intro : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.d("SPI", "IntroActivity\nonResume()")
+
+        if (isBlockedByDialog) {
+            Log.d("SPI", "IntroActivity\nBlocked by installer check dialog")
+            return
+        }
+
         // ref: 인앱 업데이트 지원 (https://developer.android.com/guide/playcore/in-app-updates/kotlin-java?hl=ko)
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkUpdate()
