@@ -8,6 +8,7 @@ import android.location.LocationManager.GPS_PROVIDER
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import com.google.android.gms.location.*
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
@@ -93,7 +94,7 @@ abstract class LocationUpdate : BaseActivity() {
         Permissions.check(context, permissions, null, null, object : PermissionHandler() {
                 override fun onGranted() {
                     requestingLocationUpdates = true
-                    println("Granted: ${permissions.toList().joinToString(",")}")
+                    Log.d("SPI", "Granted: ${permissions.toList().joinToString(",")}")
                 }
 
                 override fun onDenied(context: Context, deniedPermissions: ArrayList<String>) {
