@@ -23,7 +23,7 @@ fun updateLocalSuperviseDatabase(context: Context): Boolean {
         override fun onResponse(response: JsonObject) {
             Thread {
                 val superviseDao = superviseDb!!.dao()
-                superviseDb!!.dao().all
+                superviseDao.getAll()
                 if (superviseDb?.isOpen!!) {
                     val jsonArray = response["data"].asJsonArray
                     jsonArray.forEach { element ->

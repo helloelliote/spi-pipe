@@ -8,13 +8,13 @@ import androidx.room.Query
 @Dao
 interface SuperviseDao {
 
-    @get:Query("SELECT * FROM Supervise ORDER BY supervise ASC")
-    val all: List<Supervise>
+    @Query("SELECT * FROM Supervise ORDER BY supervise ASC")
+    fun getAll(): List<Supervise>
 
-    @Query("SELECT supervise FROM Supervise WHERE id IN (:userId) LIMIT 1")
+    @Query("SELECT supervise FROM Supervise WHERE id = :userId LIMIT 1")
     fun selectById(userId: Int): String
 
-    @Query("SELECT id FROM Supervise WHERE supervise IN (:supervise) LIMIT 1")
+    @Query("SELECT id FROM Supervise WHERE supervise = :supervise LIMIT 1")
     fun selectBySupervise(supervise: String?): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
