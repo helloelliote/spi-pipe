@@ -7,6 +7,7 @@ import android.content.Intent
 import android.nfc.NfcAdapter
 import android.text.Spanned
 import android.util.DisplayMetrics
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
@@ -47,15 +48,28 @@ fun Activity.screenSize(): Int {
 }
 
 fun Activity.onResumeNfc() {
+    val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
+    if (nfcAdapter == null) {
+        Log.w("NFC", "이 디바이스는 NFC를 지원하지 않음")
+        return
+    }
+
     val pendingIntent = PendingIntent.getActivity(
         this, 0, Intent(this, javaClass)
             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), FLAG_MUTABLE
     )
-    NfcAdapter.getDefaultAdapter(this).enableForegroundDispatch(this, pendingIntent, null, null)
+    nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null)
 }
 
 fun Activity.onPauseNfc() {
     val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
+    if (nfcAdapter == null) {
+        Log.w("NFC", "이 디바이스는 NFC를 지원하지 않음")
+        return
+    }
+
     nfcAdapter.disableForegroundDispatch(this)
 }
 
